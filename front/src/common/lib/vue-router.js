@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import home from '@/views/home/home'
-import waitingRoom from '@/views/waitingRoom/waitingRoom'
-import gameRoom from '@/views/gameRoom/gameRoom'
+import waitingRoom from '@/views/waiting-room/waiting-room'
+import gameRoom from '@/views/game-room/game-room'
 import Mypage from '@/views/mypage/mypage'
 
 

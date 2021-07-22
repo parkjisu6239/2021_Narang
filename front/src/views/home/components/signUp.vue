@@ -8,11 +8,11 @@
         </el-form-item>
       </el-col>
       <el-col :span="3">
-        <el-button :type="state.duplColor[state.duplicationCheck]" icon="el-icon-check" circle @click="checkId"></el-button>
+        <el-button :type="state.duplColor[state.duplicationCheck]" icon="el-icon-check" circle @click="checkEmail"></el-button>
       </el-col>
     </el-row>
-    <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth" >
-      <el-input v-model="state.form.name" autocomplete="off"></el-input>
+    <el-form-item prop="username" label="닉네임" :label-width="state.formLabelWidth" >
+      <el-input v-model="state.form.username" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item prop="password" label="비밀번호" :label-width="state.formLabelWidth">
       <el-input v-model="state.form.password" autocomplete="off" show-password></el-input>
@@ -30,7 +30,7 @@ import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 
 export default {
-  name: "signUp",
+  name: "signup",
 
   setup(props, { emit }) {
     const store = useStore()
@@ -48,15 +48,15 @@ export default {
       duplicationCheck: 0,
       duplColor: ['secondary', 'success', 'danger'],
       form: {
-        name: '',
+        username: '',
         email: '',
         password: '',
         checkPass: '',
         align: 'left'
       },
       rules: {
-        name: [
-          { required: true, message: 'Please Input the name', trigger: 'blur' },
+        username: [
+          { required: true, message: 'Please Input the nickname', trigger: 'blur' },
           { message: 'You can enter up to 30 characters', trigger: 'change', max: 30 }
         ],
         email: [
@@ -78,9 +78,9 @@ export default {
       formLabelWidth: '120px'
     })
 
-    const checkId = function() {
+    const checkEmail = function() {
       // axios 보냄
-      store.dispatch('root/requestCheckDuplicate', { id: state.form.id })
+      store.dispatch('root/requestCheckDuplicate', { email: state.form.email })
       .then(function (result) {
         state.duplicationCheck = 1 // 성공하면 초록색
       })
@@ -102,7 +102,7 @@ export default {
           store.dispatch('root/requestSignup', {
             email: state.form.email,
             password: state.form.password,
-            name: state.form.name,
+            username: state.form.username,
           })
           .then(function (result) {
             ElMessage({
@@ -119,7 +119,7 @@ export default {
       });
     }
 
-    return { signupForm, state, clickSignup, checkId }
+    return { signupForm, state, clickSignup, checkEmail }
   }
 }
 </script>

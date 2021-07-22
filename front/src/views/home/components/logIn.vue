@@ -17,7 +17,7 @@ import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 
 export default {
-  name: "logIn",
+  name: "login",
 
   setup(props, { emit }) {
     const store = useStore()
@@ -47,7 +47,7 @@ export default {
           store.dispatch('root/requestLogin', { email: state.form.email, password: state.form.password })
           .then(function (result) {
             localStorage.setItem('access_token', result.data.accessToken) // 로컬스토리지에 토큰 저장
-            localStorage.setItem('user_id', state.form.email) // 로컬스토리지에 아이디 저장
+            localStorage.setItem('email', state.form.email) // 로컬스토리지에 아이디 저장
           })
           .catch(function (err) {
             ElMessage.error(err)

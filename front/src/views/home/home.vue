@@ -25,9 +25,9 @@
 <script>
 import Title from './components/title'
 import Information from './components/information'
-import LogIn from './components/logIn'
-import SignUp from './components/signUp'
-import GameStart from './components/gameStart'
+import LogIn from './components/login'
+import SignUp from './components/signup'
+import GameStart from './components/game-start'
 
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
