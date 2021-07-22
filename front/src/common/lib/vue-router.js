@@ -1,18 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/home/home'
+import home from '@/views/home/home'
+import waitingRoom from '@/views/waitingRoom/waitingRoom'
 import Mypage from '@/views/mypage/mypage'
 
 
 function makeRoutesFromMenu () {
   let routes = []
   // menu 자체에는 나오지 않는 페이지 라우터에 추가(방 상세보기)
-  routes.push({
-    path: '/home',
+  routes.push(
+  {
+    path: '/',
     name: 'home',
-    component: Home
+    component: home
   },
   {
-    path: 'mypage/:userId',
+    path: '/waiting-room',
+    name: 'waitingRoom',
+    component: waitingRoom
+  },
+  {
+    path: '/mypage',
     name: 'mypage',
     component: Mypage
   },
