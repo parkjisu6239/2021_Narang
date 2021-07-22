@@ -1,30 +1,13 @@
-<<<<<<< HEAD
-import {createRouter, createWebHistory} from 'vue-router'
-import Home from '@/views/home/home'
-=======
 import { createRouter, createWebHistory } from 'vue-router'
 import home from '@/views/home/home'
 import waitingRoom from '@/views/waiting-room/waiting-room'
 import gameRoom from '@/views/game-room/game-room'
->>>>>>> 9387f2cc538614c4fb463c6921abdc7827d8d76a
 import Mypage from '@/views/mypage/mypage'
 
 
 function makeRoutesFromMenu() {
   let routes = []
   // menu 자체에는 나오지 않는 페이지 라우터에 추가(방 상세보기)
-<<<<<<< HEAD
-  routes.push({
-      path: '/home',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: 'mypage/:userId',
-      name: 'mypage',
-      component: Mypage
-    },
-=======
   routes.push(
   {
     path: '/',
@@ -46,7 +29,6 @@ function makeRoutesFromMenu() {
     name: 'gameRoom',
     component: gameRoom
   },
->>>>>>> 9387f2cc538614c4fb463c6921abdc7827d8d76a
   )
   return routes
 }
