@@ -1,0 +1,12 @@
+.mypage-container {
+  display: grid;
+  width: 50%;
+  height: 60%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, -50%);
+  grid-template-columns: repeat(3, 1fr);
+  border-radius: 20px;
+}
