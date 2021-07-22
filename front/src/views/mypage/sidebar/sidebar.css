@@ -1,0 +1,21 @@
+.side-bar-container {
+  display: grid;
+  background-color: white;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.img-wrapper {
+  position: relative;
+}
+
+.profile-img {
+  background-color: black;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border: solid black 1px;
+  border-radius: 100px;
+}
