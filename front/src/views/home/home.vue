@@ -1,10 +1,59 @@
 <template>
-  <h1>ddd</h1>
+  <div>
+    <Title/>
+    <Information/>
+    <el-switch
+      style="display: inline-block"
+      v-model="state.value"
+      active-color="#13ce66"
+      inactive-color="#ff4949"
+      active-text="회원가입"
+      inactive-text="로그인"
+    >
+    </el-switch>
+
+    <div v-if="!state.isLoggedIn">
+      <LogIn v-if="!state.value"/>
+      <SignUp v-else/>
+    </div>
+    <div v-else>
+      <GameStart/>
+    </div>
+  </div>
 </template>
 
 <script>
+import Title from './components/title'
+import Information from './components/information'
+import LogIn from './components/logIn'
+import SignUp from './components/signUp'
+import GameStart from './components/gameStart'
+
+import { reactive, computed } from 'vue'
+import { useStore } from 'vuex'
+
 export default {
-  name: "home"
+  name: "home",
+
+  components: {
+    Title,
+    Information,
+    LogIn,
+    SignUp,
+    GameStart,
+  },
+
+  setup(props, { emit }) {
+    const store = useStore()
+
+    const state = reactive({
+      value: false,
+      isLoggedIn: computed(() => store.getters['root/isLoggedIn']),
+    })
+
+    return { state }
+  }
+
 }
 </script>
 

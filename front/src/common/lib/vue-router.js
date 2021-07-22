@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import home from '@/views/home/home'
 import waitingRoom from '@/views/waitingRoom/waitingRoom'
+import gameRoom from '@/views/gameRoom/gameRoom'
 import Mypage from '@/views/mypage/mypage'
 
 
@@ -19,9 +20,14 @@ function makeRoutesFromMenu () {
     component: waitingRoom
   },
   {
-    path: '/mypage',
+    path: '/mypage/:userId',
     name: 'mypage',
     component: Mypage
+  },
+  {
+    path: '/game-room/:roomId',
+    name: 'gameRoom',
+    component: gameRoom
   },
   )
   return routes
