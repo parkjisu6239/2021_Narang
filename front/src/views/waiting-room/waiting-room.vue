@@ -1,7 +1,7 @@
 <template>
   <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
     <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
-      <conference />
+      <Room />
     </li>
   </ul>
 </template>
@@ -31,7 +31,7 @@
 }
 </style>
 <script>
-import Conference from './components/conference'
+import Room from './components/room'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -39,7 +39,7 @@ export default {
   name: 'waitingRoom',
 
   components: {
-    Conference
+    Room
   },
 
   setup () {
@@ -55,9 +55,9 @@ export default {
 
     const clickConference = function (id) {
       router.push({
-        name: 'conference-detail',
+        name: 'gameRoom',
         params: {
-          conferenceId: id
+          roomId: id
         }
       })
     }
