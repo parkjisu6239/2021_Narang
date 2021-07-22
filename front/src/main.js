@@ -1,6 +1,5 @@
-
 // 기본 플러그인 Import
-import { createApp, h } from 'vue'
+import {createApp, h} from 'vue'
 import store from './common/lib/store'
 import ElementPlus from './common/lib/element-plus'
 import App from './App.vue'
@@ -193,7 +192,7 @@ const plugins = [
 // Element UI Components [끝]
 
 const app = createApp({
-  render: ()=>h(App)
+  render: () => h(App)
 })
 app.use(ElementPlus)
 app.use(VueAxios, axios)

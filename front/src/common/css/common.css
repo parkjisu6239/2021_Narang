@@ -13,6 +13,7 @@ body {
   .hide-on-small {
     display: none !important;
   }
+
   .hide-on-big {
     display: block;
   }
@@ -26,6 +27,7 @@ body {
   .hide-on-small {
     display: block;
   }
+
   .hide-on-big {
     display: none !important;
   }
@@ -36,11 +38,13 @@ body {
   font-weight: 600;
   src: url('../../assets/fonts/SpoqaHanSansNeo-Bold.ttf');
 }
+
 @font-face {
   font-family: 'SpoqaHanSansNeo';
   font-weight: 500;
   src: url('../../assets/fonts/SpoqaHanSansNeo-Medium.ttf');
 }
+
 @font-face {
   font-family: 'SpoqaHanSansNeo';
   font-weight: 400;

@@ -7,11 +7,11 @@ const userId = localStorage.getItem('user_id') ? localStorage.getItem('user_id')
  */
 function getIsDesktop() {
   var userAgent = window.navigator.userAgent,
-      platform = window.navigator.platform,
-      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-      iosPlatforms = ['iPhone', 'iPad', 'iPod'],
-      os = null;
+    platform = window.navigator.platform,
+    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+    iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+    os = null;
 
   if (macosPlatforms.indexOf(platform) !== -1) { //Desktop - Mac
     return true
