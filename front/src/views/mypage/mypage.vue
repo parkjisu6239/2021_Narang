@@ -1,37 +1,16 @@
 <template>
-  <el-container>
-    <el-form :model="state.form" :rules="state.rules" ref="editForm" :label-position="state.form.align" :disabled="!state.editMode">
-      <el-form-item prop="id" label="아이디" :label-width="state.formLabelWidth">
-        <el-input v-model="state.form.id" autocomplete="off" disabled="true"></el-input>
-      </el-form-item>
-      <el-form-item prop="name" label="이름" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.name" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item prop="department" label="소속" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.department" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item prop="position" label="직책" :label-width="state.formLabelWidth" >
-        <el-input v-model="state.form.position" autocomplete="off"></el-input>
-      </el-form-item>
-    </el-form>
-  </el-container>
-  <div v-if="!state.editMode">
-    <el-button type="primary" @click="state.editMode = !state.editMode">회원정보 수정</el-button>
-    <el-button class="delete-btn" type="danger" @click="clickDelete">회원 탈퇴</el-button>
-  </div>
-  <div v-else>
-    <el-button type="primary" @click="clickUpdate">수정</el-button>
-    <el-button @click="state.editMode = !state.editMode">취소</el-button>
+  <div class="mypage-container">
+    <Sidebar/>
+    <MyPageSection/>
   </div>
 </template>
 
 <style>
-section.el-container {
-  justify-content: center;
-}
+  @import url('./mypage.css');
 </style>
-
 <script>
+import Sidebar from './sidebar/sidebar.vue'
+import MyPageSection from './section/my-page-section.vue'
 import { reactive, ref, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -39,6 +18,10 @@ import { ElMessage } from 'element-plus'
 
 export default {
   name: 'Mypage',
+  components: {
+    Sidebar,
+    MyPageSection,
+  },
   setup () {
     const store = useStore()
     const router = useRouter()
@@ -96,16 +79,6 @@ export default {
 
     const getUserInfo = () => {
       store.dispatch('root/requestReadMyInfo')
-      .then(function (result) {
-        console.log(result)
-        state.form.id = result.data.userId
-        state.form.name = result.data.name
-        state.form.department = result.data.department
-        state.form.position = result.data.position
-      })
-      .catch(function (err) {
-        ElMessage.error(err)
-      })
     }
 
     const clickUpdate = function() {
@@ -154,9 +127,9 @@ export default {
     }
 
     // 페이지 진입시 불리는 훅
-    onBeforeMount (() => {
-      getUserInfo()
-    })
+    // onBeforeMount (() => {
+    //   getUserInfo()
+    // })
 
     return { editForm, state, clickUpdate, clickDelete }
   }

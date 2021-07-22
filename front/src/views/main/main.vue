@@ -1,13 +1,7 @@
 <template>
-  <el-container class="main-wrapper">
-    <el-container class="main-container">
-      <el-aside class="hide-on-small" width="240px">
-      </el-aside>
-      <el-main>
-        <router-view></router-view>
-      </el-main>
-    </el-container>
-  </el-container>
+  <div class="main-wrapper">
+    <router-view></router-view>
+  </div>
 </template>
 <style>
   @import "https://unpkg.com/element-plus/lib/theme-chalk/index.css";

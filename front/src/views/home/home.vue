@@ -1,68 +1,62 @@
 <template>
-  <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-    <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
-      <conference />
-    </li>
-  </ul>
+  <div>
+    <Title/>
+    <Information/>
+    <el-switch
+      style="display: inline-block"
+      v-model="state.value"
+      active-color="#13ce66"
+      inactive-color="#ff4949"
+      active-text="회원가입"
+      inactive-text="로그인"
+    >
+    </el-switch>
+
+    <div v-if="!state.isLoggedIn">
+      <LogIn v-if="!state.value"/>
+      <SignUp v-else/>
+    </div>
+    <div v-else>
+      <GameStart/>
+    </div>
+  </div>
 </template>
-<style>
-.infinite-list {
-  padding-left: 0;
-  max-height: calc(100% - 35px);
-}
 
-@media (min-width: 701px) and (max-width: 1269px) {
-  .infinite-list {
-    min-width: 700px;
-  }
-}
-
-@media (min-width: 1270px) {
-  .infinite-list {
-    min-width: 1021px;
-  }
-}
-
-.infinite-list .infinite-list-item {
-  min-width: 335px;
-  max-width: 25%;
-  display: inline-block;
-  cursor: pointer;
-}
-</style>
 <script>
-import Conference from './components/conference'
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import Title from './components/title'
+import Information from './components/information'
+import LogIn from './components/login'
+import SignUp from './components/signup'
+import GameStart from './components/game-start'
+
+import { reactive, computed } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
-  name: 'Home',
+  name: "home",
 
   components: {
-    Conference
+    Title,
+    Information,
+    LogIn,
+    SignUp,
+    GameStart,
   },
 
-  setup () {
-    const router = useRouter()
+  setup(props, { emit }) {
+    const store = useStore()
 
     const state = reactive({
-      count: 12
+      value: false,
+      isLoggedIn: computed(() => store.getters['root/isLoggedIn']),
     })
 
-    const load = function () {
-      state.count += 4
-    }
-
-    const clickConference = function (id) {
-      router.push({
-        name: 'conference-detail',
-        params: {
-          conferenceId: id
-        }
-      })
-    }
-
-    return { state, load, clickConference }
+    return { state }
   }
+
 }
 </script>
+
+<style>
+
+</style>
