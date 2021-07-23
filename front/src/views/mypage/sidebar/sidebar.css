@@ -1,7 +1,9 @@
+/* top-left | top-right-and-bottom-left | bottom-right */
 .side-bar-container {
   display: grid;
   background-color: white;
   grid-template-rows: repeat(2, 1fr);
+  border-radius: 20px 0px 0px 20px;
 }
 
 .img-wrapper {
@@ -9,13 +11,12 @@
 }
 
 .profile-img {
-  background-color: black;
+  background-color: lightslategray;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 100px;
-  height: 100px;
-  border: solid black 1px;
+  width: 120px;
+  height: 120px;
   border-radius: 100px;
 }

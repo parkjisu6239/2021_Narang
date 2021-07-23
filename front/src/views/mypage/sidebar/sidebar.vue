@@ -3,9 +3,7 @@
     <div class="img-wrapper">
       <div class="profile-img"></div>
     </div>
-    <div>
-
-    </div>
+    <SidebarMenu @openSelectedMenu="openSelectedMenu"/>
   </div>
 </template>
 <style>
@@ -13,8 +11,12 @@
 </style>
 <script>
 import { reactive } from '@vue/reactivity'
+import SidebarMenu from './sidebar-menu.vue'
 export default {
   name: 'SideBar',
+  components: {
+    SidebarMenu,
+  },
   props: {
 
   },
@@ -23,7 +25,11 @@ export default {
       imgUrl: "./ssafy-logo.png"
     })
 
-    return { state }
+    const openSelectedMenu = (menu) => {
+      emit('openSelectedMenu', menu)
+    }
+
+    return { state, openSelectedMenu }
   }
 
 
