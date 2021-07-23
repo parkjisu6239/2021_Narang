@@ -11,6 +11,7 @@
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="changeInfo">Submit</el-button>
+      <el-button @click="changeInfo">편집하기</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -40,19 +41,21 @@ export default {
       const payload = {
         ...state.form
       }
+      console.log(payload)
       store.dispatch('root/requestUpdateMyInfo', payload)
         .then(res => {
           console.log(res)
         })
         .catch(err => {
-          console.log(err)
+          alert('회원정보 수정에 실패했습니다.')
         })
     }
 
     onBeforeMount(() => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          console.log(res)
+          state.form.email = res.data.email
+          state.form.username = res.data.username
         })
         .catch(err => {
           console.log(err)

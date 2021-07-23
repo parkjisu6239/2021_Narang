@@ -36,7 +36,7 @@ export function requestCheckDuplicate({state}, payload) {
 export function requestReadMyInfo({state}) {
   console.log('requestMyInfo', state)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = '/users/me'
+  const url = '/user'
   return $axios.get(url, {headers: headers})
 }
 
@@ -44,7 +44,7 @@ export function requestReadMyInfo({state}) {
 export function requestUpdateMyInfo({state}, payload) {
   console.log('requestMyInfo', state, payload)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = `/users/${state.userId}`
+  const url = `/user`
   let body = payload
   console.log(body)
   return $axios.patch(url, body, {headers: headers})
