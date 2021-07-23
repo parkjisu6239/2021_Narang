@@ -12,7 +12,7 @@
         v-model="state.form.email"
         autocomplete="off"
         type="email"
-        :disabled="!state.editMode"></el-input>
+        :disabled="true"></el-input>
     </el-form-item>
     <el-form-item prop="username" label="username">
       <el-input

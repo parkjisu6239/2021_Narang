@@ -20,7 +20,7 @@ function makeRoutesFromMenu() {
     component: waitingRoom
   },
   {
-    path: '/mypage/:userId',
+    path: '/mypage',
     name: 'mypage',
     component: Mypage
   },

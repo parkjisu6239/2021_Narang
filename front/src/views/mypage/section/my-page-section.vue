@@ -1,6 +1,5 @@
 <template>
   <section class="user-info-change-container">
-    {{ state.seleted }}
     <UserDelete v-if="state.seleted === 'userDelete'"/>
     <UserInfoChange v-if="state.seleted === 'userInfoChange'"/>
   </section>
@@ -14,24 +13,20 @@ import UserInfoChange from './user-info-change.vue'
 import UserDelete from './user-delete.vue'
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 
 export default {
   name: "MyPageSection",
-  props: {
-    seletedMenu: {
-      type: Object,
-      default: { menu : 'userInfoChange' }
-    }
-  },
   components: {
     UserInfoChange,
     UserDelete,
   },
   setup(props, { emit }) {
+    const store = useStore()
     const state = reactive({
       seleted: computed(() => {
-        console.log(props.seletedMenu)
-        return props.seletedMenu.menu
+        console.log('하이')
+        return store.getters['root/mypageMenu']
       })
     })
 

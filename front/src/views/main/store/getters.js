@@ -8,6 +8,10 @@ export function isLoggedIn(state) {
   return state.accessToken ? true : false
 }
 
-export function userId(state) {
-  return state.userId
+export function email(state) {
+  return state.email
+}
+
+export function mypageMenu(state) {
+  return state.mypageSeletedMenu
 }

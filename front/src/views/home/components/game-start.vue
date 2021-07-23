@@ -18,7 +18,7 @@ export default {
 
     const state = reactive({
       isLoggedIn: computed(() => store.getters['root/isLoggedIn']),
-      userId: computed(() => store.getters['root/userId']),
+      email: computed(() => store.getters['root/email']),
     })
 
     const clickLogOut = () => {
@@ -36,12 +36,9 @@ export default {
     }
 
     const clickMyPage = () => {
-      store.commit('root/setUserId')
+      store.commit('root/setUserEmail')
       router.push({
         name: 'mypage',
-        params: {
-          userId: state.userId
-        }
       })
     }
 

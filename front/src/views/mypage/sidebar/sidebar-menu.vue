@@ -10,18 +10,20 @@
 </style>
 <script>
 import { reactive } from '@vue/reactivity'
+import { useStore } from 'vuex'
 export default {
   name:"SidebarMenu",
   props: {
 
   },
   setup(props, { emit }) {
+    const store = useStore()
     const state = reactive({
 
     })
 
     const clickMenu = (menu) => {
-      emit('openSelectedMenu', menu)
+      store.commit('root/setSeletedMenu', menu)
     }
 
 
