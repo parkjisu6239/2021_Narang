@@ -1,9 +1,9 @@
 package com.exp.narang.api.controller;
 
-import com.exp.narang.api.service.RoomService;
-import com.exp.narang.api.service.UserService;
 import com.exp.narang.api.request.UserRegisterPostReq;
 import com.exp.narang.api.response.UserRes;
+import com.exp.narang.api.service.RoomService;
+import com.exp.narang.api.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
 import com.exp.narang.common.model.response.BaseResponseBody;
 import com.exp.narang.db.entity.User;
@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.annotation.PostConstruct;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.
@@ -31,16 +29,6 @@ public class UserController {
 	@Autowired
 	RoomService conferenceService;
 
-	@PostConstruct
-	public void init(){
-//		UserRegisterPostReq hgd = new UserRegisterPostReq();
-//        hgd.setId("test-1");
-//        hgd.setPassword("$2a$10$0sN1Ks6TUMs4hTLydDpC4.LWFpzb4dY20ZYNEegPKHkeEMqvyk85S");
-//		hgd.setName("홍길동");
-//		hgd.setDepartment("ssafy");
-//        hgd.setPosition("교육생");
-//		userService.createUser(hgd);
-	}
 	
 	@PostMapping()
 	@ApiOperation(value = "회원 가입", notes = "<strong>아이디와 패스워드</strong>를 통해 회원가입 한다.") 
@@ -101,7 +89,7 @@ public class UserController {
 			userService.updateUser(updateInfo, email);
 		}catch(Exception e){
 			e.printStackTrace();
-			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "Access Denied"));
+			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "Access Denied"));
 		}
 
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
@@ -119,7 +107,7 @@ public class UserController {
 		if(!userService.idExists(email)) {
 			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 		}
-		return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 사용자 ID 입니다."));
+		return ResponseEntity.status(404).body(BaseResponseBody.of(404, "이미 존재하는 사용자 ID 입니다."));
 	}
 
 	@GetMapping("/chkusername/{username}")
@@ -154,6 +142,6 @@ public class UserController {
 			userService.deleteById(user.getUserId());
 		}
 		else return ResponseEntity.status(404).body(BaseResponseBody.of(404, "User not exists"));
-		return ResponseEntity.status(204).body(BaseResponseBody.of(204, "Success"));
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 }
