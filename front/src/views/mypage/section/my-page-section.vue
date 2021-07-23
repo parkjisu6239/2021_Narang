@@ -1,7 +1,8 @@
 <template>
   <section class="user-info-change-container">
-    <UserPasswordChange v-if="seleted === 'user-password-change'"/>
-    <UserInfoChange v-if="seleted === 'user-info-change'"/>
+    {{ state.seleted }}
+    <UserDelete v-if="state.seleted === 'userDelete'"/>
+    <UserInfoChange v-if="state.seleted === 'userInfoChange'"/>
   </section>
 
 </template>
@@ -10,19 +11,31 @@
 </style>
 <script>
 import UserInfoChange from './user-info-change.vue'
-import UserPasswordChange from './user-password-change.vue'
+import UserDelete from './user-delete.vue'
+import { reactive } from '@vue/reactivity'
+import { computed } from '@vue/runtime-core'
 
 export default {
   name: "MyPageSection",
   props: {
-    seleted: {
-      type: String,
-      default: 'user-info-change'
+    seletedMenu: {
+      type: Object,
+      default: { menu : 'userInfoChange' }
     }
   },
   components: {
     UserInfoChange,
-    UserPasswordChange,
+    UserDelete,
+  },
+  setup(props, { emit }) {
+    const state = reactive({
+      seleted: computed(() => {
+        console.log(props.seletedMenu)
+        return props.seletedMenu.menu
+      })
+    })
+
+    return { state }
   }
 }
 </script>

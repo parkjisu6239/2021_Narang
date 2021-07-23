@@ -1,4 +1,5 @@
 .mypage-container {
+  border: solid 1px black;
   display: grid;
   width: 50%;
   height: 60%;
@@ -9,4 +10,5 @@
   transform: translate(-50%, -50%);
   grid-template-columns: repeat(3, 1fr);
   border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }

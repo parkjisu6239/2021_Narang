@@ -1,6 +1,11 @@
 .user-info-change-form {
   position: absolute;
+  width: 60%;
   top: 50%;
-  left: 60%;
+  left: 66%;
   transform: translate(-50%, -50%);
+}
+
+.user-info-btn {
+  text-align: end;
 }

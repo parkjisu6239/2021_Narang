@@ -1,7 +1,13 @@
 <template>
-
+  <ul class="sidebar-menus">
+    <li @click="clickMenu('userInfoChange')">회원정보수정</li>
+    <li @click="clickMenu('userDelete')">회원탈퇴</li>
+    <li>친구관리 - comming soon</li>
+  </ul>
 </template>
-
+<style>
+  @import url('./sidebar-menu.css');
+</style>
 <script>
 import { reactive } from '@vue/reactivity'
 export default {
@@ -9,16 +15,18 @@ export default {
   props: {
 
   },
-  setup() {
+  setup(props, { emit }) {
     const state = reactive({
 
     })
 
-    return { state }
+    const clickMenu = (menu) => {
+      emit('openSelectedMenu', menu)
+    }
+
+
+    return { state, clickMenu }
   }
 }
 </script>
 
-<style>
-
-</style>

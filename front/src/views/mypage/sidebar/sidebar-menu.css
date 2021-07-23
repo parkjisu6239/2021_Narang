@@ -1,0 +1,5 @@
+.sidebar-menus > li {
+  list-style: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
