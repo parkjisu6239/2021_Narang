@@ -2,17 +2,17 @@
   <div>
     <Title/>
     <Information/>
-    <el-switch
-      style="display: inline-block"
-      v-model="state.value"
-      active-color="#13ce66"
-      inactive-color="#ff4949"
-      active-text="회원가입"
-      inactive-text="로그인"
-    >
-    </el-switch>
 
     <div v-if="!state.isLoggedIn">
+      <el-switch
+        style="display: inline-block"
+        v-model="state.value"
+        active-color="#13ce66"
+        inactive-color="#ff4949"
+        active-text="회원가입"
+        inactive-text="로그인"
+      >
+      </el-switch>
       <LogIn v-if="!state.value"/>
       <SignUp v-else/>
     </div>
