@@ -51,7 +51,7 @@ export function requestReadMyInfo({state}) {
 export function requestUpdateMyInfo({state}, payload) {
   console.log('requestMyInfo', state, payload)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = `/user`
+  const url = '/user'
   let body = payload
   console.log(body)
   return $axios.patch(url, body, {headers: headers})
@@ -61,7 +61,7 @@ export function requestUpdateMyInfo({state}, payload) {
 export function requestDeleteMyInfo({state}) {
   console.log('requestMyInfo', state)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = `/user/${state.userId}`
+  const url = '/user'
   return $axios.delete(url, {headers: headers})
 }
 

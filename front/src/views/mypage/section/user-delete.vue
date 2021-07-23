@@ -4,6 +4,7 @@
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 export default {
   name: 'UserDelete',
@@ -11,16 +12,24 @@ export default {
 
   },
   setup(props, { emit }){
-    const store = useStore
+    const store = useStore()
+    const router = useRouter()
 
     const DeleteUser = () => {
-      store.dispatch('requestDeleteMyInfo')
+      store.dispatch('root/requestDeleteMyInfo')
         .then(res => {
-          store.dispatch('requestLogout')
+          store.dispatch('root/requestLogout')
+          store.commit('root/setAccessToken')
+          router.push({
+            name: 'home'
+          })
           ElMessage({
             type: 'success',
             message: '회원탈퇴에 성공했습니다.'
           })
+        })
+        .catch(err => {
+          ElMessage.error(err)
         })
     }
 

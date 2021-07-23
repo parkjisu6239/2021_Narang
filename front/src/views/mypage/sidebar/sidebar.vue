@@ -3,7 +3,7 @@
     <div class="img-wrapper">
       <div class="profile-img"></div>
     </div>
-    <SidebarMenu @openSelectedMenu="openSelectedMenu"/>
+    <SidebarMenu/>
   </div>
 </template>
 <style>
@@ -25,16 +25,8 @@ export default {
       imgUrl: "./ssafy-logo.png"
     })
 
-    const openSelectedMenu = (menu) => {
-      emit('openSelectedMenu', menu)
-    }
-
-    return { state, openSelectedMenu }
+    return { state }
   }
-
-
-
-
 }
 </script>
 
