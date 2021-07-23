@@ -3,6 +3,7 @@ package com.exp.narang.api.controller;
 import com.exp.narang.api.request.RoomRegisterPostReq;
 import com.exp.narang.api.response.RoomListRes;
 import com.exp.narang.api.response.RoomRegisterPostRes;
+import com.exp.narang.api.response.RoomRes;
 import com.exp.narang.api.service.RoomService;
 import com.exp.narang.api.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
@@ -61,6 +62,20 @@ public class RoomController {
     public ResponseEntity<? extends BaseResponseBody> readAll(@ApiIgnore Authentication authentication) {
         List<Room> roomList = roomService.findAll();
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
+    }
+
+    @GetMapping("/{roomId}")
+    @ApiOperation(value = "방 상세 조회", notes = "roomId로 방 상세 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 400, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+
+    public ResponseEntity<? extends BaseResponseBody> readRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
+        Room room = roomService.findById(Long.parseLong(roomId));
+        return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
     }
 
     @GetMapping("/title/{title}")
