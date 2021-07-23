@@ -48,6 +48,7 @@ export default {
           .then(function (result) {
             localStorage.setItem('access_token', result.data.accessToken) // 로컬스토리지에 토큰 저장
             localStorage.setItem('email', state.form.email) // 로컬스토리지에 아이디 저장
+            store.commit('root/setAccessToken')
           })
           .catch(function (err) {
             ElMessage.error(err)

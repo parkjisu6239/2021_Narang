@@ -13,7 +13,7 @@ export function requestLogin({state}, payload) {
 export function requestLogout({state}) {
   console.log('requestLogout', state)
   localStorage.removeItem('access_token')
-  localStorage.removeItem('user_id')
+  localStorage.removeItem('email')
   return
 }
 
