@@ -13,4 +13,5 @@ public interface RoomService {
     List<Room> findAll();
     List<Room> findByTitle(String title);
     List<Room> findByGame(String game);
+    Room findById(Long roomId);
 }
