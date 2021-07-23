@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ChatController {
     private final SimpMessagingTemplate template;
-    // /server를 메시지를 받을 endpoint로 설정합니다.
+    // /server 메시지를 받을 endpoint로 설정합니다.
     @MessageMapping("/server")
     // 1) /server에서 메시지를 받고, /client로 메시지를 보내줍니다.
     public void sendMessage(ChatModel chatModel) {
