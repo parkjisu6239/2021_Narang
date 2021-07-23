@@ -1,68 +1,48 @@
 <template>
-  <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
-    <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
-      <Room />
-    </li>
-  </ul>
+  <div class="screen">
+    <LeftSide />
+    <RightSide @openCreateRoomDialog="onOpenCreateRoomDialog"/>
+  </div>
+  <create-room-dialog
+    :open="state.createRoomDialogOpen"
+    @closeCreateRoomDialog="onCloseCreateRoomDialog"/>
 </template>
 <style>
-.infinite-list {
-  padding-left: 0;
-  max-height: calc(100% - 35px);
-}
-
-@media (min-width: 701px) and (max-width: 1269px) {
-  .infinite-list {
-    min-width: 700px;
-  }
-}
-
-@media (min-width: 1270px) {
-  .infinite-list {
-    min-width: 1021px;
-  }
-}
-
-.infinite-list .infinite-list-item {
-  min-width: 335px;
-  max-width: 25%;
-  display: inline-block;
-  cursor: pointer;
+.screen {
+  display: flex;
 }
 </style>
 <script>
-import Room from './components/room'
+import LeftSide from './components/left-side'
+import RightSide from './components/right-side'
+import createRoomDialog from './components/create-room-dialog'
+
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
 
 export default {
   name: 'waitingRoom',
 
   components: {
-    Room
+    LeftSide,
+    RightSide,
+    createRoomDialog
   },
 
-  setup () {
-    const router = useRouter()
+  setup() {
 
     const state = reactive({
-      count: 12
+      createRoomDialogOpen: false,
     })
 
-    const load = function () {
-      state.count += 4
+    const onOpenCreateRoomDialog = function() {
+      state.createRoomDialogOpen = true
     }
 
-    const clickConference = function (id) {
-      router.push({
-        name: 'gameRoom',
-        params: {
-          roomId: id
-        }
-      })
+    const onCloseCreateRoomDialog = function() {
+      state.createRoomDialogOpen = false
     }
 
-    return { state, load, clickConference }
+    return { state, onOpenCreateRoomDialog, onCloseCreateRoomDialog}
   }
 }
 </script>
