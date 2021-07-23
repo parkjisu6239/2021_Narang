@@ -14,7 +14,7 @@
 
     <div v-if="!state.isLoggedIn">
       <LogIn v-if="!state.value"/>
-      <SignUp v-else/>
+      <SignUp v-else @signupSuccess="state.value = false"/>
     </div>
     <div v-else>
       <GameStart/>

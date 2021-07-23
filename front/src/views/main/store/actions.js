@@ -20,15 +20,22 @@ export function requestLogout({state}) {
 // 회원가입
 export function requestSignup({state}, payload) {
   console.log('requestSignup', state, payload)
-  const url = '/users'
+  const url = '/user'
   let body = payload
   return $axios.post(url, body)
 }
 
-// 유저 정보 : 아이디 중복 체크
-export function requestCheckDuplicate({state}, payload) {
-  console.log('requestCheckDuplicate', state, payload)
-  const url = `/users/${payload.id}`
+// 유저 정보 : 이메일 중복 체크
+export function requestEmailCheck({state}, payload) {
+  console.log('requestEmailCheck', state, payload)
+  const url = `/user/chkemail/${payload.email}`
+  return $axios.get(url)
+}
+
+// 유저 정보 : 이름 중복 체크
+export function requestNameCheck({state}, payload) {
+  console.log('requestNameCheck', state, payload)
+  const url = `/user/chkusername/${payload.username}`
   return $axios.get(url)
 }
 
@@ -54,7 +61,7 @@ export function requestUpdateMyInfo({state}, payload) {
 export function requestDeleteMyInfo({state}) {
   console.log('requestMyInfo', state)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = `/users/${state.userId}`
+  const url = `/user/${state.userId}`
   return $axios.delete(url, {headers: headers})
 }
 
