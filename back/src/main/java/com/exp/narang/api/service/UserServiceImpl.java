@@ -38,10 +38,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByEmail(String email) {
-		// 디비에 유저 정보 조회 (userId 를 통한 조회).
+		// 디비에 유저 정보 조회 (email 을 통한 조회).
 		Optional<User> userOpt = userRepositorySupport.findUserByEmail(email);
 		return userOpt.orElse(null);
 	}
+
 
 	@Override
 	public boolean idExists(String email) {

@@ -1,24 +1,32 @@
 package com.exp.narang.api.service;
 
+import com.exp.narang.api.request.RoomRegisterPostReq;
 import com.exp.narang.db.entity.Room;
+import com.exp.narang.db.entity.User;
 import com.exp.narang.db.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
     @Autowired
     RoomRepository roomRepository;
 
+
     @Override
-    public void addRoom(Room room) {
-        roomRepository.save(room);
+    public Long createRoom(RoomRegisterPostReq roomRegisterPostReq) {
+        roomRepository.save(
+                Room.builder()
+                    .title((roomRegisterPostReq.getTitle()))
+                    .maxPlayer(roomRegisterPostReq.getMaxPlayer())
+                    .ownerId(roomRegisterPostReq.getOwnerId()).build());
+
+
+        return roomRepository.findByOwnerId(roomRegisterPostReq.getOwnerId()).getRoomId();
     }
 
-    @Transactional
     @Override
-    public void deleteRoom(Long userId) {
-        roomRepository.deleteByUser(userId);
+    public void deleteRoom(User user) {
+
     }
 }

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 //    void deleteByUserEmail(Long userId);
-    void deleteByUser(Long userId);
+//    void deleteByUser(User user);
+    Room findByOwnerId(Long ownerId);
 }
