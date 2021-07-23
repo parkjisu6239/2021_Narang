@@ -1,5 +1,6 @@
 package com.exp.narang.db.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,21 +19,24 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
+
+    int maxPlayer;
     String thumbnailUrl;
     String title;
-    String description;
     Boolean isActive;
+    Long ownerId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    Date callStartTime;
-    @Temporal(TemporalType.TIMESTAMP)
-    Date callEndTime;
-
-    // TODO : 고민
-    @OneToOne
-    @JoinColumn(name = "owner_id")
-    User user;
-
+    Date createdTime;
     @OneToMany(mappedBy = "room")
     List<User> userList = new ArrayList<>();
+
+    @Builder
+    private Room(String title, Long ownerId, int maxPlayer) {
+        this.title = title;
+        this.ownerId = ownerId;
+        this.maxPlayer = maxPlayer;
+    }
+
+    public Room() {}
 }
