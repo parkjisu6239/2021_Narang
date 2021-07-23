@@ -7,6 +7,8 @@ import com.exp.narang.db.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomServiceImpl implements RoomService {
     @Autowired
@@ -28,5 +30,20 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void deleteRoom(User user) {
 
+    }
+
+    @Override
+    public List<Room> findAll() {
+        return roomRepository.findAll();
+    }
+
+    @Override
+    public List<Room> findByTitle(String title) {
+        return roomRepository.findByTitleContains(title);
+    }
+
+    @Override
+    public List<Room> findByGame(String game) {
+        return roomRepository.findByGameContains(game);
     }
 }

@@ -3,10 +3,11 @@ package com.exp.narang.db.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,9 +26,13 @@ public class Room {
     String title;
     Boolean isActive;
     Long ownerId;
+    String game;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    Date createdTime;
+    @CreationTimestamp
+    @Column(name="created_time")
+    private LocalDateTime createdTime = LocalDateTime.now();
+
+
     @OneToMany(mappedBy = "room")
     List<User> userList = new ArrayList<>();
 
