@@ -49,11 +49,12 @@ public class SessionController {
     })
     public ResponseEntity<? extends BaseResponseBody> getToken(@ApiIgnore Authentication authentication,
                                                                @RequestBody @ApiParam(value="세션(방) 이름", required = true) String title){
+        // 토큰 없이 요청하면 인증 실패
+        if(authentication == null)
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
+
         UserDetails userDetails = (UserDetails)authentication.getDetails();
         User user = userDetails.getUser();
-
-        if(user == null)
-            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 
         SessionRole role;
         String serverData = "{\"serverData\": \"" + user.getEmail() + "\"}";
@@ -108,11 +109,12 @@ public class SessionController {
     public ResponseEntity<? extends BaseResponseBody> removeUser(@ApiIgnore Authentication authentication,
             @RequestParam(name = "session-name") String sessionName,
             @RequestParam(name = "token") String token) throws Exception {
-        UserDetails userDetails = (UserDetails)authentication.getDetails();
-        User user = userDetails.getUser();
-
-        if(user == null)
+        // 토큰 없이 요청하면 인증 실패
+        if(authentication == null)
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
+
+//        UserDetails userDetails = (UserDetails)authentication.getDetails();
+//        User user = userDetails.getUser();
 
         // 세션(방)이 있고 세션 이름에 해당하는 mapSessionNamesTokens 객체가 있음
         if (this.mapSessions.get(sessionName) != null && this.mapSessionTitlesTokens.get(sessionName) != null) {
