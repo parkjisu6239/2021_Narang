@@ -1,5 +1,6 @@
 package com.exp.narang.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,20 +30,23 @@ public class Room {
     String game;
     Boolean isActive;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     @CreationTimestamp
-    @Column(name="created_time")
-    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime createTime;
+//    @Column(name="created_time")
+//    private LocalDateTime createdTime = LocalDateTime.now();
 
 
     @OneToMany(mappedBy = "room")
     List<User> userList = new ArrayList<>();
 
     @Builder
-    private Room(String title, Long ownerId, int maxPlayer, int password) {
+    private Room(String title, Long ownerId, int maxPlayer, int password, Boolean isActive) {
         this.title = title;
         this.ownerId = ownerId;
         this.maxPlayer = maxPlayer;
         this.password = password;
+        this.isActive = isActive;
     }
 
     public Room() {}
