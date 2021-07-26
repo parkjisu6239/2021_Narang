@@ -14,10 +14,15 @@ import com.exp.narang.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +48,16 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> register(@ApiIgnore Authentication authentication,
-            @RequestBody @ApiParam(value="방 생성 정보", required = true) Room roomReqInfo) {
+            @RequestBody @ApiParam(value="방 생성 정보", required = true) RoomRegisterPostReq roomReqInfo) {
 
-        UserDetails userDetails = (UserDetails)authentication.getDetails();
-        User user = userDetails.getUser();
-        //roomReqInfo.setOwnerId(userService.getUserByEmail("admin").getUserId());
-        //roomReqInfo.setOwnerId((long)1);
-        Long roomId = roomService.createRoom(roomReqInfo);
-        roomService.enterRoom(roomReqInfo, user.getUserId());
+        UserDetails userDetails = (UserDetails)authentication.getDetails();//
+        User user = userDetails.getUser();//
+//        User user = userService.getUserByEmail("a@aa.aa");//임시
+        Long roomId = roomService.createRoom(roomReqInfo, user.getUserId());
         Room room = roomService.findById(roomId); // 들어가려는 방 정보
-        //User user = userService.getUserByEmail("a@aa.aa");//임시
+        //System.out.println("유저 pk : "+user.getUserId() + "유저 이름 : "+user.getUsername());
+        //System.out.println("방제목 : "+room.getTitle());
+        roomService.enterRoom(room, user);
         return ResponseEntity.status(200).body(RoomRegisterPostRes.of(200, "Success", roomId));
     }
 
@@ -65,8 +70,12 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
 
-    public ResponseEntity<? extends BaseResponseBody> readAll(@ApiIgnore Authentication authentication) {
-        List<Room> roomList = roomService.findAll();
+    public ResponseEntity<? extends BaseResponseBody> readAll(@ApiIgnore Authentication authentication,
+                                                              @RequestParam(name = "title", required = false) String title,
+                                                              @RequestParam(name = "game", required = false) String game,
+                                                              @RequestParam(name = "isActive", required = false) Boolean isActive,
+                                                              @PageableDefault(value = 8) @SortDefault(sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Room> roomList = roomService.findAll(pageable);
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
     }
 
@@ -86,12 +95,13 @@ public class RoomController {
             UserDetails userDetails = (UserDetails)authentication.getDetails();
             User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
 //          User user = userService.getUserByEmail("f@ff.ff");//임시
-            roomService.enterRoom(room, user.getUserId());
+            roomService.enterRoom(room, user);
             return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
         }
         return ResponseEntity.status(400).body(RoomRes.of(400, "인증 실패", room));
     }
 
+    /*
     @GetMapping("/title/{title}")
     @ApiOperation(value = "방 제목 검색", notes = "<strong>방 제목으로</strong>방 목록을 조회한다")
     @ApiResponses({
@@ -117,6 +127,7 @@ public class RoomController {
         List<Room> roomList = roomService.findByGame(game);
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
     }
+    */
 
     @DeleteMapping("/{roomId}")
     @ApiOperation(value = "방 나가기", notes = "방장이 나가면 방이 삭제된다.")
@@ -127,10 +138,12 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> deleteRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
-        UserDetails userDetails = (UserDetails)authentication.getDetails();
+        UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
-        roomService.deleteRoom(room, user.getUserId());
+        //System.out.println("사용자 정보" + userService.getUserByEmail("a@aa.aa"));
+//        roomService.deleteRoom(room, userService.getUserByEmail("a@aa.aa"));//임시
+        roomService.deleteRoom(room, user);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 }
