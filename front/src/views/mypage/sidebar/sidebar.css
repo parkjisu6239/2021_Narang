@@ -20,6 +20,7 @@
 }
 
 .profile-img {
+  cursor: pointer;
   margin: 0 auto;
   margin-top: 20px;
   background-color: lightslategray;

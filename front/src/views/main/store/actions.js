@@ -65,8 +65,13 @@ export function requestDeleteMyInfo({ state }) {
   return $axios.delete(url, {headers: headers})
 }
 
+
+// 유저 비밀번호 업데이트
 export function requestChangeMyPassword({ state }, payload) {
-  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const headers = {
+    'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : '',
+    'Content-Type': 'multipart/form-data'
+  }
   const url = '/user'
   const body = payload
   return $axios.patch(url, body, {headers: headers})

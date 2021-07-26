@@ -4,7 +4,7 @@
     :rules="state.rules"
     ref="userInfoForm"
     class="user-info-change-form"
-    label-width="90px"
+    label-width="120px"
     status-icon
     label-position="left">
 
@@ -54,7 +54,7 @@ export default {
         email: '',
         username: '',
       },
-      image: '',
+      profileImage: [],
       rules: {
         email: [
           { message: '이메일 형식으로 적어주세요', trigger: ['blur', 'change'], required: true, pattern: /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i }
@@ -78,10 +78,10 @@ export default {
     }
 
     const changeInfo = () => {
-      const payload = {
-        ...state.form
-      }
-      store.dispatch('root/requestUpdateMyInfo', payload)
+      const formData = new FormData()
+      formData.append('username', state.form.username)
+
+      store.dispatch('root/requestUpdateMyInfo', formData)
         .then(res => {
           editModeToggle()
           ElMessage({

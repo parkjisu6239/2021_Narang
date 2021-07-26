@@ -64,15 +64,14 @@ export default {
     })
 
     const userPasswordChange = () => {
-      payload = {
-        currentPassword: state.form.currentPassword,
-        newPassword: state.form.newPassword,
-      }
+      const formData = new FormData()
+      formData.append('currentPassword', state.form.currentPassword)
+      formData.append('newPassword', state.form.newPassword)
 
       userPasswordForm.value.validate((valid) => {
         if (valid) {
           console.log('submit')
-          store.dispatch('root/requestSignup', payload)
+          store.dispatch('root/requestChangeMyPassword', formData)
           .then(res => {
             ElMessage({
               message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요',

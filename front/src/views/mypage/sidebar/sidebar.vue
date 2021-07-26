@@ -1,7 +1,7 @@
 <template>
   <div class="side-bar-container">
     <div class="img-wrapper">
-      <div class="profile-img"></div>
+      <img class="profile-img" @click="clickProfile">
       <div class="side-bar-username">dongyun</div>
       <div class="side-bar-email">tlsdh1111@gmail.com</div>
     </div>
@@ -27,7 +27,10 @@ export default {
       imgUrl: "./ssafy-logo.png"
     })
 
-    return { state }
+    const clickProfile = () => {
+      emit('openProfileChangeDialog')
+    }
+    return { state, clickProfile }
   }
 }
 </script>

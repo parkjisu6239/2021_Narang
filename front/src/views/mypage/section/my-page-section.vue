@@ -4,7 +4,6 @@
     <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
     <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
   </section>
-
 </template>
 <style>
  @import url('./my-page-section.css');
