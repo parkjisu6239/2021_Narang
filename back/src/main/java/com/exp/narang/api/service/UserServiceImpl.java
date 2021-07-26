@@ -1,5 +1,6 @@
 package com.exp.narang.api.service;
 
+import com.exp.narang.api.request.UserInfoUpdateReq;
 import com.exp.narang.api.request.UserRegisterPostReq;
 import com.exp.narang.db.entity.User;
 import com.exp.narang.db.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.Optional;
 
 /**
@@ -60,11 +62,28 @@ public class UserServiceImpl implements UserService {
 		userRepository.deleteById(id);
 	}
 
-	//@Transactional
 	@Override
-	public User updateUser(UserRegisterPostReq updateInfo, String email) {
-		User user = userRepositorySupport.findUserByEmail(email).get();
-		user.setUsername(updateInfo.getUsername());
+	public User updateUser(UserInfoUpdateReq updateInfo, User user) {
+		String upload_path = "D:/profileImages/";
+		//profileImage 설정
+		if(updateInfo.getFile() != null) {
+			try {
+				if (user.getThumbnailUrl() != null) {
+					File file = new File(user.getThumbnailUrl());
+					file.delete();
+				}
+				updateInfo.getFile().transferTo(new File(upload_path + user.getUserId()));
+				user.setThumbnailUrl(upload_path + user.getUserId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(updateInfo.getUsername() != null) {
+			user.setUsername(updateInfo.getUsername());
+		}
+		if(updateInfo.getCurrentPassword() != null) {
+			user.setPassword(passwordEncoder.encode(updateInfo.getNewPassword()));
+		}
 		return userRepository.save(user);
 	}
 }
