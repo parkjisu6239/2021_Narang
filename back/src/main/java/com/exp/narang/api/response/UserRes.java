@@ -18,6 +18,7 @@ public class UserRes{
 	@ApiModelProperty(name="User ID")
 	String email;
 	String username;
+	byte[] fileArray;
 
 	public static UserRes of(User user) {
 		return UserRes.builder()
