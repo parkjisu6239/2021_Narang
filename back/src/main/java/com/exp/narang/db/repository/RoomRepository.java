@@ -1,6 +1,7 @@
 package com.exp.narang.db.repository;
 
 import com.exp.narang.db.entity.Room;
+import com.exp.narang.db.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Room findByOwnerId(Long ownerId);
     List<Room> findByTitleContains(String title);
     List<Room> findByGameContains(String game);
+    List<User> findByRoomId(Long roomId);
 }
