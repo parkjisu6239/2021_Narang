@@ -4,18 +4,12 @@
     <el-form-item prop="name" label="방 이름">
       <el-input v-model="state.form.name"></el-input>
     </el-form-item>
-    <el-row>
-      <el-col :span="9">
-        <el-form-item prop="secret" label="비밀방 여부">
-          <el-switch v-model="state.form.secret"></el-switch>
-        </el-form-item>
-      </el-col>
-      <el-col :span="15">
-        <el-form-item prop="password" label="비밀번호">
-          <el-input v-model="state.form.password" :disabled="!state.form.secret"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item prop="secret" label="비밀방 여부">
+      <el-switch v-model="state.form.secret"></el-switch>
+    </el-form-item>
+    <el-form-item prop="password" label="비밀번호">
+      <el-input v-model="state.form.password" :disabled="!state.form.secret"></el-input>
+    </el-form-item>
     <el-form-item prop="num" label="최대인원">
       <el-input-number v-model="state.form.num" :min="1" :max="9"></el-input-number>
     </el-form-item>
@@ -89,5 +83,16 @@ export default {
 </script>
 
 <style>
+.el-dialog {
+  min-width: 400px;
+  max-width: 400px;
+}
 
+.el-dialog__body {
+  padding: 50px 70px 20px 20px;
+}
+
+.setting-secret .el-input__inner{
+  max-width: 200px;
+}
 </style>

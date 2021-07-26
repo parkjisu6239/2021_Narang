@@ -1,7 +1,9 @@
 <template>
-  <el-button type="primary" round @click="clickGameStart">Game Start</el-button>
-  <el-button type="success" round @click="clickMyPage">My page</el-button>
-  <el-button type="danger" round @click="clickLogOut">Logout</el-button>
+  <div class="btn-group">
+    <el-button type="primary" round @click="clickGameStart">Game Start</el-button>
+    <el-button type="success" round @click="clickMyPage">My page</el-button>
+    <el-button type="danger" round @click="clickLogOut">Logout</el-button>
+  </div>
 </template>
 
 <script>
@@ -47,6 +49,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.btn-group {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  row-gap: 20px;
+}
 </style>

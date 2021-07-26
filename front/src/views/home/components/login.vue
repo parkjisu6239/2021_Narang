@@ -1,5 +1,4 @@
 <template>
-  <h1>이것은 로그인 폼</h1>
   <el-form :model="state.form" :rules="state.rules" ref="loginForm" :label-position="state.form.align">
     <el-form-item prop="email" label="이메일" :label-width="state.formLabelWidth" >
       <el-input v-model="state.form.email" autocomplete="off"></el-input>
@@ -37,7 +36,7 @@ export default {
           { required: true, message: 'Please input password', trigger: 'blur' }
         ]
       },
-      formLabelWidth: '120px'
+      formLabelWidth: '100px'
     })
 
     const clickLogin = function () {
