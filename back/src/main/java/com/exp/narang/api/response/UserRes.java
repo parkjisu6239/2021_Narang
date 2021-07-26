@@ -18,11 +18,13 @@ public class UserRes{
 	@ApiModelProperty(name="User ID")
 	String email;
 	String username;
+	String thumbnailUrl;
 	byte[] fileArray;
 
 	public static UserRes of(User user) {
 		return UserRes.builder()
 				.email(user.getEmail())
-				.username(user.getUsername()).build();
+				.username(user.getUsername())
+				.thumbnailUrl(user.getThumbnailUrl()).build();
 	}
 }
