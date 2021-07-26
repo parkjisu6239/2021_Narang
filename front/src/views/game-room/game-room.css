@@ -1,0 +1,13 @@
+.game-room-container {
+  height: 100%;
+  display: grid;
+  grid-template-rows: (4, 1fr);
+}
+
+.game-room-section-container {
+  display: grid;
+  grid-template-columns: (4, 25%);
+  grid-row-start: 1;
+  grid-row-end: 4;
+  height: 90%;
+}

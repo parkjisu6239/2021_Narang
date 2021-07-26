@@ -1,0 +1,14 @@
+.webcam-container {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(33%, auto));
+	grid-template-rows: repeat(auto-fill, minmax(33%, auto));
+}
+
+.webcam-container > div {
+  margin: auto auto;
+  width: 95%;
+  height: 95%;
+  background-color: slategray;
+}
