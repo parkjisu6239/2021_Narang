@@ -1,0 +1,29 @@
+.user-delete-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 20%;
+  background-color: orange;
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  border-radius: 10px;
+}
+
+
+.user-delete-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.user-delete-form {
+  position: absolute;
+  width: 70%;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -1,9 +1,9 @@
 <template>
   <div class="side-bar-container">
     <div class="img-wrapper">
-      <img class="profile-img" @click="clickProfile">
-      <div class="side-bar-username">dongyun</div>
-      <div class="side-bar-email">tlsdh1111@gmail.com</div>
+      <img class="profile-img" @click="clickProfile" :src="state.profileImageURL">
+      <div class="side-bar-username">{{ state.username }}</div>
+      <div class="side-bar-email">{{ state.email }}</div>
     </div>
     <SidebarMenu/>
   </div>
@@ -12,19 +12,21 @@
  @import url('./sidebar.css');
 </style>
 <script>
-import { reactive } from '@vue/reactivity'
 import SidebarMenu from './sidebar-menu.vue'
+import { useStore } from 'vuex'
+import { reactive } from '@vue/reactivity'
+import { computed } from '@vue/runtime-core'
 export default {
   name: 'SideBar',
   components: {
     SidebarMenu,
   },
-  props: {
-
-  },
   setup(props, { emit }) {
+    const store = useStore()
     const state = reactive({
-      imgUrl: "./ssafy-logo.png"
+      username: computed(() => store.getters['root/username']),
+      email: computed(() => store.getters['root/email']),
+      profileImageURL: computed(() => store.state.profileImageURL)
     })
 
     const clickProfile = () => {

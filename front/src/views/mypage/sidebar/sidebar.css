@@ -3,7 +3,7 @@
   display: grid;
   grid-template-rows: repeat(2, 1fr);
   border-radius: 20px 0px 0px 20px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .img-wrapper {

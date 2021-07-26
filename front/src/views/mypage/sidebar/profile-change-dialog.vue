@@ -52,16 +52,32 @@ export default {
 
     const uploadImage = () => {
       const formData = new FormData()
-      formData.append('profile-image',imageTag.value.files[0])
+      formData.append('file',imageTag.value.files[0])
+
       store.dispatch('root/requestUpdateMyInfo', formData)
         .then(res => {
-          Elmessage({
+
+          store.dispatch('root/requestReadMyInfo')
+            .then(res => {
+              const userInfo = {
+                username: res.data.username,
+                profileImageURL: res.data.thumbnailUrl,
+              }
+              store.commit('root/setUserInfo', userInfo)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+
+          ElMessage({
             message: '프로필 이미지 변경이 완료되었습니다.',
-            type: 'success',
+            type: 'success'
           })
+
+          handleClose()
         })
         .catch(err => {
-          Elmessage({
+          ElMessage({
             message: '수정에 실패했습니다.',
             type: 'error',
           })

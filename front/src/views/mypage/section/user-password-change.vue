@@ -25,7 +25,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="userPasswordChange">submit</el-button>
+      <el-button type="primary" @click="userPasswordChange">비밀번호 변경</el-button>
     </el-form-item>
 
   </el-form>
@@ -73,6 +73,8 @@ export default {
           console.log('submit')
           store.dispatch('root/requestChangeMyPassword', formData)
           .then(res => {
+            store.dispatch('root/requestLogout')
+            router.push({name: 'home'})
             ElMessage({
               message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요',
               type: 'success',

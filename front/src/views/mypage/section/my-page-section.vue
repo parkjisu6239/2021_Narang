@@ -1,8 +1,14 @@
 <template>
   <section class="user-info-change-container">
-    <UserDelete v-if="state.selected === 'userDelete'"/>
-    <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
-    <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
+    <transition name="fade">
+      <UserDelete v-if="state.selected === 'userDelete'"/>
+    </transition>
+    <transition name="fade">
+      <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
+    </transition>
+    <transition name="fade">
+      <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
+    </transition>
   </section>
 </template>
 <style>

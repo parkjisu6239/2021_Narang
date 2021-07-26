@@ -16,6 +16,7 @@ import Sidebar from './sidebar/sidebar.vue'
 import ProfileChangeDialog from './sidebar/profile-change-dialog.vue'
 import MyPageSection from './section/my-page-section.vue'
 import { reactive } from '@vue/reactivity'
+import { useStore } from 'vuex'
 
 export default {
   name: 'Mypage',
@@ -25,16 +26,17 @@ export default {
     ProfileChangeDialog,
   },
   setup(props, { emit }) {
+    const store = useStore()
     const state = reactive({
       open: false
     })
 
     const openProfileChangeDialog = () => {
-      state.open = !state.open
+      state.open = true
     }
 
     const closeProfileChangeDialog = () => {
-      state.open = !state.open
+      state.open = false
     }
 
     return { state, openProfileChangeDialog, closeProfileChangeDialog }
