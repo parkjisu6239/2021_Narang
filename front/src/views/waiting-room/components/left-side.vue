@@ -1,19 +1,20 @@
 <template>
-  <div>
+  <div class="left-screen">
     <div class="my-info">
-      <img src="https://myanimals.co.kr/wp-content/uploads/2018/12/domestic-duck-species.jpg" alt="" style="width: 100px">
-      <h3>내 닉네임 넣을 예정</h3>
-      <h3>내 이메일 넣을 예정</h3>
+      <img src="https://myanimals.co.kr/wp-content/uploads/2018/12/domestic-duck-species.jpg" alt="">
+      <div class="nickname">닉네임</div>
+      <div class="email">emai@exp.com</div>
     </div>
-    <div class="friend-list" v-for="i in 3" :key="i">
-      <Friend />
-    </div>
+    <ul class="infinite-list friend-list" v-infinite-scroll="load">
+      <li v-for="i in state.count" class="infinite-list-item friend-list-item" :key="i" >
+        <friend />
+      </li>
+    </ul>
     <el-row class="btn-group">
       <el-button type="primary" icon="el-icon-edit" circle></el-button>
       <el-button type="success" icon="el-icon-check" circle></el-button>
       <el-button type="info" icon="el-icon-message" circle></el-button>
       <el-button type="warning" icon="el-icon-star-off" circle></el-button>
-      <el-button type="danger" icon="el-icon-delete" circle></el-button>
     </el-row>
   </div>
 </template>
@@ -21,15 +22,88 @@
 <script>
 import Friend from './friend.vue'
 
+import { reactive } from 'vue'
+
 export default {
   name: "leftSide",
 
   components: {
     Friend
+  },
+
+    setup (props, { emit }) {
+    const state = reactive({
+      count: 12,
+    })
+
+    const load = function () {
+      state.count += 4
+    }
+
+    return { state, load }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.left-screen {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
+  border-radius: 30px 0px 0px 30px;
+  padding: 60px 40px;
+  width: 420px;
+  display: grid;
+  grid-template-rows: 2fr 15fr 20px;
+}
+
+.left-screen img {
+  border-radius: 50%;
+}
+
+.my-info {
+  text-align: center;
+}
+
+.my-info img {
+  width: 100px;
+  height: 100px;
+}
+
+.my-info .nickname {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.my-info .email {
+  font-size: 14px;
+}
+
+.friend-list {
+  padding: 20px;
+  width: 180px;
+  overflow: auto;
+  background: #FFFFFF;
+  box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 20px;
+  display: grid;
+  row-gap: 15px;
+}
+
+.infinite-list {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.infinite-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.infinite-list .infinite-list-item {
+  display: inline-block;
+  cursor: pointer;
+}
+
+
 
 </style>
