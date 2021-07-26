@@ -10,6 +10,8 @@
 <style>
 .screen {
   display: flex;
+  margin: 40px 80px;
+  height: 90vh;
 }
 </style>
 <script>
