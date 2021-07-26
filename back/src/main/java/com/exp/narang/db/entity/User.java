@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 유저 모델 정의.
@@ -25,6 +23,7 @@ public class User{
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
+    String thumbnailUrl;
 
     @Builder
     private User(String email, String password, String username) {

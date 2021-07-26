@@ -1,5 +1,6 @@
 package com.exp.narang.api.service;
 
+import com.exp.narang.api.request.UserInfoUpdateReq;
 import com.exp.narang.api.request.UserRegisterPostReq;
 import com.exp.narang.db.entity.User;
 
@@ -11,6 +12,7 @@ public interface UserService {
 	User getUserByEmail(String email);
 	boolean idExists(String email);
 	void deleteById(Long id);
-	User updateUser(UserRegisterPostReq updateInfo, String email);
+
+	User updateUser(UserInfoUpdateReq updateInfo, User user);
 	boolean userNameExists(String username);
 }
