@@ -1,53 +1,66 @@
 <template>
-  <el-card :body-style="{ padding: '0px' }">
-    <div class="image-wrapper">
-      <el-skeleton style="width: 100%">
-        <template #template>
-          <el-skeleton-item variant="image" style="width: 100%; height: 190px" />
-        </template>
-      </el-skeleton>
+  <div class="game-room-item">
+    <div class="header">
+      <div>제목</div>
+      <div>3 / 6</div>
+    </div>
+    <div class="content">
+      <div class="thumbnail">
+        <img :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
       </div>
-    <div style="text-align: left; padding: 14px;">
-      <span class="title">{{ title }}</span>
-      <div class="bottom">
-        <span>{{ desc }}</span>
+      <div class="status">
+        <div class="selected-game">Now selected None</div>
+        <div class="play-or-wait">Waiting</div>
       </div>
     </div>
-  </el-card>
+  </div>
 </template>
 <style>
-.el-card {
-  margin: 0 8px;
-  margin-bottom: 40px;
+.game-room-item {
+  background: rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+  backdrop-filter: blur(50px);
+  border-radius: 20px;
+  padding: 10px;
+  margin: 0px 10px;
+  margin-bottom: 20px;
 }
-.el-card .image-wrapper {
-  width: 100%;
-  height: 190px;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 15px;
+  background: linear-gradient(180deg, #FF9F00 0%, #FAC04F 100%);
+  border-radius: 12px;
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
 }
-.el-card .title {
-  font-weight: bold;
+
+.status {
+  padding-right: 15px;
+  padding-top: 10px;
 }
-.el-card .bottom {
-  margin-top: 5px;
-  display:-webkit-box;
-  word-wrap:break-word;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  text-overflow:ellipsis;
+
+.content {
+  display: flex;
+  justify-content: space-between;
 }
-/* 테블릿, 모바일의 경우 두 줄 말줄임표시 */
-@media (max-width: 1269px) {
-  .el-card .bottom {
-    -webkit-line-clamp: 2;
-    height:42px;
-  }
+
+.thumbnail img {
+  height: 100px;
+  border-radius: 15px;
 }
-/* 데스크탑의 경우 세 줄 말줄임표시 */
-@media (min-width: 1270px) {
-  .el-card .bottom {
-    -webkit-line-clamp: 3;
-    height:60px;
-  }
+
+.selected-game {
+  font-weight: 600;
+}
+
+.play-or-wait {
+  font-size: 40px;
+  font-weight: 700;
+  color: #FF9F00;
 }
 
 </style>
