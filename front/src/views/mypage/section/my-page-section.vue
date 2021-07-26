@@ -1,9 +1,15 @@
 <template>
   <section class="user-info-change-container">
-    <UserDelete v-if="state.seleted === 'userDelete'"/>
-    <UserInfoChange v-if="state.seleted === 'userInfoChange'"/>
+    <transition name="fade">
+      <UserDelete v-if="state.selected === 'userDelete'"/>
+    </transition>
+    <transition name="fade">
+      <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
+    </transition>
+    <transition name="fade">
+      <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
+    </transition>
   </section>
-
 </template>
 <style>
  @import url('./my-page-section.css');
@@ -11,6 +17,7 @@
 <script>
 import UserInfoChange from './user-info-change.vue'
 import UserDelete from './user-delete.vue'
+import UserPasswordChange from './user-password-change.vue'
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
@@ -20,12 +27,12 @@ export default {
   components: {
     UserInfoChange,
     UserDelete,
+    UserPasswordChange,
   },
   setup(props, { emit }) {
     const store = useStore()
     const state = reactive({
-      seleted: computed(() => {
-        console.log('하이')
+      selected: computed(() => {
         return store.getters['root/mypageMenu']
       })
     })

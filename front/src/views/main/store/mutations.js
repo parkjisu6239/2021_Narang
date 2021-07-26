@@ -8,7 +8,7 @@ export function setAccessToken(state) {
 }
 
 export function setUserEmail(state) {
-  state.userId = localStorage.getItem('email')
+  state.email = localStorage.getItem('email')
   console.log(state.userId)
 }
 
@@ -19,4 +19,10 @@ export function deleteToken(state) {
 
 export function setSeletedMenu(state, menu) {
   state.mypageSeletedMenu = menu
+}
+
+export function setUserInfo(state, userInfo) {
+  state.username = userInfo.username
+  state.profileImageURL = userInfo.profileImageURL
+  state.email = userInfo.email
 }

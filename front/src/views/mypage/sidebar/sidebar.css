@@ -1,21 +1,29 @@
 /* top-left | top-right-and-bottom-left | bottom-right */
 .side-bar-container {
   display: grid;
-  background-color: white;
   grid-template-rows: repeat(2, 1fr);
   border-radius: 20px 0px 0px 20px;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .img-wrapper {
-  position: relative;
+  text-align: center;
+}
+
+.side-bar-username {
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+.side-bar-email {
+  font-size: 10px;
 }
 
 .profile-img {
+  cursor: pointer;
+  margin: 0 auto;
+  margin-top: 20px;
   background-color: lightslategray;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   width: 120px;
   height: 120px;
   border-radius: 100px;
