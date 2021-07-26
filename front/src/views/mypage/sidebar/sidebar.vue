@@ -2,6 +2,8 @@
   <div class="side-bar-container">
     <div class="img-wrapper">
       <div class="profile-img"></div>
+      <div class="side-bar-username">dongyun</div>
+      <div class="side-bar-email">tlsdh1111@gmail.com</div>
     </div>
     <SidebarMenu/>
   </div>

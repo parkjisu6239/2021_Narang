@@ -7,24 +7,30 @@
     label-width="90px"
     status-icon
     label-position="left">
+
     <el-form-item prop="email" label="email">
       <el-input
         v-model="state.form.email"
         autocomplete="off"
         type="email"
-        :disabled="true"></el-input>
+        :disabled="true">
+      </el-input>
     </el-form-item>
+
     <el-form-item prop="username" label="username">
       <el-input
         v-model="state.form.username"
         autocomplete="off"
-        :disabled="!state.editMode"></el-input>
+        :disabled="!state.editMode">
+      </el-input>
     </el-form-item>
+
     <el-form-item>
-      <el-button v-if="state.editMode" type="primary" @click="changeInfo">submit</el-button>
       <el-button v-if="state.editMode" type="danger" @click="initChangeInfo">back</el-button>
+      <el-button v-if="state.editMode" type="primary" @click="changeInfo">submit</el-button>
       <el-button @click="editModeToggle" v-if="!state.editMode">edit</el-button>
     </el-form-item>
+
   </el-form>
 </template>
 <style>

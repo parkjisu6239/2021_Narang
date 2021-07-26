@@ -1,5 +1,45 @@
+.sidebar-menus {
+  padding: 0px;
+}
+
 .sidebar-menus > li {
   list-style: none;
   cursor: pointer;
   margin-bottom: 20px;
+  position: relative;
+  text-align: center;
+  height: 40px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
+
+.menu-name {
+  display: inline-block;
+  width: 80%;
+  text-align: start;
+  margin-left: 75px;
+}
+
+.selected {
+  background: white;
+}
+
+.selected::before {
+  position: absolute;
+  content: '';
+  left: 0px;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #6C88EA 0%, #579AC0 100%);
+}
+
+.selected::after {
+  position: absolute;
+  content: '';
+  left: 99%;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #6C88EA 0%, #579AC0 100%);
+}
+

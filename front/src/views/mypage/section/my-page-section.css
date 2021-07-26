@@ -1,3 +1,4 @@
 .user-info-change-container {
   grid-column: 2 / 4;
+  position: relative;
 }

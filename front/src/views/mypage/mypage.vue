@@ -2,10 +2,11 @@
   <div class="mypage-container">
     <Sidebar/>
     <MyPageSection/>
+
   </div>
 </template>
 
-<style>
+<style scoped>
   @import url('./mypage.css');
 </style>
 <script>
