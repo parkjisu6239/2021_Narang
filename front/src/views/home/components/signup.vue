@@ -1,5 +1,4 @@
 <template>
-  <h1>이것은 회원가입폼</h1>
   <el-form :model="state.form" :rules="state.rules" ref="signupForm" :label-position="state.form.align">
     <el-row :gutter="20">
       <el-col :span="21">
