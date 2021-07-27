@@ -60,6 +60,7 @@ export default {
           store.dispatch('root/requestReadMyInfo')
             .then(res => {
               const userInfo = {
+                email: res.data.email,
                 username: res.data.username,
                 profileImageURL: res.data.thumbnailUrl,
               }

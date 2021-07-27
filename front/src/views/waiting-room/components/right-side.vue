@@ -4,7 +4,7 @@
       <h1>Narang Lobby</h1>
       <div class="nav-bottom">
         <div class="search-group">
-          <el-radio-group v-model="state.isActive" size="small">
+          <el-radio-group v-model="state.isActivate" size="small">
             <el-radio-button label="All"></el-radio-button>
             <el-radio-button label="Waiting"></el-radio-button>
             <el-radio-button label="Playing"></el-radio-button>
@@ -139,8 +139,8 @@ export default {
     const state = reactive({
       gameRoomList: [],
       count: 12,
-      activeList: {All: null, Waiting: true, Playing: false},
-      isActive: ref('All'),
+      activateList: {All: null, Waiting: true, Playing: false},
+      isActivate: ref('All'),
       options:
         [{
             value: 'All',
@@ -175,15 +175,14 @@ export default {
     }
 
     const ClickReadGameRoomList = function() {
-      console.log(state.isActive, state.value, state.input)
       const payload = {
         game: state.value === 'All' ? null : state.value,
-        isActive: state.activeList[state.isActive],
+        isActivate: state.activateList[state.isActivate],
         title: state.input ? state.input : null
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
-        console.log(result.data.roomList.content)
+        console.log(result.data.roomList)
         state.gameRoomList = result.data.roomList.content
       })
       .catch(function (err) {

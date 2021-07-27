@@ -2,7 +2,7 @@
   <div class="game-room-item">
     <div :class="{header: true, canEnter: isActive}">
       <div>{{ room.title }}</div>
-      <div>{{ room.userList.length }} / {{ room.maxPlayer }}</div>
+      <div>{{ room.userList ? room.userList.length : 0 }} / {{ room.maxPlayer }}</div>
     </div>
     <div class="content">
       <div class="thumbnail">
@@ -27,7 +27,7 @@
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .game-room-item {
   background: rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
