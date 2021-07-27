@@ -15,6 +15,7 @@ import lombok.Setter;
 @ApiModel("UserResponse")
 public class UserRes extends BaseResponseBody {
 	@ApiModelProperty(name="User ID")
+	String email;
 	String username;
 	String thumbnailUrl;
 
@@ -23,6 +24,7 @@ public class UserRes extends BaseResponseBody {
 		UserRes res = new UserRes();
 		res.setStatusCode(statusCode);
 		res.setMessage(message);
+		res.setEmail(user.getEmail());
 		res.setUsername(user.getUsername());
 		res.setThumbnailUrl(user.getThumbnailUrl());
 		return res;
