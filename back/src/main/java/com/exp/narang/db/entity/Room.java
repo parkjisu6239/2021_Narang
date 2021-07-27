@@ -42,8 +42,9 @@ public class Room {
     List<User> userList = new ArrayList<>();
 
     @Builder
-    private Room(String title, Long ownerId, int maxPlayer, int password, Boolean isActivate) {
+    private Room(String title, String game, Long ownerId, int maxPlayer, int password, Boolean isActivate) {
         this.title = title;
+        this.game = game;
         this.ownerId = ownerId;
         this.maxPlayer = maxPlayer;
         this.password = password;
