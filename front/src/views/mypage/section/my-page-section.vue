@@ -11,7 +11,7 @@
     </transition>
   </section>
 </template>
-<style>
+<style scoped>
  @import url('./my-page-section.css');
 </style>
 <script>

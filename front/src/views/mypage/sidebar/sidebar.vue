@@ -1,7 +1,11 @@
 <template>
   <div class="side-bar-container">
     <div class="img-wrapper">
-      <img v-if="state.profileImageURL === undefined" class="profile-img" @click="clickProfile" :src="state.profileImageURL">
+      <img
+        v-if="state.profileImageURL === undefined"
+        class="profile-img"
+        @click="clickProfile"
+        :src="state.profileImageURL">
       <img
         v-else
         class="profile-img"
@@ -34,7 +38,7 @@ export default {
       email: computed(() => store.getters['root/email']),
       profileImageURL: computed(() => store.getters['root/profileImageURL']),
       backgroundColor: ['orange', 'red', 'green'],
-      backgroundNum: store.getters['root/email'].length % 3,
+      backgroundNum: computed(() => store.getters['root/email'].length % 3),
     })
 
     const clickProfile = () => {

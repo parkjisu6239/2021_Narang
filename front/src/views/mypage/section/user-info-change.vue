@@ -33,7 +33,7 @@
 
   </el-form>
 </template>
-<style>
+<style scoped>
   @import url('./user-info-change.css');
 </style>
 <script>
