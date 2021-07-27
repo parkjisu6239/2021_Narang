@@ -21,3 +21,7 @@ export function mypageMenu(state) {
 export function username (state) {
   return state.username
 }
+
+export function profileImageURL (state) {
+  return `https://localhost:8080${state.profileImageURL}`
+}

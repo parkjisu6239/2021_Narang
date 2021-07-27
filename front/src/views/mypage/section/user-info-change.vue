@@ -108,7 +108,6 @@ export default {
     onMounted(() => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          console.log(res.data)
           const userInfo = {
             username: res.data.username,
             profileImageURL: res.data.thumbnailUrl,
