@@ -49,6 +49,7 @@
   backdrop-filter: blur(30px);
   border-radius: 0px 40px 40px 0px;
   padding: 10px 30px;
+  width: 80vw;
 }
 
 .nav-bottom {
