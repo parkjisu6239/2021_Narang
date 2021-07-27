@@ -9,7 +9,6 @@ import lombok.Setter;
 @ApiModel("RoomRegisterPostRequest")
 public class RoomRegisterPostReq {
     String title;
-    Long ownerId;
     int maxPlayer;
     int password;
 }

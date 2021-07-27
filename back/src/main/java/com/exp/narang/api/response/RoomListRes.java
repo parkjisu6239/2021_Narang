@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,12 +15,12 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ApiModel("RoomRegistPostResponse")
+@ApiModel("RoomListPostResponse")
 public class RoomListRes extends BaseResponseBody {
 	@ApiModelProperty(name="게임방 번호(PK)", example="1")
-	List<Room> roomList;
+	Page<Room> roomList;
 	
-	public static RoomListRes of(Integer statusCode, String message, List<Room> roomList) {
+	public static RoomListRes of(Integer statusCode, String message, Page<Room> roomList) {
 		RoomListRes res = new RoomListRes();
 		res.setStatusCode(statusCode);
 		res.setMessage(message);
