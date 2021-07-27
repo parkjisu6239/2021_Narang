@@ -76,3 +76,36 @@ export function requestChangeMyPassword({ state }, payload) {
   const body = payload
   return $axios.patch(url, body, {headers: headers})
 }
+
+// 게임룸 조회
+export function requestReadGameRoomList({ state }, payload) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  let url = '/room'
+  for (let key in payload) {
+    url += `?${key}=${payload[key]}`
+  }
+  return $axios.get(url, {headers: headers})
+}
+
+// 게임룸 생성
+export function requestCreateGameRoom({ state }, payload) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = '/room'
+  const body = payload
+  return $axios.post(url, body, {headers: headers})
+}
+
+// 게임룸 입장
+export function requestEnterGameRoom({ state }, payload) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = `/room/${payload.roomId}`
+  const body = { password: payload.password }
+  return $axios.post(url, body, {headers: headers})
+}
+
+// 게임룸 퇴장
+export function requestLeaveGameRoom({ state }, payload) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = `/room/${payload.roomId}`
+  return $axios.delete(url, {headers: headers})
+}
