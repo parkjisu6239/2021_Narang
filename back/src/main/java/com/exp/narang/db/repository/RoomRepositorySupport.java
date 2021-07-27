@@ -1,6 +1,6 @@
 package com.exp.narang.db.repository;
 
-import com.exp.narang.api.request.SearchReq;
+import com.exp.narang.api.request.RoomSearchGetReq;
 import com.exp.narang.db.entity.QRoom;
 import com.exp.narang.db.entity.QUser;
 import com.exp.narang.db.entity.Room;
@@ -34,18 +34,18 @@ public class RoomRepositorySupport extends QuerydslRepositorySupport {
         this.entityManager = entityManager;
     }
 
-    public PageImpl<Room> findBySearch(SearchReq searchReq, Pageable pageable) {
+    public PageImpl<Room> findBySearch(RoomSearchGetReq roomSearchGetReq, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
-        System.out.println(searchReq.getGame());
-        if(searchReq.getGame() != null && searchReq.getGame() != "") {
-            builder.and(qRoom.game.eq(searchReq.getGame()));
+        System.out.println(roomSearchGetReq.getGame());
+        if(roomSearchGetReq.getGame() != null && roomSearchGetReq.getGame() != "") {
+            builder.and(qRoom.game.eq(roomSearchGetReq.getGame()));
         }
-        if(searchReq.getIsActivate() != null) {
-            builder.and(qRoom.isActivate.eq(searchReq.getIsActivate()));
+        if(roomSearchGetReq.getIsActivate() != null) {
+            builder.and(qRoom.isActivate.eq(roomSearchGetReq.getIsActivate()));
         }
-        System.out.println(searchReq.getTitle());
-        if(searchReq.getTitle() != null && searchReq.getTitle() != "") {
-            builder.and(qRoom.title.contains(searchReq.getTitle()));
+        System.out.println(roomSearchGetReq.getTitle());
+        if(roomSearchGetReq.getTitle() != null && roomSearchGetReq.getTitle() != "") {
+            builder.and(qRoom.title.contains(roomSearchGetReq.getTitle()));
         }
 
         JPQLQuery<Room> query = jpaQueryFactory.select(qRoom).from(qRoom).where(builder);
