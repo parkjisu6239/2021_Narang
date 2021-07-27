@@ -18,7 +18,7 @@
 
   </div>
 </template>
-<style>
+<style scoped>
   @import url('./game-room-setting.css');
 </style>
 <script>

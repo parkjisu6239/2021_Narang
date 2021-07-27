@@ -11,7 +11,7 @@
     </li>
   </ul>
 </template>
-<style>
+<style scoped>
   @import url('./sidebar-menu.css');
 </style>
 <script>

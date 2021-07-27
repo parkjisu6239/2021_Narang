@@ -30,7 +30,7 @@
 
   </el-form>
 </template>
-<style>
+<style scoped>
   @import url('./user-password-change.css');
 </style>
 <script>

@@ -9,7 +9,7 @@
   <GameRoomInfoChangeDialog @closeDialog="closeDialog" :open="state.open"/>
 
 </template>
-<style>
+<style scoped>
   @import url('./game-room.css');
 </style>
 <script>

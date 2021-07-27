@@ -18,7 +18,7 @@
     </ul>
   </el-dialog>
 </template>
-<style>
+<style scoped>
   @import url('./profile-change-dialog.css');
 </style>
 <script>

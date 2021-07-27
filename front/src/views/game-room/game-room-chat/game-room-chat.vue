@@ -8,7 +8,7 @@
     <el-button>보내기</el-button>
   </div>
 </template>
-<style>
+<style scoped>
   @import url('./game-room-chat.css');
 </style>
 
