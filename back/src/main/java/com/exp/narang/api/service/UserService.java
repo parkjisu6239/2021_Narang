@@ -12,7 +12,7 @@ public interface UserService {
 	User getUserByEmail(String email);
 	boolean idExists(String email);
 	void deleteById(Long id);
-
+	void deleteProfile(User user);
 	User updateUser(UserInfoUpdateReq updateInfo, User user);
 	boolean userNameExists(String username);
 }
