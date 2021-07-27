@@ -38,7 +38,7 @@ public class SessionController {
         this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
     }
 
-    @PostMapping("/get-token")
+    @GetMapping("/get-token/{title}")
     @ApiOperation(value = "실제 세션 생성", notes = "화상 채팅을 위한 방을 생성한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -47,7 +47,7 @@ public class SessionController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> getToken(@ApiIgnore Authentication authentication,
-                                                               @RequestBody @ApiParam(value="세션(방) 이름", required = true) String title){
+                                                               @PathVariable(name = "title") @ApiParam(value="세션(방) 이름", required = true) String title){
         // 토큰 없이 요청하면 인증 실패
         if(authentication == null)
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
@@ -95,6 +95,7 @@ public class SessionController {
     @ApiOperation(value = "세션에서 퇴장", notes = "화상 채팅 방에서 나간다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
             @ApiResponse(code = 404, message = "잘못된 요청"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
