@@ -3,19 +3,35 @@
     <div class="navbar">
       <h1>Narang Lobby</h1>
       <div class="nav-bottom">
-        <div class="style-bar"></div>
-        <div class="top-btn-group">
-          <el-button type="primary" round @click="clickCreateRoom">방만들기</el-button>
-          <el-select v-model="value" placeholder="Select">
+        <div class="search-group">
+          <el-radio-group v-model="state.isActive" size="small">
+            <el-radio-button label="All"></el-radio-button>
+            <el-radio-button label="Waiting"></el-radio-button>
+            <el-radio-button label="Playing"></el-radio-button>
+          </el-radio-group>
+          <el-select v-model="state.value" placeholder="Select" size="small">
             <el-option
-              v-for="item in options"
+              v-for="item in state.options"
               :key="item.value"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
-          <el-input placeholder="검색 꽥꽥"></el-input>
+          <el-input
+            v-model="state.input"
+            placeholder="검색 꽥꽥"
+            prefix-icon="el-icon-search"
+            clearable
+            size="small">
+          </el-input>
+          <el-button
+            icon="el-icon-search"
+            type="primary"
+            circle
+            @click="ClickReadGameRoomList">
+          </el-button>
         </div>
+        <el-button type="primary" round @click="clickCreateRoom">방만들기</el-button>
       </div>
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
@@ -32,27 +48,30 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(30px);
   border-radius: 0px 40px 40px 0px;
-  padding: 20px 50px;
+  padding: 10px 30px;
 }
 
 .nav-bottom {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.style-bar {
-  width: 300px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0px 4px 4px rgba(255, 255, 255, 0.8);
-  border-radius: 50px;
+.search-group {
+  display: flex;
+  align-items: center;
 }
 
-.top-btn-group {
-  display: grid;
-  max-width: 40%;
-  grid-template-columns: 1fr 2fr 5fr;
-  column-gap: 20px;
+.search-group > *{
+  margin-right: 10px;
+}
+
+.search-group .el-select {
+  max-width: 100px;
+}
+
+.search-group .el-input {
+  max-width: 200px;
 }
 
 .infinite-list {
@@ -102,7 +121,7 @@
 <script>
 import Room from './room'
 
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -120,6 +139,22 @@ export default {
     const state = reactive({
       gameRoomList: [],
       count: 12,
+      activeList: {All: null, Waiting: true, Playing: false},
+      isActive: ref('All'),
+      options:
+        [{
+            value: 'All',
+            label: 'All'
+          }, {
+            value: 'Nafia',
+            label: 'Nafia'
+          }, {
+            value: 'callmy',
+            label: 'Call My Name'
+        }],
+      value: 'All',
+      input: '',
+      page: 1,
     })
 
     const load = function () {
@@ -139,8 +174,14 @@ export default {
       emit('openCreateRoomDialog')
     }
 
-    const readGameRoomList = function() {
-      store.dispatch('root/requestReadGameRoomList')
+    const ClickReadGameRoomList = function() {
+      console.log(state.isActive, state.value, state.input)
+      const payload = {
+        game: state.value === 'All' ? null : state.value,
+        isActive: state.activeList[state.isActive],
+        title: state.input ? state.input : null
+      }
+      store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
         console.log(result.data.roomList.content)
         state.gameRoomList = result.data.roomList.content
@@ -150,9 +191,9 @@ export default {
       })
     }
 
-    readGameRoomList()
+    ClickReadGameRoomList()
 
-    return { state, load, clickConference, clickCreateRoom }
+    return { state, load, clickConference, clickCreateRoom, ClickReadGameRoomList }
   }
 }
 </script>
