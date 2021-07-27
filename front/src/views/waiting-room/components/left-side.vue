@@ -51,7 +51,8 @@ export default {
   backdrop-filter: blur(5px);
   border-radius: 30px 0px 0px 30px;
   padding: 60px 40px;
-  width: 420px;
+
+  max-width: 300px;
   display: grid;
   grid-template-rows: 2fr 15fr 20px;
 }
@@ -62,6 +63,7 @@ export default {
 
 .my-info {
   text-align: center;
+  max-width: 220px;
 }
 
 .my-info img {
