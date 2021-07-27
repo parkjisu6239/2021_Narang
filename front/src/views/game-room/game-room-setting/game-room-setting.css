@@ -1,18 +1,18 @@
 .setting-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr;
+  height: auto;
+  position: relative;
 }
 
 .game-btn {
+
   display: flex;
-  align-items: flex-start;
   justify-content: center;
-  grid-column: 1 / 3;
+}
+
+.game-btn > div {
+  height: 100%;
 }
 
 .setting-btn {
-  align-items: flex-start;
-  display: flex;
-  grid-column: 3 / 4;
+  display: inline-block;
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="setting-container">
     <div class="game-btn">
-      <el-button type="primary">gamestart</el-button>
+      <div>Game Start!</div>
       <el-button>마피아 게임</el-button>
       <el-button>콜마이네임</el-button>
     </div>

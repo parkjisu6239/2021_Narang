@@ -1,13 +1,18 @@
 .game-room-container {
-  height: 100%;
+  margin: 30px 40px;
+  height: calc(100% - 60px);
   display: grid;
-  grid-template-rows: (4, 1fr);
+  grid-template-rows: 5fr 1fr;
+  border-radius: 10px;
 }
 
-.game-room-section-container {
+.game-room-container * {
+  border-radius: 10px;
+}
+
+.game-cam-chat-container {
   display: grid;
-  grid-template-columns: (4, 25%);
-  grid-row-start: 1;
-  grid-row-end: 4;
-  height: 90%;
+  background-color: rgba(255, 255, 255, 0.7);
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="side-bar-container">
     <div class="img-wrapper">
-      <img class="profile-img" @click="clickProfile" :src="state.profileImageURL">
+      <img class="profile-img" @click="clickProfile" :src="require('@/assets/images/Neurang.png')" :style="{'background': state.backgroundColor[state.backgroundNum]}">
       <div class="side-bar-username">{{ state.username }}</div>
       <div class="side-bar-email">{{ state.email }}</div>
     </div>
@@ -26,7 +26,9 @@ export default {
     const state = reactive({
       username: computed(() => store.getters['root/username']),
       email: computed(() => store.getters['root/email']),
-      profileImageURL: computed(() => store.state.profileImageURL)
+      profileImageURL: computed(() => store.state.profileImageURL || ''),
+      backgroundColor: ['orange', 'red', 'green'],
+      backgroundNum: store.getters['root/email'].length % 3,
     })
 
     const clickProfile = () => {
