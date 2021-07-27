@@ -1,21 +1,33 @@
 <template>
   <div class="game-room-item">
-    <div class="header">
-      <div>제목</div>
-      <div>3 / 6</div>
+    <div :class="{header: true, canEnter: isActive}">
+      <div>{{ room.title }}</div>
+      <div>{{ room.userList ? room.userList.length : 0 }} / {{ room.maxPlayer }}</div>
     </div>
     <div class="content">
       <div class="thumbnail">
-        <img :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
+        <div v-if="room.isActive">
+          <img v-if="room.game === null" :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
+          <img v-if="room.game === 'Nafia'" :src="require('@/assets/images/game-thumbnail-mafia.png')" alt="">
+          <img v-if="room.game === 'callmy'" :src="require('@/assets/images/game-thumbnail-callmy.png')" alt="">
+        </div>
+        <div v-else>
+          <img v-if="room.game === null" :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
+          <img v-if="room.game === 'Nafia'" :src="require('@/assets/images/game-thumbnail-mafia-disable.png')" alt="">
+          <img v-if="room.game === 'callmy'" :src="require('@/assets/images/game-thumbnail-callmy-disable.png')" alt="">
+        </div>
       </div>
       <div class="status">
-        <div class="selected-game">Now selected None</div>
-        <div class="play-or-wait">Waiting</div>
+        <div class="selected-game">Now selected {{ room.game ? room.game : 'None' }}</div>
+        <div class="play-or-wait">
+          <div class="wait" v-if="room.isActive">Waiting</div>
+          <div class="play" v-else>Playing</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .game-room-item {
   background: rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
@@ -30,12 +42,16 @@
   display: flex;
   justify-content: space-between;
   padding: 5px 15px;
-  background: linear-gradient(180deg, #FF9F00 0%, #FAC04F 100%);
+  background: linear-gradient(180deg, #616161 0%, #808080 100%);
   border-radius: 12px;
   color: white;
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.canEnter {
+  background: linear-gradient(180deg, #FF9F00 0%, #FAC04F 100%);
 }
 
 .status {
@@ -60,7 +76,14 @@
 .play-or-wait {
   font-size: 40px;
   font-weight: 700;
+}
+
+.play-or-wait .wait {
   color: #FF9F00;
+}
+
+.play-or-wait .play {
+  color: #727272;
 }
 
 </style>
@@ -69,13 +92,8 @@ export default {
   name: 'Home',
 
   props: {
-    title: {
-      type: String,
-      default: '제목'
-    },
-    desc: {
-      type: String,
-      default: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    room: {
+      type: Object,
     }
   },
 

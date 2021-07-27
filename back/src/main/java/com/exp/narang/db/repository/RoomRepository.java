@@ -16,6 +16,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Room findByOwnerId(Long ownerId);
     Page<Room> findByTitleContains(String title, Pageable pageable);
     Page<Room> findByGameContains(String game, Pageable pageable);
-    Page<Room> findByIsActive(Boolean isActive, Pageable pageable);
+    Page<Room> findByIsActivate(Boolean isActivate, Pageable pageable);
     List<User> findUserListByRoomId(Long roomId);
 }

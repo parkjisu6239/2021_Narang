@@ -18,7 +18,7 @@
     </ul>
   </el-dialog>
 </template>
-<style>
+<style scoped>
   @import url('./profile-change-dialog.css');
 </style>
 <script>
@@ -60,9 +60,11 @@ export default {
           store.dispatch('root/requestReadMyInfo')
             .then(res => {
               const userInfo = {
+                email: res.data.email,
                 username: res.data.username,
                 profileImageURL: res.data.thumbnailUrl,
               }
+              console.log(userInfo, '프로필 변경')
               store.commit('root/setUserInfo', userInfo)
             })
             .catch(err => {

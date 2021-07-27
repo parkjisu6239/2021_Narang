@@ -25,6 +25,7 @@
 import { reactive, computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   name: 'createRoomDialog',
@@ -37,13 +38,14 @@ export default {
   },
 
   setup (props, { emit }) {
+    const store = useStore()
     const createRoomForm = ref(null)
 
     const state = reactive({
       form: {
         name: '',
         secret: false,
-        password: '',
+        password: null,
         num: 6
       },
       rules: {
@@ -52,9 +54,7 @@ export default {
           { message: 'You can enter up to 20 characters', trigger: 'change', max: 20 }
         ],
         password: [
-          { message: '최대 6자.', trigger: 'change', max: 6 },
-          { message: '최소 4자', trigger: 'change', min: 4 },
-          { message: '숫자만 가능합니다', trigger: 'change', pattern: /(?=.*\d{4,6})$/ }
+          { message: '4자리 숫자만 가능합니다', trigger: 'change', pattern: /^[0-9]{4,4}$/ }
         ],
       },
       dialogVisible: computed(() => props.open),
@@ -64,12 +64,20 @@ export default {
         createRoomForm.value.validate((valid) => {
           if (valid) {
             console.log('submit')
-            // action 보내기
-            //.then -> 방 생성 성공, 모달 닫고, push
-            // catch -> 방 생성 실패, ElMessage 에러, 모달 닫기
-          } else {
-            ElMessage.error('Validate error!');
-          }
+            store.dispatch('root/requestCreateGameRoom', { title: state.form.name, password: state.form.secret ? state.form.password : 0, maxPlayer: state.form.num})
+            .then(function (result) {
+              ElMessage({
+                message: '방생성 완료!',
+                type: 'success',
+              })
+              handleClose()
+            })
+            .catch(function (err) {
+              ElMessage.error('방생성 실패')
+            })
+            } else {
+              ElMessage.error('Validate error!');
+            }
         })
       }
 

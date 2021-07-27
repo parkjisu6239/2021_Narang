@@ -11,7 +11,7 @@
     <div>9</div>
   </div>
 </template>
-<style>
+<style scoped>
   @import url('game-room-webcam.css');
 </style>
 <script>
