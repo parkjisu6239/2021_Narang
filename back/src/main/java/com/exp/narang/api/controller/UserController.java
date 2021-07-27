@@ -44,17 +44,15 @@ public class UserController {
     })
 	public ResponseEntity<? extends BaseResponseBody> register(
 			@RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq registerInfo, HttpServletRequest req) {
+
 		String path = req.getContextPath();
-		System.out.println("@@@@@   :   "+System.getProperty("user.dir"));
-		System.out.println(path);
-		System.out.println(path + "/img/profileImage");
 		log.debug(registerInfo.getEmail());
 		log.debug(registerInfo.getUsername());
 		log.debug(registerInfo.getPassword());
 		//임의로 리턴된 User 인스턴스. 현재 코드는 회원 가입 성공 여부만 판단하기 때문에 굳이 Insert 된 유저 정보를 응답하지 않음.
 		User user = userService.createUser(registerInfo);
 		
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
 	
 	@GetMapping()
@@ -70,10 +68,13 @@ public class UserController {
 		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
 		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
 		 */
+		if(authentication == null) {
+			return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
+		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
-		return ResponseEntity.status(200).body(UserRes.of(200, "Success", user));
+		return ResponseEntity.status(200).body(UserRes.of(200, "성공", user));
 	}
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "Content-Type", defaultValue = "multipart/form-data", paramType = "header"),
@@ -89,23 +90,21 @@ public class UserController {
 	public ResponseEntity<? extends BaseResponseBody> updateUser(@ApiIgnore Authentication authentication,
 																 @RequestBody @ApiParam(value="회원 프로필 정보 수정", required = true) @ModelAttribute UserInfoUpdateReq updateInfo) {
 
-
-		try {
-			UserDetails userDetails = (UserDetails) authentication.getDetails();
-			String email = userDetails.getUsername();
-			User user = userService.getUserByEmail(email);
-			if(updateInfo.getNewPassword() != null) {
-				if(!passwordEncoder.matches(updateInfo.getCurrentPassword(), user.getPassword())) {
-					return ResponseEntity.status(401).body(BaseResponseBody.of(401, "Access Denied"));
-				}
-			}
-			userService.updateUser(updateInfo, user);
-		}catch(Exception e){
-			e.printStackTrace();
-			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "Access Denied"));
+		if(authentication == null) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 		}
 
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		UserDetails userDetails = (UserDetails) authentication.getDetails();
+		String email = userDetails.getUsername();
+		User user = userService.getUserByEmail(email);
+		if(updateInfo.getNewPassword() != null) {
+			if(!passwordEncoder.matches(updateInfo.getCurrentPassword(), user.getPassword())) {
+				return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
+			}
+		}
+		userService.updateUser(updateInfo, user);
+		
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
 
 	@GetMapping("/chkemail/{email}")
@@ -118,9 +117,9 @@ public class UserController {
 	})
 	public ResponseEntity<? extends BaseResponseBody> checkEmail(@PathVariable("email") @ApiParam(value="중복체크할 아이디", required = true) String email){
 		if(!userService.idExists(email)) {
-			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 		}
-		return ResponseEntity.status(404).body(BaseResponseBody.of(404, "이미 존재하는 사용자 ID 입니다."));
+		return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자 있음"));
 	}
 
 	@GetMapping("/chkusername/{username}")
@@ -133,9 +132,9 @@ public class UserController {
 	})
 	public ResponseEntity<? extends BaseResponseBody> checkUsername(@PathVariable("username") @ApiParam(value="중복체크할 이름", required = true) String username){
 		if(!userService.userNameExists(username)) {
-			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 		}
-		return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 이름입니다."));
+		return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자 있음"));
 	}
 
 	@DeleteMapping()
@@ -147,6 +146,9 @@ public class UserController {
 			@ApiResponse(code = 500, message = "서버 오류")
 	})
 	public ResponseEntity<? extends BaseResponseBody> userSecession(@ApiIgnore Authentication authentication){
+		if(authentication == null) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
+		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
@@ -154,7 +156,7 @@ public class UserController {
 		if (user != null){
 			userService.deleteById(user.getUserId());
 		}
-		else return ResponseEntity.status(404).body(BaseResponseBody.of(404, "User not exists"));
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		else return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자 없음"));
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
 }

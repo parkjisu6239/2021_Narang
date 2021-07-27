@@ -19,7 +19,6 @@ public class UserRes extends BaseResponseBody {
 	String username;
 	String thumbnailUrl;
 
-
 	public static UserRes of(Integer statusCode, String message, User user) {
 		UserRes res = new UserRes();
 		res.setStatusCode(statusCode);
