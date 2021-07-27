@@ -1,18 +1,68 @@
 .setting-container {
-  height: auto;
+  height: 100%;
   position: relative;
+  width: 100%;
 }
 
-.game-btn {
-
+.game-btns {
+  position: absolute;
+  left: 45%;
+  top: 10%;
+  transform: translate(-50%, -50%);
+  height: 70px;
   display: flex;
   justify-content: center;
 }
 
-.game-btn > div {
-  height: 100%;
+.game-start {
+  padding: 10px;
+  height: 50px;
+  font-size: 30px;
+  color: white;
+  background: linear-gradient(#e66465, #9198e5);
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+.game-select {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  height: 50px;
+  font-size: 30px;
+  color: white;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.game-img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0px 10px;
+}
+
+.setting-btns {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0%;
+  top: 10%;
+  background-color: rgba(255, 255, 255, 0.5);
+  transform: translate(0%, -50%);
+  height: 30px;
+  width: auto;
+  height: 50px;
+  padding: 10px;
 }
 
 .setting-btn {
   display: inline-block;
+  padding: 5px 10px;
+  margin: 0px 6px;
+  font-size: 30px;
+  background: rgba(255, 255, 255, 0.8);
+  border: solid 1px black;
+  cursor: pointer;
 }
+
+
