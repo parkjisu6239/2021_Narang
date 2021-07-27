@@ -117,7 +117,6 @@ export default {
             username: res.data.username,
             email: res.data.email
           }
-          console.log(state.form)
           store.commit('root/setUserInfo', userInfo)
         })
         .catch(err => {

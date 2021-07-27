@@ -1,3 +1,4 @@
 .chat-container {
   grid-column: 3 / 4;
+  background-color: white;
 }

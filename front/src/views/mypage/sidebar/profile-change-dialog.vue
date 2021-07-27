@@ -63,6 +63,7 @@ export default {
                 username: res.data.username,
                 profileImageURL: res.data.thumbnailUrl,
               }
+              console.log(userInfo, '프로필 변경')
               store.commit('root/setUserInfo', userInfo)
             })
             .catch(err => {

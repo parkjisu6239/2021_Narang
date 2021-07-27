@@ -4,12 +4,10 @@ export function setPlatform(state, isDesktop) {
 
 export function setAccessToken(state) {
   state.accessToken = localStorage.getItem('access_token')
-  console.log(state.accessToken)
 }
 
 export function setUserEmail(state) {
   state.email = localStorage.getItem('email')
-  console.log(state.userId)
 }
 
 export function deleteToken(state) {
