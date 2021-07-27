@@ -15,7 +15,8 @@ public interface RoomService {
     void deleteRoom(Room room, User user);
     List<Room> findAll();
     Page<Room> findAll(Pageable pageable);
-    List<Room> findByTitle(String title);
-    List<Room> findByGame(String game);
+    Page<Room> findByTitle(String title, Pageable pageable);
+    Page<Room> findByGame(String game, Pageable pageable);
+    Page<Room> findByIsActive(Boolean isActive, Pageable pageable);
     Room findById(Long roomId);
 }
