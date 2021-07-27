@@ -152,11 +152,27 @@ public class UserController {
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
-		// 해당 아이디를 가진 회원이 존재하면
-		if (user != null){
-			userService.deleteById(user.getUserId());
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
+	}
+
+
+	@DeleteMapping("/profile")
+	@ApiOperation(value = "프로필 삭제", notes = "프로필을 삭제한다")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "성공"),
+			@ApiResponse(code = 401, message = "인증 실패"),
+			@ApiResponse(code = 404, message = "사용자 없음"),
+			@ApiResponse(code = 500, message = "서버 오류")
+	})
+	public ResponseEntity<? extends BaseResponseBody> profileDelete(@ApiIgnore Authentication authentication){
+		if(authentication == null) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 		}
-		else return ResponseEntity.status(404).body(BaseResponseBody.of(404, "사용자 없음"));
+		UserDetails userDetails = (UserDetails)authentication.getDetails();
+		String email = userDetails.getUsername();
+		User user = userService.getUserByEmail(email);
+		userService.deleteProfile(user);
+
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
 }

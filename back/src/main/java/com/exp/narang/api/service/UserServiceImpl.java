@@ -63,14 +63,28 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void deleteProfile(User user) {
+		String upload_path = "D:/images/profile/";
+		try {
+			if (user.getThumbnailUrl() != null) {
+				File file = new File(upload_path + user.getUserId() + ".jpg");
+				file.delete();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		user.setThumbnailUrl(null);
+		userRepository.save(user);
+	}
+
+	@Override
 	public User updateUser(UserInfoUpdateReq updateInfo, User user) {
-//		String upload_path = System.getProperty("user.dir") + "/src/main/resources/images/profile/";
 		String upload_path = "D:/images/profile/";
 		//profileImage 설정
 		if(updateInfo.getFile() != null) {
 			try {
 				if (user.getThumbnailUrl() != null) {
-					File file = new File(user.getThumbnailUrl());
+					File file = new File(upload_path + user.getUserId() + ".jpg");
 					file.delete();
 				}
 				updateInfo.getFile().transferTo(new File(upload_path + user.getUserId() + ".jpg"));
