@@ -9,7 +9,6 @@ import com.exp.narang.common.model.response.BaseResponseBody;
 import com.exp.narang.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * 유저 관련 API 요청 처리를 위한 컨트롤러 정의.
@@ -46,7 +43,11 @@ public class UserController {
         @ApiResponse(code = 500, message = "서버 오류")
     })
 	public ResponseEntity<? extends BaseResponseBody> register(
-			@RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq registerInfo) {
+			@RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq registerInfo, HttpServletRequest req) {
+		String path = req.getContextPath();
+		System.out.println("@@@@@   :   "+System.getProperty("user.dir"));
+		System.out.println(path);
+		System.out.println(path + "/img/profileImage");
 		log.debug(registerInfo.getEmail());
 		log.debug(registerInfo.getUsername());
 		log.debug(registerInfo.getPassword());
@@ -72,18 +73,7 @@ public class UserController {
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
-
-		UserRes userRes = UserRes.of(user);
-		FileInputStream fis = null;
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		if(user.getThumbnailUrl() != null) {
-			InputStream imageStream = new FileInputStream(user.getThumbnailUrl());
-			byte[] imageByteArray = IOUtils.toByteArray(imageStream);
-			userRes.setFileArray(imageByteArray);
-			imageStream.close();
-		}
-
-		return ResponseEntity.status(200).body(UserRes.of(user));
+		return ResponseEntity.status(200).body(UserRes.of(200, "Success", user));
 	}
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "Content-Type", defaultValue = "multipart/form-data", paramType = "header"),
@@ -98,6 +88,8 @@ public class UserController {
 	})
 	public ResponseEntity<? extends BaseResponseBody> updateUser(@ApiIgnore Authentication authentication,
 																 @RequestBody @ApiParam(value="회원 프로필 정보 수정", required = true) @ModelAttribute UserInfoUpdateReq updateInfo) {
+
+
 		try {
 			UserDetails userDetails = (UserDetails) authentication.getDetails();
 			String email = userDetails.getUsername();
