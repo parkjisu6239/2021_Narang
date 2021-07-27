@@ -87,11 +87,7 @@ export function requestChangeMyPassword({ state }, payload) {
 export function requestReadGameRoomList({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   let url = '/room'
-  const params = {
-    isActive: null,
-    game: null,
-    title: null,
-  }
+  const params = payload
   return $axios.get(url, {
     headers: headers,
     params: params,

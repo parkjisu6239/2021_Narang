@@ -1,9 +1,9 @@
 <template>
   <div class="left-screen">
     <div class="my-info">
-      <img src="https://myanimals.co.kr/wp-content/uploads/2018/12/domestic-duck-species.jpg" alt="">
-      <div class="nickname">닉네임</div>
-      <div class="email">emai@exp.com</div>
+      <img :src="state.profileImageURL" alt="">
+      <div class="nickname">{{ state.username }}</div>
+      <div class="email">{{ state.email }}</div>
     </div>
     <ul class="infinite-list friend-list" v-infinite-scroll="load">
       <li v-for="i in state.count" class="infinite-list-item friend-list-item" :key="i" >
@@ -22,7 +22,8 @@
 <script>
 import Friend from './friend.vue'
 
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   name: "leftSide",
@@ -31,14 +32,27 @@ export default {
     Friend
   },
 
-    setup (props, { emit }) {
+  setup (props, { emit }) {
+    const store = useStore()
+
     const state = reactive({
       count: 12,
+      email: '',
+      username: '',
+      profileImageURL: '',
     })
 
     const load = function () {
       state.count += 4
     }
+
+    const setMyInfo = function () {
+      state.email = localStorage.getItem('email')
+      state.username = localStorage.getItem('username')
+      state.profileImageURL = `https://localhost:8080${localStorage.getItem('profileImageURL')}`
+    }
+
+    setMyInfo()
 
     return { state, load }
   }

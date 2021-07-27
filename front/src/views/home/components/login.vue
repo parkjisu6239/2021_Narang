@@ -48,6 +48,21 @@ export default {
             localStorage.setItem('access_token', result.data.accessToken) // 로컬스토리지에 토큰 저장
             localStorage.setItem('email', state.form.email) // 로컬스토리지에 아이디 저장
             store.commit('root/setAccessToken')
+
+            store.dispatch('root/requestReadMyInfo')
+            .then(res => {
+              const userInfo = {
+                email: res.data.email,
+                username: res.data.username,
+                profileImageURL: res.data.thumbnailUrl,
+              }
+              store.commit('root/setUserInfo', userInfo)
+              localStorage.setItem('username', res.data.username)
+              localStorage.setItem('profileImageURL', res.data.thumbnailUrl)
+            })
+            .catch(err => {
+              console.log(err)
+            })
           })
           .catch(function (err) {
             ElMessage.error(err)
