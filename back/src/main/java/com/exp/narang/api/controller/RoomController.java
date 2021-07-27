@@ -2,9 +2,11 @@ package com.exp.narang.api.controller;
 
 import com.exp.narang.api.request.RoomReadGetReq;
 import com.exp.narang.api.request.RoomRegisterPostReq;
+import com.exp.narang.api.request.SearchReq;
 import com.exp.narang.api.response.RoomListRes;
 import com.exp.narang.api.response.RoomRegisterPostRes;
 import com.exp.narang.api.response.RoomRes;
+import com.exp.narang.api.response.UserRes;
 import com.exp.narang.api.service.RoomService;
 import com.exp.narang.api.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
@@ -49,7 +51,7 @@ public class RoomController {
     })
     public ResponseEntity<? extends BaseResponseBody> register(@ApiIgnore Authentication authentication,
             @RequestBody @ApiParam(value="방 생성 정보", required = true) RoomRegisterPostReq roomReqInfo) {
-
+        if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
         UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser();//
 //        User user = userService.getUserByEmail("a@aa.aa");//임시
@@ -62,7 +64,9 @@ public class RoomController {
     }
 
     @GetMapping()
-    @ApiOperation(value = "방 전체 목록", notes = "방 전체 목록을 조회한다")
+    @ApiOperation(value = "방 목록 조회", notes = "방 목록을 조회한다. 전체 목록 조회시 파라미터 값 안 보내면 됨." + '\n' +
+            "현재 page 번호 page, 개수 size" +'\n' +
+            "first, last / true, false 로 처음 마지막 페이지 구분 가능")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 400, message = "인증 실패"),
@@ -70,34 +74,13 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
 
-    public ResponseEntity<? extends BaseResponseBody> readAll(@ApiIgnore Authentication authentication,
-                                                              @RequestParam(name = "title", required = false) String title,
-                                                              @RequestParam(name = "game", required = false) String game,
-                                                              @RequestParam(name = "isActive", required = false) Boolean isActive,
-                                                              @PageableDefault(value = 8) @SortDefault(sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Room> roomList;
-        if(title != null) {
-            System.out.println("제목제목제목");
-            roomList = roomService.findByTitle(title, pageable);
-        }
-        else if(game != null) {
-            System.out.println("게임게임게임");
-            roomList = roomService.findByGame(game, pageable);
-        }
-        else if(isActive != null) {
-            System.out.println("활동활동활동");
-            roomList = roomService.findByIsActive(isActive, pageable);
-        }
-        else{
-            System.out.println("전체전체전체");
-            roomList = roomService.findAll(pageable);
-        }
-
-//        Page<Room> roomList = roomService.findAll(pageable);
-//        Page<Room> roomList = roomService.findByTitle(title, pageable);
+    public ResponseEntity<? extends BaseResponseBody> read( @RequestParam(name = "title", required = false) String title,
+                                                            @RequestParam(name = "game", required = false) String game,
+                                                            @RequestParam(name = "isActivate", required = false) Boolean isActivate,
+                                                            @PageableDefault(sort = "createdTime") Pageable pageable) {
+        Page<Room> roomList = roomService.findBySearch(SearchReq.of(title, game, isActivate) ,pageable);
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
     }
-
     @PostMapping("/{roomId}")
     @ApiOperation(value = "방 입장", notes = "방에 입장한다.")
     @ApiResponses({
@@ -108,6 +91,7 @@ public class RoomController {
     })
 
     public ResponseEntity<? extends BaseResponseBody> readRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId, @RequestBody RoomReadGetReq roomReadGetReq) {
+        if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
         Room room = roomService.findById(Long.parseLong(roomId)); // 들어가려는 방 정보 가져옴
         int password = roomReadGetReq.getPassword();
         if(room.getPassword() == 0 || password == room.getPassword()){ // 비밀번호가 없거나 일치하면 성공
@@ -129,11 +113,13 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> deleteRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
+        if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
         UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
 //        roomService.deleteRoom(room, userService.getUserByEmail("f@ff.ff"));//임시
-//        roomService.deleteRoom(room, user);//
+        roomService.deleteRoom(room, user);//
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
+
 }

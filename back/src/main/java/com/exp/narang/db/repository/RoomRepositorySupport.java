@@ -1,39 +1,67 @@
 package com.exp.narang.db.repository;
 
+import com.exp.narang.api.request.SearchReq;
 import com.exp.narang.db.entity.QRoom;
 import com.exp.narang.db.entity.QUser;
+import com.exp.narang.db.entity.Room;
 import com.exp.narang.db.entity.User;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 유저 모델 관련 디비 쿼리 생성을 위한 구현 정의.
  */
 @Slf4j
 @Repository
-public class RoomRepositorySupport {
-    @Autowired
-    private JPAQueryFactory jpaQueryFactory;
+public class RoomRepositorySupport extends QuerydslRepositorySupport {
+    private final JPAQueryFactory jpaQueryFactory;
+    private final EntityManager entityManager;
     QUser qUser = QUser.user;
     QRoom qRoom = QRoom.room;
 
+    public RoomRepositorySupport(JPAQueryFactory jpaQueryFactory, EntityManager entityManager) {
+        super(Room.class);
+        this.jpaQueryFactory = jpaQueryFactory;
+        this.entityManager = entityManager;
+    }
+
+    public PageImpl<Room> findBySearch(SearchReq searchReq, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        System.out.println(searchReq.getGame());
+        if(searchReq.getGame() != null && searchReq.getGame() != "") {
+            builder.and(qRoom.game.eq(searchReq.getGame()));
+        }
+        if(searchReq.getIsActivate() != null) {
+            builder.and(qRoom.isActivate.eq(searchReq.getIsActivate()));
+        }
+        System.out.println(searchReq.getTitle());
+        if(searchReq.getTitle() != null && searchReq.getTitle() != "") {
+            builder.and(qRoom.title.contains(searchReq.getTitle()));
+        }
+
+        JPQLQuery<Room> query = jpaQueryFactory.select(qRoom).from(qRoom).where(builder);
+        System.out.println(query.toString());
+        long totalCount = query.fetchCount();
+        System.out.println("total Count " + totalCount);
+        System.out.println(pageable.toString());
+        System.out.println(getQuerydsl().applyPagination(pageable, query).toString());
+        List<Room> result = getQuerydsl().applyPagination(pageable, query).fetch();
+        return new PageImpl<>(result, pageable, totalCount);
+    }
+
     public List<User> findUserListByRoomId(Long roomId) {
         List<User> userList = jpaQueryFactory.select(qUser).from(qRoom).innerJoin(qRoom.userList, qUser).where(qRoom.roomId.eq(roomId)).fetch();
-//        List<User> userList = jpaQueryFactory.select(qUser).from(qRoom).join(qUser).on(qUser.room.roomId.eq(qRoom.roomId)).where(qRoom.roomId.eq(roomId)).fetch();
         return userList;
-
-//        JPQLQuery<User> query = jpaQueryFactory.from(qRoom).innerJoin(qUser)
-//                                                .select(qUser).where(qRoom.roomId.eq(roomId));
-//        return query.fetch();
-
-
-//        return jpaQueryFactory.select(qUser).from(qRoom)
-//                .where(qRoom.roomId.eq(roomId)).fetch();
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.exp.narang.api.service;
 
 import com.exp.narang.api.request.RoomRegisterPostReq;
+import com.exp.narang.api.request.SearchReq;
 import com.exp.narang.db.entity.Room;
 import com.exp.narang.db.entity.User;
 import com.exp.narang.db.repository.RoomRepository;
@@ -35,7 +36,7 @@ public class RoomServiceImpl implements RoomService {
                         .ownerId(userId)
                         .maxPlayer(roomRegisterPostReq.getMaxPlayer())
                         .password(roomRegisterPostReq.getPassword())
-                        .isActive(false) // IsActive(방 활동 중)의 default값이 false이므로
+                        .isActivate(true) // true이면 방 활성화(=입장 가능) 상태
                         .build()
         );
         return roomRepository.findByOwnerId(userId).getRoomId();
@@ -49,18 +50,22 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void deleteRoom(Room room, User user) {
-        user.setRoom(null);
+        user.setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
         userRepository.save(user);
-//        userRepository.findById(userId).get().setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
-        if(user.getUserId() == room.getOwnerId()){
+        if(user.getUserId() == room.getOwnerId()){ // 방 나가는 사람이 방장이라면 방 자체를 삭제
             System.out.println("방번호 : "+room.getRoomId());
             List<User> userList = roomRepositorySupport.findUserListByRoomId(room.getRoomId());
             for(User users : userList){
-                users.setRoom(null);
-//                userRepository.findById(user.getUserId()).get().setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
+                users.setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
+                userRepository.save(user);
             }
             roomRepository.deleteById(room.getRoomId());
         }
+    }
+
+    @Override
+    public Page<Room> findBySearch(SearchReq searchReq, Pageable pageable) {
+        return roomRepositorySupport.findBySearch(searchReq, pageable);
     }
 
     @Override
@@ -78,7 +83,7 @@ public class RoomServiceImpl implements RoomService {
     public Page<Room> findByGame(String game, Pageable pageable) { return roomRepository.findByGameContains(game, pageable); }
 
     @Override
-    public Page<Room> findByIsActive(Boolean isActive, Pageable pageable) { return roomRepository.findByIsActive(isActive, pageable); }
+    public Page<Room> findByIsActivate(Boolean isActivate, Pageable pageable) { return roomRepository.findByIsActivate(isActivate, pageable); }
 
     @Override
     public Room findById(Long roomId) {
