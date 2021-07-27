@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateUser(UserInfoUpdateReq updateInfo, User user) {
-		String upload_path = "D:/profileImages/";
+		String upload_path = "/img/profileImage/";
 		//profileImage 설정
 		if(updateInfo.getFile() != null) {
 			try {
