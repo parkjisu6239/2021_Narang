@@ -93,11 +93,15 @@ public class RoomController {
     public ResponseEntity<? extends BaseResponseBody> enterRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId, @RequestBody RoomEnterGetReq roomEnterGetReq) {
         if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
         Room room = roomService.findById(Long.parseLong(roomId)); // 들어가려는 방 정보 가져옴
+
+        int currentPlayer = roomService.findUserListByRoomId(Long.parseLong(roomId)).size(); // 들어가려는 방에 들어있는 인원 수
+        if(currentPlayer >= room.getMaxPlayer()) return ResponseEntity.status(401).body(RoomRes.of(401, "인원이 꽉 차서 방에 들어갈 수 없음", room));
+
         int password = roomEnterGetReq.getPassword();
         if(room.getPassword() == 0 || password == room.getPassword()){ // 비밀번호가 없거나 일치하면 성공
             UserDetails userDetails = (UserDetails)authentication.getDetails();
             User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
-//          User user = userService.getUserByEmail("f@ff.ff");//임시
+//          User user = userService.getUserByEmail("b@bb.bb");//임시
             roomService.enterRoom(room, user);
             return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
         }

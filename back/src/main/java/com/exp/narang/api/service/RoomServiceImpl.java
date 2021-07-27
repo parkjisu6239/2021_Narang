@@ -60,13 +60,18 @@ public class RoomServiceImpl implements RoomService {
         userRepository.save(user);
         if(user.getUserId() == room.getOwnerId()){ // 방 나가는 사람이 방장이라면 방 자체를 삭제
             System.out.println("방번호 : "+room.getRoomId());
-            List<User> userList = roomRepositorySupport.findUserListByRoomId(room.getRoomId());
+            List<User> userList = findUserListByRoomId(room.getRoomId());
             for(User users : userList){
                 users.setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
                 userRepository.save(user);
             }
             roomRepository.deleteById(room.getRoomId());
         }
+    }
+
+    @Override
+    public List<User> findUserListByRoomId(Long roomId) {
+        return roomRepositorySupport.findUserListByRoomId(roomId);
     }
 
     @Override
