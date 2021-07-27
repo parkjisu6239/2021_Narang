@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updateUser(UserInfoUpdateReq updateInfo, User user) {
-		String upload_path = "/img/profileImage/";
+		String upload_path = System.getProperty("user.dir") + "/src/main/resources/static/profileImages/";
 		//profileImage 설정
 		if(updateInfo.getFile() != null) {
 			try {
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 					file.delete();
 				}
 				updateInfo.getFile().transferTo(new File(upload_path + user.getUserId() + ".jpg"));
-				user.setThumbnailUrl(upload_path + user.getUserId() + ".jpg");
+				user.setThumbnailUrl("/static/profileImages/" + user.getUserId() + ".jpg");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
