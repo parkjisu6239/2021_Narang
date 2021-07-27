@@ -50,9 +50,9 @@ public class RoomController {
     public ResponseEntity<? extends BaseResponseBody> register(@ApiIgnore Authentication authentication,
             @RequestBody @ApiParam(value="방 생성 정보", required = true) RoomRegisterPostReq roomReqInfo) {
 
-//        UserDetails userDetails = (UserDetails)authentication.getDetails();//
-//        User user = userDetails.getUser();//
-        User user = userService.getUserByEmail("a@aa.aa");//임시
+        UserDetails userDetails = (UserDetails)authentication.getDetails();//
+        User user = userDetails.getUser();//
+//        User user = userService.getUserByEmail("a@aa.aa");//임시
         Long roomId = roomService.createRoom(roomReqInfo, user.getUserId());
         Room room = roomService.findById(roomId); // 들어가려는 방 정보
         System.out.println("유저 pk : "+user.getUserId() + "유저 이름 : "+user.getUsername());
@@ -111,42 +111,14 @@ public class RoomController {
         Room room = roomService.findById(Long.parseLong(roomId)); // 들어가려는 방 정보 가져옴
         int password = roomReadGetReq.getPassword();
         if(room.getPassword() == 0 || password == room.getPassword()){ // 비밀번호가 없거나 일치하면 성공
-//            UserDetails userDetails = (UserDetails)authentication.getDetails();
-//            User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
-          User user = userService.getUserByEmail("f@ff.ff");//임시
+            UserDetails userDetails = (UserDetails)authentication.getDetails();
+            User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
+//          User user = userService.getUserByEmail("f@ff.ff");//임시
             roomService.enterRoom(room, user);
             return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
         }
         return ResponseEntity.status(400).body(RoomRes.of(400, "인증 실패", room));
     }
-
-    /*
-    @GetMapping("/title/{title}")
-    @ApiOperation(value = "방 제목 검색", notes = "<strong>방 제목으로</strong>방 목록을 조회한다")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<? extends BaseResponseBody> readTitle(@ApiIgnore Authentication authentication, @PathVariable("title") String title) {
-        List<Room> roomList = roomService.findByTitle(title);
-        return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
-    }
-
-    @GetMapping("/game/{game}")
-    @ApiOperation(value = "방 게임 종류 검색", notes = "<strong>게임 이름으로</strong>방 목록을 조회한다 (mafia, callme)")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 400, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"),
-            @ApiResponse(code = 500, message = "서버 오류")
-    })
-    public ResponseEntity<? extends BaseResponseBody> readGame(@ApiIgnore Authentication authentication, @PathVariable("game") String game) {
-        List<Room> roomList = roomService.findByGame(game);
-        return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
-    }
-    */
 
     @DeleteMapping("/{roomId}")
     @ApiOperation(value = "방 나가기", notes = "방장이 나가면 방이 삭제된다.")
@@ -157,10 +129,10 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> deleteRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
-//        UserDetails userDetails = (UserDetails)authentication.getDetails();//
-//        User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
+        UserDetails userDetails = (UserDetails)authentication.getDetails();//
+        User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
-        roomService.deleteRoom(room, userService.getUserByEmail("f@ff.ff"));//임시
+//        roomService.deleteRoom(room, userService.getUserByEmail("f@ff.ff"));//임시
 //        roomService.deleteRoom(room, user);//
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
