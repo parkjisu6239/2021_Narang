@@ -2,8 +2,8 @@ package com.exp.narang.api.controller;
 
 import com.exp.narang.api.request.RoomEnterGetReq;
 import com.exp.narang.api.request.RoomRegisterPostReq;
-import com.exp.narang.api.request.RoomUpdatePatchReq;
 import com.exp.narang.api.request.RoomSearchGetReq;
+import com.exp.narang.api.request.RoomUpdatePatchReq;
 import com.exp.narang.api.response.RoomListRes;
 import com.exp.narang.api.response.RoomRegisterPostRes;
 import com.exp.narang.api.response.RoomRes;
@@ -16,15 +16,16 @@ import com.exp.narang.db.entity.Room;
 import com.exp.narang.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import org.springframework.data.domain.Pageable;
 
 @Api(value = "방 API", tags = {"Room"})
 @RestController
@@ -73,7 +74,11 @@ public class RoomController {
     public ResponseEntity<? extends BaseResponseBody> read( @RequestParam(name = "title", required = false) String title,
                                                             @RequestParam(name = "game", required = false) String game,
                                                             @RequestParam(name = "isActivate", required = false) Boolean isActivate,
-                                                            @PageableDefault(sort = "createdTime") Pageable pageable) {
+                                                            @PageableDefault
+                                                                    @SortDefault.SortDefaults({
+                                                                            @SortDefault(sort = "isActivate", direction = Sort.Direction.DESC),
+                                                                            @SortDefault(sort = "createdTime", direction = Sort.Direction.DESC)
+                                                                    }) Pageable pageable) {
         Page<Room> roomList = roomService.findBySearch(RoomSearchGetReq.of(title, game, isActivate) ,pageable);
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
     }
