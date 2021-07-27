@@ -92,15 +92,15 @@ public class SessionController {
 
     // 방 나갈 때 호출
     @PostMapping(value = "/leave-session")
-    @ApiOperation(value = "세션 ", notes = "화상 채팅을 위한 방을 생성한다.")
+    @ApiOperation(value = "세션에서 퇴장", notes = "화상 채팅 방에서 나간다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 404, message = "잘못된 요청"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> removeUser(@ApiIgnore Authentication authentication,
-            @RequestParam(name = "session-name") String sessionName,
-            @RequestParam(name = "token") String token) throws Exception {
+            @RequestParam(name = "방 제목") String title,
+            @RequestParam(name = "사용자별로 발급된 토큰") String token) throws Exception {
         // 토큰 없이 요청하면 인증 실패
         if(authentication == null)
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
@@ -109,14 +109,14 @@ public class SessionController {
 //        User user = userDetails.getUser();
 
         // 세션(방)이 있고 세션 이름에 해당하는 mapSessionNamesTokens 객체가 있음
-        if (this.mapSessions.get(sessionName) != null && this.mapSessionTitlesTokens.get(sessionName) != null) {
+        if (this.mapSessions.get(title) != null && this.mapSessionTitlesTokens.get(title) != null) {
 
             // 사용자 토큰 있음
-            if (this.mapSessionTitlesTokens.get(sessionName).remove(token) != null) {
+            if (this.mapSessionTitlesTokens.get(title).remove(token) != null) {
                 // 세션 이름에 해당하는 mapSessionNamesTokens 객체가 비었음 = 세션에 사용자 없음
-                if (this.mapSessionTitlesTokens.get(sessionName).isEmpty()) {
+                if (this.mapSessionTitlesTokens.get(title).isEmpty()) {
                     // 세션 삭제
-                    this.mapSessions.remove(sessionName);
+                    this.mapSessions.remove(title);
                 }
                 return ResponseEntity.status(200).body(SessionTokenResponseBody.of(200, "성공", token));
             } else {
