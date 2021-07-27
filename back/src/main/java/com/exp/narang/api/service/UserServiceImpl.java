@@ -72,8 +72,8 @@ public class UserServiceImpl implements UserService {
 					File file = new File(user.getThumbnailUrl());
 					file.delete();
 				}
-				updateInfo.getFile().transferTo(new File(upload_path + user.getUserId()));
-				user.setThumbnailUrl(upload_path + user.getUserId());
+				updateInfo.getFile().transferTo(new File(upload_path + user.getUserId() + ".jpg"));
+				user.setThumbnailUrl(upload_path + user.getUserId() + ".jpg");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
