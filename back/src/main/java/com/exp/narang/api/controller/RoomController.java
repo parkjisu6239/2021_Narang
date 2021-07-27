@@ -50,13 +50,13 @@ public class RoomController {
     public ResponseEntity<? extends BaseResponseBody> register(@ApiIgnore Authentication authentication,
             @RequestBody @ApiParam(value="방 생성 정보", required = true) RoomRegisterPostReq roomReqInfo) {
 
-        UserDetails userDetails = (UserDetails)authentication.getDetails();//
-        User user = userDetails.getUser();//
-//        User user = userService.getUserByEmail("a@aa.aa");//임시
+//        UserDetails userDetails = (UserDetails)authentication.getDetails();//
+//        User user = userDetails.getUser();//
+        User user = userService.getUserByEmail("a@aa.aa");//임시
         Long roomId = roomService.createRoom(roomReqInfo, user.getUserId());
         Room room = roomService.findById(roomId); // 들어가려는 방 정보
-        //System.out.println("유저 pk : "+user.getUserId() + "유저 이름 : "+user.getUsername());
-        //System.out.println("방제목 : "+room.getTitle());
+        System.out.println("유저 pk : "+user.getUserId() + "유저 이름 : "+user.getUsername());
+        System.out.println("방제목 : "+room.getTitle());
         roomService.enterRoom(room, user);
         return ResponseEntity.status(200).body(RoomRegisterPostRes.of(200, "Success", roomId));
     }
@@ -75,7 +75,26 @@ public class RoomController {
                                                               @RequestParam(name = "game", required = false) String game,
                                                               @RequestParam(name = "isActive", required = false) Boolean isActive,
                                                               @PageableDefault(value = 8) @SortDefault(sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Room> roomList = roomService.findAll(pageable);
+        Page<Room> roomList;
+        if(title != null) {
+            System.out.println("제목제목제목");
+            roomList = roomService.findByTitle(title, pageable);
+        }
+        else if(game != null) {
+            System.out.println("게임게임게임");
+            roomList = roomService.findByGame(game, pageable);
+        }
+        else if(isActive != null) {
+            System.out.println("활동활동활동");
+            roomList = roomService.findByIsActive(isActive, pageable);
+        }
+        else{
+            System.out.println("전체전체전체");
+            roomList = roomService.findAll(pageable);
+        }
+
+//        Page<Room> roomList = roomService.findAll(pageable);
+//        Page<Room> roomList = roomService.findByTitle(title, pageable);
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
     }
 
@@ -92,9 +111,9 @@ public class RoomController {
         Room room = roomService.findById(Long.parseLong(roomId)); // 들어가려는 방 정보 가져옴
         int password = roomReadGetReq.getPassword();
         if(room.getPassword() == 0 || password == room.getPassword()){ // 비밀번호가 없거나 일치하면 성공
-            UserDetails userDetails = (UserDetails)authentication.getDetails();
-            User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
-//          User user = userService.getUserByEmail("f@ff.ff");//임시
+//            UserDetails userDetails = (UserDetails)authentication.getDetails();
+//            User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
+          User user = userService.getUserByEmail("f@ff.ff");//임시
             roomService.enterRoom(room, user);
             return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
         }
@@ -138,12 +157,11 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> deleteRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
-        UserDetails userDetails = (UserDetails)authentication.getDetails();//
-        User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
+//        UserDetails userDetails = (UserDetails)authentication.getDetails();//
+//        User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
-        //System.out.println("사용자 정보" + userService.getUserByEmail("a@aa.aa"));
-//        roomService.deleteRoom(room, userService.getUserByEmail("a@aa.aa"));//임시
-        roomService.deleteRoom(room, user);
+        roomService.deleteRoom(room, userService.getUserByEmail("f@ff.ff"));//임시
+//        roomService.deleteRoom(room, user);//
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 }

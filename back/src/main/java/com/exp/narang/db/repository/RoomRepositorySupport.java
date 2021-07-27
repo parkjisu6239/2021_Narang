@@ -25,6 +25,7 @@ public class RoomRepositorySupport {
 
     public List<User> findUserListByRoomId(Long roomId) {
         List<User> userList = jpaQueryFactory.select(qUser).from(qRoom).innerJoin(qRoom.userList, qUser).where(qRoom.roomId.eq(roomId)).fetch();
+//        List<User> userList = jpaQueryFactory.select(qUser).from(qRoom).join(qUser).on(qUser.room.roomId.eq(qRoom.roomId)).where(qRoom.roomId.eq(roomId)).fetch();
         return userList;
 
 //        JPQLQuery<User> query = jpaQueryFactory.from(qRoom).innerJoin(qUser)
