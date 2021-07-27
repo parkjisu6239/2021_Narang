@@ -19,8 +19,8 @@
       </div>
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
-      <li v-for="i in state.count" @click="clickConference(i)" class="infinite-list-item" :key="i" >
-        <room />
+      <li v-for="room in state.gameRoomList" @click="clickConference(i)" class="infinite-list-item" :key="room.roomId" >
+        <room :room='room'/>
       </li>
     </ul>
   </div>
@@ -104,6 +104,7 @@ import Room from './room'
 
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   name: "rightSide",
@@ -113,9 +114,11 @@ export default {
   },
 
   setup (props, { emit }) {
+    const store = useStore()
     const router = useRouter()
 
     const state = reactive({
+      gameRoomList: [],
       count: 12,
     })
 
@@ -135,6 +138,19 @@ export default {
     const clickCreateRoom = function() {
       emit('openCreateRoomDialog')
     }
+
+    const readGameRoomList = function() {
+      store.dispatch('root/requestReadGameRoomList')
+      .then(function (result) {
+        console.log(result.data.roomList.content)
+        state.gameRoomList = result.data.roomList.content
+      })
+      .catch(function (err) {
+        console.log(err)
+      })
+    }
+
+    readGameRoomList()
 
     return { state, load, clickConference, clickCreateRoom }
   }
