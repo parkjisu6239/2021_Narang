@@ -65,6 +65,12 @@ export function requestDeleteMyInfo({ state }) {
   return $axios.delete(url, {headers: headers})
 }
 
+// 유저 프로필 삭제
+export function requestDeleteMyProfile({ state }) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
+  const url = '/user/profile'
+  return $axios.delete(url, { headers: headers })
+}
 
 // 유저 비밀번호 업데이트
 export function requestChangeMyPassword({ state }, payload) {
@@ -81,10 +87,15 @@ export function requestChangeMyPassword({ state }, payload) {
 export function requestReadGameRoomList({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   let url = '/room'
-  for (let key in payload) {
-    url += `?${key}=${payload[key]}`
+  const params = {
+    isActive: null,
+    game: null,
+    title: null,
   }
-  return $axios.get(url, {headers: headers})
+  return $axios.get(url, {
+    headers: headers,
+    params: params,
+  })
 }
 
 // 게임룸 생성
@@ -92,7 +103,7 @@ export function requestCreateGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   const url = '/room'
   const body = payload
-  return $axios.post(url, body, {headers: headers})
+  return $axios.post(url, body, { headers: headers })
 }
 
 // 게임룸 입장

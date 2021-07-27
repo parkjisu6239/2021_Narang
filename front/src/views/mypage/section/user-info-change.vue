@@ -113,6 +113,8 @@ export default {
             profileImageURL: res.data.thumbnailUrl,
             email: res.data.email,
           }
+
+          console.log(res.data)
           state.form = {
             username: res.data.username,
             email: res.data.email
