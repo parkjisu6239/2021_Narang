@@ -1,9 +1,9 @@
 package com.exp.narang.api.response;
 
+import com.exp.narang.common.model.response.BaseResponseBody;
 import com.exp.narang.db.entity.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,19 +12,20 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
 @ApiModel("UserResponse")
-public class UserRes{
+public class UserRes extends BaseResponseBody {
 	@ApiModelProperty(name="User ID")
 	String email;
 	String username;
 	String thumbnailUrl;
-	byte[] fileArray;
 
-	public static UserRes of(User user) {
-		return UserRes.builder()
-				.email(user.getEmail())
-				.username(user.getUsername())
-				.thumbnailUrl(user.getThumbnailUrl()).build();
+	public static UserRes of(Integer statusCode, String message, User user) {
+		UserRes res = new UserRes();
+		res.setStatusCode(statusCode);
+		res.setMessage(message);
+		res.setEmail(user.getEmail());
+		res.setUsername(user.getUsername());
+		res.setThumbnailUrl(user.getThumbnailUrl());
+		return res;
 	}
 }

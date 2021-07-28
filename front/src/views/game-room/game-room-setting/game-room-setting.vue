@@ -1,18 +1,24 @@
 <template>
   <div class="setting-container">
-    <div class="game-btn">
-      <el-button type="primary">gamestart</el-button>
-      <el-button>마피아 게임</el-button>
-      <el-button>콜마이네임</el-button>
+
+    <div class="game-btns">
+      <div class="game-start" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
+      <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+        <img :src="require('@/assets/images/game-thumbnail-mafia.png')" class="game-img" alt="">
+        <img :src="require('@/assets/images/game-thumbnail-callmy.png')" class="game-img" alt="">
+      </div>
     </div>
-    <div class="setting-btn">
-      <el-button>소리끄기</el-button>
-      <el-button>화면끄기</el-button>
-      <el-button @click="openDialog">방 정보 수정</el-button>
+
+    <div class="setting-btns">
+      <div class="setting-btn"><i class="el-icon-microphone"></i></div>
+      <div class="setting-btn"><i class="el-icon-video-camera"></i></div>
+      <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
+      <div class="setting-btn"><i class="el-icon-close"></i></div>
     </div>
+
   </div>
 </template>
-<style>
+<style scoped>
   @import url('./game-room-setting.css');
 </style>
 <script>

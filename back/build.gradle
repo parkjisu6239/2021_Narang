@@ -154,6 +154,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    // OpenVidu Java Client
+    // https://mvnrepository.com/artifact/io.openvidu/openvidu-java-client
+    implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.18.0'
 }
 
 test {

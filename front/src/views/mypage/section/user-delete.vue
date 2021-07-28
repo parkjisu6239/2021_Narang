@@ -27,7 +27,7 @@
 
     </el-form>
 </template>
-<style>
+<style scoped>
   @import url('./user-delete.css');
 </style>
 <script>

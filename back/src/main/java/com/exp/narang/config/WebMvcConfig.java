@@ -40,8 +40,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     		registry.addResourceHandler("/webjars/**")
     				.addResourceLocations("classpath:/META-INF/resources/webjars/");
-    		
-    		/*
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:///D:/images/");
+
+
+        /*
     		 * 
     		 * Front-end에서 참조하는 URL을 /dist로 매핑
     		 * 

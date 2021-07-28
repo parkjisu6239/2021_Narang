@@ -33,7 +33,7 @@
 
   </el-form>
 </template>
-<style>
+<style scoped>
   @import url('./user-info-change.css');
 </style>
 <script>
@@ -113,11 +113,12 @@ export default {
             profileImageURL: res.data.thumbnailUrl,
             email: res.data.email,
           }
+
+          console.log(res.data)
           state.form = {
             username: res.data.username,
             email: res.data.email
           }
-          console.log(state.form)
           store.commit('root/setUserInfo', userInfo)
         })
         .catch(err => {

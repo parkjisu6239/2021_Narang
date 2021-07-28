@@ -7,12 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ApiModel("RoomRegisterPostRequest")
-public class RoomRegisterPostReq {
+@ApiModel("RoomUpdatePatchRequest")
+public class RoomUpdatePatchReq {
     @ApiModelProperty(name="방 제목", example="5팀 모두 모여")
     String title;
+    @ApiModelProperty(name="게임 종류", example="mafia")
+    String game;
     @ApiModelProperty(name="방 최대 인원", example="5")
     int maxPlayer;
-    @ApiModelProperty(name="방 비밀번호 (숫자 4자리)", example="1234")
-    int password;
 }
