@@ -1,27 +1,36 @@
 <template>
-  <el-dialog
-    title="방 설정"
-    v-model="state.dialogVisible"
-    @close="handleClose">
-    <span style="margin-right: 10px;">제목</span>
-    <el-input placeholder="변경할 제목" v-model="state.roomTitle"></el-input>
+  <el-dialog title="방 수정하기" v-model="state.dialogVisible" @close="handleClose">
+    <el-form ref="updateRoomForm" :model="state.form" :rules="state.rules" label-width="120px">
 
-    <span style="margin-right: 10px;">최대인원</span>
-    <el-select v-model="state.value" filterable placeholder="Select">
-      <el-option
-        v-for="item in state.options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
+      <el-form-item prop="roomTitle" label="방 이름">
+        <el-input v-model="state.form.roomTitle"></el-input>
+      </el-form-item>
 
+      <el-form-item prop="secret" label="비밀방 여부">
+        <el-switch v-model="state.form.secret"></el-switch>
+      </el-form-item>
+
+      <el-form-item prop="password" label="비밀번호">
+        <el-input v-model="state.form.password" type="password" :disabled="!state.form.secret"></el-input>
+      </el-form-item>
+
+      <el-form-item prop="maxNum" label="최대인원">
+        <el-input-number v-model="state.form.maxNum" :min="1" :max="9"></el-input-number>
+      </el-form-item>
+
+      <el-form-item>
+        <el-button type="primary" @click="updateRoomSetting">설정 완료</el-button>
+        <el-button @click="handleClose">취소</el-button>
+      </el-form-item>
+
+    </el-form>
   </el-dialog>
 </template>
 
 <script>
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+import { ref } from 'vue'
 export default {
   name: 'GameRoomInfoChangeDialog',
   props: {
@@ -31,26 +40,35 @@ export default {
     }
   },
   setup(props, { emit }) {
+    const updateRoomForm = ref(null)
     const state = reactive({
       dialogVisible: computed(() => props.open),
-      value: '',
-      roomTitle: '',
-      options: [
-        {value: 4, label: '4명'},
-        {value: 5, label: '5명'},
-        {value: 6, label: '6명'},
-        {value: 7, label: '7명'},
-        {value: 8, label: '8명'},
-        {value: 9, label: '9명'},
-      ]
-
+      form: {
+        roomTitle: '',
+        secret: false,
+        password: '',
+        maxNum: 0,
+      },
+      rules: {
+        roomTitle: [
+          { required: true, message: 'Please Input the room title', trigger: 'blur' },
+          { message: 'You can enter up to 20 characters', trigger: 'change', max: 20 }
+        ],
+        password: [
+          { message: '4자리 숫자만 가능합니다', trigger: 'change', pattern: /^[0-9]{4,4}$/ }
+        ],
+      },
     })
 
     const handleClose = () => {
       emit('closeDialog')
     }
 
-    return { state, handleClose }
+    const updateRoomSetting = () => {
+
+    }
+
+    return { state, handleClose, updateRoomSetting, updateRoomForm }
   }
 }
 </script>

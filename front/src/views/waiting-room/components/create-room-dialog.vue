@@ -65,8 +65,15 @@ export default {
         createRoomForm.value.validate((valid) => {
           if (valid) {
             const password = state.form.secret ? state.form.password : 0
-            store.dispatch('root/requestCreateGameRoom', { title: state.form.name, password: password, maxPlayer: state.form.num})
+            const payload = {
+              title: state.form.name,
+              password: password,
+              maxPlayer: state.form.num
+            }
+
+            store.dispatch('root/requestCreateGameRoom', payload)
             .then(function (result) {
+              store.commit('root/setRoomInfo', result.data.room)
               ElMessage({
                 message: '방생성 완료!',
                 type: 'success',
@@ -85,8 +92,6 @@ export default {
               .catch(function (err) {
                 ElMessage.error(err.response.data.message)
               })
-
-
             })
             .catch(function (err) {
               ElMessage.error('방생성 실패')

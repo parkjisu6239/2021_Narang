@@ -26,8 +26,8 @@ export default {
       type: Boolean,
       default: false
     },
-    roomId: {
-      type: Number
+    room: {
+      type: Object
     }
   },
 
@@ -49,17 +49,18 @@ export default {
     })
 
     const clickEnterRoom = function() {
+        console.log(props.room)
         enterSecretRoomForm.value.validate((valid) => {
           if (valid) {
-            console.log('submit')
-            store.dispatch('root/requestEnterGameRoom', { roomId: props.roomId, password: state.form.password })
+            store.dispatch('root/requestEnterGameRoom', { roomId: props.room.roomId, password: state.form.password })
             .then(function (result) {
               console.log(result, '성공함')
+              store.commit('root/setRoomInfo', props.room)
               handleClose()
               router.push({
                 name: 'gameRoom',
                 params: {
-                  roomId: props.roomId
+                  roomId: props.room.roomId
                 }
               })
             })

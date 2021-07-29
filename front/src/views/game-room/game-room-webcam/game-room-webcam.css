@@ -1,14 +1,17 @@
 .webcam-container {
+  padding-top: 5px;
+  padding-left: 5px;
   grid-column-start: 1;
-  grid-column-end: 3;
+  grid-column-end: 2;
   display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(33%, auto));
-	grid-template-rows: repeat(auto-fill, minmax(33%, auto));
+	grid-template-columns: repeat(3, 33%);
+	grid-template-rows: repeat(3, 33%);
+  min-width: 700px;
 }
 
 .webcam-container > div {
   margin: auto auto;
   width: 95%;
   height: 95%;
-  background-color: slategray;
+  background-color:white;
 }

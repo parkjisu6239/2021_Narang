@@ -10,7 +10,7 @@
     @closeCreateRoomDialog="onCloseCreateRoomDialog"/>
   <enter-secret-room-dialog
     :open="state.enterSecretRoomDialogOpen"
-    :roomId="state.roomId"
+    :room="state.room"
     @closeEnterSecretRoomDialog="onCloseEnterSecretRoomDialog"/>
 </template>
 <style>
@@ -43,7 +43,7 @@ export default {
     const state = reactive({
       createRoomDialogOpen: false,
       enterSecretRoomDialogOpen: false,
-      roomId: null
+      room: null
     })
 
     const onOpenCreateRoomDialog = function() {
@@ -54,9 +54,9 @@ export default {
       state.createRoomDialogOpen = false
     }
 
-    const onOpenEnterSecretRoomDialog = function(roomId) {
+    const onOpenEnterSecretRoomDialog = function(room) {
       state.enterSecretRoomDialogOpen = true
-      state.roomId = roomId
+      state.room = room
     }
 
     const onCloseEnterSecretRoomDialog = function() {

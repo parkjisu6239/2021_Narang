@@ -1,4 +1,57 @@
 .chat-container {
-  grid-column: 3 / 4;
-  background-color: white;
+  height: 100%;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  background: rgba(255, 255, 255, 0.6);
+  min-width: 200px;
+  width: auto;
+  position: relative;
+}
+
+.close-chat {
+  position: absolute;
+  top: 1%;
+  right: 3%;
+  cursor: pointer;
+}
+
+.chat-area {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 35px;
+  padding: 10px;
+  height: calc(100% - 125px)
+}
+
+.chat-header {
+  padding: 5px 10px;
+  font-size: 10px;
+  color: white;
+  position: absolute;
+  top: 1%;
+  left: 3%;
+  background: linear-gradient(blueviolet, cornflowerblue);
+}
+
+.chat-input-button {
+  display: flex;
+  height: 50px;
+  padding: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-input {
+  padding-left: 5px;
+  outline: none;
+  margin-right: 10px;
+  width: 75%;
+  height: 75%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-send-button {
+  margin-left: 10px;
+  margin-top: 2px;
+  font-size: 25px;
+  padding: 0px 5px;
+  cursor: pointer;
 }

@@ -1,5 +1,6 @@
 <template>
   <div class="main-wrapper">
+    <Navbar/>
     <router-view></router-view>
   </div>
 </template>
@@ -8,11 +9,13 @@
   @import './main.css';
   @import '../../common/css/common.css';
   @import '../../common/css/element-plus.css';
-
 </style>
 <script>
-
+import Navbar from './navbar.vue'
 export default {
-  name: 'Main'
+  name: 'Main',
+  components: {
+    Navbar,
+  }
 }
 </script>

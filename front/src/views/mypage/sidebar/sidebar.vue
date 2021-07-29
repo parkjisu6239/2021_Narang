@@ -2,15 +2,16 @@
   <div class="side-bar-container">
     <div class="img-wrapper">
       <img
+        v-if="state.profileImageURL"
         class="profile-img"
         @click="clickProfile"
         :src="state.profileImageURL">
-      <!-- <img
+      <img
         v-else
         class="profile-img"
         @click="clickProfile"
         :src="require('@/assets/images/Neurang.png')"
-        :style="{'background': state.backgroundColor[state.backgroundNum]}"> -->
+        :style="{'background': state.backgroundColor[state.backgroundNum]}">
       <div class="side-bar-username">{{ state.username }}</div>
       <div class="side-bar-email">{{ state.email }}</div>
     </div>
@@ -47,5 +48,3 @@ export default {
   }
 }
 </script>
-
-
