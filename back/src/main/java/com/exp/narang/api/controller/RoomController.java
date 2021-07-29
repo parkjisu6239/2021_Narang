@@ -4,10 +4,7 @@ import com.exp.narang.api.request.RoomEnterGetReq;
 import com.exp.narang.api.request.RoomRegisterPostReq;
 import com.exp.narang.api.request.RoomSearchGetReq;
 import com.exp.narang.api.request.RoomUpdatePatchReq;
-import com.exp.narang.api.response.RoomListRes;
-import com.exp.narang.api.response.RoomRegisterPostRes;
-import com.exp.narang.api.response.RoomRes;
-import com.exp.narang.api.response.UserRes;
+import com.exp.narang.api.response.*;
 import com.exp.narang.api.service.RoomService;
 import com.exp.narang.api.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
@@ -26,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @Api(value = "방 API", tags = {"Room"})
 @RestController
@@ -159,4 +158,17 @@ public class RoomController {
         return ResponseEntity.status(200).body(RoomRes.of(200, "성공", room));
     }
 
+    @GetMapping("/userlist/{roomId}")
+    @ApiOperation(value = "현재 방 참여 유저 정보", notes = "현재 방에 들어가있는 유저들 정보 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends RoomJoinUserListRes> readRoomUserList(@ApiIgnore Authentication authentication, @PathVariable Long roomId) {
+        if(authentication == null) return ResponseEntity.status(401).body(RoomJoinUserListRes.of(401, "인증 실패", null));
+        List<User> userList  = roomService.findUserListByRoomId((roomId)); // 들어가려는 방 정보 가져옴
+        return ResponseEntity.status(200).body(RoomJoinUserListRes.of(200, "성공", userList));
+    }
 }
