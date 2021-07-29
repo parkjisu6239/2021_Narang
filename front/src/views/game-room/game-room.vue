@@ -57,7 +57,7 @@ export default {
     const requestUserInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          store.commit('root/setUserInfo', res.data)
+          store.commit('root/setUserInfo', res.data.user)
         })
     }
 

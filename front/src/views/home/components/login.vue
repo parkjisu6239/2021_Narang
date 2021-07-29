@@ -52,13 +52,13 @@ export default {
             store.dispatch('root/requestReadMyInfo')
             .then(res => {
               const userInfo = {
-                email: res.data.email,
-                username: res.data.username,
-                profileImageURL: res.data.thumbnailUrl,
+                email: res.data.user.email,
+                username: res.data.user.username,
+                profileImageURL: res.data.user.thumbnailUrl,
               }
               store.commit('root/setUserInfo', userInfo)
-              localStorage.setItem('username', res.data.username)
-              localStorage.setItem('profileImageURL', res.data.thumbnailUrl)
+              localStorage.setItem('username', res.data.user.username)
+              localStorage.setItem('profileImageURL', res.data.user.thumbnailUrl)
             })
             .catch(err => {
               console.log(err)
