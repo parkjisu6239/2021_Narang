@@ -4,18 +4,12 @@
     <el-form-item prop="name" label="방 이름">
       <el-input v-model="state.form.name"></el-input>
     </el-form-item>
-    <el-row>
-      <el-col :span="9">
-        <el-form-item prop="secret" label="비밀방 여부">
-          <el-switch v-model="state.form.secret"></el-switch>
-        </el-form-item>
-      </el-col>
-      <el-col :span="15">
-        <el-form-item prop="password" label="비밀번호">
-          <el-input v-model="state.form.password" :disabled="!state.form.secret"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item prop="secret" label="비밀방 여부">
+      <el-switch v-model="state.form.secret"></el-switch>
+    </el-form-item>
+    <el-form-item prop="password" label="비밀번호">
+      <el-input v-model="state.form.password" :disabled="!state.form.secret"></el-input>
+    </el-form-item>
     <el-form-item prop="num" label="최대인원">
       <el-input-number v-model="state.form.num" :min="1" :max="9"></el-input-number>
     </el-form-item>
@@ -31,6 +25,7 @@
 import { reactive, computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   name: 'createRoomDialog',
@@ -43,13 +38,14 @@ export default {
   },
 
   setup (props, { emit }) {
+    const store = useStore()
     const createRoomForm = ref(null)
 
     const state = reactive({
       form: {
         name: '',
         secret: false,
-        password: '',
+        password: null,
         num: 6
       },
       rules: {
@@ -58,9 +54,7 @@ export default {
           { message: 'You can enter up to 20 characters', trigger: 'change', max: 20 }
         ],
         password: [
-          { message: '최대 6자.', trigger: 'change', max: 6 },
-          { message: '최소 4자', trigger: 'change', min: 4 },
-          { message: '숫자만 가능합니다', trigger: 'change', pattern: /(?=.*\d{4,6})$/ }
+          { message: '4자리 숫자만 가능합니다', trigger: 'change', pattern: /^[0-9]{4,4}$/ }
         ],
       },
       dialogVisible: computed(() => props.open),
@@ -70,12 +64,20 @@ export default {
         createRoomForm.value.validate((valid) => {
           if (valid) {
             console.log('submit')
-            // action 보내기
-            //.then -> 방 생성 성공, 모달 닫고, push
-            // catch -> 방 생성 실패, ElMessage 에러, 모달 닫기
-          } else {
-            ElMessage.error('Validate error!');
-          }
+            store.dispatch('root/requestCreateGameRoom', { title: state.form.name, password: state.form.secret ? state.form.password : 0, maxPlayer: state.form.num})
+            .then(function (result) {
+              ElMessage({
+                message: '방생성 완료!',
+                type: 'success',
+              })
+              handleClose()
+            })
+            .catch(function (err) {
+              ElMessage.error('방생성 실패')
+            })
+            } else {
+              ElMessage.error('Validate error!');
+            }
         })
       }
 
@@ -89,5 +91,16 @@ export default {
 </script>
 
 <style>
+.el-dialog {
+  min-width: 400px;
+  max-width: 400px;
+}
 
+.el-dialog__body {
+  padding: 50px 70px 20px 20px;
+}
+
+.setting-secret .el-input__inner{
+  max-width: 200px;
+}
 </style>

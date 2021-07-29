@@ -1,8 +1,11 @@
 package com.exp.narang.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -27,22 +30,27 @@ public class Room {
     String thumbnailUrl;
     String title;
     String game;
-    Boolean isActive;
+    @ColumnDefault("True")
+    Boolean isActivate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     @CreationTimestamp
-    @Column(name="created_time")
-    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime createdTime;
+//    @Column(name="created_time")
+//    private LocalDateTime createdTime = LocalDateTime.now();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "room")
     List<User> userList = new ArrayList<>();
 
     @Builder
-    private Room(String title, Long ownerId, int maxPlayer, int password) {
+    private Room(String title, String game, Long ownerId, int maxPlayer, int password, Boolean isActivate) {
         this.title = title;
+        this.game = game;
         this.ownerId = ownerId;
         this.maxPlayer = maxPlayer;
         this.password = password;
+        this.isActivate = isActivate;
     }
 
     public Room() {}

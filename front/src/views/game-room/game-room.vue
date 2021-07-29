@@ -1,6 +1,6 @@
 <template>
   <article class="game-room-container">
-    <section class="game-room-section-container">
+    <section class="game-cam-chat-container">
       <GameRoomWebcam/>
       <GameRoomChat/>
     </section>
@@ -9,7 +9,7 @@
   <GameRoomInfoChangeDialog @closeDialog="closeDialog" :open="state.open"/>
 
 </template>
-<style>
+<style scoped>
   @import url('./game-room.css');
 </style>
 <script>
