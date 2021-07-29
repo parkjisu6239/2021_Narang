@@ -39,6 +39,7 @@ export default {
 
   setup (props, { emit }) {
     const store = useStore()
+    const router = useRouter()
     const createRoomForm = ref(null)
 
     const state = reactive({
@@ -63,14 +64,29 @@ export default {
     const clickCreateRoom = function() {
         createRoomForm.value.validate((valid) => {
           if (valid) {
-            console.log('submit')
-            store.dispatch('root/requestCreateGameRoom', { title: state.form.name, password: state.form.secret ? state.form.password : 0, maxPlayer: state.form.num})
+            const password = state.form.secret ? state.form.password : 0
+            store.dispatch('root/requestCreateGameRoom', { title: state.form.name, password: password, maxPlayer: state.form.num})
             .then(function (result) {
               ElMessage({
                 message: '방생성 완료!',
                 type: 'success',
               })
               handleClose()
+
+              store.dispatch('root/requestEnterGameRoom', { roomId: result.data.roomId, password: password })
+              .then(function (result) {
+                router.push({
+                  name: 'gameRoom',
+                  params: {
+                    roomId: props.roomId
+                  }
+                })
+              })
+              .catch(function (err) {
+                ElMessage.error(err.response.data.message)
+              })
+
+
             })
             .catch(function (err) {
               ElMessage.error('방생성 실패')
