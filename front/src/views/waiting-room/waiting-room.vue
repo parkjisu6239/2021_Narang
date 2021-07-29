@@ -1,11 +1,17 @@
 <template>
   <div class="screen">
     <LeftSide />
-    <RightSide @openCreateRoomDialog="onOpenCreateRoomDialog"/>
+    <RightSide
+      @openCreateRoomDialog="onOpenCreateRoomDialog"
+      @openEnterSecretRoomDialog="onOpenEnterSecretRoomDialog"/>
   </div>
   <create-room-dialog
     :open="state.createRoomDialogOpen"
     @closeCreateRoomDialog="onCloseCreateRoomDialog"/>
+  <enter-secret-room-dialog
+    :open="state.enterSecretRoomDialogOpen"
+    :roomId="state.roomId"
+    @closeEnterSecretRoomDialog="onCloseEnterSecretRoomDialog"/>
 </template>
 <style>
 .screen {
@@ -18,6 +24,7 @@
 import LeftSide from './components/left-side'
 import RightSide from './components/right-side'
 import createRoomDialog from './components/create-room-dialog'
+import enterSecretRoomDialog from './components/enter-secret-room-dialog'
 
 import { reactive } from 'vue'
 
@@ -27,13 +34,16 @@ export default {
   components: {
     LeftSide,
     RightSide,
-    createRoomDialog
+    createRoomDialog,
+    enterSecretRoomDialog,
   },
 
   setup() {
 
     const state = reactive({
       createRoomDialogOpen: false,
+      enterSecretRoomDialogOpen: false,
+      roomId: null
     })
 
     const onOpenCreateRoomDialog = function() {
@@ -44,7 +54,16 @@ export default {
       state.createRoomDialogOpen = false
     }
 
-    return { state, onOpenCreateRoomDialog, onCloseCreateRoomDialog}
+    const onOpenEnterSecretRoomDialog = function(roomId) {
+      state.enterSecretRoomDialogOpen = true
+      state.roomId = roomId
+    }
+
+    const onCloseEnterSecretRoomDialog = function() {
+      state.enterSecretRoomDialogOpen = false
+    }
+
+    return { state, onOpenCreateRoomDialog, onCloseCreateRoomDialog, onOpenEnterSecretRoomDialog, onCloseEnterSecretRoomDialog }
   }
 }
 </script>

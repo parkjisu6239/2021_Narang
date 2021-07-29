@@ -99,3 +99,7 @@ out/
 ### VS Code ###
 .vscode/
 
+back/gradlew
+back/gradlew.bat
+back/gradle/wrapper/gradle-wrapper.properties
+front/package-lock.json
