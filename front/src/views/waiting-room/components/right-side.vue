@@ -28,7 +28,7 @@
             icon="el-icon-search"
             type="primary"
             circle
-            @click="ClickReadGameRoomList">
+            @click="ClickSearch">
           </el-button>
         </div>
         <el-button type="primary" round @click="clickCreateRoom">방만들기</el-button>
@@ -140,7 +140,6 @@ export default {
 
     const state = reactive({
       gameRoomList: [],
-      count: 12,
       activateList: {All: null, Waiting: true, Playing: false},
       isActivate: ref('All'),
       options:
@@ -162,7 +161,14 @@ export default {
     })
 
     const load = function () {
-      ClickReadGameRoomList()
+      readGameRoomList()
+    }
+
+    const ClickSearch = function () {
+      state.page = 1
+      state.end = false
+      state.gameRoomList = []
+      readGameRoomList()
     }
 
     const clickConference = function (room) {
@@ -198,8 +204,7 @@ export default {
       emit('openCreateRoomDialog')
     }
 
-    const ClickReadGameRoomList = function() {
-
+    const readGameRoomList = function() {
       if (state.end) {
         return
       }
@@ -223,7 +228,7 @@ export default {
       })
     }
 
-    return { state, load, clickConference, clickCreateRoom, ClickReadGameRoomList }
+    return { state, load, clickConference, clickCreateRoom, readGameRoomList, ClickSearch }
   }
 }
 </script>
