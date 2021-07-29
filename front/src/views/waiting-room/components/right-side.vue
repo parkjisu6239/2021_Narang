@@ -35,7 +35,7 @@
       </div>
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
-      <li v-for="room in state.gameRoomList" @click="clickConference(i)" class="infinite-list-item" :key="room.roomId" >
+      <li v-for="room in state.gameRoomList" @click="clickConference(room)" class="infinite-list-item" :key="room.roomId" >
         <room :room='room'/>
       </li>
     </ul>
@@ -156,20 +156,34 @@ export default {
       value: 'All',
       input: '',
       page: 1,
-      end: false
+      end: false,
+      roomId: null,
     })
 
     const load = function () {
       ClickReadGameRoomList()
     }
 
-    const clickConference = function (id) {
-      router.push({
-        name: 'gameRoom',
-        params: {
-          roomId: id
-        }
-      })
+    const clickConference = function (room) {
+      if (room.password == 0) {
+        store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
+        .then(res => {
+          console.log(res)
+          router.push({
+            name: 'gameRoom',
+            params: {
+              roomId: room.roomId
+            }
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      } else {
+        emit('openEnterSecretRoomDialog', room.roomId)
+      }
+
+
     }
 
     const clickCreateRoom = function() {
