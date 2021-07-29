@@ -63,9 +63,9 @@ export default {
           store.dispatch('root/requestReadMyInfo')
             .then(res => {
               const userInfo = {
-                email: res.data.email,
-                username: res.data.username,
-                profileImageURL: res.data.thumbnailUrl + '?' + new Date().toString(),
+                email: res.data.user.email,
+                username: res.data.user.username,
+                profileImageURL: res.data.user.thumbnailUrl + '?' + new Date().toString(),
               }
               store.commit('root/setUserInfo', userInfo)
             })
