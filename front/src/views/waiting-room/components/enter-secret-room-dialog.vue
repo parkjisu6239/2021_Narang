@@ -64,11 +64,7 @@ export default {
               })
             })
             .catch(function (err) {
-              if (err.response.status === 401) {
-                ElMessage.error('비밀번호가 틀렸습니다')
-              } else {
-                ElMessage.error('일시적 오류로 방에 입장할 수 없습니다.')
-              }
+              ElMessage.error(err.response.data.message)
             })
 
           } else {
