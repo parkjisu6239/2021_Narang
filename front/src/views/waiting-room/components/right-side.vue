@@ -125,6 +125,7 @@ import Room from './room'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: "rightSide",
@@ -165,6 +166,13 @@ export default {
     }
 
     const clickConference = function (room) {
+      if (player >= room.maxPlayer) {
+        ElMessage({
+          message: '방이 이미 가득차서 들어갈 수 없습니다.',
+        })
+        return
+      }
+
       if (room.password == 0) {
         store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
         .then(res => {
