@@ -116,3 +116,14 @@ export function requestLeaveGameRoom({ state }, payload) {
   const url = `/room/${payload.roomId}`
   return $axios.delete(url, {headers: headers})
 }
+
+export function requestUpdateGameRoom({ state }, payload) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = `/room/${payload.roomId}`
+  const body = {
+    game: payload.game,
+    maxPlayer: payload.maxNum,
+    title: payload.roomTitle,
+  }
+  return $axios.update(url, body, { headers: headers })
+}

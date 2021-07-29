@@ -1,7 +1,9 @@
 <template>
   <div class="chat-container" style="border-radius: 0px 10px 10px 0px">
+
     <span class="chat-header" style="border-radius: 20px">Live Chat</span>
     <span class="close-chat"><i class="el-icon-close"></i></span>
+
     <div class="chat-area" style="border-radius: 0px">
       <div v-for="(chat, idx) in state.chatList" :key="idx">
         <img :src="state.myProfile" alt="">
@@ -9,10 +11,12 @@
         {{ chat.content }}
       </div>
     </div>
+
     <div class="chat-input-button" style="border-radius: 0px">
       <input @keyup.enter="sendChat" class="chat-input" placeholder="내용을 입력해주세요." v-model="state.myChat">
       <div @click="sendChat" class="chat-send-button" style="border-radius: 50%;"><i class="el-icon-thumb"></i></div>
     </div>
+
   </div>
 </template>
 <style scoped>
@@ -20,9 +24,13 @@
 </style>
 
 <script>
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
+
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
+
 export default {
   name: 'GameRoomChat',
   setup(props, { emit }) {
@@ -53,8 +61,6 @@ export default {
 
     return { sendChat, state }
   }
-
-
 }
 </script>
 
