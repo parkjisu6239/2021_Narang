@@ -156,10 +156,11 @@ export default {
       value: 'All',
       input: '',
       page: 1,
+      end: false
     })
 
     const load = function () {
-      state.count += 4
+      ClickReadGameRoomList()
     }
 
     const clickConference = function (id) {
@@ -176,22 +177,29 @@ export default {
     }
 
     const ClickReadGameRoomList = function() {
+
+      if (state.end) {
+        return
+      }
+
       const payload = {
         game: state.value === 'All' ? null : state.value,
         isActivate: state.activateList[state.isActivate],
-        title: state.input ? state.input : null
+        title: state.input ? state.input : null,
+        page: state.page,
+        size: 9,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
         console.log(result.data.roomList)
-        state.gameRoomList = result.data.roomList.content
+        state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
+        state.page += 1
+        state.end = result.data.roomList.last
       })
       .catch(function (err) {
         console.log(err)
       })
     }
-
-    ClickReadGameRoomList()
 
     return { state, load, clickConference, clickCreateRoom, ClickReadGameRoomList }
   }
