@@ -145,4 +145,18 @@ public class RoomController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
+    @GetMapping("/{roomId}")
+    @ApiOperation(value = "현재 방 정보 조회", notes = "현재 방의 정보를 조회한다")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    public ResponseEntity<? extends RoomRes> readRoom(@ApiIgnore Authentication authentication, @PathVariable Long roomId) {
+        if(authentication == null) return ResponseEntity.status(401).body(RoomRes.of(401, "인증 실패", null));
+        Room room = roomService.findById((roomId)); // 들어가려는 방 정보 가져옴
+        return ResponseEntity.status(200).body(RoomRes.of(200, "성공", room));
+    }
+
 }
