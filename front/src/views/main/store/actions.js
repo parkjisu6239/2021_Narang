@@ -135,3 +135,10 @@ export function requestReadSingleGameRoom({ state }, roomId) {
   const url = `/room/${roomId}`
   return $axios.get(url, { headers: headers })
 }
+
+// 게임에 참여하고 있는 유저 정보 가져오기
+export function requestReadUserList({ state }, roomId) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = `/room/userlist/${roomId}`
+  return $axios.get(url, { headers: headers })
+}

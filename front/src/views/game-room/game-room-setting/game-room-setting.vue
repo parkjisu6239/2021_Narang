@@ -21,7 +21,7 @@
       <div class="setting-btn"><i class="el-icon-microphone"></i></div>
       <div class="setting-btn"><i class="el-icon-video-camera"></i></div>
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
-      <div class="setting-btn" @click="openCloseDialog"><i class="el-icon-close"></i></div>
+      <div class="setting-btn" @click="openAskDialog"><i class="el-icon-close"></i></div>
     </div>
 
   </div>

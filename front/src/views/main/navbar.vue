@@ -22,7 +22,6 @@ export default {
     }
 
     const goMyPage = () => {
-      console.log('되라고')
       route.push({
         name: 'mypage',
       })
