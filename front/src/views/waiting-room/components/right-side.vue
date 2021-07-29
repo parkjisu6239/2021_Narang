@@ -35,7 +35,7 @@
       </div>
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
-      <li v-for="room in state.gameRoomList" @click="clickConference(i)" class="infinite-list-item" :key="room.roomId" >
+      <li v-for="room in state.gameRoomList" @click="clickConference(room)" class="infinite-list-item" :key="room.roomId" >
         <room :room='room'/>
       </li>
     </ul>
@@ -125,6 +125,7 @@ import Room from './room'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: "rightSide",
@@ -156,19 +157,41 @@ export default {
       value: 'All',
       input: '',
       page: 1,
+      end: false,
+      roomId: null,
     })
 
     const load = function () {
-      state.count += 4
+      ClickReadGameRoomList()
     }
 
-    const clickConference = function (id) {
-      router.push({
-        name: 'gameRoom',
-        params: {
-          roomId: id
-        }
-      })
+    const clickConference = function (room) {
+      if (player >= room.maxPlayer) {
+        ElMessage({
+          message: '방이 이미 가득차서 들어갈 수 없습니다.',
+        })
+        return
+      }
+
+      if (room.password == 0) {
+        store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
+        .then(res => {
+          console.log(res)
+          router.push({
+            name: 'gameRoom',
+            params: {
+              roomId: room.roomId
+            }
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      } else {
+        emit('openEnterSecretRoomDialog', room.roomId)
+      }
+
+
     }
 
     const clickCreateRoom = function() {
@@ -176,22 +199,29 @@ export default {
     }
 
     const ClickReadGameRoomList = function() {
+
+      if (state.end) {
+        return
+      }
+
       const payload = {
         game: state.value === 'All' ? null : state.value,
         isActivate: state.activateList[state.isActivate],
-        title: state.input ? state.input : null
+        title: state.input ? state.input : null,
+        page: state.page,
+        size: 9,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
         console.log(result.data.roomList)
-        state.gameRoomList = result.data.roomList.content
+        state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
+        state.page += 1
+        state.end = result.data.roomList.last
       })
       .catch(function (err) {
         console.log(err)
       })
     }
-
-    ClickReadGameRoomList()
 
     return { state, load, clickConference, clickCreateRoom, ClickReadGameRoomList }
   }

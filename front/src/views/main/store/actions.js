@@ -14,6 +14,8 @@ export function requestLogout({ state }) {
   console.log('requestLogout', state)
   localStorage.removeItem('access_token')
   localStorage.removeItem('email')
+  localStorage.removeItem('username')
+  localStorage.removeItem('profileImageURL')
   return
 }
 

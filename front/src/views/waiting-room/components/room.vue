@@ -1,7 +1,10 @@
 <template>
   <div class="game-room-item">
     <div :class="{header: true, canEnter: room.isActivate}">
-      <div>{{ room.title }}</div>
+      <div>
+        {{ room.title }}
+        <i v-if="room.password !== 0" class="el-icon-lock"></i>
+      </div>
       <div>{{ room.userList ? room.userList.length : 0 }} / {{ room.maxPlayer }}</div>
     </div>
     <div class="content">
