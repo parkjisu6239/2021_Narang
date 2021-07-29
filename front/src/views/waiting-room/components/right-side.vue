@@ -166,6 +166,7 @@ export default {
     }
 
     const clickConference = function (room) {
+      const player = room.userList ? room.userList.length : 0
       if (player >= room.maxPlayer) {
         ElMessage({
           message: '방이 이미 가득차서 들어갈 수 없습니다.',
