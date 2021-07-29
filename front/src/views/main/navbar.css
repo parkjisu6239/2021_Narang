@@ -1,9 +1,24 @@
 .main-navbar {
   position: fixed;
-  right: 3%;
-  top: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 2%;
+  top: 2%;
   background: rgba(255, 255, 255, 0.6);
-  width: 100px;
-  height: 30px;
+  width: 120px;
+  height: 40px;
   z-index: 100;
+  border-radius: 20px;
+  padding: 0px 6px;
+}
+
+.main-navbar > span {
+  font-size: 20px;
+  margin: 0px 5px;
+  border: solid 1px rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  background-color: white;
+  padding: 0px 5px;
+  cursor: pointer;
 }
