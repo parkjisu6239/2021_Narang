@@ -28,8 +28,10 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 import { ref } from 'vue'
 export default {
   name: 'GameRoomInfoChangeDialog',
@@ -37,17 +39,21 @@ export default {
     open: {
       type: Boolean,
       default: false
+    },
+    roomId: {
+      type: Number,
     }
   },
   setup(props, { emit }) {
+    const store = useStore()
     const updateRoomForm = ref(null)
     const state = reactive({
       dialogVisible: computed(() => props.open),
       form: {
-        roomTitle: '',
-        secret: false,
-        password: '',
-        maxNum: 0,
+        roomTitle: store.state.root.myRoom.title,
+        secret: store.state.root.myRoom.password ? true : false,
+        password: store.state.root.myRoom.password,
+        maxNum: store.state.root.myRoom.maxPlayer,
       },
       rules: {
         roomTitle: [
@@ -65,7 +71,24 @@ export default {
     }
 
     const updateRoomSetting = () => {
-
+      store.dispatch('root/requestUpdateGameRoom', {
+        ...state.form,
+        roomId: props.roomId,
+      })
+      .then(res => {
+        ElMessage({
+          type: 'success',
+          message: '방 정보가 수정되었습니다.'
+        })
+        handleClose()
+        // 방에 있는 사람들에게 수정 요청 보내기.
+      })
+      .catch(err => {
+        ElMessage({
+          type: 'error',
+          message: '실패했습니다.'
+        })
+      })
     }
 
     return { state, handleClose, updateRoomSetting, updateRoomForm }
