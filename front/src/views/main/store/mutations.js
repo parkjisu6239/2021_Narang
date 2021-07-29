@@ -24,3 +24,11 @@ export function setUserInfo(state, userInfo) {
   state.profileImageURL = userInfo.profileImageURL
   state.email = userInfo.email
 }
+
+//
+export function setRoomInfo(state, roomInfo) {
+  console.log(roomInfo)
+  state.myRoom = {
+    ...roomInfo
+  }
+}

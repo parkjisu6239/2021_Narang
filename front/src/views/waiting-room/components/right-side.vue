@@ -177,7 +177,8 @@ export default {
       if (room.password == 0) {
         store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
         .then(res => {
-          console.log(res)
+          store.commit('root/setRoomInfo', room)
+          console.log(room)
           router.push({
             name: 'gameRoom',
             params: {
@@ -189,10 +190,8 @@ export default {
           console.log(err)
         })
       } else {
-        emit('openEnterSecretRoomDialog', room.roomId)
+        emit('openEnterSecretRoomDialog', room)
       }
-
-
     }
 
     const clickCreateRoom = function() {

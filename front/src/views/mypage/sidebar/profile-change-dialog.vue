@@ -9,6 +9,9 @@
       <li @click="openUploader">
         사진 업로드
       </li>
+      <li @click="openUploader" style="color: red">
+        프로필 사진 삭제
+      </li>
       <input
         class="image-uploader"
         type="file"
@@ -64,7 +67,6 @@ export default {
                 username: res.data.username,
                 profileImageURL: res.data.thumbnailUrl,
               }
-              console.log(userInfo, '프로필 변경')
               store.commit('root/setUserInfo', userInfo)
             })
             .catch(err => {

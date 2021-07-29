@@ -2,6 +2,7 @@
   height: 100%;
   position: relative;
   width: 100%;
+  min-width: 1000px;
 }
 
 .game-btns {
@@ -61,7 +62,7 @@
   margin: 0px 6px;
   font-size: 30px;
   background: rgba(255, 255, 255, 0.8);
-  border: solid 1px black;
+  border-image: linear-gradient(#f6b73c, #4d9f0c) 5 / 1px;
   cursor: pointer;
 }
 
