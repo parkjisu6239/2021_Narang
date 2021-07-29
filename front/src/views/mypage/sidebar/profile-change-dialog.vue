@@ -65,7 +65,7 @@ export default {
               const userInfo = {
                 email: res.data.email,
                 username: res.data.username,
-                profileImageURL: res.data.thumbnailUrl,
+                profileImageURL: res.data.thumbnailUrl + '?' + new Date().toString(),
               }
               store.commit('root/setUserInfo', userInfo)
             })
