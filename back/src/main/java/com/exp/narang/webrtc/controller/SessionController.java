@@ -3,7 +3,7 @@ package com.exp.narang.webrtc.controller;
 import com.exp.narang.common.auth.UserDetails;
 import com.exp.narang.common.model.response.BaseResponseBody;
 import com.exp.narang.db.entity.User;
-import com.exp.narang.webrtc.response.SessionTokenResponseBody;
+import com.exp.narang.webrtc.response.SessionTokenRes;
 import io.openvidu.java.client.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -24,9 +24,10 @@ public class SessionController {
 
     private OpenVidu openVidu;
 
-    private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
+    //         방이름(5팀만) , 세션
+    private Map<Long, Session> mapSessions = new ConcurrentHashMap<>();
 
-    private Map<String, Map<String, OpenViduRole>> mapSessionTitlesTokens = new ConcurrentHashMap<>();
+    private Map<Long, Map<String, OpenViduRole>> mapSessionTitlesTokens = new ConcurrentHashMap<>();
 
     private String OPENVIDU_URL;
 
@@ -38,7 +39,7 @@ public class SessionController {
         this.openVidu = new OpenVidu(OPENVIDU_URL, SECRET);
     }
 
-    @GetMapping("/get-token/{title}")
+    @GetMapping("/get-token/{roomId}")
     @ApiOperation(value = "실제 세션 생성", notes = "화상 채팅을 위한 방을 생성한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -47,7 +48,7 @@ public class SessionController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> getToken(@ApiIgnore Authentication authentication,
-                                                               @PathVariable(name = "title") @ApiParam(value="세션(방) 이름", required = true) String title){
+                                                               @PathVariable(name = "roomId") @ApiParam(value="세션(방) 이름", required = true) Long roomId){
         // 토큰 없이 요청하면 인증 실패
         if(authentication == null)
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
@@ -65,29 +66,29 @@ public class SessionController {
         String token = "";
         // 최근 생성된 connectionsProperties 객체로 토큰 생성
         try {
-            token = mapSessions.get(title).createConnection(connectionProperties).getToken();
-            this.mapSessionTitlesTokens.get(title).put(token, role);
             // 방제목에 해당하는 방이 없음
-            if (mapSessions.get(title) == null) {
+            if (mapSessions.get(roomId) == null) {
                 // 새로운 세션 생성
                 Session session = this.openVidu.createSession();
+                token = session.createConnection(connectionProperties).getToken();
 
                 // 생성한 사용자 토큰과 역할 저장
-                this.mapSessions.put(title, session);
-                this.mapSessionTitlesTokens.put(title, new ConcurrentHashMap<>());
-                mapSessionTitlesTokens.get(title).put(token, role);
-            }
+                this.mapSessions.put(roomId, session);
+                this.mapSessionTitlesTokens.put(roomId, new ConcurrentHashMap<>());
+                mapSessionTitlesTokens.get(roomId).put(token, role);
+            }else token = mapSessions.get(roomId).createConnection(connectionProperties).getToken();
+            this.mapSessionTitlesTokens.get(roomId).put(token, role);
         }catch (OpenViduJavaClientException e) {
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "서버 오류"));
         }catch (OpenViduHttpException e) {
             if (404 == e.getStatus()) {
                 // 사용자가 예기치않게 떠나면 세션은 더이상 유효하지 않다
-                mapSessions.remove(title);
-                mapSessionTitlesTokens.remove(title);
+                mapSessions.remove(roomId);
+                mapSessionTitlesTokens.remove(roomId);
                 return ResponseEntity.status(404).body(BaseResponseBody.of(404, "잘못된 요청"));
             }
         }
-        return ResponseEntity.status(200).body(SessionTokenResponseBody.of(200, "성공", token));
+        return ResponseEntity.status(200).body(SessionTokenRes.of(200, "성공", token));
     }
 
     // 방 나갈 때 호출
@@ -100,34 +101,28 @@ public class SessionController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> removeUser(@ApiIgnore Authentication authentication,
-            @RequestParam(name = "방 제목") String title,
+            @RequestParam(name = "roomId") Long roomId,
             @RequestParam(name = "사용자별로 발급된 토큰") String token) throws Exception {
         // 토큰 없이 요청하면 인증 실패
         if(authentication == null)
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 
-//        UserDetails userDetails = (UserDetails)authentication.getDetails();
-//        User user = userDetails.getUser();
-
         // 세션(방)이 있고 세션 이름에 해당하는 mapSessionNamesTokens 객체가 있음
-        if (this.mapSessions.get(title) != null && this.mapSessionTitlesTokens.get(title) != null) {
-
+        if (this.mapSessions.get(roomId) != null && this.mapSessionTitlesTokens.get(roomId) != null) {
             // 사용자 토큰 있음
-            if (this.mapSessionTitlesTokens.get(title).remove(token) != null) {
+            if (this.mapSessionTitlesTokens.get(roomId).remove(token) != null) {
                 // 세션 이름에 해당하는 mapSessionNamesTokens 객체가 비었음 = 세션에 사용자 없음
-                if (this.mapSessionTitlesTokens.get(title).isEmpty()) {
+                if (this.mapSessionTitlesTokens.get(roomId).isEmpty()) {
                     // 세션 삭제
-                    this.mapSessions.remove(title);
+                    this.mapSessions.remove(roomId);
                 }
-                return ResponseEntity.status(200).body(SessionTokenResponseBody.of(200, "성공", token));
+                return ResponseEntity.status(200).body(SessionTokenRes.of(200, "성공", token));
             } else {
                 // 토큰이 유효하지 않음
-                //System.out.println("Problems in the app server: the TOKEN wasn't valid");
                 return ResponseEntity.status(404).body(BaseResponseBody.of(404, "잘못된 요청"));
             }
         } else {
             // 세션 없음
-            //System.out.println("Problems in the app server: the SESSION does not exist");
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "잘못된 요청"));
         }
     }
