@@ -37,4 +37,9 @@ public class User{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     Room room;
+
+    @Override
+    public boolean equals(Object obj) {
+        return userId.equals(((User)obj).userId);
+    }
 }

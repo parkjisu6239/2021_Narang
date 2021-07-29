@@ -1,12 +1,12 @@
 <template>
   <div class="game-room-item">
-    <div :class="{header: true, canEnter: isActive}">
+    <div :class="{header: true, canEnter: room.isActivate}">
       <div>{{ room.title }}</div>
       <div>{{ room.userList ? room.userList.length : 0 }} / {{ room.maxPlayer }}</div>
     </div>
     <div class="content">
       <div class="thumbnail">
-        <div v-if="room.isActive">
+        <div v-if="room.isActivate">
           <img v-if="room.game === null" :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
           <img v-if="room.game === 'Nafia'" :src="require('@/assets/images/game-thumbnail-mafia.png')" alt="">
           <img v-if="room.game === 'callmy'" :src="require('@/assets/images/game-thumbnail-callmy.png')" alt="">
@@ -20,7 +20,7 @@
       <div class="status">
         <div class="selected-game">Now selected {{ room.game ? room.game : 'None' }}</div>
         <div class="play-or-wait">
-          <div class="wait" v-if="room.isActive">Waiting</div>
+          <div class="wait" v-if="room.isActivate">Waiting</div>
           <div class="play" v-else>Playing</div>
         </div>
       </div>
