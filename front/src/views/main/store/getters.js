@@ -29,3 +29,7 @@ export function profileImageURL (state) {
   console.log('바껴땅')
   return `https://localhost:8080${state.profileImageURL}`
 }
+
+export function myRoom (state) {
+  return state.myRoom
+}

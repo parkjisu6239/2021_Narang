@@ -2,9 +2,9 @@
   <article class="game-room-container">
     <section class="game-cam-chat-container">
       <GameRoomWebcam/>
-      <GameRoomChat/>
+      <GameRoomChat :roomId="route.params.roomId"/>
     </section>
-    <GameRoomSetting @openDialog="openDialog"/>
+    <GameRoomSetting :roomId="route.params.roomId" @openDialog="openDialog"/>
   </article>
   <GameRoomInfoChangeDialog @closeDialog="closeDialog" :open="state.open"/>
 
@@ -18,6 +18,8 @@ import GameRoomChat from './game-room-chat/game-room-chat.vue'
 import GameRoomSetting from './game-room-setting/game-room-setting.vue'
 import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
 import { reactive } from '@vue/reactivity'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 export default {
   name: "gameRoom",
   components: {
@@ -27,6 +29,8 @@ export default {
     GameRoomInfoChangeDialog,
   },
   setup(props, { emit }) {
+    const store = useStore()
+    const route = useRoute()
     const state = reactive({
       open: false
     })
@@ -39,7 +43,28 @@ export default {
       state.open = false
     }
 
-    return { state, openDialog, closeDialog }
+    const requestRoomInfo = () => {
+      store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
+        .then(res => {
+          store.commit('root/setRoomInfo', res.data.room)
+          console.log('방 입장 완료')
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+    const requestUserInfo = () => {
+      store.dispatch('root/requestReadMyInfo')
+        .then(res => {
+          store.commit('root/setUserInfo', res.data)
+        })
+    }
+
+    requestRoomInfo()
+    requestUserInfo()
+
+    return { state, openDialog, closeDialog, requestRoomInfo, route }
   }
 }
 </script>

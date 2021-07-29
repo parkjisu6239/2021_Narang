@@ -21,7 +21,7 @@
       <div class="setting-btn"><i class="el-icon-microphone"></i></div>
       <div class="setting-btn"><i class="el-icon-video-camera"></i></div>
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
-      <div class="setting-btn"><i class="el-icon-close"></i></div>
+      <div class="setting-btn" @click="openCloseDialog"><i class="el-icon-close"></i></div>
     </div>
 
   </div>
@@ -35,6 +35,11 @@ import { reactive } from 'vue'
 
 export default {
   name: 'GameRoomSetting',
+  props: {
+    roomId: {
+      type: Number
+    }
+  },
   setup(props, { emit }) {
     const store = useStore()
 
@@ -46,16 +51,19 @@ export default {
       const game = event.target.dataset.game
       const roomInfo = {
         game,
-        roomId: 1,
+        roomId: props.roomId,
       }
-
-      store.dispatch('root/requestUpdateGameRoom')
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
           console.log(res)
         })
         .catch(err => {
           console.log(err)
         })
+    }
+
+    const openCloseDialog = (event) => {
+
     }
 
     return { openDialog, updateGameInfo }

@@ -119,13 +119,19 @@ export function requestLeaveGameRoom({ state }, payload) {
   return $axios.delete(url, {headers: headers})
 }
 
+// 게임 룸 내에서 설정 변경
 export function requestUpdateGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   const url = `/room/${payload.roomId}`
   const body = {
-    game: payload.game,
-    maxPlayer: payload.maxNum,
-    title: payload.roomTitle,
+    ...payload
   }
-  return $axios.update(url, body, { headers: headers })
+  console.log(body)
+  return $axios.patch(url, body, { headers: headers })
+}
+
+export function requestReadSingleGameRoom({ state }, roomId) {
+  const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
+  const url = `/room/${roomId}`
+  return $axios.get(url, { headers: headers })
 }
