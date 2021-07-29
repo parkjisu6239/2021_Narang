@@ -4,8 +4,8 @@
     <div class="game-btns">
       <div class="game-start" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
-        <img :src="require('@/assets/images/game-thumbnail-mafia.png')" class="game-img" alt="">
-        <img :src="require('@/assets/images/game-thumbnail-callmy.png')" class="game-img" alt="">
+        <img :src="require('@/assets/images/game-thumbnail-mafia.png')" data-game="mafia" class="game-img" alt="">
+        <img :src="require('@/assets/images/game-thumbnail-callmy.png')" data-game="callmy" class="game-img" alt="">
       </div>
     </div>
 

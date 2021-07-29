@@ -23,9 +23,9 @@ export function username (state) {
 }
 
 export function profileImageURL (state) {
-  if (state.profileImageURL === undefined || state.profileImageURL === '') {
+  if (state.profileImageURL === undefined || state.profileImageURL === '' || state.profileImageURL === null) {
     return ''
   }
+  console.log('바껴땅')
   return `https://localhost:8080${state.profileImageURL}`
-
 }

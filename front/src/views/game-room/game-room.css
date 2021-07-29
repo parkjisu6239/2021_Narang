@@ -1,5 +1,5 @@
 .game-room-container {
-  margin: 30px 40px;
+  margin: 40px 60px;
   height: calc(85% - 60px);
   border-radius: 10px;
 }
@@ -11,7 +11,7 @@
 .game-cam-chat-container {
   display: grid;
   background-color: rgba(255, 255, 255, 0.7);
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 1fr;
   height: 100%;
-  padding: 10px;
+  min-width: 1000px;
 }

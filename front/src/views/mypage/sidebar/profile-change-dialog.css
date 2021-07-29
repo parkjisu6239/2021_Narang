@@ -7,10 +7,10 @@
 
 .profile-change-dialog-menu > li {
   cursor: pointer;
-  font-size: 15px;
+  font-size: 1rem;
   color: slategray;
   padding: 0px;
-  margin: 0px;
+  margin-bottom: 20px;
 }
 
 .image-uploader {
