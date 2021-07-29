@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.44",
     "node-sass": "^6.0.0",
+    "openvidu-browser": "^2.19.0",
     "roboto-fontface": "*",
     "sass-loader": "^10.2.0",
     "sockjs-client": "^1.5.1",

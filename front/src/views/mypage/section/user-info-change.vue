@@ -109,14 +109,14 @@ export default {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
           const userInfo = {
-            username: res.data.username,
-            profileImageURL: res.data.thumbnailUrl,
-            email: res.data.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+            email: res.data.user.email,
           }
 
           state.form = {
-            username: res.data.username,
-            email: res.data.email
+            username: res.data.user.username,
+            email: res.data.user.email
           }
           store.commit('root/setUserInfo', userInfo)
         })
