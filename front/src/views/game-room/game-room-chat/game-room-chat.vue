@@ -28,8 +28,8 @@
     </div>
 
     <div class="chat-input-button" style="border-radius: 0px">
-      <input @keyup.enter="sendMessage" class="chat-input" placeholder="내용을 입력해주세요." v-model="state.myChat">
-      <div @click="sendMessage" class="chat-send-button" style="border-radius: 50%;"><i class="el-icon-thumb"></i></div>
+      <input @keyup.enter="sendMessage" class="chat-input" style="border-radius: 30px 0px 0px 30px;" placeholder="내용을 입력해주세요." v-model="state.myChat">
+      <div @click="sendMessage" class="chat-send-button" style="border-radius: 0px 30px 30px 0px;"><i class="el-icon-edit send-icon"></i></div>
     </div>
 
   </div>
