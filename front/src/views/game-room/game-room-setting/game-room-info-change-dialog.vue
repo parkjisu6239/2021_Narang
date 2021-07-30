@@ -3,7 +3,7 @@
     <el-form ref="updateRoomForm" :model="state.form" :rules="state.rules" label-width="120px">
 
       <el-form-item prop="roomTitle" label="방 이름">
-        <el-input v-model="state.form.roomTitle"></el-input>
+        <el-input v-model="state.form.title"></el-input>
       </el-form-item>
 
       <el-form-item prop="secret" label="비밀방 여부">
@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item prop="maxNum" label="최대인원">
-        <el-input-number v-model="state.form.maxNum" :min="1" :max="9"></el-input-number>
+        <el-input-number v-model="state.form.maxPlayer" :min="1" :max="9"></el-input-number>
       </el-form-item>
 
       <el-form-item>
@@ -32,7 +32,7 @@ import { ElMessage } from 'element-plus'
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 export default {
   name: 'GameRoomInfoChangeDialog',
   props: {
@@ -42,7 +42,7 @@ export default {
     },
     roomId: {
       type: Number,
-    }
+    },
   },
   setup(props, { emit }) {
     const store = useStore()
@@ -50,10 +50,10 @@ export default {
     const state = reactive({
       dialogVisible: computed(() => props.open),
       form: {
-        roomTitle: store.state.root.myRoom.title,
-        secret: store.state.root.myRoom.password ? true : false,
-        password: store.state.root.myRoom.password,
-        maxNum: store.state.root.myRoom.maxPlayer,
+        roomTitle: null,
+        secret: null,
+        password: null,
+        maxPlayer: null,
       },
       rules: {
         roomTitle: [
@@ -68,6 +68,17 @@ export default {
 
     const handleClose = () => {
       emit('closeDialog')
+    }
+
+    const setInitialValue = () => {
+      const newForm = {
+        title: store.state.root.myRoom.title,
+        secret: store.state.root.myRoom.password ? true : false,
+        password: store.state.root.myRoom.password,
+        maxPlayer: store.state.root.myRoom.maxPlayer,
+      }
+
+      state.form = newForm
     }
 
     const updateRoomSetting = () => {
@@ -91,7 +102,11 @@ export default {
       })
     }
 
-    return { state, handleClose, updateRoomSetting, updateRoomForm }
+    watch(props, () => {
+      setInitialValue()
+    })
+
+    return { state, handleClose, updateRoomSetting, updateRoomForm, store }
   }
 }
 </script>

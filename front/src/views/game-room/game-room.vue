@@ -17,6 +17,7 @@ import GameRoomInfoChangeDialog from './game-room-setting/game-room-info-change-
 import GameRoomChat from './game-room-chat/game-room-chat.vue'
 import GameRoomSetting from './game-room-setting/game-room-setting.vue'
 import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
+import { ElMessage } from 'element-plus'
 import { reactive } from '@vue/reactivity'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
@@ -34,6 +35,7 @@ export default {
     const state = reactive({
       open: false,
       userList: [],
+      room: {},
     })
 
     const openDialog = () => {
@@ -48,10 +50,14 @@ export default {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
           store.commit('root/setRoomInfo', res.data.room)
-          console.log(res.data.room)
+          state.room = res.data.room
         })
         .catch(err => {
-          ElMessage(err)
+          console.log(err)
+          ElMessage({
+            type: 'error',
+            message: '문제가 발생했습니다.'
+          })
         })
     }
 
@@ -68,6 +74,7 @@ export default {
     const requestUserList = () => {
       store.dispatch('root/requestReadUserList', route.params.roomId)
         .then(res => {
+          console.log(res.data.userList)
           state.userList = res.data.userList
         })
         .catch(err => {

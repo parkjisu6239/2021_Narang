@@ -1,5 +1,6 @@
 package com.exp.narang.api.controller;
 
+import com.exp.narang.api.model.RoomDto;
 import com.exp.narang.api.request.RoomEnterGetReq;
 import com.exp.narang.api.request.RoomRegisterPostReq;
 import com.exp.narang.api.request.RoomSearchGetReq;
@@ -15,6 +16,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "방 API", tags = {"Room"})
@@ -70,7 +73,9 @@ public class RoomController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
 
-    public ResponseEntity<? extends BaseResponseBody> read( @RequestParam(name = "title", required = false) String title,
+    public ResponseEntity<? extends BaseResponseBody> read(
+                                                            @ApiIgnore Authentication authentication,
+                                                            @RequestParam(name = "title", required = false) String title,
                                                             @RequestParam(name = "game", required = false) String game,
                                                             @RequestParam(name = "isActivate", required = false) Boolean isActivate,
                                                             @PageableDefault
@@ -78,8 +83,19 @@ public class RoomController {
                                                                             @SortDefault(sort = "isActivate", direction = Sort.Direction.DESC),
                                                                             @SortDefault(sort = "createdTime", direction = Sort.Direction.DESC)
                                                                     }) Pageable pageable) {
-        Page<Room> roomList = roomService.findBySearch(RoomSearchGetReq.of(title, game, isActivate) ,pageable);
-        return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", roomList));
+        if(authentication == null) return ResponseEntity.status(401).body(RoomListRes.of(401, "인증 실패", null));
+        Page<Room> origin = roomService.findBySearch(RoomSearchGetReq.of(title, game, isActivate) ,pageable);
+        List<RoomDto> target = new ArrayList<>();
+        for(Room room : origin) {
+            RoomDto roomDto = new RoomDto();
+//            BeanUtils.copyProperties(room, roomListDto);
+            roomDto.setRoom(room);
+            roomDto.setJoinUsers(room.getUserList());
+            target.add(roomDto);
+        }
+        Page<RoomDto> pageList = new PageImpl<>(target, origin.getPageable(), origin.getTotalElements());
+
+        return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", pageList));
     }
     @PostMapping("/{roomId}")
     @ApiOperation(value = "방 입장", notes = "방장 아닌 사람들이 방에 입장한다.")
@@ -166,8 +182,8 @@ public class RoomController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    public ResponseEntity<? extends RoomJoinUserListRes> readRoomUserList(@ApiIgnore Authentication authentication, @PathVariable Long roomId) {
-        if(authentication == null) return ResponseEntity.status(401).body(RoomJoinUserListRes.of(401, "인증 실패", null));
+    public ResponseEntity<? extends RoomJoinUserListRes> readRoomUserList(@PathVariable Long roomId) {
+//        if(authentication == null) return ResponseEntity.status(401).body(RoomJoinUserListRes.of(401, "인증 실패", null));
         List<User> userList  = roomService.findUserListByRoomId((roomId)); // 들어가려는 방 정보 가져옴
         return ResponseEntity.status(200).body(RoomJoinUserListRes.of(200, "성공", userList));
     }

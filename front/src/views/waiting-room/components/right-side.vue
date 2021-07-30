@@ -4,7 +4,7 @@
       <h1>Narang Lobby</h1>
       <div class="nav-bottom">
         <div class="search-group">
-          <el-radio-group v-model="state.isActivate" size="small">
+          <el-radio-group v-model="state.isActivate" size="small" @click="ClickSearch">
             <el-radio-button label="All"></el-radio-button>
             <el-radio-button label="Waiting"></el-radio-button>
             <el-radio-button label="Playing"></el-radio-button>
@@ -35,8 +35,8 @@
       </div>
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
-      <li v-for="room in state.gameRoomList" @click="clickConference(room)" class="infinite-list-item" :key="room.roomId" >
-        <room :room='room'/>
+      <li v-for="room in state.gameRoomList" @click="clickConference(room.room)" class="infinite-list-item" :key="room.roomId" >
+        <room :room='room.room' :user="room.joinUsers"/>
       </li>
     </ul>
   </div>
@@ -161,7 +161,9 @@ export default {
     })
 
     const load = function () {
-      readGameRoomList()
+      if (!state.end) {
+        readGameRoomList()
+      }
     }
 
     const ClickSearch = function () {
@@ -184,7 +186,6 @@ export default {
         store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
         .then(res => {
           store.commit('root/setRoomInfo', room)
-          console.log(room)
           router.push({
             name: 'gameRoom',
             params: {
@@ -214,7 +215,7 @@ export default {
         isActivate: state.activateList[state.isActivate],
         title: state.input ? state.input : null,
         page: state.page,
-        size: 9,
+        size: 16,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {

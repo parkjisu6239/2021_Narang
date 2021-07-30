@@ -1,7 +1,7 @@
 package com.exp.narang.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,8 +39,8 @@ public class Room {
 //    @Column(name="created_time")
 //    private LocalDateTime createdTime = LocalDateTime.now();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "room")
+    @JsonBackReference
     List<User> userList = new ArrayList<>();
 
     @Builder
@@ -54,4 +54,6 @@ public class Room {
     }
 
     public Room() {}
+
+
 }

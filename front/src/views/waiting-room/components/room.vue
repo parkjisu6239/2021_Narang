@@ -5,7 +5,7 @@
         {{ room.title }}
         <i v-if="room.password !== 0" class="el-icon-lock"></i>
       </div>
-      <div>{{ room.userList ? room.userList.length : 0 }} / {{ room.maxPlayer }}</div>
+      <div>{{ user ? user.length : 0 }} / {{ room.maxPlayer }}</div>
     </div>
     <div class="content">
       <div class="thumbnail">
@@ -96,6 +96,9 @@ export default {
 
   props: {
     room: {
+      type: Object,
+    },
+    user: {
       type: Object,
     }
   },

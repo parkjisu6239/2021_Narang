@@ -31,24 +31,26 @@
   content: '';
   position: absolute;
   background: rgba(255, 255, 255, 0.5);
-  width: 50%;
-  height: 120%;
+  width: 40%;
+  height: 150%;
   left: -60%;
-  top: -10%;
-  transform: skewX(-30deg);
+  top: -50%;
+  transform: skewX(-25deg);
 }
 
 .game-start:hover::before {
-  animation-duration: 0.7s;
+  animation-duration: 0.6s;
   animation-name: move;
 }
 
 @keyframes move {
   from {
-    left: -30%;
+    left: -60%;
+    top: -50%;
   }
   to {
     left: 120%;
+    top: 0%;
   }
 }
 
@@ -67,11 +69,11 @@
   height: 50px;
   cursor: pointer;
   margin: 0px 10px;
+  transition: transform ease-in-out 0.4s;
 }
 
 .game-img:hover {
   transform: scale(1.2, 1.2);
-  transition: transform ease-in-out 0.4s;
 }
 
 .setting-btns {
