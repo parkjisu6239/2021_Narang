@@ -6,6 +6,7 @@
 
     <div class="chat-area" style="border-radius: 0px">
       <div v-for="(chat, idx) in state.chatList" :key="idx">
+
         <div v-if="chat.userName === state.myUserName">
           <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="chat-profile-username">
             <img v-if="chat.profileImageURL" class="chat-profile" :src="chat.profileImageURL">
