@@ -2,11 +2,11 @@
   <article class="game-room-container">
     <section class="game-cam-chat-container">
       <GameRoomWebcam/>
-      <GameRoomChat :roomId="route.params.roomId"/>
+      <GameRoomChat :roomId="route.params.roomId" :userList="state.userList"/>
     </section>
     <GameRoomSetting :roomId="route.params.roomId" @openDialog="openDialog"/>
   </article>
-  <GameRoomInfoChangeDialog @closeDialog="closeDialog" :open="state.open"/>
+  <GameRoomInfoChangeDialog @closeDialog="closeDialog" :open="state.open" :roomId="route.params.roomId"/>
 
 </template>
 <style scoped>
@@ -32,7 +32,8 @@ export default {
     const store = useStore()
     const route = useRoute()
     const state = reactive({
-      open: false
+      open: false,
+      userList: [],
     })
 
     const openDialog = () => {
@@ -47,22 +48,36 @@ export default {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
           store.commit('root/setRoomInfo', res.data.room)
-          console.log('방 입장 완료')
+          console.log(res.data.room)
         })
         .catch(err => {
           ElMessage(err)
         })
     }
 
-    const requestUserInfo = () => {
+    const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
           store.commit('root/setUserInfo', res.data.user)
         })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', route.params.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
     }
 
     requestRoomInfo()
-    requestUserInfo()
+    requestMyInfo()
+    requestUserList()
 
     return { state, openDialog, closeDialog, requestRoomInfo, route }
   }
