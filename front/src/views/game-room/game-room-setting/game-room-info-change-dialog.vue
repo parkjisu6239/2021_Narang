@@ -3,7 +3,7 @@
     <el-form ref="updateRoomForm" :model="state.form" :rules="state.rules" label-width="120px">
 
       <el-form-item prop="roomTitle" label="방 이름">
-        <el-input v-model="state.form.roomTitle"></el-input>
+        <el-input v-model="state.form.title"></el-input>
       </el-form-item>
 
       <el-form-item prop="secret" label="비밀방 여부">
@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item prop="maxNum" label="최대인원">
-        <el-input-number v-model="state.form.maxNum" :min="1" :max="9"></el-input-number>
+        <el-input-number v-model="state.form.maxPlayer" :min="1" :max="9"></el-input-number>
       </el-form-item>
 
       <el-form-item>
@@ -53,7 +53,7 @@ export default {
         roomTitle: null,
         secret: null,
         password: null,
-        maxNum: null,
+        maxPlayer: null,
       },
       rules: {
         roomTitle: [
@@ -72,10 +72,10 @@ export default {
 
     const setInitialValue = () => {
       const newForm = {
-        roomTitle: store.state.root.myRoom.title,
+        title: store.state.root.myRoom.title,
         secret: store.state.root.myRoom.password ? true : false,
         password: store.state.root.myRoom.password,
-        maxNum: store.state.root.myRoom.maxPlayer,
+        maxPlayer: store.state.root.myRoom.maxPlayer,
       }
 
       state.form = newForm

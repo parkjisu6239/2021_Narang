@@ -74,6 +74,7 @@ export default {
     const requestUserList = () => {
       store.dispatch('root/requestReadUserList', route.params.roomId)
         .then(res => {
+          console.log(res.data.userList)
           state.userList = res.data.userList
         })
         .catch(err => {

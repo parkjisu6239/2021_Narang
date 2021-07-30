@@ -34,7 +34,7 @@ export default {
     open: {
       type: Boolean,
       default: false
-    }
+    },
   },
 
   setup (props, { emit }) {
@@ -73,19 +73,20 @@ export default {
 
             store.dispatch('root/requestCreateGameRoom', payload)
             .then(function (result) {
-              store.commit('root/setRoomInfo', result.data.room)
+              const roomId = result.data.roomId
+              store.commit('root/setRoomInfo', result.data.roomId)
               ElMessage({
                 message: '방생성 완료!',
                 type: 'success',
               })
               handleClose()
 
-              store.dispatch('root/requestEnterGameRoom', { roomId: result.data.roomId, password: password })
+              store.dispatch('root/requestEnterGameRoom', { roomId, password })
               .then(function (result) {
                 router.push({
                   name: 'gameRoom',
                   params: {
-                    roomId: props.roomId
+                    roomId,
                   }
                 })
               })
