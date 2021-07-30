@@ -8,12 +8,12 @@
       <div v-for="(chat, idx) in state.chatList" :key="idx">
 
         <div v-if="chat.userName === state.myUserName">
-          <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="chat-profile-username">
+          <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="chat-profile-username-me">
             <img v-if="chat.profileImageURL" class="chat-profile" :src="chat.profileImageURL">
             <img v-else class="chat-profile" :src="require('@/assets/images/Neurang.png')">
             <span class="chat-username">{{ chat.userName }}</span>
           </div>
-          <div><div class="chat-content">{{ chat.content }}</div></div>
+          <div class="chat-me"><div class="chat-content-me">{{ chat.content }}</div></div>
         </div>
 
         <div v-else>
@@ -22,7 +22,7 @@
             <img v-else class="chat-profile" :src="require('@/assets/images/Neurang.png')">
             <span class="chat-username">{{ chat.userName }}</span>
           </div>
-          <div class="chat-you"><div class="chat-content-you">{{ chat.content }}</div></div>
+          <div><div class="chat-content-you">{{ chat.content }}</div></div>
         </div>
 
       </div>
