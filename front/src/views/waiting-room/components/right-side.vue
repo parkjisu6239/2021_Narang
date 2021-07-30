@@ -36,7 +36,7 @@
     </div>
     <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
       <li v-for="room in state.gameRoomList" @click="clickConference(room)" class="infinite-list-item" :key="room.roomId" >
-        <room :room='room'/>
+        <room :room='room.room' :user="room.joinUsers"/>
       </li>
     </ul>
   </div>
