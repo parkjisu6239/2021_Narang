@@ -186,7 +186,6 @@ export default {
         store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
         .then(res => {
           store.commit('root/setRoomInfo', room)
-          console.log(room)
           router.push({
             name: 'gameRoom',
             params: {
