@@ -4,7 +4,7 @@
       <h1>Narang Lobby</h1>
       <div class="nav-bottom">
         <div class="search-group">
-          <el-radio-group v-model="state.isActivate" size="small">
+          <el-radio-group v-model="state.isActivate" size="small" @click="ClickSearch">
             <el-radio-button label="All"></el-radio-button>
             <el-radio-button label="Waiting"></el-radio-button>
             <el-radio-button label="Playing"></el-radio-button>
@@ -161,7 +161,9 @@ export default {
     })
 
     const load = function () {
-      readGameRoomList()
+      if (!state.end) {
+        readGameRoomList()
+      }
     }
 
     const ClickSearch = function () {
@@ -214,7 +216,7 @@ export default {
         isActivate: state.activateList[state.isActivate],
         title: state.input ? state.input : null,
         page: state.page,
-        size: 9,
+        size: 16,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
