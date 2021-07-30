@@ -52,17 +52,21 @@
 
 .chat-send-button {
   font-size: 25px;
-  height: autopx;
+  height: auto;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: white;
   height: 75%;
   padding-bottom: 3px;
   width: 15%;
+  position: relative;
 }
 
 .send-icon {
-  transform: translate(9px, 1px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   background: linear-gradient(to right, blueviolet, cornflowerblue);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -79,16 +83,17 @@
 }
 
 
-.chat-content {
+.chat-content-me {
   background-color: white;
   border-radius: 15px;
   padding: 5px 10px;
   margin-top: 5px;
-  margin-left: 20px;
+  margin-right: 20px;
   display: inline-block;
+  text-align: end;
 }
 
-.chat-profile-username {
+.chat-profile-username-you {
   display: flex;
 }
 
@@ -110,17 +115,16 @@
   border-radius: 15px;
   padding: 5px 10px;
   margin-top: 5px;
-  margin-right: 20px;
+  margin-left: 20px;
   display: inline-block;
-  text-align: end;
 }
 
-.chat-you {
+.chat-me {
   display: flex;
   justify-content: flex-end;
 }
 
-.chat-profile-username-you {
+.chat-profile-username-me {
   display: flex;
   flex-direction: row-reverse;
 }

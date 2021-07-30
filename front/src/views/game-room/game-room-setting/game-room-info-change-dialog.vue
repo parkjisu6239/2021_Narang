@@ -32,7 +32,7 @@ import { ElMessage } from 'element-plus'
 import { reactive } from '@vue/reactivity'
 import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 export default {
   name: 'GameRoomInfoChangeDialog',
   props: {
@@ -42,7 +42,7 @@ export default {
     },
     roomId: {
       type: Number,
-    }
+    },
   },
   setup(props, { emit }) {
     const store = useStore()
@@ -50,10 +50,10 @@ export default {
     const state = reactive({
       dialogVisible: computed(() => props.open),
       form: {
-        roomTitle: store.state.root.myRoom.title,
-        secret: store.state.root.myRoom.password ? true : false,
-        password: store.state.root.myRoom.password,
-        maxNum: store.state.root.myRoom.maxPlayer,
+        roomTitle: null,
+        secret: null,
+        password: null,
+        maxNum: null,
       },
       rules: {
         roomTitle: [
@@ -68,6 +68,17 @@ export default {
 
     const handleClose = () => {
       emit('closeDialog')
+    }
+
+    const setInitialValue = () => {
+      const newForm = {
+        roomTitle: store.state.root.myRoom.title,
+        secret: store.state.root.myRoom.password ? true : false,
+        password: store.state.root.myRoom.password,
+        maxNum: store.state.root.myRoom.maxPlayer,
+      }
+
+      state.form = newForm
     }
 
     const updateRoomSetting = () => {
@@ -91,7 +102,11 @@ export default {
       })
     }
 
-    return { state, handleClose, updateRoomSetting, updateRoomForm }
+    watch(props, () => {
+      setInitialValue()
+    })
+
+    return { state, handleClose, updateRoomSetting, updateRoomForm, store }
   }
 }
 </script>
