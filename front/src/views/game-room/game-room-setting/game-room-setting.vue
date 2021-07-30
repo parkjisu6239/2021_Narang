@@ -62,10 +62,6 @@ export default {
         })
     }
 
-    const openCloseDialog = (event) => {
-
-    }
-
     return { openDialog, updateGameInfo }
   }
 }
