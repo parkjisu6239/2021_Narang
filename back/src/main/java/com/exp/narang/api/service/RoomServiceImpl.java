@@ -66,8 +66,8 @@ public class RoomServiceImpl implements RoomService {
         if(!room.getOwnerId().equals(user.getUserId())) return;
 
         userList.remove(user);
-        // 방에 1명만 있으면 방 삭제
-        if(userList.size() == 1) {
+        // 방에 0명만 있으면 방 삭제
+        if(userList.size() == 0) {
             roomRepository.deleteById(room.getRoomId());
             return;
         }
