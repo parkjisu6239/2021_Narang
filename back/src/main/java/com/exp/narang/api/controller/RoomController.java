@@ -14,7 +14,6 @@ import com.exp.narang.db.entity.Room;
 import com.exp.narang.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -90,7 +89,7 @@ public class RoomController {
         for(Room room : origin) {
             RoomDto roomDto = new RoomDto();
 //            BeanUtils.copyProperties(room, roomListDto);
-            BeanUtils.copyProperties(room, roomDto);
+            roomDto.setRoom(room);
             roomDto.setJoinUsers(room.getUserList());
             target.add(roomDto);
         }
