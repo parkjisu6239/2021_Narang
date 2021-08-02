@@ -43,4 +43,5 @@ export default {
   username,
   profileImageURL: profileImageURL,
   myRoom,
+  userId,
 }
