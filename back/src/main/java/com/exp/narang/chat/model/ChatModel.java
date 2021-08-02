@@ -18,5 +18,6 @@ public class ChatModel {
 
     private Long roomId;
 
+    // 프로필 사진 저장하는 변수
     private String profileImageURL;
 }
