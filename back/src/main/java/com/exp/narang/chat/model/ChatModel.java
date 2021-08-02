@@ -17,4 +17,6 @@ public class ChatModel {
     private String content;
 
     private Long roomId;
+
+    private String profileImageURL;
 }
