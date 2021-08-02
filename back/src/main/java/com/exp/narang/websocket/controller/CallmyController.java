@@ -21,6 +21,6 @@ public class CallmyController {
         Long roomId = callmyModel.getRoomId();
         log.debug(callmyModel.toString());
         // /client/roomId 로 메시지를 반환합니다. 프론트에서 구독한 endpoint 경로이름
-        template.convertAndSend("/client" + roomId, callmyModel);
+        template.convertAndSend("/client/" + roomId, callmyModel);
     }
 }
