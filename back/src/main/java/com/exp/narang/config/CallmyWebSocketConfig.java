@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class CallmyWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/callmy/server");
+//        registry.setApplicationDestinationPrefixes("/callmy/server");
         registry.enableSimpleBroker("/client");
     }
 
