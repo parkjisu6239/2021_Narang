@@ -1,7 +1,7 @@
 <template>
   <article class="game-room-container">
     <section class="game-cam-chat-container">
-      <GameRoomWebcam/>
+      <GameRoomWebcam :roomId="route.params.roomId"/>
       <GameRoomChat :roomId="route.params.roomId" :userList="state.userList"/>
     </section>
     <GameRoomSetting :roomId="route.params.roomId" @openDialog="openDialog"/>
