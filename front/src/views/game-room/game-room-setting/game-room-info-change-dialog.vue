@@ -7,7 +7,7 @@
       </el-form-item>
 
       <el-form-item prop="secret" label="비밀방 여부">
-        <el-switch v-model="state.form.secret"></el-switch>
+        <el-switch v-model="state.form.secret" @click="clearPassword"></el-switch>
       </el-form-item>
 
       <el-form-item prop="password" label="비밀번호">
@@ -77,7 +77,7 @@ export default {
       const newForm = {
         title: store.state.root.myRoom.title,
         secret: store.state.root.myRoom.password ? true : false,
-        password: store.state.root.myRoom.password,
+        password: store.state.root.myRoom.password === 0 ? '' : store.state.root.myRoom.password,
         maxPlayer: store.state.root.myRoom.maxPlayer,
       }
 
@@ -106,11 +106,18 @@ export default {
       })
     }
 
+    const clearPassword = () => {
+      if (state.form.secret === false) {
+        state.form.password = ''
+      }
+    }
+
     watch(props, () => {
       setInitialValue()
+      console.log(store.state.root.myRoom)
     })
 
-    return { state, handleClose, updateRoomSetting, updateRoomForm, store }
+    return { state, handleClose, updateRoomSetting, clearPassword, updateRoomForm, store }
   }
 }
 </script>

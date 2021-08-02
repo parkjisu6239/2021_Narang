@@ -1,5 +1,6 @@
 <template>
   <!-- 테스트용 지워도 무방 -->
+  <h1>{{ state.room.game }}</h1>
   <article :class="{'game-room-container': true}">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
@@ -14,6 +15,7 @@
       @leaveRoom="informGameRoomInfoChange"
       @changeGame="informGameRoomInfoChange"
       @openDialog="openDialog"
+      @gameStart="gameStart"
       :roomId="route.params.roomId"
       :room="state.room"/>
   </article>
@@ -53,7 +55,7 @@ import SockJS from 'sockjs-client'
 import { ElMessage } from 'element-plus'
 import { computed, reactive } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 export default {
   name: "gameRoom",
   components: {
@@ -65,6 +67,7 @@ export default {
   setup(props, { emit }) {
     const store = useStore()
     const route = useRoute()
+    const router = useRouter()
     const state = reactive({
       open: false,
       userList: [],
@@ -79,6 +82,20 @@ export default {
 
     const closeDialog = () => {
       state.open = false
+    }
+
+    const gameStart = () => {
+      if(state.stompClient && state.stompClient.connected) {
+        const message = {
+          userName: store.state.root.username,
+          content: '',
+          roomId: route.params.roomId,
+          profileImageURL: '',
+          gameStart: true,
+          roomInfoChange: false,
+        }
+        state.stompClient.send('/server', JSON.stringify(message), {})
+      }
     }
 
     const informGameRoomInfoChange = () => {
@@ -124,16 +141,15 @@ export default {
           state.stompClient.subscribe(`/client/${route.params.roomId}`, res => {
             console.log(res.body)
             const message = JSON.parse(res.body)
-            console.log(message, '게임 인포 변경 중..')
             if (message.content) {
               state.chatList.push(message)
             } else if (message.roomInfoChange === true) {
               requestRoomInfo()
             } else if (message.gameStart === true) {
-              if ( room.game ) {
+              if (state.room.game) {
                 setTimeout(() => {
-                  route.push({
-                    name: room.game,
+                  router.push({
+                    name: state.room.game,
                     params: route.params.roomId
                   })
                 }, 5000)
@@ -152,6 +168,7 @@ export default {
     const requestRoomInfo = () => {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
+          console.log(res, '방 정보')
           store.commit('root/setRoomInfo', res.data.room)
         })
         .catch(err => {
@@ -165,6 +182,7 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
+          console.log(res, '내 정보')
           store.commit('root/setUserInfo', res.data.user)
         })
         .catch(err => {
@@ -187,7 +205,7 @@ export default {
     requestUserList()
     connectSocket()
 
-    return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange }
+    return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart }
   }
 }
 </script>
