@@ -3,6 +3,7 @@
     <button type="button" @click="init()">Start</button>
 <div><canvas id="canvas"></canvas></div>
     <div id="video-container" class="col-md-6">
+      <div id="label-container"></div>
 				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
 				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
 			</div>
@@ -18,7 +19,7 @@ import { computed, reactive } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo'
 import '@tensorflow/tfjs';
-import * as tmPose from "@teachablemachine/pose";
+import * as tmPose from '@teachablemachine/pose';
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
@@ -49,10 +50,10 @@ export default {
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "./pose-model/";
+    const URL = "https://teachablemachine.withgoogle.com/models/n3Ong6fvu/";
     let model, webcam, ctx, labelContainer, maxPredictions;
 
-    const init = () =>  {
+    async function init() {
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
@@ -84,6 +85,9 @@ export default {
         webcam.update(); // update the webcam frame
         await predict();
         window.requestAnimationFrame(loop);
+        // if(this.requestId){
+          // this.requestId = window.requestAnimationFrame(loop);
+        // }
     }
 
     async function predict() {
@@ -242,7 +246,7 @@ export default {
 
     joinSession()
 
-    return { state, updateMainVideoStreamManager }
+    return { state, updateMainVideoStreamManager, init }
 
   },
 }
