@@ -92,6 +92,7 @@ export default {
           message: '방 정보가 수정되었습니다.'
         })
         handleClose()
+        // 방에 있는 사람들에게 푸쉬하기
         // 방에 있는 사람들에게 수정 요청 보내기.
       })
       .catch(err => {
