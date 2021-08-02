@@ -1,6 +1,5 @@
 <template>
   <!-- 테스트용 지워도 무방 -->
-  <h1>{{ state.room.game }}</h1>
   <article :class="{'game-room-container': true}">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
@@ -70,7 +69,7 @@ export default {
       open: false,
       userList: [],
       chatList: [],
-      room: computed(() => store.state.root.myRoom),
+      room: computed(() => store.getters['root/myRoom']),
       stompClient: null,
     })
 
@@ -92,7 +91,6 @@ export default {
           gameStart: false,
           roomInfoChange: true,
         }
-
         state.stompClient.send('/server', JSON.stringify(message), {})
       }
     }
@@ -124,10 +122,12 @@ export default {
       state.stompClient.connect({},
         frame => {
           state.stompClient.subscribe(`/client/${route.params.roomId}`, res => {
+            console.log(res.body)
             const message = JSON.parse(res.body)
+            console.log(message, '게임 인포 변경 중..')
             if (message.content) {
               state.chatList.push(message)
-            } else if (message.gameInfoChange === true) {
+            } else if (message.roomInfoChange === true) {
               requestRoomInfo()
             } else if (message.gameStart === true) {
               if ( room.game ) {
@@ -153,7 +153,6 @@ export default {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
           store.commit('root/setRoomInfo', res.data.room)
-          state.room = res.data.room
         })
         .catch(err => {
           ElMessage({

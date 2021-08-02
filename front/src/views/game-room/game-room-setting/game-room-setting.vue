@@ -55,13 +55,23 @@ export default {
 
     const updateGameInfo = (event) => {
       if (props.room.ownerId !== store.state.root.userId) return
-
       const game = event.target.dataset.game
-      emit('changeGame', game)
       const roomInfo = {
         game,
         roomId: props.roomId,
       }
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          emit('changeGame', game)
+        })
+        .catch(err => {
+          ElMessage({
+            type: 'error',
+            message: '에러'
+          })
+        })
+
+
 
     }
 
