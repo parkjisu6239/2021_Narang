@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class MafiaWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        //registry.setApplicationDestinationPrefixes("/server");
+        registry.setApplicationDestinationPrefixes("/mafia/server");
         registry.enableSimpleBroker("/client");
     }
 

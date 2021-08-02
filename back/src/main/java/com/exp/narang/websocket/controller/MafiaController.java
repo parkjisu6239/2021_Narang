@@ -14,7 +14,7 @@ public class MafiaController {
     // @EnableWebSocketMessageBroker를 통해서 등록되는 bean
     private final SimpMessagingTemplate template;
     // /server 메시지를 받을 endpoint로 설정합니다.
-    @MessageMapping("/server")
+    @MessageMapping("/mafia/server")
     // 1) /server에서 메시지를 받고, /client로 메시지를 보내줍니다.
     public void sendMessage(MafiaModel mafiaModel) {
         Long roomId = mafiaModel.getRoomId();

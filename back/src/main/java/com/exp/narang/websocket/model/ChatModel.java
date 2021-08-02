@@ -22,8 +22,8 @@ public class ChatModel {
     private String profileImageURL;
 
     // 방장의 게임 시작 여부
-    private Boolean isGameStart;
+    private Boolean gameStart;
 
-    // 게임 종류
-    private String gameSelected;
+    // 게임 선택 바뀌었는지
+    private Boolean roomInfoChange;
 }
