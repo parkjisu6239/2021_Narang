@@ -18,4 +18,12 @@ export default {
     Navbar,
   }
 }
+
+const forms = document.querySelectorAll('form')
+forms.forEach(form => {
+  form.addEventListener('submit', function(event) {
+    event.preventDefault()
+  })
+})
+
 </script>
