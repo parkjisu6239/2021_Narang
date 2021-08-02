@@ -15,4 +15,6 @@ public class RoomUpdatePatchReq {
     String game;
     @ApiModelProperty(name="방 최대 인원", example="5")
     int maxPlayer;
+    @ApiModelProperty(name="방 비밀번호", example="1234")
+    int password;
 }
