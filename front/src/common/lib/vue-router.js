@@ -3,7 +3,8 @@ import home from '@/views/home/home'
 import waitingRoom from '@/views/waiting-room/waiting-room'
 import gameRoom from '@/views/game-room/game-room'
 import Mypage from '@/views/mypage/mypage'
-
+import Mafia from '@/views/mafia/mafia.vue'
+import CallMy from '@/views/callmy/callmy.vue'
 
 function makeRoutesFromMenu() {
   let routes = []
@@ -29,6 +30,16 @@ function makeRoutesFromMenu() {
     name: 'gameRoom',
     component: gameRoom
   },
+  {
+    path: '/game-room/:roomId/mafia',
+    name: 'mafia',
+    component: Mafia,
+  },
+  {
+    path: '/game-room/:roomId/callmy',
+    name: 'callmy',
+    component: CallMy,
+  }
   )
   return routes
 }

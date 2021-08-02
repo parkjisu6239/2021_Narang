@@ -40,6 +40,9 @@ export default {
   props: {
     roomId: {
       type: Number
+    },
+    room: {
+      type: Object
     }
   },
   setup(props, { emit }) {
@@ -51,18 +54,15 @@ export default {
     }
 
     const updateGameInfo = (event) => {
+      if (props.room.ownerId !== store.state.root.userId) return
+
       const game = event.target.dataset.game
+      emit('changeGame', game)
       const roomInfo = {
         game,
         roomId: props.roomId,
       }
-      store.dispatch('root/requestUpdateGameRoom', roomInfo)
-        .then(res => {
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+
     }
 
     const leaveRoom = () => {
@@ -72,6 +72,7 @@ export default {
             type: 'success',
             message: '방에서 퇴장하셨습니다.'
           })
+          emit('leaveRoom')
           route.push({
             name: 'waitingRoom'
           })
@@ -79,7 +80,6 @@ export default {
         .catch(err => {
           console.log(err)
         })
-
     }
 
     return { openDialog, updateGameInfo, leaveRoom }
