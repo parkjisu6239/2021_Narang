@@ -7,7 +7,7 @@
 
 body {
   background: linear-gradient(180deg, #6C88EA 0%, #579AC0 100%);
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 #app, .main-wrapper {
