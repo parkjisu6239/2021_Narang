@@ -23,6 +23,7 @@ export function setUserInfo(state, userInfo) {
   state.username = userInfo.username
   state.profileImageURL = userInfo.profileImageURL
   state.email = userInfo.email
+  state.userId = userInfo.userId
 }
 
 //

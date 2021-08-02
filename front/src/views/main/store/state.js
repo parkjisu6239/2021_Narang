@@ -4,6 +4,7 @@ const email = localStorage.getItem('email') ? localStorage.getItem('email') : ''
 const mypageSeletedMenu = 'userInfoChange'
 const username = ''
 const profileImageURL = ''
+const userId = ''
 const myRoom = {}
 
 /**
