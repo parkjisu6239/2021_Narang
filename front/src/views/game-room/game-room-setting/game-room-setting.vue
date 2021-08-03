@@ -1,7 +1,6 @@
 <template>
   <div class="setting-container">
-
-    <div class="game-btns">
+    <div class="game-btns" v-show="state.disableGameBtns">
       <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
         <img
@@ -23,7 +22,6 @@
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
       <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
     </div>
-
   </div>
 </template>
 <style scoped>
@@ -43,11 +41,26 @@ export default {
     },
     room: {
       type: Object
-    }
+    },
   },
   setup(props, { emit }) {
     const store = useStore()
     const route = useRouter()
+
+    const state = reactive({
+      userList: [],
+      disableGameBtns:undefined,
+    })
+
+    const setBtnDisabled = () => {
+      console.log("방 주인 : " + props.room.ownerId);
+      console.log("접속 유저 : " + store.state.root.userId);
+      if (props.room.ownerId === store.state.root.userId) {
+        console.log("방장한테만 보이게");
+        state.disableGameBtns=true;
+      }
+      else state.disableGameBtns=false;
+    }
 
     const openDialog = () => {
       emit('openDialog')
@@ -68,12 +81,16 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '에러'
+            message: '방장만 변경할 수 있습니다.'
           })
         })
     }
 
     const gameStart = () => {
+      console.log("유저목록");
+      state.userList.forEach(user => {
+        console.log(user.userId)
+        })
       emit('gameStart')
     }
 
@@ -105,11 +122,18 @@ export default {
         ovSetting.onVideo = !ovSetting.onVideo;
         store.publisher.publishVideo(ovSetting.onVideo);
     }
-<<<<<<< HEAD
-    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
-=======
-    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo }
->>>>>>> ca7593bcc18f7ef00f66ab31851bd12b2cbf891a
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', props.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+    requestUserList()
+    setBtnDisabled()
+    return { state, openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }
 </script>
