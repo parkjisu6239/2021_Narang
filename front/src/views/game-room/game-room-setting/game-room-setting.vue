@@ -105,7 +105,11 @@ export default {
         ovSetting.onVideo = !ovSetting.onVideo;
         store.publisher.publishVideo(ovSetting.onVideo);
     }
+<<<<<<< HEAD
     return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+=======
+    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo }
+>>>>>>> ca7593bcc18f7ef00f66ab31851bd12b2cbf891a
   }
 }
 </script>
