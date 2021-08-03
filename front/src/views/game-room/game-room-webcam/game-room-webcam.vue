@@ -1,10 +1,9 @@
 <template>
   <div class="webcam-container">
-    <div id="video-container" class="col-md-6">
-				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-			</div>
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
   </div>
+
 </template>
 <style scoped>
   @import url('game-room-webcam.css');
@@ -13,6 +12,7 @@
 import $axios from 'axios'
 import { computed, reactive } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
+import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -28,20 +28,18 @@ export default {
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
     const OPENVIDU_SERVER_SECRET = "MY_SECRET";
-
+    const store = useStore();
     const state = reactive({
 			OV: undefined,
 			session: undefined,
 			mainStreamManager: undefined,
 			publisher: undefined,
 			subscribers: [],
-
 			mySessionId: computed(() => props.roomId),
-			myUserName: 'Participant' + Math.floor(Math.random() * 100),
+			myUserName: computed(() => store.getters['root/username']),
     })
 
     const joinSession = () => {
-      console.log('조인세션 시작 중')
 			// --- Get an OpenVidu object ---
 			state.OV = new OpenVidu();
 
@@ -51,6 +49,7 @@ export default {
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
+
 				state.subscribers.push(subscriber);
 			});
 
@@ -80,7 +79,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x480',  // The resolution of your video
+							resolution: '640x363',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -88,9 +87,7 @@ export default {
 
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
-
-						// --- Publish your stream ---
-
+            store.publisher = publisher;
 						state.session.publish(state.publisher);
 					})
 					.catch(error => {

@@ -1,16 +1,26 @@
 <template>
-<div v-if="streamManager">
+<div v-if="streamManager" style="position:relative">
 	<ov-video :stream-manager="streamManager"/>
-	<div><p>{{ clientData }}</p></div>
+	<div class="nameTag"><p>{{ clientData }}</p></div>
 </div>
 </template>
+<style scoped>
+div > p {
+  margin: 0;
+}
 
+.nameTag {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+}
+</style>
 <script>
+
 import OvVideo from './OvVideo';
 
 export default {
 	name: 'UserVideo',
-
 	components: {
 		OvVideo,
 	},

@@ -18,8 +18,8 @@
     </div>
 
     <div class="setting-btns">
-      <div class="setting-btn"><i class="el-icon-microphone"></i></div>
-      <div class="setting-btn"><i class="el-icon-video-camera"></i></div>
+      <div class="setting-btn" @click="muteAudio"><i class="el-icon-microphone"></i></div>
+      <div class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
       <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
     </div>
@@ -93,8 +93,23 @@ export default {
           console.log(err)
         })
     }
-
-    return { openDialog, updateGameInfo, leaveRoom, gameStart }
+    const ovSetting = {
+      onVideo : true,
+      onAudio : true
+    }
+    const muteAudio = () => {
+        ovSetting.onAudio = !ovSetting.onAudio;
+        store.publisher.publishAudio(ovSetting.onAudio);
+    }
+    const muteVideo = () => {
+        ovSetting.onVideo = !ovSetting.onVideo;
+        store.publisher.publishVideo(ovSetting.onVideo);
+    }
+<<<<<<< HEAD
+    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+=======
+    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo }
+>>>>>>> ca7593bcc18f7ef00f66ab31851bd12b2cbf891a
   }
 }
 </script>

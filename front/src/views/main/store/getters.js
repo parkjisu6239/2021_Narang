@@ -33,3 +33,7 @@ export function profileImageURL (state) {
 export function myRoom (state) {
   return state.myRoom
 }
+
+export function publisher (state) {
+  return state.publisher
+}
