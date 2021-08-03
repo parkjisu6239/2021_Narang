@@ -147,7 +147,7 @@ export default {
             value: 'All',
             label: 'All'
           }, {
-            value: 'Nafia',
+            value: 'mafia',
             label: 'Nafia'
           }, {
             value: 'callmy',

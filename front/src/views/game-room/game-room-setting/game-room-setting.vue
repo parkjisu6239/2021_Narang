@@ -87,20 +87,9 @@ export default {
     }
 
     const leaveRoom = () => {
-      store.dispatch('root/requestLeaveGameRoom', { roomId: Number(props.roomId) })
-        .then(res => {
-          ElMessage({
-            type: 'success',
-            message: '방에서 퇴장하셨습니다.'
-          })
-          emit('leaveRoom')
-          route.push({
-            name: 'waitingRoom'
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      router.push({
+        name: 'waitingRoom'
+      })
     }
 
     const muteAudio = () => {
