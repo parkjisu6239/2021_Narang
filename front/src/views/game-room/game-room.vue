@@ -12,7 +12,7 @@
         :chatList="state.chatList"/>
     </section>
     <GameRoomSetting
-      @leaveRoom="informGameRoomInfoChange"
+      @leaveRoom="leaveRoom"
       @changeGame="informGameRoomInfoChange"
       @openDialog="openDialog"
       @gameStart="gameStart"
@@ -53,7 +53,7 @@ import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import { ElMessage } from 'element-plus'
-import { computed, reactive } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 export default {
@@ -200,12 +200,37 @@ export default {
         })
     }
 
+    const leaveRoom = () => {
+      store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
+        .then(res => {
+          informGameRoomInfoChange()
+          ElMessage({
+            type: 'success',
+            message: '방에서 퇴장하셨습니다.'
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
     requestRoomInfo()
     requestMyInfo()
     requestUserList()
     connectSocket()
 
-    return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart }
+    onBeforeUnmount(() => { // vue 컴포넌트가 파괴되기 전에 시행 = 페이지 이동 감지
+      leaveRoom()
+    })
+
+    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 전에 시행
+      window.alert('test')
+      leaveRoom()
+      e.preventDefault()
+      e.returnValue = ''
+    })
+
+    return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart, leaveRoom }
   }
 }
 </script>
