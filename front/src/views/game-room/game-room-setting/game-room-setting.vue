@@ -59,7 +59,7 @@ export default {
         console.log("방장한테만 보이게");
         state.disableGameBtns=true;
       }
-      else state.disableGameBtns=false;
+      else state.disableGameBtns=true;
     }
 
     const openDialog = () => {
