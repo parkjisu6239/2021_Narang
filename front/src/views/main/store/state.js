@@ -4,6 +4,7 @@ const email = localStorage.getItem('email') ? localStorage.getItem('email') : ''
 const mypageSeletedMenu = 'userInfoChange'
 const username = ''
 const profileImageURL = ''
+const userId = ''
 const myRoom = {}
 const publisher = {}
 /**
@@ -42,4 +43,5 @@ export default {
   username,
   profileImageURL: profileImageURL,
   myRoom,
+  userId,
 }
