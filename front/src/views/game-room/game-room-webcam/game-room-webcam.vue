@@ -1,9 +1,9 @@
 <template>
   <div class="webcam-container">
     <button type="button" @click="init()">Start</button>
-<div><canvas id="canvas"></canvas></div>
-    <div id="video-container" class="col-md-6">
+    <div style="display:none"><canvas id="canvas"></canvas></div>
       <div id="label-container"></div>
+    <div id="video-container" class="col-md-6">
 				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
 				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
 			</div>
@@ -18,6 +18,7 @@ import $axios from 'axios'
 import { computed, reactive } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
 import UserVideo from './components/UserVideo'
+import { ElMessage } from 'element-plus'
 import '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
 
@@ -50,7 +51,7 @@ export default {
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/n3Ong6fvu/";
+    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, webcam, ctx, labelContainer, maxPredictions;
 
     async function init() {
@@ -90,6 +91,7 @@ export default {
         // }
     }
 
+    let goal = 4, cnt = 0, finish = 0;
     async function predict() {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
@@ -101,8 +103,14 @@ export default {
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
+            if(prediction[goal].probability.toFixed(2) >= 0.90) cnt++;
         }
-
+        console.log(cnt);
+        if(cnt >= 500 && finish == 0) {
+          console.log("미션 성공!");
+          ElMessage.success(prediction[goal].className + '하기 미션에 성공하였습니다!');
+          finish = 1;
+        }
         // finally draw the poses
         drawPose(pose);
     }
@@ -159,7 +167,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x480',  // The resolution of your video
+							resolution: '380x280',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
