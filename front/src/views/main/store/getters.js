@@ -37,3 +37,11 @@ export function myRoom (state) {
 export function publisher (state) {
   return state.publisher
 }
+
+export function onVideo (state) {
+  return state.onVideo
+}
+
+export function onAudio (state) {
+  return state.onAudio
+}
