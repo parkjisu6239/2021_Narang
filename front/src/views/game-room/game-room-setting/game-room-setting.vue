@@ -47,7 +47,7 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore()
-    const route = useRouter()
+    const router = useRouter()
 
     const openDialog = () => {
       emit('openDialog')
@@ -78,21 +78,11 @@ export default {
     }
 
     const leaveRoom = () => {
-      store.dispatch('root/requestLeaveGameRoom', { roomId: Number(props.roomId) })
-        .then(res => {
-          ElMessage({
-            type: 'success',
-            message: '방에서 퇴장하셨습니다.'
-          })
-          emit('leaveRoom')
-          route.push({
-            name: 'waitingRoom'
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      router.push({
+        name: 'waitingRoom'
+      })
     }
+
     const ovSetting = {
       onVideo : true,
       onAudio : true
@@ -105,11 +95,7 @@ export default {
         ovSetting.onVideo = !ovSetting.onVideo;
         store.publisher.publishVideo(ovSetting.onVideo);
     }
-<<<<<<< HEAD
     return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
-=======
-    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo }
->>>>>>> ca7593bcc18f7ef00f66ab31851bd12b2cbf891a
   }
 }
 </script>
