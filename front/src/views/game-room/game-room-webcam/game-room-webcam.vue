@@ -1,5 +1,15 @@
 <template>
-  <div class="webcam-container">
+  <div v-if="state.mode == 1" class="webcam-container-one">
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  </div>
+
+  <div v-if="state.mode == 2" class="webcam-container-two">
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  </div>
+
+  <div v-if="state.mode == 3" class="webcam-container-three">
 			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
 			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
   </div>
@@ -11,7 +21,7 @@
 <script>
 import $axios from 'axios'
 import { computed, reactive } from 'vue'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
@@ -37,7 +47,18 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
+      mode : computed(() => {
+        return findMode();
+      }),
     })
+    const findMode = () => {
+       let len = state.subscribers.length + 1;
+       console.log("Asdasdasdasdasd")
+        console.log(len)
+        if(len == 1) return 1;
+        else if(len <= 4) return 2;
+        else return 3;
+    }
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
@@ -49,8 +70,9 @@ export default {
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
-
 				state.subscribers.push(subscriber);
+
+
 			});
 
 			// On every Stream destroyed...
@@ -164,7 +186,7 @@ export default {
 
     joinSession()
 
-    return { state, updateMainVideoStreamManager }
+    return { state, updateMainVideoStreamManager, findMode }
 
   },
 }

@@ -30,7 +30,7 @@
 
   </div>
 </template>
-<style scoped>
+<style>
   @import url('./game-room-setting.css');
 </style>
 <script>
