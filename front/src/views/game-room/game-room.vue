@@ -1,6 +1,4 @@
 <template>
-  <!-- 테스트용 지워도 무방 -->
-  <h1>{{ state.room.game }}</h1>
   <article :class="{'game-room-container': true}">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
@@ -26,21 +24,9 @@
     :roomId="route.params.roomId"
     :room="state.room"/>
 
-  <div>
-    <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
-    <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
-    <div class="circle moon"></div>
-    <div class="night-background"></div>
+  <div v-if="state.gameStart" class="countdown">
+    <div class="counter">{{ state.count }}</div>
   </div>
-  <!-- <div>
-    <img class="land" :src="require('@/assets/images/mafia/land.png')" alt="">
-    <img class="cloud1" :src="require('@/assets/images/mafia/cloud1.png')" alt="">
-    <img class="cloud2" :src="require('@/assets/images/mafia/cloud2.png')" alt="">
-    <img class="cloud3" :src="require('@/assets/images/mafia/cloud3.png')" alt="">
-    <div class="circle sun"></div>
-    <div class="day-background"></div>
-  </div> -->
-
 </template>
 <style scoped>
   @import url('./game-room.css');
@@ -52,29 +38,35 @@ import GameRoomSetting from './game-room-setting/game-room-setting.vue'
 import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+
 import { ElMessage } from 'element-plus'
-import { computed, reactive, onBeforeUnmount, watch } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
+
 export default {
   name: "gameRoom",
+
   components: {
     GameRoomChat,
     GameRoomSetting,
     GameRoomWebcam,
     GameRoomInfoChangeDialog,
   },
+
   setup(props, { emit }) {
     const store = useStore()
     const route = useRoute()
     const router = useRouter()
+
     const state = reactive({
       open: false,
       userList: [],
       chatList: [],
       room: computed(() => store.getters['root/myRoom']),
       stompClient: null,
-      mouseLeave: false
+      gameStart: false,
+      count: 5,
     })
 
     const openDialog = () => {
@@ -148,6 +140,8 @@ export default {
               requestRoomInfo()
             } else if (message.gameStart === true) {
               if (state.room.game) {
+                state.gameStart = true
+                countDown()
                 setTimeout(() => {
                   router.push({
                     name: state.room.game,
@@ -220,13 +214,20 @@ export default {
         })
     }
 
-    requestRoomInfo()
-    requestMyInfo()
-    requestUserList()
-    connectSocket()
+    const countDown = () => {
+      setTimeout(() => { state.count = 4 }, 1000)
+      setTimeout(() => { state.count = 3 }, 2000)
+      setTimeout(() => { state.count = 2 }, 3000)
+      setTimeout(() => { state.count = 1 }, 4000)
+      setTimeout(() => { state.count = 'Go!' }, 5000)
+      console.log('끝')
+    }
+
 
     onBeforeUnmount(() => { // vue 컴포넌트가 파괴되기 전에 시행 = 페이지 이동 감지
-      leaveRoom()
+      if (!state.gameStart) {
+        leaveRoom()
+      }
     })
 
     window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
@@ -235,6 +236,12 @@ export default {
       window.alert('test')
       leaveRoom()
     })
+
+    //* created *//
+    requestRoomInfo()
+    requestMyInfo()
+    requestUserList()
+    connectSocket()
 
     return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart, leaveRoom }
   }
