@@ -53,7 +53,7 @@ import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 import { ElMessage } from 'element-plus'
-import { computed, reactive, onBeforeUnmount } from 'vue'
+import { computed, reactive, onBeforeUnmount, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 export default {
@@ -74,6 +74,7 @@ export default {
       chatList: [],
       room: computed(() => store.getters['root/myRoom']),
       stompClient: null,
+      mouseLeave: false
     })
 
     const openDialog = () => {
@@ -184,6 +185,11 @@ export default {
         .then(res => {
           console.log(res, '내 정보')
           store.commit('root/setUserInfo', res.data.user)
+          if (!res.data.user.room) { // 방에 속해있지 않으면 퇴장
+            router.push({
+              name: 'waitingRoom'
+            })
+          }
         })
         .catch(err => {
           ElMessage(err)
@@ -223,11 +229,11 @@ export default {
       leaveRoom()
     })
 
-    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 전에 시행
-      window.alert('test')
-      leaveRoom()
+    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
       e.preventDefault()
       e.returnValue = ''
+      window.alert('test')
+      leaveRoom()
     })
 
     return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart, leaveRoom }
