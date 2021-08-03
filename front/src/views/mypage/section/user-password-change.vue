@@ -36,13 +36,13 @@
 <script>
 import { reactive, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 export default {
   name: 'UserPasswordChange',
   setup() {
     const store = useStore()
-    const route = useRouter()
+    const route = useRoute()
     const userPasswordForm = ref(null)
 
     const state = reactive({

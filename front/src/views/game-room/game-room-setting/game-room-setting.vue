@@ -2,7 +2,7 @@
   <div class="setting-container">
 
     <div class="game-btns">
-      <div class="game-start" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
+      <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
         <img
           :src="require('@/assets/images/game-thumbnail-mafia.png')"
@@ -40,6 +40,9 @@ export default {
   props: {
     roomId: {
       type: Number
+    },
+    room: {
+      type: Object
     }
   },
   setup(props, { emit }) {
@@ -51,18 +54,27 @@ export default {
     }
 
     const updateGameInfo = (event) => {
+      // if (props.room.ownerId !== store.state.root.userId) return
       const game = event.target.dataset.game
       const roomInfo = {
+        ...props.room,
         game,
-        roomId: props.roomId,
       }
+      console.log(roomInfo)
       store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
-          console.log(res)
+          emit('changeGame')
         })
         .catch(err => {
-          console.log(err)
+          ElMessage({
+            type: 'error',
+            message: '에러'
+          })
         })
+    }
+
+    const gameStart = () => {
+      emit('gameStart')
     }
 
     const leaveRoom = () => {
@@ -72,6 +84,7 @@ export default {
             type: 'success',
             message: '방에서 퇴장하셨습니다.'
           })
+          emit('leaveRoom')
           route.push({
             name: 'waitingRoom'
           })
@@ -79,7 +92,6 @@ export default {
         .catch(err => {
           console.log(err)
         })
-
     }
     const ovSetting = {
       onVideo : true,
@@ -93,7 +105,7 @@ export default {
         ovSetting.onVideo = !ovSetting.onVideo;
         store.publisher.publishVideo(ovSetting.onVideo);
     }
-    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo }
+    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }
 </script>

@@ -11,12 +11,12 @@
       <div class="thumbnail">
         <div v-if="room.isActivate">
           <img v-if="room.game === null" :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
-          <img v-if="room.game === 'Nafia'" :src="require('@/assets/images/game-thumbnail-mafia.png')" alt="">
+          <img v-if="room.game === 'mafia'" :src="require('@/assets/images/game-thumbnail-mafia.png')" alt="">
           <img v-if="room.game === 'callmy'" :src="require('@/assets/images/game-thumbnail-callmy.png')" alt="">
         </div>
         <div v-else>
           <img v-if="room.game === null" :src="require('@/assets/images/game-thumbnail-default.png')" alt="">
-          <img v-if="room.game === 'Nafia'" :src="require('@/assets/images/game-thumbnail-mafia-disable.png')" alt="">
+          <img v-if="room.game === 'mafia'" :src="require('@/assets/images/game-thumbnail-mafia-disable.png')" alt="">
           <img v-if="room.game === 'callmy'" :src="require('@/assets/images/game-thumbnail-callmy-disable.png')" alt="">
         </div>
       </div>
