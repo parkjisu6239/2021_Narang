@@ -91,7 +91,7 @@ export default {
         // }
     }
 
-    let goal = 4, cnt = 0, finish = 0;
+    let goal = 0, cnt = 0, finish = 0;
     async function predict() {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
