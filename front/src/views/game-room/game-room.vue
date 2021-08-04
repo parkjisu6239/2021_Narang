@@ -110,7 +110,7 @@ export default {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://localhost:8080/' + thumbnailURL
+            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
           }
         })
 
@@ -127,7 +127,11 @@ export default {
     }
 
     const connectSocket = () => {
+<<<<<<< HEAD
+      let socket = new SockJS("https://0.0.0.0:8080/chat")
+=======
       let socket = new SockJS("https://localhost:8080/narang")
+>>>>>>> a4752713de0eab636dd40aedfd6148c291085276
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({},
         frame => {

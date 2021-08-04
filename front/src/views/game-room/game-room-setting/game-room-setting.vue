@@ -36,7 +36,6 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
-import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -107,7 +106,11 @@ export default {
         store.onVideo = state.onVideo
         store.publisher.publishVideo(state.onVideo);
     }
+<<<<<<< HEAD
+    return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+=======
     return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+>>>>>>> a4752713de0eab636dd40aedfd6148c291085276
   }
 }
 </script>
