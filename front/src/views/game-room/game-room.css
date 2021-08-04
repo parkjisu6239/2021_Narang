@@ -1,0 +1,17 @@
+.game-room-container {
+  margin: 40px 60px;
+  height: calc(85% - 60px);
+  border-radius: 10px;
+}
+
+.game-room-container * {
+  border-radius: 10px;
+}
+
+.game-cam-chat-container {
+  display: grid;
+  background-color: rgba(255, 255, 255, 0.7);
+  grid-template-columns: 3fr 1fr;
+  height: 100%;
+  min-width: 1000px;
+}

@@ -1,0 +1,31 @@
+/* Element Plus Overriding CSS */
+
+@media (max-width: 1269px) {
+  .el-main {
+    width: calc(100% - 2px);
+  }
+}
+
+@media (min-width: 1270px) {
+  .el-main {
+    width: calc(100% - 242px); /* border 2px + sidebar 240px */
+  }
+}
+
+.el-aside {
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.el-main {
+  height: 100%;
+  display: inline-block;
+  color: #333;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}

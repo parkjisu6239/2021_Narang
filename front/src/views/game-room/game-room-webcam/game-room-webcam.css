@@ -1,0 +1,13 @@
+.webcam-container-one {
+  display: grid;
+}
+
+.webcam-container-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 50%);
+}
+
+.webcam-container-three{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 33%);
+}
