@@ -36,6 +36,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -86,12 +87,10 @@ export default {
     }
 
     const leaveRoom = () => {
-      emit('leaveRoom')
-      setTimeout(() => {
-        router.push({
-          name: 'waitingRoom'
-        })
-      }, 500);
+      //DB 지우고 . then()
+      router.push({
+        name: 'waitingRoom'
+      })
     }
 
     const muteAudio = () => {
