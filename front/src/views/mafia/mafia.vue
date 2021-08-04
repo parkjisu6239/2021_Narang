@@ -5,6 +5,10 @@
     <el-radio-button label="night"></el-radio-button>
   </el-radio-group>
 
+  <div>내이름 {{ state.username }}</div>
+  <div>내역할 {{ state.myRole }}</div>
+
+
   <div v-if="state.radio === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
     <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
@@ -41,37 +45,50 @@ export default {
       radio: ref('day'),
       stompClient: null,
       mafiaMessageList: [],
+      username: localStorage.getItem('username'),
+      myRole: null,
+      destinationUrl: 'https://localhost:8080/narang'
     })
 
-    const sendMessage = (msg) => {
-      if (state.stompClient && state.stompClient.connected && msg) {
-        const message = {
-          // 소켓에 보낼 메시지
-        }
-        state.stompClient.send('/to/mafia/start', JSON.stringify(message), {})
-      }
-    }
-
+    // 전체 소켓 연결; 최상위 연결
     const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang") // 마피아 소켓 url
+      const socket = new SockJS(state.destinationUrl)
+
+      // 연결할 개별 주소
+      const gameStartUrl = `/from/mafia/gameStart/${route.params.roomId}/${state.username}` // 게임 시작
+
+      // 클라이언트 객체 생성
       state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({},
-        frame => {
-          state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`, res => {
-            console.log(res.body)
-            const message = JSON.parse(res.body)
-            if (message.content) {
-              state.mafiaMessageList.push(message)
-            }
-          })
+
+      // 전체 연결
+      state.stompClient.connect({}, () => {
+          connectGameStartSocket(state.stompClient, gameStartUrl)
         }
       )
     }
 
-    //* created *//
-    // connectSocket()
+    // 게임 시작 소켓 연결
+    const connectGameStartSocket = (stompClient, gameStartUrl) => {
+      const stompClient = stompClient
+      stompClient.subscribe(gameStartUrl, res => {
+        state.myRole = res.body
+        console.log('역할을 받았다!', res.body)
+      })
+      sendAccess()
+    }
 
-    return { state, sendMessage, connectSocket }
+    // 게임 시작 소켓 send
+    const sendGameStart = () => {
+      const msg = {
+        username: state.username
+      }
+      state.stompClient.send(state.destinationUrl, JSON.stringify(msg));
+    }
+
+    //* created *//
+    connectSocket()
+
+    return { state, connectSocket, connectGameStartSocket, sendGameStart }
   }
 
 }
