@@ -201,9 +201,9 @@ export default {
     }
 
     const leaveRoom = () => {
+      informGameRoomInfoChange()
       store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
         .then(res => {
-          informGameRoomInfoChange()
           ElMessage({
             type: 'success',
             message: '방에서 퇴장하셨습니다.'
