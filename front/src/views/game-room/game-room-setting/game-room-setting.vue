@@ -18,15 +18,19 @@
     </div>
 
     <div class="setting-btns">
-      <div class="setting-btn" @click="muteAudio"><i class="el-icon-microphone"></i></div>
-      <div class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+      <div v-if="state.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+      <div v-if="!state.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
+
+      <div v-if="state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+      <div v-if="!state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
+
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
       <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
     </div>
 
   </div>
 </template>
-<style scoped>
+<style>
   @import url('./game-room-setting.css');
 </style>
 <script>
@@ -44,10 +48,15 @@ export default {
       type: Object
     }
   },
+
+
   setup(props, { emit }) {
     const store = useStore()
     const route = useRouter()
-
+    const state =  reactive({
+      onVideo : true,
+      onAudio : true
+    })
     const openDialog = () => {
       emit('openDialog')
     }
@@ -77,34 +86,28 @@ export default {
     }
 
     const leaveRoom = () => {
-      store.dispatch('root/requestLeaveGameRoom', { roomId: Number(props.roomId) })
-        .then(res => {
-          ElMessage({
-            type: 'success',
-            message: '방에서 퇴장하셨습니다.'
-          })
-          emit('leaveRoom')
-          route.push({
-            name: 'waitingRoom'
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      router.push({
+        name: 'waitingRoom'
+      })
     }
-    const ovSetting = {
-      onVideo : true,
-      onAudio : true
-    }
+
     const muteAudio = () => {
-        ovSetting.onAudio = !ovSetting.onAudio;
-        store.publisher.publishAudio(ovSetting.onAudio);
+        state.onAudio = !state.onAudio;
+         console.log(state.onAudio)
+        store.onAudio = state.onAudio
+        store.publisher.publishAudio(state.onAudio);
     }
     const muteVideo = () => {
-        ovSetting.onVideo = !ovSetting.onVideo;
-        store.publisher.publishVideo(ovSetting.onVideo);
+        state.onVideo = !state.onVideo;
+        console.log(state.onVideo)
+        store.onVideo = state.onVideo
+        store.publisher.publishVideo(state.onVideo);
     }
+<<<<<<< HEAD
     return { openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+=======
+    return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+>>>>>>> a4752713de0eab636dd40aedfd6148c291085276
   }
 }
 </script>
