@@ -23,21 +23,5 @@ public class MafiaController {
         template.convertAndSend("/mafia/" + roomId, mafiaModel);
     }
 
-    @MessageMapping("/mafia/vote")
-    // 1) /server에서 메시지를 받고, /client로 메시지를 보내줍니다.
-    public void sendMessage(MafiaModel mafiaModel) {
-        Long roomId = mafiaModel.getRoomId();
-        log.debug(mafiaModel.toString());
-        // /client/roomId 로 메시지를 반환합니다. 프론트에서 구독한 endpoint 경로이름
-        template.convertAndSend("/client/" + roomId, mafiaModel);
-    }
 
-    @MessageMapping("/mafia/vote")
-    // 1) /server에서 메시지를 받고, /client로 메시지를 보내줍니다.
-    public void sendMessage(MafiaModel mafiaModel) {
-        Long roomId = mafiaModel.getRoomId();
-        log.debug(mafiaModel.toString());
-        // /client/roomId 로 메시지를 반환합니다. 프론트에서 구독한 endpoint 경로이름
-        template.convertAndSend("/client/" + roomId, mafiaModel);
-    }
 }
