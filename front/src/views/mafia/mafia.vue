@@ -22,6 +22,9 @@
 </template>
 
 <script>
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
+
 import { reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
@@ -36,9 +39,39 @@ export default {
 
     const state = reactive({
       radio: ref('day'),
+      stompClient: null,
+      mafiaMessageList: [],
     })
 
-    return { state }
+    const sendMessage = (msg) => {
+      if (state.stompClient && state.stompClient.connected && msg) {
+        const message = {
+          // 소켓에 보낼 메시지
+        }
+        state.stompClient.send('/to/mafia/start', JSON.stringify(message), {})
+      }
+    }
+
+    const connectSocket = () => {
+      let socket = new SockJS("https://localhost:8080/narang") // 마피아 소켓 url
+      state.stompClient = Stomp.over(socket)
+      state.stompClient.connect({},
+        frame => {
+          state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`, res => {
+            console.log(res.body)
+            const message = JSON.parse(res.body)
+            if (message.content) {
+              state.mafiaMessageList.push(message)
+            }
+          })
+        }
+      )
+    }
+
+    //* created *//
+    // connectSocket()
+
+    return { state, sendMessage, connectSocket }
   }
 
 }

@@ -87,7 +87,7 @@ export default {
           gameStart: true,
           roomInfoChange: false,
         }
-        state.stompClient.send('/server', JSON.stringify(message), {})
+        state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
 
@@ -101,7 +101,7 @@ export default {
           gameStart: false,
           roomInfoChange: true,
         }
-        state.stompClient.send('/server', JSON.stringify(message), {})
+        state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
 
@@ -122,16 +122,16 @@ export default {
           roomInfoChange: false,
           gameStart: false,
         }
-        state.stompClient.send('/server', JSON.stringify(message), {})
+        state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
 
     const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/chat")
+      let socket = new SockJS("https://localhost:8080/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({},
         frame => {
-          state.stompClient.subscribe(`/client/${route.params.roomId}`, res => {
+          state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
             console.log(res.body)
             const message = JSON.parse(res.body)
             if (message.content) {
