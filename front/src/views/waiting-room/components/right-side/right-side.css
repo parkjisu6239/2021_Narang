@@ -43,7 +43,7 @@
 }
 
 @media (max-width: 1000px) {
-  .infinite-list {
+  .room-list {
     min-width: 350px;
   }
 
@@ -57,18 +57,18 @@
 }
 
 @media (min-width: 1001px) and (max-width: 1269px) {
-  .infinite-list {
+  .room-list {
     min-width: 700px;
   }
 }
 
 @media (min-width: 1270px) {
-  .infinite-list {
+  .room-list {
     min-width: 1021px;
   }
 }
 
-.infinite-list .infinite-list-item {
+.room-list .room-list-item {
   min-width: 335px;
   max-width: 25%;
   display: inline-block;

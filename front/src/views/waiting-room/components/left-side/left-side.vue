@@ -1,7 +1,8 @@
 <template>
   <div class="left-screen">
     <div class="my-info">
-      <img :src="state.profileImageURL" alt="">
+      <img v-if="state.profileImage !== 'null'" :src="state.profileImageURL" alt="">
+      <img class="no-profile" v-else :src="require('@/assets/images/Neurang.png')" alt="">
       <div class="nickname">{{ state.username }}</div>
       <div class="email">{{ state.email }}</div>
     </div>
@@ -11,8 +12,8 @@
       </li>
     </ul>
     <el-row class="btn-group">
-      <el-button type="primary" icon="el-icon-edit" circle></el-button>
-      <el-button type="success" icon="el-icon-check" circle></el-button>
+      <el-button type="primary" icon="el-icon-info" circle></el-button>
+      <el-button type="success" icon="el-icon-s-tools" circle></el-button>
       <el-button type="info" icon="el-icon-message" circle></el-button>
       <el-button type="warning" icon="el-icon-star-off" circle></el-button>
     </el-row>
@@ -40,6 +41,7 @@ export default {
       email: '',
       username: '',
       profileImageURL: '',
+      profileImage: localStorage.getItem('profileImageURL'),
     })
 
     const load = function () {

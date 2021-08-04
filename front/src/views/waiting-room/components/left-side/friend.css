@@ -1,7 +1,7 @@
 .friend {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-
+  display: flex;
+  column-gap: 20px;
+  margin-left: 20px;
 }
 
 .friend img {

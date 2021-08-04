@@ -34,8 +34,8 @@
         <el-button type="primary" round @click="clickCreateRoom">방만들기</el-button>
       </div>
     </div>
-    <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
-      <li v-for="room in state.gameRoomList" @click="clickConference(room.room)" class="infinite-list-item" :key="room.roomId" >
+    <ul class="infinite-list room-list" v-infinite-scroll="load" style="overflow:auto; height: 70vh">
+      <li v-for="room in state.gameRoomList" @click="clickConference(room.room)" class="infinite-list-item room-list-item" :key="room.roomId" >
         <room :room='room.room' :user="room.joinUsers"/>
       </li>
     </ul>
