@@ -13,28 +13,6 @@ export default {
   name: 'friend'
 }
 </script>
-
-<style>
-.friend {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-
-}
-
-.friend img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-}
-
-.friend .nickname {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.friend .email{
-  font-weight: 500;
-  font-size: 10px;
-}
-
+<style scoped>
+  @import url('./friend.css');
 </style>

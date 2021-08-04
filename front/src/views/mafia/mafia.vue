@@ -69,7 +69,6 @@ export default {
 
     // 게임 시작 소켓 연결
     const connectGameStartSocket = (stompClient, gameStartUrl) => {
-      const stompClient = stompClient
       stompClient.subscribe(gameStartUrl, res => {
         state.myRole = res.body
         console.log('역할을 받았다!', res.body)
