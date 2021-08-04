@@ -49,7 +49,7 @@ export default {
     const setMyInfo = function () {
       state.email = localStorage.getItem('email')
       state.username = localStorage.getItem('username')
-      state.profileImageURL = `https://localhost:8080${localStorage.getItem('profileImageURL')}`
+      state.profileImageURL = `https://0.0.0.0:8080${localStorage.getItem('profileImageURL')}`
     }
 
     setMyInfo()
