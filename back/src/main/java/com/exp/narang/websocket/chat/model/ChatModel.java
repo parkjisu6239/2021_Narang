@@ -1,4 +1,4 @@
-package com.exp.narang.websocket.model;
+package com.exp.narang.websocket.chat.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

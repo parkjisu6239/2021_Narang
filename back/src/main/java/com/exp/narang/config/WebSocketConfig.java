@@ -8,11 +8,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class ChatWebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/to");
-        registry.enableSimpleBroker("/from/chat", "/from/ready", "/from/access", "/from/gameStart", "/from/vote", "/from/invest" );
+        registry.enableSimpleBroker("/from/chat", "/from/mafia/access", "/from/mafia/start", "/from/mafia/vote", "/from/mafia/invest", "/from/mafia/role" );
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
