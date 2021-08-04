@@ -52,7 +52,7 @@ export default {
 
   setup(props, { emit }) {
     const store = useStore()
-    const route = useRouter()
+    const router = useRouter()
     const state =  reactive({
       onVideo : true,
       onAudio : true
@@ -86,14 +86,17 @@ export default {
     }
 
     const leaveRoom = () => {
-      router.push({
-        name: 'waitingRoom'
-      })
+      emit('leaveRoom')
+      setTimeout(() => {
+        router.push({
+          name: 'waitingRoom'
+        })
+      }, 500);
     }
 
     const muteAudio = () => {
         state.onAudio = !state.onAudio;
-         console.log(state.onAudio)
+        console.log(state.onAudio)
         store.onAudio = state.onAudio
         store.publisher.publishAudio(state.onAudio);
     }
