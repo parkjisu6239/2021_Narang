@@ -41,84 +41,6 @@
     </ul>
   </div>
 </template>
-<style scoped>
-.right-screen {
-  display: flex;
-  flex-direction: column;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px);
-  border-radius: 0px 40px 40px 0px;
-  padding: 10px 30px;
-  width: 80vw;
-}
-
-.nav-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.search-group {
-  display: flex;
-  align-items: center;
-}
-
-.search-group > *{
-  margin-right: 10px;
-}
-
-.search-group .el-select {
-  max-width: 100px;
-}
-
-.search-group .el-input {
-  max-width: 200px;
-}
-
-.infinite-list {
-  padding-left: 0;
-  max-height: calc(100% - 35px);
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.infinite-list::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
-}
-
-@media (max-width: 1000px) {
-  .infinite-list {
-    min-width: 350px;
-  }
-
-  .nav-bottom {
-    flex-direction: column;
-  }
-
-  .top-btn-group {
-    max-width: 100%;
-  }
-}
-
-@media (min-width: 1001px) and (max-width: 1269px) {
-  .infinite-list {
-    min-width: 700px;
-  }
-}
-
-@media (min-width: 1270px) {
-  .infinite-list {
-    min-width: 1021px;
-  }
-}
-
-.infinite-list .infinite-list-item {
-  min-width: 335px;
-  max-width: 25%;
-  display: inline-block;
-  cursor: pointer;
-}
-</style>
 <script>
 import Room from './room'
 
@@ -233,3 +155,6 @@ export default {
   }
 }
 </script>
+<style scoped>
+  @import url('./right-side.css');
+</style>
