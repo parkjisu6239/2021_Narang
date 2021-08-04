@@ -132,6 +132,7 @@ export default {
       state.stompClient.connect({},
         frame => {
           state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
+            console.log("tqtqtqtqtqtqtqtqtqtqtqtqt")
             console.log(res.body)
             const message = JSON.parse(res.body)
             if (message.content) {
