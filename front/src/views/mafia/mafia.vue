@@ -4,6 +4,7 @@
     <el-radio-button label="day"></el-radio-button>
     <el-radio-button label="night"></el-radio-button>
   </el-radio-group>
+  <el-button @click="sendGetRole">역할 받기</el-button>
 
   <div>내이름 {{ state.username }}</div>
   <div>내역할 {{ state.myRole }}</div>
@@ -54,40 +55,36 @@ export default {
     const connectSocket = () => {
       const socket = new SockJS(state.destinationUrl)
 
-      // 연결할 개별 주소
-      const gameStartUrl = `/from/mafia/gameStart/${route.params.roomId}/${state.username}` // 게임 시작
-
       // 클라이언트 객체 생성
       state.stompClient = Stomp.over(socket)
 
       // 전체 연결
       state.stompClient.connect({}, () => {
-          connectGameStartSocket(state.stompClient, gameStartUrl)
+          connectGetRoleSocket()
         }
       )
     }
 
-    // 게임 시작 소켓 연결
-    const connectGameStartSocket = (stompClient, gameStartUrl) => {
-      stompClient.subscribe(gameStartUrl, res => {
+    // 롤 배분 소켓 연결
+    const connectGetRoleSocket = () => {
+    const getFromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
+      state.stompClient.subscribe(getFromRoleUrl, res => {
+        console.log(res)
         state.myRole = res.body
         console.log('역할을 받았다!', res.body)
       })
-      sendAccess()
     }
 
-    // 게임 시작 소켓 send
-    const sendGameStart = () => {
-      const msg = {
-        username: state.username
-      }
-      state.stompClient.send(state.destinationUrl, JSON.stringify(msg));
+    // 롤카드 배분 소켓 send
+    const sendGetRole = () => {
+      const getToRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
+      state.stompClient.send(getToRoleUrl)
     }
 
     //* created *//
     connectSocket()
 
-    return { state, connectSocket, connectGameStartSocket, sendGameStart }
+    return { state, connectSocket, connectGetRoleSocket, sendGetRole}
   }
 
 }

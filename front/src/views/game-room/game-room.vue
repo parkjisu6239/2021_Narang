@@ -3,7 +3,7 @@
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
       <GameRoomChat
-        @sendMessage="sendMessage"
+        @sendMessage="sendChatMessage"
         :roomId="route.params.roomId"
         :room="state.room"
         :userList="state.userList"
@@ -88,6 +88,10 @@ export default {
           roomInfoChange: false,
         }
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
+
+        setTimeout(() => {
+          sendGameStart()
+        }, 1000);
       }
     }
 
@@ -105,7 +109,51 @@ export default {
       }
     }
 
-    const sendMessage = (msg) => {
+    const connectSocket = () => {
+      let socket = new SockJS("https://localhost:8080/narang")
+      state.stompClient = Stomp.over(socket)
+      state.stompClient.connect({}, () => {
+          connectChatSocket()
+          connectMafiaStartSocket()
+        }
+      )
+    }
+
+    const connectChatSocket = () => {
+      state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
+        console.log("채팅 연결됨, 메시지 받음")
+        console.log(res.body)
+        const message = JSON.parse(res.body)
+        if (message.content) {
+          state.chatList.push(message)
+        } else if (message.roomInfoChange === true) {
+          requestRoomInfo()
+        } else if (message.gameStart === true) {
+          if (state.room.game) {
+            state.gameStart = true
+            countDown()
+            setTimeout(() => {
+              router.push({
+                name: state.room.game,
+                params: route.params.roomId
+              })
+            }, 5000)
+          } else {
+            ElMessage({
+              type: 'error',
+              message: '게임이 선택되지 않았습니다.'
+            })
+          }
+        }
+      })
+    }
+
+    const connectMafiaStartSocket = () => {
+      state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`)
+      console.log('마피아 게임 시작 소켓 연결')
+    }
+
+    const sendChatMessage = (msg) => {
       if (state.stompClient && state.stompClient.connected && msg) {
         let profileImageURL = ''
         state.userList.forEach(user => {
@@ -126,39 +174,9 @@ export default {
       }
     }
 
-    const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang")
-      state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({},
-        frame => {
-          state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
-            console.log("tqtqtqtqtqtqtqtqtqtqtqtqt")
-            console.log(res.body)
-            const message = JSON.parse(res.body)
-            if (message.content) {
-              state.chatList.push(message)
-            } else if (message.roomInfoChange === true) {
-              requestRoomInfo()
-            } else if (message.gameStart === true) {
-              if (state.room.game) {
-                state.gameStart = true
-                countDown()
-                setTimeout(() => {
-                  router.push({
-                    name: state.room.game,
-                    params: route.params.roomId
-                  })
-                }, 5000)
-              } else {
-                ElMessage({
-                  type: 'error',
-                  message: '게임이 선택되지 않았습니다.'
-                })
-              }
-            }
-          })
-        }
-      )
+    const sendGameStart = () => {
+      state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
+      console.log('마피아 게임 시작 send')
     }
 
     const requestRoomInfo = () => {
@@ -220,8 +238,6 @@ export default {
       setTimeout(() => { state.count = 3 }, 2000)
       setTimeout(() => { state.count = 2 }, 3000)
       setTimeout(() => { state.count = 1 }, 4000)
-      setTimeout(() => { state.count = 'Go!' }, 5000)
-      console.log('끝')
     }
 
 
@@ -244,7 +260,7 @@ export default {
     requestUserList()
     connectSocket()
 
-    return { state, route, openDialog, closeDialog, requestRoomInfo, sendMessage, informGameRoomInfoChange, gameStart, leaveRoom }
+    return { state, route, openDialog, closeDialog, requestRoomInfo, sendChatMessage, informGameRoomInfoChange, gameStart, leaveRoom }
   }
 }
 </script>
