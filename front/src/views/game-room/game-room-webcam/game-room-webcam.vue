@@ -52,16 +52,17 @@ export default {
       }),
     })
     const findMode = () => {
-      let len = state.subscribers.length + 1;
-      console.log("Asdasdasdasdasd")
-      console.log(len)
-      if(len == 1) return 1;
-      else if(len <= 4) return 2;
-      else return 3;
+       let len = state.subscribers.length + 1;
+       console.log("Asdasdasdasdasd")
+        console.log(len)
+        if(len == 1) return 1;
+        else if(len <= 4) return 2;
+        else return 3;
     }
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
+      console.log('뭐지?')
 			state.OV = new OpenVidu();
 
 			// --- Init a session ---
@@ -92,7 +93,6 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
-        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 
@@ -146,7 +146,7 @@ export default {
 		const createSession = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
+					.post(`/openvidu/api/sessions`, JSON.stringify({
 						customSessionId: sessionId,
 					}), {
 						auth: {
@@ -162,7 +162,7 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+								location.assign(`https://i5b205.p.ssafy.io:4443/accept-certificate`);
 							}
 							reject(error.response);
 						}
@@ -173,7 +173,7 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`/openvidu/api/sessions/${sessionId}/connection`, {}, {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
