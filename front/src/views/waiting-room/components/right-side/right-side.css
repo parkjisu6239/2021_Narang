@@ -74,3 +74,33 @@
   display: inline-block;
   cursor: pointer;
 }
+
+.select-type {
+  display: flex;
+}
+
+.select-type > * {
+  background-color: white;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all ease-in-out 0.2s;
+}
+
+.select-type > *:hover {
+  background-color: #409EFF;
+  color: white;
+}
+
+.selected-btn {
+  background-color: #409EFF;
+  color: white;
+}
+
+.select-type .select-all {
+  border-radius: 15px 0px 0px 15px;
+}
+
+.select-type .select-play {
+  border-radius: 0px 15px 15px 0px;
+}
