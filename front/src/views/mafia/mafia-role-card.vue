@@ -1,6 +1,6 @@
 <template>
   <div class="role-card">
-    <div class="role-img">그림</div>
+    <!-- <img class="role-img" :src="require('@/assets/images/mafia/role-citizen.png')" alt="시민"> -->
     <div class="role">{{ myRole }}</div>
     <div class="description">{{ state.description[myRole] }}</div>
   </div>

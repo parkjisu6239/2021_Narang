@@ -92,6 +92,7 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
+        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 

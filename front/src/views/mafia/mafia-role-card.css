@@ -19,10 +19,9 @@
 }
 
 .role-card .role-img {
-  width: 180px;
-  height: 180px;
+  width: 250px;
+  height: auto;
   background-color: black;
-  border-radius: 50%;
 }
 
 .role-card .role {
