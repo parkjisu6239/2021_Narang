@@ -7,6 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+// 참가자의 상태를 관리한다.
 public class Player {
     private User user;
     private Role role;
@@ -15,9 +16,6 @@ public class Player {
     public Player(User user) {
         this.user = user;
     }
-
-
-
 
 //	public boolean isMafia() {
 //		return this.role.isMafia();

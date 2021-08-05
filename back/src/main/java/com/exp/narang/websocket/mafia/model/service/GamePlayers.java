@@ -12,11 +12,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 @Getter
 @Setter
+// 게임 참가자들과 관련된 로직을 처리한다.
 public class GamePlayers {
     private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
 
     private List<Player> players;
 
+    // 참가자 리스트 추가하는 생성자
     public GamePlayers(List<User> users) {
         this.players = new ArrayList<>();
         for (User user : users) {
@@ -24,7 +26,7 @@ public class GamePlayers {
         }
     }
 
-    // players의 개수를 가져온다!
+    // players의 수를 가져온다.
     public int countOfPlayers() {
         return this.players.size();
     }
@@ -36,6 +38,7 @@ public class GamePlayers {
         }
     }
 
+    // 각 player의 역할을 리턴한다.
     public String findRoleName(String username) {
         for (Player player : this.players) {
             if (player.getUser().getUsername().equals(username)) {

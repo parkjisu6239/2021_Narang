@@ -15,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
+// 게임에 필요한 로직을 관리한다.
 public class GameManager {
     private static final Logger log = LoggerFactory.getLogger(GameManager.class);
 
@@ -25,8 +26,6 @@ public class GameManager {
     private GamePlayers gamePlayers;
     private VoteManager voteManager;
     private String roleString;
-
-
 
     public GameManager () {}
 
