@@ -38,7 +38,6 @@ import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { reactive } from 'vue'
 
 export default {
   name: 'GameRoomSetting',
@@ -50,7 +49,6 @@ export default {
       type: Object
     }
   },
-
 
   setup(props, { emit }) {
     const store = useStore()
@@ -88,7 +86,6 @@ export default {
     }
 
     const leaveRoom = () => {
-      //DB 지우고 . then()
       router.push({
         name: 'waitingRoom'
       })
@@ -106,6 +103,7 @@ export default {
         store.onVideo = state.onVideo
         store.publisher.publishVideo(state.onVideo);
     }
+
     return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }

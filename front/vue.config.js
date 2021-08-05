@@ -10,6 +10,12 @@ module.exports = {
       },
       '/narang':{
         target: 'https://0.0.0.0:8080/'
+      },
+      '/openvidu': {
+        target: 'https://0.0.0.0:4443/'
+      },
+      '/accept-certificate': {
+        target: 'https://0.0.0.0:4443/'
       }
     },
     historyApiFallback: true,
