@@ -84,6 +84,7 @@ export default {
     })
 
     const load = function () {
+      console.log(state.end)
       if (!state.end) {
         readGameRoomList()
       }
@@ -134,16 +135,12 @@ export default {
     }
 
     const readGameRoomList = function() {
-      if (state.end) {
-        return
-      }
-
       const payload = {
         game: state.value === 'All' ? null : state.value,
         isActivate: state.activateList[state.isActivate],
         title: state.input ? state.input : null,
         page: state.page,
-        size: 16,
+        size: 10,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
