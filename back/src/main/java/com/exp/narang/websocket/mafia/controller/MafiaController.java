@@ -55,12 +55,10 @@ public class MafiaController {
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }
     // 투표합시다 (낮 1 : day1, 낮 2 : day2, 밤 : night)
-    @MessageMapping("/vote/{roomId}")
-    @SendTo("/from/vote/{roomId}")
+    @MessageMapping("/mafia/vote/{roomId}")
+    @SendTo("/from/mafia/vote/{roomId}")
     public GameResult broadcasting(VoteMessage voteMessage, @DestinationVariable long roomId) throws Exception {
     	log.debug("voteMessage arrived: /vote/{}, voteMessage: {}", roomId, voteMessage);
         return gameManagerMap.get(roomId).returnVoteResult(voteMessage);
     }
-
-
 }

@@ -74,17 +74,15 @@ public class GamePlayers {
         }
         return GameResultType.KEEP_GOING;
     }
-
+    // 게임이 완전히 끝났을 경우 유저 이름과 유저의 역할을 String 형태로 반환해준다
     public String getRoleString() {
         StringBuffer roleString = new StringBuffer();
-
         for (Player p : players) {
             roleString.append(p.getUser().getUsername());
             roleString.append(":");
             roleString.append(p.getRole().getRoleName());
             roleString.append("&");
         }
-
         if (roleString.length() > 0) {
             return roleString.substring(0, roleString.length() - 1);
         }

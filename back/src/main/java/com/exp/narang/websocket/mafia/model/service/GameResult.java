@@ -74,8 +74,11 @@ public class GameResult {
         return new GameResult(GameResultType.CITIZEN_WIN);
     }
 
-    public static GameResult returnSelectedUser(String killedUserNickName) {
-        return new GameResult(killedUserNickName, true);
+    public static GameResult returnKilledUser(String killedUsername) {
+        return new GameResult(killedUsername, true);
+    }
+    public static GameResult returnSelectedUser(String selectedUsername) {
+        return new GameResult(selectedUsername, false);
     }
 
     @Override
