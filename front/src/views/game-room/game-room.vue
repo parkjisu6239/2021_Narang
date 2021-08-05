@@ -95,7 +95,9 @@ export default {
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
 
         // 게임 시작 소켓에 메시지 전송 -> 백엔드에서 게임 매니저 생성
-        sendGameStart()
+        if (state.room.game) {
+          sendGameStart()
+        }
       }
     }
 
@@ -158,8 +160,9 @@ export default {
 
     // [Func|socket] 마피에 게임 시작 소켓 연결
     const connectMafiaStartSocket = () => {
-      state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`)
-      console.log('마피아 게임 시작 소켓 연결')
+      state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`, res => {
+        console.log('마피아 게임 시작 소켓 연결', res.body)
+      })
     }
 
     // [Func|socket] 채팅 send
