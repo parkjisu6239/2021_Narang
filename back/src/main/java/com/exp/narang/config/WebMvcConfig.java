@@ -41,7 +41,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     		registry.addResourceHandler("/webjars/**")
     				.addResourceLocations("classpath:/META-INF/resources/webjars/");
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:///D:/images/");
+                .addResourceLocations("file:///tmp/tomcat.8080.2703000389849287224/work/Tomcat/localhost/ROOT/images/");
 
 
         /*
