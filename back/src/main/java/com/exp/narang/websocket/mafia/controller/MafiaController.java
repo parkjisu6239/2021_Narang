@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created by Jbee on 2017. 3. 28..
- */
 @RestController
 public class MafiaController {
     private static final Logger log = LoggerFactory.getLogger(MafiaController.class);
@@ -42,7 +39,8 @@ public class MafiaController {
     public void init() {
         gameManagerMap = new ConcurrentHashMap<>();
     }
-    //    방장이 gameStart 버튼을 누르면 roomId를 전송하여 mafia게임에 필요한 설정을 한다.
+
+    // 방장이 gameStart 버튼을 누르면 roomId를 전송하여 mafia 게임에 필요한 설정을 한다. (역할 분배)
     @MessageMapping("/mafia/start/{roomId}")
     @SendTo("/from/mafia/start/{roomId}")
     public void broadcasting(@DestinationVariable long roomId) throws Exception {

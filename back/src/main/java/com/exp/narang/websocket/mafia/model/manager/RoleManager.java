@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// 참가자의 역할을 분배한다.
 public class RoleManager {
     private static Map<Integer, AssignRole> mappings = new HashMap<>();
 
