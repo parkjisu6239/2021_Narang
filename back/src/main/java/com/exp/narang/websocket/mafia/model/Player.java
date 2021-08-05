@@ -17,20 +17,19 @@ public class Player {
         this.user = user;
     }
 
-//	public boolean isMafia() {
-//		return this.role.isMafia();
-//	}
-//
-//
-//    public void safe() {
-//        this.stillAlive = true;
-//    }
-//
+	public boolean isMafia() {
+		return this.role.isMafia();
+	}
+
+	public void safe() {
+        this.stillAlive = true;
+    }
+
     public void kill() {
         this.stillAlive = false;
     }
-//
-//    public boolean isAlive() {
-//        return stillAlive;
-//    }
+
+    public boolean isAlive() {
+        return stillAlive;
+    }
 }

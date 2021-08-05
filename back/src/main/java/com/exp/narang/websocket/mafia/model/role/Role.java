@@ -22,7 +22,7 @@ public abstract class Role {
     }
 
 	public boolean isMafia() {
-		return roleName == RoleName.Mafia;
+		return roleName.equals(RoleName.Mafia);
 	}
 
 }

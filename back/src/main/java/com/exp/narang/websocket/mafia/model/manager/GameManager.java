@@ -4,6 +4,8 @@ import com.exp.narang.api.service.RoomService;
 import com.exp.narang.db.entity.User;
 import com.exp.narang.websocket.mafia.model.service.GamePlayers;
 
+import com.exp.narang.websocket.mafia.model.service.GameResult;
+import com.exp.narang.websocket.mafia.request.VoteMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -19,8 +21,8 @@ import java.util.List;
 public class GameManager {
     private static final Logger log = LoggerFactory.getLogger(GameManager.class);
 
-    @Autowired
-    RoomService roomService;
+
+    private RoomService roomService;
 
     private Long roomId;
     private GamePlayers gamePlayers;
@@ -29,33 +31,29 @@ public class GameManager {
 
     public GameManager () {}
 
-    public GameManager (Long roomId) {
+    public GameManager (Long roomId, RoomService roomService) {
         this.roomId = roomId;
+        this.roomService = roomService;
         List<User> users = roomService.findUserListByRoomId(roomId);
         this.gamePlayers = new GamePlayers(users);
         RoleManager.assignRoleToPlayers(this.gamePlayers);
+        this.roleString = gamePlayers.getRoleString();
+        this.voteManager = new VoteManager(gamePlayers);
     }
 
-//    public GameManager(Set<User> users) {
-//        this.players = new GamePlayers(users);
-//        RoleManager.assignRoleToPlayers(this.players);
-//        this.roleString = players.getRoleString();
-//        this.voteManager = new VoteManager(players);
-//    }
-//
     public String findRoleNameByUsername(String username) {
         return this.gamePlayers.findRoleName(username);
     }
-//
-//    public GameResult returnVoteResult(VoteMessage voteMessage) {
-//        log.debug("returnVoteResult: {}", voteMessage);
-//        if (!voteManager.handleVote(voteMessage)) {
-//            return GameResult.votingStatus();
-//        }
-//        GameResult gr = voteManager.returnGameResult(voteMessage.getStage());
-//        if (gr.isFinished()) {
-//            gr.setRoleString(roleString);
-//        }
-//        return gr;
-//    }
+
+    public GameResult returnVoteResult(VoteMessage voteMessage) {
+        log.debug("returnVoteResult: {}", voteMessage);
+        if (!voteManager.handleVote(voteMessage)) {
+            return GameResult.votingStatus();
+        }
+        GameResult gr = voteManager.returnGameResult(voteMessage);
+        if (gr.isFinished()) {
+            gr.setRoleString(roleString);
+        }
+        return gr;
+    }
 }
