@@ -53,7 +53,7 @@ export default {
     }
 
     const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang") // 마피아 소켓 url
+      let socket = new SockJS("https://0.0.0.0:8080/narang") // 마피아 소켓 url
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({},
         frame => {

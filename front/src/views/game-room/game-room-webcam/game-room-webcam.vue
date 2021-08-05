@@ -36,7 +36,7 @@ export default {
     }
   },
   setup(props, { emit }) {
-    // const OPENVIDU_SERVER_URL = "https://" + "0.0.0.0"+ ":4443";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443";
     const OPENVIDU_SERVER_SECRET = "MY_SECRET";
     const store = useStore();
     const state = reactive({
@@ -62,6 +62,7 @@ export default {
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
+      console.log('뭐지?')
 			state.OV = new OpenVidu();
 
 			// --- Init a session ---
@@ -145,7 +146,7 @@ export default {
 		const createSession = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
+					.post(`/openvidu/api/sessions`, JSON.stringify({
 						customSessionId: sessionId,
 					}), {
 						auth: {
@@ -161,7 +162,7 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+								location.assign(`https://i5b205.p.ssafy.io:4443/accept-certificate`);
 							}
 							reject(error.response);
 						}
@@ -172,7 +173,7 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`/openvidu/api/sessions/${sessionId}/connection`, {}, {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
