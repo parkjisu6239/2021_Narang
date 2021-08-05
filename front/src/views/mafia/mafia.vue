@@ -7,8 +7,24 @@
   <el-button @click="sendGetRole">역할 받기</el-button>
 
   <div>내이름 {{ state.username }}</div>
-  <div>내역할 {{ state.myRole }}</div>
+  <div>니역할 {{ state.myRole }}</div>
+  <div>참여자 정보</div>
+  <div class="playerList" v-for="player in state.userList" :key="player.userId">
+    <div class="player">
+      <div>ID : {{ player.userId }}</div>
+      <div>name : {{ player.username }}</div>
+    </div>
+  </div>
 
+  <MafiaNotice
+  :msg="state.msg"
+  />
+
+  <MafiaRoleCard
+  v-if="state.roleCardVisible"
+  :myRole="state.myRole"
+  @click="state.roleCardVisible = false"
+  />
 
   <div v-if="state.radio === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
@@ -27,6 +43,9 @@
 </template>
 
 <script>
+import MafiaRoleCard from './mafia-role-card'
+import MafiaNotice from './mafia-notice'
+
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
@@ -37,6 +56,11 @@ import { useRouter, useRoute } from 'vue-router'
 export default {
   name: 'mafia',
 
+  components: {
+    MafiaRoleCard,
+    MafiaNotice,
+  },
+
   setup(props, { emit }) {
     const store = useStore()
     const route = useRoute()
@@ -45,46 +69,86 @@ export default {
     const state = reactive({
       radio: ref('day'),
       stompClient: null,
-      mafiaMessageList: [],
       username: localStorage.getItem('username'),
       myRole: null,
-      destinationUrl: 'https://localhost:8080/narang'
+      destinationUrl: 'https://localhost:8080/narang',
+      roleCardVisible: false,
+      msg: '메시지',
+      userList: null,
     })
 
-    // 전체 소켓 연결; 최상위 연결
+    // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = () => {
       const socket = new SockJS(state.destinationUrl)
 
       // 클라이언트 객체 생성
       state.stompClient = Stomp.over(socket)
 
-      // 전체 연결
       state.stompClient.connect({}, () => {
-          connectGetRoleSocket()
+          connectGetRoleSocket() // 롤 배분 소켓 연결
         }
       )
     }
 
-    // 롤 배분 소켓 연결
+    // [Func|socket] 롤 배분 소켓 연결
     const connectGetRoleSocket = () => {
-    const getFromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
-      state.stompClient.subscribe(getFromRoleUrl, res => {
+      const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
+      state.stompClient.subscribe(fromRoleUrl, res => {
         console.log(res)
         state.myRole = res.body
         console.log('역할을 받았다!', res.body)
       })
     }
 
-    // 롤카드 배분 소켓 send
+    // [Func|socket] 롤카드 배분 소켓 send
     const sendGetRole = () => {
-      const getToRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
-      state.stompClient.send(getToRoleUrl)
+      const toRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
+      state.stompClient.send(toRoleUrl)
+      PopUpRoleCard()
+    }
+
+    // [Func|socket] 마피아 투표 소켓 연결
+    const connectVoteSocket = () => {
+      const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
+      state.stompClient.subscribe(fromVoteUrl, res => {
+        console.log('투표 결과', res, res.body)
+      })
+    }
+
+    // [Func|socket] 마피아 투표 소켓 send
+    const sendVoteSocket = () => {
+      const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
+      const message = {
+          username: state.username, // 내 이름
+          theVoted: '', // 내가 투표한 사람의 유저 네임
+          stage: '', // day1, day2, night
+          isAgree: '', // false : 살린다, true: 죽인다
+          secondVoteusername: '' // 2차 투표 진행시 해당 유저의 이름
+        }
+      state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
+    }
+
+    // [Func|dialog] 롤카드 팝업 애니메이션
+    const PopUpRoleCard = () => {
+      state.roleCardVisible = true
+    }
+
+    // [Func|req] 유저 리스트 가져오기
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', route.params.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
     }
 
     //* created *//
     connectSocket()
+    requestUserList()
 
-    return { state, connectSocket, connectGetRoleSocket, sendGetRole}
+    return { state, connectSocket, connectGetRoleSocket, sendGetRole, requestUserList}
   }
 
 }
