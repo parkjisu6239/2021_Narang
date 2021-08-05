@@ -52,12 +52,12 @@ export default {
       }),
     })
     const findMode = () => {
-       let len = state.subscribers.length + 1;
-       console.log("Asdasdasdasdasd")
-        console.log(len)
-        if(len == 1) return 1;
-        else if(len <= 4) return 2;
-        else return 3;
+      let len = state.subscribers.length + 1;
+      console.log("Asdasdasdasdasd")
+      console.log(len)
+      if(len == 1) return 1;
+      else if(len <= 4) return 2;
+      else return 3;
     }
 
     const joinSession = () => {
