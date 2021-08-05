@@ -44,7 +44,7 @@ public class MafiaController {
     @MessageMapping("/mafia/start/{roomId}")
     @SendTo("/from/mafia/start/{roomId}")
     public void broadcasting(@DestinationVariable long roomId) throws Exception {
-        gameManagerMap.put(roomId, new GameManager(roomId));
+        gameManagerMap.put(roomId, new GameManager(roomId, roomService));
     }
 
     // 역할 확인하기 버튼을 누르면 roomId, username 파라미터를 통하여 각자 역할을 확인한다.
@@ -52,36 +52,15 @@ public class MafiaController {
     @SendTo("/from/mafia/role/{roomId}/{username}")
     public String broadcasting(@DestinationVariable Long roomId, @DestinationVariable String username) throws Exception {
         log.debug("GameStart arrived: /gameStart/{}/{}, gameStart: {}", roomId, username);
-        List<Player> players = gameManagerMap.get(roomId).getGamePlayers().getPlayers();
-
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }
-//
-//
-//    @MessageMapping("/invest/{roomId}/{userName}")
-//    @SendTo("/from/invest/{roomId}/{userName}")
-//    public String broadcasting(@DestinationVariable String userName, InvestMessage investMessage, @DestinationVariable long roomId) throws Exception {
-//        Room gameRoom = lobby.getRoom(roomId);
-//        return gameRoom.getUserRoleNameInGame(investMessage.getTheVoted());
-//    }
-//
-//    @MessageMapping("/vote/{roomId}")
-//    @SendTo("/from/vote/{roomId}")
-//    public GameResult broadcasting(VoteMessage voteMessage, @DestinationVariable long roomId) throws Exception {
-//    	log.debug("voteMessage arrived: /vote/{}, voteMessage: {}", roomId, voteMessage);
-//        Room gameRoom = lobby.getRoom(roomId);
-//        return gameRoom.returnVoteResult(voteMessage);
-//    }
-//
-//
-//    private final SimpMessagingTemplate template;
-//    // /server 메시지를 받을 endpoint로 설정합니다.
-//    @MessageMapping("/mafia/dam")
-//    // 1) /server에서 메시지를 받고, /client로 메시지를 보내줍니다.
-//    public void sendMessage(MafiaModel mafiaModel) {
-//        Long roomId = mafiaModel.getRoomId();
-//        log.debug(mafiaModel.toString());
-//        // /client/roomId 로 메시지를 반환합니다. 프론트에서 구독한 endpoint 경로이름
-//        template.convertAndSend("/mafia/" + roomId, mafiaModel);
-//    }
+    // 투표합시다 (낮 1 : day1, 낮 2 : day2, 밤 : night)
+    @MessageMapping("/vote/{roomId}")
+    @SendTo("/from/vote/{roomId}")
+    public GameResult broadcasting(VoteMessage voteMessage, @DestinationVariable long roomId) throws Exception {
+    	log.debug("voteMessage arrived: /vote/{}, voteMessage: {}", roomId, voteMessage);
+        return gameManagerMap.get(roomId).returnVoteResult(voteMessage);
+    }
+
+
 }
