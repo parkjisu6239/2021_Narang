@@ -21,7 +21,6 @@ import java.util.List;
 public class GameManager {
     private static final Logger log = LoggerFactory.getLogger(GameManager.class);
 
-
     private RoomService roomService;
 
     private Long roomId;
