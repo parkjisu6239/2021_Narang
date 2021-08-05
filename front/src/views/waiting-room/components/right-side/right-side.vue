@@ -4,11 +4,11 @@
       <h1>Narang Lobby</h1>
       <div class="nav-bottom">
         <div class="search-group">
-          <el-radio-group v-model="state.isActivate" size="small" @click="ClickSearch">
-            <el-radio-button label="All"></el-radio-button>
-            <el-radio-button label="Waiting"></el-radio-button>
-            <el-radio-button label="Playing"></el-radio-button>
-          </el-radio-group>
+          <div class="select-type">
+            <div :class="{'select-all': true, 'selected-btn': state.isActivate === 'All'}" @click="clickActivateTypeBtn('All')">All</div>
+            <div :class="{'select-wait': true, 'selected-btn': state.isActivate === 'Waiting'}" @click="clickActivateTypeBtn('Waiting')">Waiting</div>
+            <div :class="{'select-play': true, 'selected-btn': state.isActivate === 'Playing'}" @click="clickActivateTypeBtn('Playing')">Playing</div>
+          </div>
           <el-select v-model="state.value" placeholder="Select" size="small">
             <el-option
               v-for="item in state.options"
@@ -22,13 +22,14 @@
             placeholder="검색 꽥꽥"
             prefix-icon="el-icon-search"
             clearable
-            size="small">
+            size="small"
+            @keyup.enter="clickSearch">
           </el-input>
           <el-button
             icon="el-icon-search"
             type="primary"
             circle
-            @click="ClickSearch">
+            @click="clickSearch">
           </el-button>
         </div>
         <el-button type="primary" round @click="clickCreateRoom">방만들기</el-button>
@@ -44,7 +45,7 @@
 <script>
 import Room from './room'
 
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { ElMessage } from 'element-plus'
@@ -63,7 +64,7 @@ export default {
     const state = reactive({
       gameRoomList: [],
       activateList: {All: null, Waiting: true, Playing: false},
-      isActivate: ref('All'),
+      isActivate: 'All',
       options:
         [{
             value: 'All',
@@ -83,16 +84,22 @@ export default {
     })
 
     const load = function () {
+      console.log(state.end)
       if (!state.end) {
         readGameRoomList()
       }
     }
 
-    const ClickSearch = function () {
+    const clickSearch = function () {
       state.page = 1
       state.end = false
       state.gameRoomList = []
       readGameRoomList()
+    }
+
+    const clickActivateTypeBtn = function(value) {
+      state.isActivate = value
+      clickSearch()
     }
 
     const clickConference = function (room) {
@@ -128,16 +135,12 @@ export default {
     }
 
     const readGameRoomList = function() {
-      if (state.end) {
-        return
-      }
-
       const payload = {
         game: state.value === 'All' ? null : state.value,
         isActivate: state.activateList[state.isActivate],
         title: state.input ? state.input : null,
         page: state.page,
-        size: 16,
+        size: 10,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
       .then(function (result) {
@@ -151,7 +154,7 @@ export default {
       })
     }
 
-    return { state, load, clickConference, clickCreateRoom, readGameRoomList, ClickSearch }
+    return { state, load, clickConference, clickCreateRoom, readGameRoomList, clickSearch, clickActivateTypeBtn }
   }
 }
 </script>

@@ -91,7 +91,7 @@
 .land {
   width: 100vw;
   position: absolute;
-  bottom: -50px;
+  bottom: -1vh;;
   z-index: -100;
   filter: blur(2px);
 }
@@ -99,7 +99,7 @@
 .cloud1 {
   position: absolute;
   width: 30vw;
-  bottom: 27%;
+  bottom: 16vw;
   z-index: -200;
   filter: blur(2px);
 }
@@ -108,7 +108,7 @@
   position: absolute;
   width: 60vw;
   right: 0px;
-  bottom: 27%;
+  bottom: 15vw;
   z-index: -200;
   filter: blur(2px);
 }
@@ -116,7 +116,7 @@
 .cloud3 {
   position: absolute;
   width: 60vw;
-  bottom: 26%;
+  bottom: 14vw;
   z-index: -200;
   filter: blur(2px);
 }
