@@ -127,7 +127,7 @@ export default {
     }
 
     const connectSocket = () => {
-      let socket = new SockJS("https://0.0.0.0:8080/narang")
+      let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({},
         frame => {
