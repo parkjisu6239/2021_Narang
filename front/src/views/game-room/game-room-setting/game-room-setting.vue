@@ -38,6 +38,7 @@ import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { reactive } from 'vue'
 
 export default {
   name: 'GameRoomSetting',

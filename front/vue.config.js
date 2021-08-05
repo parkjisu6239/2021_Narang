@@ -8,6 +8,9 @@ module.exports = {
       '/api/v1': {
         target: 'https://0.0.0.0:8080/'
       },
+      '/narang':{
+        target: 'https://0.0.0.0:8080/'
+      }
     },
     historyApiFallback: true,
     hot: true
