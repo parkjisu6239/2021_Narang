@@ -1,8 +1,8 @@
 <template>
   <div class="role-card">
-    <div class="role-img">그림</div>
+    <img v-if="myRole === 'Citizen'" class="role-img role-citizen" :src="require('@/assets/images/mafia/role-citizen.png')" alt="시민">
+    <img v-else class="role-img role-mafia" :src="require('@/assets/images/mafia/role-citizen.png')" alt="마피아">
     <div class="role">{{ myRole }}</div>
-    <div class="description">{{ state.description[myRole] }}</div>
   </div>
 </template>
 
@@ -21,10 +21,6 @@ export default {
   setup(props, { emit }) {
 
     const state = reactive({
-      description: {
-        'Mafia': '당신의 마피아입니다. 시민을 속여 마피아의 승리를 이끌어보세요.',
-        'Citizen': '당신의 선량한 시민입니다. 마피아를 찾아내어 마을의 평화를 유지하세요.'
-      },
     })
 
     return { state, }
