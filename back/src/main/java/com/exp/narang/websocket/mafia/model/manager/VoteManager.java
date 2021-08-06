@@ -88,7 +88,6 @@ public class VoteManager {
             log.debug("returnGameResult:Night logic:selectedUserNickName: {}", selectedUsername);
         }
 
-
         GameResultType gameResultType = this.gamePlayers.judgementPlayersCount();
         switch (gameResultType) {
             case MAFIA_WIN:
@@ -186,9 +185,10 @@ public class VoteManager {
 
     // 최종 반론 결과를 수행하는 로직
     private String determineResultOfDay(Map<Boolean, Integer> countStatus, VoteMessage voteMessage) {
+        // 찬성이 더 많으면 player의 stillAlive가 false됨.
         if(countStatus.get(false) < countStatus.get(true)) {
             Player player = this.gamePlayers.getPlayer(voteMessage.getSecondVoteUsername());
-            player.kill();
+            player.kill(); //
             this.gamePlayers.removeDeadPlayer(player);
             log.debug("determineResultOfDay:selectPlayer: {}, \n1. {}가 플레이어에서 제외되었습니다.", player, player);
             voteStatus.clear();
