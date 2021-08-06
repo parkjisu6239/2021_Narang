@@ -27,9 +27,21 @@ export function profileImageURL (state) {
     return ''
   }
   console.log('바껴땅')
-  return `https://localhost:8080${state.profileImageURL}`
+  return `https://localhost:8080/${state.profileImageURL}`
 }
 
 export function myRoom (state) {
   return state.myRoom
+}
+
+export function publisher (state) {
+  return state.publisher
+}
+
+export function onVideo (state) {
+  return state.onVideo
+}
+
+export function onAudio (state) {
+  return state.onAudio
 }

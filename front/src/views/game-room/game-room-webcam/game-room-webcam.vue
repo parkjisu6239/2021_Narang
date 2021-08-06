@@ -3,11 +3,26 @@
     <button type="button" @click="init()">Start</button>
     <div style="display:none"><canvas id="canvas"></canvas></div>
       <div id="label-container"></div>
+  </div>
     <div id="video-container" class="col-md-6">
 				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
 				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
 			</div>
+  <div v-if="state.mode == 1" class="webcam-container-one">
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
   </div>
+
+  <div v-if="state.mode == 2" class="webcam-container-two">
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  </div>
+
+  <div v-if="state.mode == 3" class="webcam-container-three">
+			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  </div>
+
 </template>
 <style scoped>
   @import url('game-room-webcam.css');
@@ -16,7 +31,8 @@
 <script>
 import $axios from 'axios'
 import { computed, reactive } from 'vue'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
+import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 import { ElMessage } from 'element-plus'
 import '@tensorflow/tfjs';
@@ -35,17 +51,27 @@ export default {
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
     const OPENVIDU_SERVER_SECRET = "MY_SECRET";
-
+    const store = useStore();
     const state = reactive({
 			OV: undefined,
 			session: undefined,
 			mainStreamManager: undefined,
 			publisher: undefined,
 			subscribers: [],
-
 			mySessionId: computed(() => props.roomId),
-			myUserName: 'Participant' + Math.floor(Math.random() * 100),
+			myUserName: computed(() => store.getters['root/username']),
+      mode : computed(() => {
+        return findMode();
+      }),
     })
+    const findMode = () => {
+      let len = state.subscribers.length + 1;
+      console.log("Asdasdasdasdasd")
+      console.log(len)
+      if(len == 1) return 1;
+      else if(len <= 4) return 2;
+      else return 3;
+    }
 
  // More API functions here:
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
@@ -128,7 +154,6 @@ export default {
     }
 
     const joinSession = () => {
-      console.log('조인세션 시작 중')
 			// --- Get an OpenVidu object ---
 			state.OV = new OpenVidu();
 
@@ -139,6 +164,8 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
 				state.subscribers.push(subscriber);
+
+
 			});
 
 			// On every Stream destroyed...
@@ -158,6 +185,7 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
+        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 
@@ -167,7 +195,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '380x280',  // The resolution of your video
+							resolution: '640x363',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -175,9 +203,7 @@ export default {
 
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
-
-						// --- Publish your stream ---
-
+            store.publisher = publisher;
 						state.session.publish(state.publisher);
 					})
 					.catch(error => {
@@ -254,7 +280,7 @@ export default {
 
     joinSession()
 
-    return { state, updateMainVideoStreamManager, init }
+    return { state, updateMainVideoStreamManager, findMode }
 
   },
 }

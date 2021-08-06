@@ -122,7 +122,6 @@ export function requestLeaveGameRoom({ state }, payload) {
 
 // 게임 룸 내에서 설정 변경
 export function requestUpdateGameRoom({ state }, payload) {
-  console.log(payload)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   const url = `/room/${payload.roomId}`
   const body = {
