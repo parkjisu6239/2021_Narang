@@ -2,15 +2,14 @@ package com.exp.narang.websocket.mafia.model.manager;
 
 import com.exp.narang.api.service.RoomService;
 import com.exp.narang.db.entity.User;
-import com.exp.narang.websocket.mafia.model.service.GamePlayers;
+import com.exp.narang.websocket.mafia.response.GamePlayers;
 
-import com.exp.narang.websocket.mafia.model.service.GameResult;
+import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.VoteMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 

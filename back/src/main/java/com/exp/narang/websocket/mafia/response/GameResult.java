@@ -1,4 +1,6 @@
-package com.exp.narang.websocket.mafia.model.service;
+package com.exp.narang.websocket.mafia.response;
+
+import com.exp.narang.websocket.mafia.model.service.GameResultType;
 
 public class GameResult {
     private static final String MAFIA_WIN_MESSAGE = "마피아가 승리하였습니다.";
@@ -9,8 +11,7 @@ public class GameResult {
     private boolean completeVote;
     private String roleString;
 
-    public GameResult() {
-    }
+    public GameResult() { }
 
     public boolean isCompleteVote() {
         return completeVote;
@@ -63,7 +64,7 @@ public class GameResult {
     }
 
     public static GameResult votingStatus() {
-        return new GameResult("투표가 진행중입니다", false);
+        return new GameResult("투표가 진행 중입니다", false);
     }
 
     public static GameResult returnMafiaWin() {
