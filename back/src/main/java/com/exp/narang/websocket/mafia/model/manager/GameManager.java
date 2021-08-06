@@ -1,7 +1,7 @@
 package com.exp.narang.websocket.mafia.model.manager;
 
-import com.exp.narang.api.service.RoomService;
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.mafia.response.GamePlayers;
 
 import com.exp.narang.websocket.mafia.response.GameResult;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
 
 @Getter
 @Setter

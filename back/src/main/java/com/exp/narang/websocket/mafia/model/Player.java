@@ -1,6 +1,6 @@
 package com.exp.narang.websocket.mafia.model;
 
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.mafia.model.role.Role;
 import lombok.Getter;
 import lombok.Setter;

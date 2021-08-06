@@ -1,7 +1,10 @@
 package com.exp.narang.websocket.mafia.response;
 
-import com.exp.narang.websocket.mafia.model.service.GameResultType;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class GameResult {
     private static final String MAFIA_WIN_MESSAGE = "마피아가 승리하였습니다.";
     private static final String CITIZEN_WIN_MESSAGE = "시민이 승리하였습니다.";
@@ -17,9 +20,6 @@ public class GameResult {
         return completeVote;
     }
 
-    public void setCompleteVote(boolean completeVote) {
-        this.completeVote = completeVote;
-    }
 
     public boolean isFinished() {
         return isFinished;

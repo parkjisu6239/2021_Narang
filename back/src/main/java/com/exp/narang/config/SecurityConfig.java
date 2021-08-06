@@ -1,6 +1,6 @@
 package com.exp.narang.config;
 
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.auth.JwtAuthenticationFilter;
 import com.exp.narang.common.auth.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;

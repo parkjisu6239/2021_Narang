@@ -1,6 +1,6 @@
 package com.exp.narang.websocket.mafia.controller;
 
-import com.exp.narang.api.service.RoomService;
+import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.*;
 import org.slf4j.Logger;
@@ -44,6 +44,7 @@ public class MafiaController {
         log.debug("GameStart arrived: /gameStart/{}/{}, gameStart: {}", roomId, username);
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }
+
     // 투표합시다 (낮 1 : day1, 낮 2 : day2, 밤 : night)
     @MessageMapping("/mafia/vote/{roomId}")
     @SendTo("/from/mafia/vote/{roomId}")
