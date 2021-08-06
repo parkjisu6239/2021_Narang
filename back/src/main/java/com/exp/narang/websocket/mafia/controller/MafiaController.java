@@ -1,29 +1,19 @@
 package com.exp.narang.websocket.mafia.controller;
 
 import com.exp.narang.api.service.RoomService;
-import com.exp.narang.db.entity.Room;
-import com.exp.narang.db.entity.User;
-import com.exp.narang.websocket.mafia.model.Player;
-import com.exp.narang.websocket.mafia.model.service.GameResult;
+import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exp.narang.websocket.mafia.model.manager.GameManager;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

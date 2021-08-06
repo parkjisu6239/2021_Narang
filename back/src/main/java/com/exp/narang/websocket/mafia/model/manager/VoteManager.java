@@ -1,16 +1,14 @@
 package com.exp.narang.websocket.mafia.model.manager;
 
 import com.exp.narang.websocket.mafia.model.Player;
-import com.exp.narang.websocket.mafia.model.service.GamePlayers;
-import com.exp.narang.websocket.mafia.model.service.GameResult;
+import com.exp.narang.websocket.mafia.response.GamePlayers;
+import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.model.service.GameResultType;
 
 import com.exp.narang.websocket.mafia.request.VoteMessage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
