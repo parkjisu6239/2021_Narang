@@ -9,6 +9,5 @@ public class Citizen extends Role {
     }
 
     @Override
-    public void vote(Player player) {
-    }
+    public void vote(Player player) { }
 }

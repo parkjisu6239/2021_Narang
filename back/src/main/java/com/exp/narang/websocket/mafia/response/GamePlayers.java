@@ -1,10 +1,9 @@
 package com.exp.narang.websocket.mafia.response;
 
 
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.model.role.Role;
-import com.exp.narang.websocket.mafia.model.service.GameResultType;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;

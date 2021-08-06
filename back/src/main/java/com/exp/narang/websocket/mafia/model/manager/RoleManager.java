@@ -1,7 +1,7 @@
 package com.exp.narang.websocket.mafia.model.manager;
 
 import com.exp.narang.websocket.mafia.model.role.Role;
-import com.exp.narang.websocket.mafia.model.service.AssignRole;
+import com.exp.narang.websocket.mafia.model.role.AssignRole;
 import com.exp.narang.websocket.mafia.response.GamePlayers;
 
 import java.util.Collections;

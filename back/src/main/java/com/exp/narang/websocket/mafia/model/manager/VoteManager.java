@@ -3,7 +3,7 @@ package com.exp.narang.websocket.mafia.model.manager;
 import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.response.GamePlayers;
 import com.exp.narang.websocket.mafia.response.GameResult;
-import com.exp.narang.websocket.mafia.model.service.GameResultType;
+import com.exp.narang.websocket.mafia.response.GameResultType;
 
 import com.exp.narang.websocket.mafia.request.VoteMessage;
 import lombok.Getter;
