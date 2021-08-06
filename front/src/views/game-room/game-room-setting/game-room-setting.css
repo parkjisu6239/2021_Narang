@@ -1,24 +1,21 @@
 .setting-container {
-  height: 100%;
-  position: relative;
-  width: 100%;
-  min-width: 1000px;
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 35%;
 }
 
 .game-btns {
-  position: absolute;
-  left: 45%;
-  top: 10%;
-  transform: translate(-50%, -50%);
   height: 70px;
   display: flex;
   justify-content: center;
+  transform: translate(50%, 0%);
 }
 
 .game-start {
-  padding: 10px;
+  padding: 17px 10px 3px 10px;
   height: 50px;
-  font-size: 30px;
+  font-size: 2vw;
+  text-align: center;
   color: white;
   background: linear-gradient(#e66465, #9198e5);
   border-radius: 0px;
@@ -79,22 +76,17 @@
 .setting-btns {
   display: flex;
   align-items: center;
-  position: absolute;
-  right: 0%;
-  top: 10%;
   background-color: rgba(255, 255, 255, 0.5);
-  transform: translate(0%, -50%);
   height: 30px;
   width: auto;
-  height: 50px;
-  padding: 10px;
+  padding: 20px 10px;
 }
 
 .setting-btn {
   display: inline-block;
   padding: 5px 10px;
   margin: 0px 6px;
-  font-size: 30px;
+  font-size: 26px;
   background: rgba(255, 255, 255, 0.8);
   border-image: linear-gradient(#f6b73c, #4d9f0c) 5 / 1px;
   cursor: pointer;

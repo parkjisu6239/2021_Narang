@@ -1,5 +1,5 @@
 <template >
-  <video autoplay style="width: 98%; max-width: 540px"/>
+  <video class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>
@@ -13,3 +13,7 @@ export default {
   }
 }
 </script>
+<style scoped>
+  @import url('OvVideo.css');
+</style>
+
