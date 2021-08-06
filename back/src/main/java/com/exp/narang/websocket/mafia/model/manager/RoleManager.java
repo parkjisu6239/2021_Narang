@@ -1,7 +1,7 @@
 package com.exp.narang.websocket.mafia.model.manager;
 
-import com.exp.narang.websocket.mafia.model.assignRoles.*;
 import com.exp.narang.websocket.mafia.model.role.Role;
+import com.exp.narang.websocket.mafia.model.service.AssignRole;
 import com.exp.narang.websocket.mafia.model.service.GamePlayers;
 
 import java.util.Collections;
@@ -25,6 +25,7 @@ public class RoleManager {
 
     // 마피아, 시민 수에 맞게 역할 분담을 한다.
     public static List<Role> assignRoleToPlayers(GamePlayers players) {
+//        AssignRole ar = mappings.get(players.countOfPlayers());
         AssignRole ar = mappings.get(4);
         List<Role> roles = ar.makeRole();
 

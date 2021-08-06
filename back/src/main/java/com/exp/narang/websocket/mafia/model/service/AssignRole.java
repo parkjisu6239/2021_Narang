@@ -1,4 +1,4 @@
-package com.exp.narang.websocket.mafia.model.assignRoles;
+package com.exp.narang.websocket.mafia.model.service;
 
 import com.exp.narang.websocket.mafia.model.role.Citizen;
 import com.exp.narang.websocket.mafia.model.role.Mafia;

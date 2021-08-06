@@ -160,14 +160,14 @@ public class VoteManager {
     // 투표된 username 반환 // 1차 투표 결과를 수행하는 로직, 발표
     private String determineResultOfDay(Map<Player, Integer> countStatus) {
         Player selectedPlayer = null;
-        int max = 0;
+        int maxVote = 0;
 
         for (Map.Entry<Player, Integer> entry : countStatus.entrySet()) {
             // entry <지목당한사람, 지목당한 횟수>
-            if (entry.getValue() > max) {
+            if (entry.getValue() > maxVote) {
                 selectedPlayer = entry.getKey();
-                max = entry.getValue();
-            } else if (max == entry.getValue()) {
+                maxVote = entry.getValue();
+            } else if (maxVote == entry.getValue()) {
                 selectedPlayer = null;
             }
         }
@@ -205,16 +205,17 @@ public class VoteManager {
     // mafia가 죽일 사람을 결정한다.
     private String determineResultOfNight(Map<Player, Integer> countStatusOfMafia) {
         Player mafiaSelectPlayer = null;
-        int base = 0;
+        int maxVote = 0;
         for (Map.Entry<Player, Integer> entry : countStatusOfMafia.entrySet()) {
-            if (entry.getValue() > base) {
+            if (entry.getValue() > maxVote) {
                 mafiaSelectPlayer = entry.getKey();
-                base = entry.getValue();
+                maxVote = entry.getValue();
             }
         }
         log.debug("determineResultOfNight:mafiaSelectPlayer: {}", mafiaSelectPlayer);
         log.debug("\tnight 로직을 수행합니다.");
 
+        // 마피아가 미션 실패하면 투표가 다 null이므로 자연스레 넘어감.
         // 마피아 투표가 동점일 경우에는 처리안함. 아무나 한명 죽일 것 같음
         if (mafiaSelectPlayer != null) {
             mafiaSelectPlayer.kill();
