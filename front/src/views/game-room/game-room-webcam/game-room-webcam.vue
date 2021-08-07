@@ -1,7 +1,7 @@
 <template>
   <div class="webcam-container">
     <button type="button" @click="init()">Start</button>
-    <div style="display:none"><canvas id="canvas"></canvas></div>
+    <div ><canvas id="canvas"></canvas></div>
       <div id="label-container"></div>
   </div>
     <div id="video-container" class="col-md-6">
@@ -37,6 +37,8 @@ import UserVideo from './components/UserVideo'
 import { ElMessage } from 'element-plus'
 import '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
+import posemeta from './pose-model/metadata.json';
+import posemodel from './pose-model/model.json';
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
@@ -77,17 +79,18 @@ export default {
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
+    const URL = "./pose-model/";
+    // const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, webcam, ctx, labelContainer, maxPredictions;
 
     async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        // const modelURL = URL + "model.json";
+        // const metadataURL = URL + "metadata.json";
 
         // load the model and metadata
         // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
         // Note: the pose library adds a tmPose object to your window (window.tmPose)
-        model = await tmPose.load(modelURL, metadataURL);
+        model = await tmPose.load(posemeta, posemodel);
         maxPredictions = model.getTotalClasses();
 
         // Convenience function to setup a webcam
@@ -280,7 +283,7 @@ export default {
 
     joinSession()
 
-    return { state, updateMainVideoStreamManager, findMode }
+    return { state, updateMainVideoStreamManager, findMode, init}
 
   },
 }
