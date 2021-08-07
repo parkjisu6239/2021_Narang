@@ -1,5 +1,5 @@
 <template >
-  <video autoplay style="width: 98%; max-width: 540px"/>
+  <video id="myWebcam" autoplay style="width: 98%; max-width: 540px"/>
 </template>
 
 <script>

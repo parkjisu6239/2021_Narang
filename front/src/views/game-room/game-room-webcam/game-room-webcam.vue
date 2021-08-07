@@ -1,15 +1,19 @@
 <template>
   <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
-    <div
-      :class="{
-        'webcam-container': true,
-        'under-four': state.subscribers.length <= 4}">
-      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-      <user-video
-        v-for="sub in state.subscribers"
-        :key="sub.stream.connection.connectionId"
-        :stream-manager="sub"
-        @click="updateMainVideoStreamManager(sub)"/>
+    <div class="webcam-container">
+      <button type="button" @click="poseEstimationInit()">Start</button>
+      <div id="label-container"></div>
+      <div
+        :class="{
+          'webcam-container': true,
+          'under-four': state.subscribers.length <= 4}">
+        <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+        <user-video
+          v-for="sub in state.subscribers"
+          :key="sub.stream.connection.connectionId"
+          :stream-manager="sub"
+          @click="updateMainVideoStreamManager(sub)"/>
+      </div>
     </div>
   </div>
 
@@ -27,8 +31,8 @@ import UserVideo from './components/UserVideo'
 import { ElMessage } from 'element-plus'
 import '@tensorflow/tfjs';
 import * as tmPose from '@teachablemachine/pose';
-import posemeta from './pose-model/metadata.json';
-import posemodel from './pose-model/model.json';
+// import posemeta from './pose-model/metadata.json';
+// import posemodel from './pose-model/model.json';
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
@@ -65,36 +69,24 @@ export default {
       else return 3;
     }
 
- // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
+    // const URL = "./pose-model/";
+    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
+    let model, myWebcam, ctx, labelContainer, maxPredictions;
 
-    // the link to your model provided by Teachable Machine export panel
-    const URL = "./pose-model/";
-    // const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
-    let model, webcam, ctx, labelContainer, maxPredictions;
-
-    async function init() {
-        // const modelURL = URL + "model.json";
-        // const metadataURL = URL + "metadata.json";
+    async function poseEstimationInit() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
 
         // load the model and metadata
         // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
         // Note: the pose library adds a tmPose object to your window (window.tmPose)
-        model = await tmPose.load(posemeta, posemodel);
+        // model = await tmPose.load(posemeta, posemodel);
+        model = await tmPose.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
 
-        // Convenience function to setup a webcam
-        const size = 200;
-        const flip = true; // whether to flip the webcam
-        webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
         window.requestAnimationFrame(loop);
 
-        // append/get elements to the DOM
-        const canvas = document.getElementById("canvas");
-        canvas.width = size; canvas.height = size;
-        ctx = canvas.getContext("2d");
+        myWebcam = document.getElementById("myWebcam")
         labelContainer = document.getElementById("label-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
@@ -102,48 +94,30 @@ export default {
     }
 
     async function loop(timestamp) {
-        webcam.update(); // update the webcam frame
         await predict();
         window.requestAnimationFrame(loop);
-        // if(this.requestId){
-          // this.requestId = window.requestAnimationFrame(loop);
-        // }
     }
 
     let goal = 0, cnt = 0, finish = 0;
     async function predict() {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
-        const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         // Prediction 2: run input through teachable machine classification model
         const prediction = await model.predict(posenetOutput);
 
         for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[goal].probability.toFixed(2) >= 0.90) cnt++;
+            if(prediction[goal].probability.toFixed(2) >= 0.90 && !finish) cnt++;
         }
-        console.log(cnt);
+        // if(!finish) console.log(cnt);
         if(cnt >= 500 && finish == 0) {
           console.log("미션 성공!");
           ElMessage.success(prediction[goal].className + '하기 미션에 성공하였습니다!');
           finish = 1;
         }
-        // finally draw the poses
-        drawPose(pose);
-    }
 
-    function drawPose(pose) {
-        if (webcam.canvas) {
-            ctx.drawImage(webcam.canvas, 0, 0);
-            // draw the keypoints and skeleton
-            if (pose) {
-                const minPartConfidence = 0.5;
-                tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-                tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-            }
-        }
     }
 
     const joinSession = () => {
@@ -157,8 +131,6 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
 				state.subscribers.push(subscriber);
-
-
 			});
 
 			// On every Stream destroyed...
@@ -273,7 +245,7 @@ export default {
 
     window.addEventListener('beforeunload', leaveSession)
 
-    return { state, updateMainVideoStreamManager, findMode, init }
+    return { state, updateMainVideoStreamManager, findMode, poseEstimationInit }
 
   },
 }
