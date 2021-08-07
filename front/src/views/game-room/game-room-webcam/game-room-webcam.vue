@@ -1,26 +1,16 @@
 <template>
-  <div class="webcam-container">
-    <button type="button" @click="init()">Start</button>
-    <div ><canvas id="canvas"></canvas></div>
-      <div id="label-container"></div>
-  </div>
-    <div id="video-container" class="col-md-6">
-				<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-				<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-			</div>
-  <div v-if="state.mode == 1" class="webcam-container-one">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 2" class="webcam-container-two">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 3" class="webcam-container-three">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
+    <div
+      :class="{
+        'webcam-container': true,
+        'under-four': state.subscribers.length <= 4}">
+      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+      <user-video
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
+    </div>
   </div>
 
 </template>
@@ -198,7 +188,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x363',  // The resolution of your video
+							resolution: '600x300',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -213,8 +203,6 @@ export default {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
 			});
-
-			window.addEventListener('beforeunload', leaveSession)
 		}
 
     const leaveSession = () => {
@@ -283,7 +271,9 @@ export default {
 
     joinSession()
 
-    return { state, updateMainVideoStreamManager, findMode, init}
+    window.addEventListener('beforeunload', leaveSession)
+
+    return { state, updateMainVideoStreamManager, findMode, init }
 
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <article :class="{'game-room-container': true}">
+  <article class="game-room-container">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
       <GameRoomChat

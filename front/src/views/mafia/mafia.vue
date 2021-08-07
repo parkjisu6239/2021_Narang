@@ -1,31 +1,17 @@
 <template>
-  <h1>마피아 게임 방</h1>
-  <el-radio-group v-model="state.radio">
-    <el-radio-button label="day"></el-radio-button>
-    <el-radio-button label="night"></el-radio-button>
-  </el-radio-group>
-  <el-button @click="sendGetRole">역할 받기</el-button>
-  <div>사람들 역할, 사실 비밀임 {{ state.userRole }}</div>
-  <div>죽었나 살았나 {{ state.surviver }} </div>
-  <div>내이름 {{ state.username }}</div>
-  <div>니역할 {{ state.myRole }}</div>
-  <div>참여자 정보</div>
-  <div class="playerList" v-for="player in state.userList" :key="player.userId">
-    <div class="player" @click="clickPlayer(player.username)">
-      <div>ID : {{ player.userId }}</div>
-      <div>name : {{ player.username }}</div>
-    </div>
+  <div class="mafia-main-container">
+    <LeftSide
+      class="mafia-left-side"
+      :roomId="state.roomId"/>
+    <RightSide
+      class="mafia-right-side"
+      @sendGetRole="sendGetRole"/>
   </div>
-
-  <MafiaNotice
-  :msg="state.msg"
-  />
 
   <MafiaRoleCard
   v-if="state.roleCardVisible"
   :myRole="state.myRole"
-  @click="state.roleCardVisible = false"
-  />
+  @click="state.roleCardVisible = false"/>
 
   <div v-if="state.radio === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
@@ -44,8 +30,9 @@
 </template>
 
 <script>
-import MafiaRoleCard from './mafia-role-card'
-import MafiaNotice from './mafia-notice'
+import LeftSide from './left-side/left-side.vue'
+import RightSide from './right-side/right-side.vue'
+import MafiaRoleCard from './role-card/mafia-role-card.vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -58,8 +45,9 @@ export default {
   name: 'mafia',
 
   components: {
+    LeftSide,
+    RightSide,
     MafiaRoleCard,
-    MafiaNotice,
   },
 
   setup(props, { emit }) {
@@ -69,6 +57,7 @@ export default {
 
     const state = reactive({
       radio: ref('day'),
+      roomId: route.params.roomId,
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
