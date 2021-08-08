@@ -1,5 +1,5 @@
 <template >
-  <video class="webcam" autoplay playsinline controls="false"/>
+  <video id="myWebcam" class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>

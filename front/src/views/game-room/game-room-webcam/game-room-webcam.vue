@@ -1,8 +1,6 @@
 <template>
   <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
     <div class="webcam-container">
-      <button type="button" @click="poseEstimationInit()">Start</button>
-      <div id="label-container"></div>
       <div
         :class="{
           'webcam-container': true,
@@ -28,11 +26,6 @@ import { computed, reactive } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
-import { ElMessage } from 'element-plus'
-import '@tensorflow/tfjs';
-import * as tmPose from '@teachablemachine/pose';
-// import posemeta from './pose-model/metadata.json';
-// import posemodel from './pose-model/model.json';
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
@@ -67,57 +60,6 @@ export default {
       if(len == 1) return 1;
       else if(len <= 4) return 2;
       else return 3;
-    }
-
-    // const URL = "./pose-model/";
-    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
-    let model, myWebcam, ctx, labelContainer, maxPredictions;
-
-    async function poseEstimationInit() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // Note: the pose library adds a tmPose object to your window (window.tmPose)
-        // model = await tmPose.load(posemeta, posemodel);
-        model = await tmPose.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        window.requestAnimationFrame(loop);
-
-        myWebcam = document.getElementById("myWebcam")
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
-    }
-
-    async function loop(timestamp) {
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    let goal = 0, cnt = 0, finish = 0;
-    async function predict() {
-        // Prediction #1: run input through posenet
-        // estimatePose can take in an image, video or canvas html element
-        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
-        // Prediction 2: run input through teachable machine classification model
-        const prediction = await model.predict(posenetOutput);
-
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[goal].probability.toFixed(2) >= 0.90 && !finish) cnt++;
-        }
-        // if(!finish) console.log(cnt);
-        if(cnt >= 500 && finish == 0) {
-          console.log("미션 성공!");
-          ElMessage.success(prediction[goal].className + '하기 미션에 성공하였습니다!');
-          finish = 1;
-        }
-
     }
 
     const joinSession = () => {
@@ -245,7 +187,7 @@ export default {
 
     window.addEventListener('beforeunload', leaveSession)
 
-    return { state, updateMainVideoStreamManager, findMode, poseEstimationInit }
+    return { state, updateMainVideoStreamManager, findMode }
 
   },
 }
