@@ -1,8 +1,10 @@
 package com.exp.narang.websocket.mafia.controller;
 
 import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.*;
+import com.exp.narang.websocket.mafia.response.RoleResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class MafiaController {
     // 역할 확인하기 버튼을 누르면 roomId, username 파라미터를 통하여 각자 역할을 확인한다.
     @MessageMapping("/mafia/role/{roomId}/{username}")
     @SendTo("/from/mafia/role/{roomId}/{username}")
-    public String broadcasting(@DestinationVariable Long roomId, @DestinationVariable String username) throws Exception {
+    public RoleResult broadcasting(@DestinationVariable Long roomId, @DestinationVariable String username) throws Exception {
         log.debug("GameStart arrived: /gameStart/{}/{}, gameStart: {}", roomId, username);
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }

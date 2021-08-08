@@ -4,6 +4,7 @@
       <button @click="clickGetRole">롤카드 보기</button>
       <button>거짓말탐지</button>
       <button>도움말</button>
+      <button @click="clickStartMission">동작 인식</button>
     </div>
     <Board/>
     <Chat/>
@@ -38,7 +39,11 @@ export default {
       emit('sendGetRole')
     }
 
-    return { state, clickGetRole }
+    const clickStartMission = () => {
+      emit('clickStartMission')
+    }
+
+    return { state, clickGetRole, clickStartMission }
   }
 }
 </script>

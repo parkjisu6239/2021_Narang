@@ -2,10 +2,12 @@ package com.exp.narang.websocket.mafia.model.manager;
 
 import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.api.model.db.entity.User;
+import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.response.GamePlayers;
 
 import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.VoteMessage;
+import com.exp.narang.websocket.mafia.response.RoleResult;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -38,7 +40,7 @@ public class GameManager {
         this.voteManager = new VoteManager(gamePlayers);
     }
 
-    public String findRoleNameByUsername(String username) {
+    public RoleResult findRoleNameByUsername(String username) {
         return this.gamePlayers.findRoleName(username);
     }
 
