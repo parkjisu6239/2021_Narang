@@ -1,17 +1,16 @@
 <template>
-  <div v-if="state.mode == 1" class="webcam-container-one">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 2" class="webcam-container-two">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 3" class="webcam-container-three">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
+    <div
+      :class="{
+        'webcam-container': true,
+        'under-four': state.subscribers.length <= 4}">
+      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+      <user-video
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
+    </div>
   </div>
 
 </template>
@@ -25,7 +24,7 @@ import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
-$axios.defaults.headers.post['Content-Type'] = 'application/json'
+$axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8'
 export default {
   components: {
 		UserVideo,
@@ -36,8 +35,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU";
     const store = useStore();
     const state = reactive({
 			OV: undefined,
@@ -52,12 +51,12 @@ export default {
       }),
     })
     const findMode = () => {
-       let len = state.subscribers.length + 1;
-       console.log("Asdasdasdasdasd")
-        console.log(len)
-        if(len == 1) return 1;
-        else if(len <= 4) return 2;
-        else return 3;
+      let len = state.subscribers.length + 1;
+      console.log("Asdasdasdasdasd")
+      console.log(len)
+      if(len == 1) return 1;
+      else if(len <= 4) return 2;
+      else return 3;
     }
 
     const joinSession = () => {
@@ -92,6 +91,7 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
+        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 
@@ -101,7 +101,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x363',  // The resolution of your video
+							resolution: '600x300',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -116,8 +116,6 @@ export default {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
 			});
-
-			window.addEventListener('beforeunload', leaveSession)
 		}
 
     const leaveSession = () => {
@@ -159,9 +157,9 @@ export default {
 						if (error.response.status === 409) {
 							resolve(sessionId);
 						} else {
-							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
-							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
+							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
+								location.assign(`https://i5b205.p.ssafy.io:4443/accept-certificate`);
 							}
 							reject(error.response);
 						}
@@ -185,6 +183,8 @@ export default {
 		}
 
     joinSession()
+
+    window.addEventListener('beforeunload', leaveSession)
 
     return { state, updateMainVideoStreamManager, findMode }
 

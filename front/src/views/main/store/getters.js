@@ -27,7 +27,7 @@ export function profileImageURL (state) {
     return ''
   }
   console.log('바껴땅')
-  return `https://0.0.0.0:8080${state.profileImageURL}`
+  return `https://0.0.0.0:8080/${state.profileImageURL}`
 }
 
 export function myRoom (state) {

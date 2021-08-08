@@ -7,7 +7,13 @@ module.exports = {
     proxy: {
       '/api/v1': {
         target: 'https://0.0.0.0:8080/'
-      }
+      },
+      '/narang':{
+        target: 'https://0.0.0.0:8080/'
+      },
+      // '/openvidu': {
+      //   target: 'https://0.0.0.0:5443/'
+      // },
     },
     historyApiFallback: true,
     hot: true

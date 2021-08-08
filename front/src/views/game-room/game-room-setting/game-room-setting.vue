@@ -1,6 +1,5 @@
 <template>
   <div class="setting-container">
-
     <div class="game-btns">
       <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
@@ -36,6 +35,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -48,7 +48,6 @@ export default {
       type: Object
     }
   },
-
 
   setup(props, { emit }) {
     const store = useStore()
@@ -86,12 +85,9 @@ export default {
     }
 
     const leaveRoom = () => {
-      emit('leaveRoom')
-      setTimeout(() => {
-        router.push({
-          name: 'waitingRoom'
-        })
-      }, 500);
+      router.push({
+        name: 'waitingRoom'
+      })
     }
 
     const muteAudio = () => {
@@ -106,6 +102,7 @@ export default {
         store.onVideo = state.onVideo
         store.publisher.publishVideo(state.onVideo);
     }
+
     return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }

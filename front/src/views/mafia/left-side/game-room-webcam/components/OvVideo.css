@@ -1,0 +1,7 @@
+.webcam {
+  border-radius: 20px;
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+}

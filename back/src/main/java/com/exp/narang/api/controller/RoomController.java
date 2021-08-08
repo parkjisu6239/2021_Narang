@@ -1,17 +1,17 @@
 package com.exp.narang.api.controller;
 
-import com.exp.narang.api.model.RoomDto;
-import com.exp.narang.api.request.RoomEnterGetReq;
-import com.exp.narang.api.request.RoomRegisterPostReq;
-import com.exp.narang.api.request.RoomSearchGetReq;
-import com.exp.narang.api.request.RoomUpdatePatchReq;
-import com.exp.narang.api.response.*;
-import com.exp.narang.api.service.RoomService;
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.dto.RoomDto;
+import com.exp.narang.api.model.request.RoomEnterGetReq;
+import com.exp.narang.api.model.request.RoomRegisterPostReq;
+import com.exp.narang.api.model.request.RoomSearchGetReq;
+import com.exp.narang.api.model.request.RoomUpdatePatchReq;
+import com.exp.narang.api.model.response.*;
+import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
 import com.exp.narang.common.model.response.BaseResponseBody;
-import com.exp.narang.db.entity.Room;
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.Room;
+import com.exp.narang.api.model.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,6 @@ public class RoomController {
             @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-
     public ResponseEntity<? extends BaseResponseBody> read(
                                                             @ApiIgnore Authentication authentication,
                                                             @RequestParam(name = "title", required = false) String title,
@@ -97,6 +96,7 @@ public class RoomController {
 
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", pageList));
     }
+
     @PostMapping("/{roomId}")
     @ApiOperation(value = "방 입장", notes = "방장 아닌 사람들이 방에 입장한다.")
     @ApiResponses({

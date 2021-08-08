@@ -1,12 +1,12 @@
 package com.exp.narang.api.controller;
 
 
-import com.exp.narang.api.request.UserLoginPostReq;
-import com.exp.narang.api.response.UserLoginPostRes;
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.request.UserLoginPostReq;
+import com.exp.narang.api.model.response.UserLoginPostRes;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.model.response.BaseResponseBody;
 import com.exp.narang.common.util.JwtTokenUtil;
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

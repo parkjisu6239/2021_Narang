@@ -1,0 +1,80 @@
+.role-card {
+  position: absolute;
+  width: 230px;
+  height: 350px;
+  top: 22%;
+  left: 42%;
+  z-index: 3;
+  transform-style: preserve-3d;
+  transition: all 0.4s ease-out;
+  cursor: pointer;
+}
+
+.role-card:hover {
+  transform: rotateY(180deg);
+}
+
+.role-card-front {
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 20px;
+  border: 2px solid rgb(202, 202, 202);
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 10px;
+  align-items: center;
+  transform: rotateY(180deg);
+}
+
+.role-card-back {
+  background-color: rgb(248, 248, 248);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  padding: 15px;
+  border-radius: 20px;
+  border: 2px solid rgb(202, 202, 202);
+  text-align: center;
+  backface-visibility: hidden;
+}
+
+.card-inner-line {
+  border-radius: 20px;
+  height: 100%;
+  border: 3px solid rgb(158, 158, 158);
+}
+
+.card-inner-line .neurang {
+  margin-top: 25px;
+  width: 100px;
+  -webkit-filter: grayscale(100%);
+}
+
+.card-inner-line .neurang-mirror {
+  width: 100px;
+  -webkit-filter: grayscale(100%);
+}
+
+.role-card-front .role-mafia {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  background: radial-gradient(rgb(128, 57, 47), rgb(87, 41, 41));
+}
+
+.role-card-front .role-citizen {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  background: radial-gradient(rgb(201, 231, 243), skyblue);
+}
+
+.role-card-front .role {
+  font-size: 30px;
+  font-weight: 600;
+}
