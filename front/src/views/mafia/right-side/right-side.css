@@ -1,0 +1,8 @@
+.right-side-container {
+  display: grid;
+  grid-template-rows: 1fr 4fr 7fr;
+}
+
+.right-side-container > * {
+  border: 1px solid black;
+}

@@ -1,6 +1,5 @@
 <template>
   <div class="setting-container">
-
     <div class="game-btns">
       <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">

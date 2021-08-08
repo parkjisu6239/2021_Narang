@@ -1,17 +1,16 @@
 <template>
-  <div v-if="state.mode == 1" class="webcam-container-one">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 2" class="webcam-container-two">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
-
-  <div v-if="state.mode == 3" class="webcam-container-three">
-			<user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-			<user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
+    <div
+      :class="{
+        'webcam-container': true,
+        'under-four': state.subscribers.length <= 4}">
+      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
+      <user-video
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
+    </div>
   </div>
 
 </template>
@@ -52,12 +51,12 @@ export default {
       }),
     })
     const findMode = () => {
-       let len = state.subscribers.length + 1;
-       console.log("Asdasdasdasdasd")
-        console.log(len)
-        if(len == 1) return 1;
-        else if(len <= 4) return 2;
-        else return 3;
+      let len = state.subscribers.length + 1;
+      console.log("Asdasdasdasdasd")
+      console.log(len)
+      if(len == 1) return 1;
+      else if(len <= 4) return 2;
+      else return 3;
     }
 
     const joinSession = () => {
@@ -92,6 +91,7 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
+        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 
@@ -101,7 +101,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x363',  // The resolution of your video
+							resolution: '600x300',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -116,8 +116,6 @@ export default {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
 			});
-
-			window.addEventListener('beforeunload', leaveSession)
 		}
 
     const leaveSession = () => {
@@ -185,6 +183,8 @@ export default {
 		}
 
     joinSession()
+
+    window.addEventListener('beforeunload', leaveSession)
 
     return { state, updateMainVideoStreamManager, findMode }
 

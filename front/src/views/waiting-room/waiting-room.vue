@@ -21,10 +21,10 @@
 }
 </style>
 <script>
-import LeftSide from './components/left-side'
-import RightSide from './components/right-side'
-import createRoomDialog from './components/create-room-dialog'
-import enterSecretRoomDialog from './components/enter-secret-room-dialog'
+import LeftSide from './components/left-side/left-side'
+import RightSide from './components/right-side/right-side'
+import createRoomDialog from './components/dialog/create-room-dialog'
+import enterSecretRoomDialog from './components/dialog/enter-secret-room-dialog'
 
 import { reactive } from 'vue'
 

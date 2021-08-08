@@ -1,12 +1,12 @@
 <template >
-  <video autoplay style="width: 98%;"/>
+  <video autoplay style="width: 98%; max-width: 540px"/>
 </template>
 
 <script>
 export default {
   name: 'OvVideo',
   props: {
-    	streamManager: Object,
+    streamManager: Object,
   },
   mounted() {
     this.streamManager.addVideoElement(this.$el);
