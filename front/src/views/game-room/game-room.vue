@@ -120,7 +120,7 @@ export default {
 
     // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang")
+      let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
@@ -187,39 +187,39 @@ export default {
       }
     }
 
-    const connectSocket = () => {
-      let socket = new SockJS("/narang")
-      state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({},
-        frame => {
-          state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
-            console.log(res.body)
-            const message = JSON.parse(res.body)
-            if (message.content) {
-              state.chatList.push(message)
-            } else if (message.roomInfoChange === true) {
-              requestRoomInfo()
-            } else if (message.gameStart === true) {
-              if (state.room.game) {
-                state.gameStart = true
-                countDown()
-                setTimeout(() => {
-                  router.push({
-                    name: state.room.game,
-                    params: route.params.roomId
-                  })
-                }, 5000)
-              } else {
-                ElMessage({
-                  type: 'error',
-                  message: '게임이 선택되지 않았습니다.'
-                })
-              }
-            }
-          })
-        }
-      )
-    }
+    // const connectSocket = () => {
+    //   let socket = new SockJS("/narang")
+    //   state.stompClient = Stomp.over(socket)
+    //   state.stompClient.connect({},
+    //     frame => {
+    //       state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
+    //         console.log(res.body)
+    //         const message = JSON.parse(res.body)
+    //         if (message.content) {
+    //           state.chatList.push(message)
+    //         } else if (message.roomInfoChange === true) {
+    //           requestRoomInfo()
+    //         } else if (message.gameStart === true) {
+    //           if (state.room.game) {
+    //             state.gameStart = true
+    //             countDown()
+    //             setTimeout(() => {
+    //               router.push({
+    //                 name: state.room.game,
+    //                 params: route.params.roomId
+    //               })
+    //             }, 5000)
+    //           } else {
+    //             ElMessage({
+    //               type: 'error',
+    //               message: '게임이 선택되지 않았습니다.'
+    //             })
+    //           }
+    //         }
+    //       })
+    //     }
+    //   )
+    // }
 
     // [Func|socket] 게임 시작 send
     const sendGameStart = () => {

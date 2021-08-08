@@ -61,7 +61,7 @@ export default {
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
-      destinationUrl: 'https://localhost:8080/narang',
+      destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '메시지',
       userList: null,
