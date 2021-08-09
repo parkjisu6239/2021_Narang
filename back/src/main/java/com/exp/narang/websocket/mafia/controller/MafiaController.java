@@ -47,6 +47,7 @@ public class MafiaController {
     @SendTo("/from/mafia/role/{roomId}/{username}")
     public RoleResult broadcasting(@DestinationVariable Long roomId, @DestinationVariable String username) throws Exception {
         log.debug("GameStart arrived: /gameStart/{}/{}, gameStart: {}", roomId, username);
+        System.out.println("당신의 역할은???!!");
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }
 

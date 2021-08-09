@@ -18,7 +18,7 @@ public class GamePlayers {
 
     private List<Player> players;
 
-    private RoleResult roleResult = new RoleResult();
+    private RoleResult roleResult;
 
     // 참가자 리스트 추가하는 생성자
     public GamePlayers(List<User> users) {
@@ -44,10 +44,12 @@ public class GamePlayers {
 
     // 각 player의 역할과 미션 번호를 리턴한다.
     public RoleResult findRoleName(String username) {
+        roleResult = new RoleResult();
         for (Player player : this.players) {
             if (player.getUser().getUsername().equals(username)) {
                 roleResult.setRoleName(player.getRole().getRoleName()); // 역할 저장
-                if(player.getRole().isMafia()) roleResult.setMissionNumber(0); // 마피아는 미션 번호 저장(랜덤으로 부여할 예정)
+                System.out.println("역할역할"+roleResult.getRoleName());
+                if(player.getRole().isMafia()) roleResult.setMissionNumber((int)(Math.random() * 100) % 15); // 마피아는 미션 번호 저장(0~15 중 랜덤)
                 else roleResult.setMissionNumber(-1); // 시민은 미션 번호에 -1 저장
                 return roleResult;
             }
