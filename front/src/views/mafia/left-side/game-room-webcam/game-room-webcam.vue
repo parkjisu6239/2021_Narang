@@ -49,11 +49,11 @@ export default {
 			subscribers: [],
       activesubscribers: computed(() => {
         state.sbscribers.filter( () => {
-          if(store.mafiaManager.stage != "night") {
+          if(store.state.root.mafiaManager.stage != "night") {
             return true;
-          } else if (store.mafiaManager.stage == "night" && store.mafiaManager.myRole == "Citizen") {
+          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Citizen") {
             return false;
-          } else if (store.mafiaManager.stage == "night" && store.mafiaManager.myRole == "Mafia") {
+          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Mafia") {
             return true;
           }
         })

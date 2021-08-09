@@ -32,12 +32,12 @@ export default {
     })
 
     const voteUser = (theVoted) => {
-      store.mafiaManager.theVoted = theVoted
+      store.state.root.mafiaManager.theVoted = theVoted
     }
 
     // 최종 반론 30초동안 찬반 투표 진행해야함 30초 뒤에 socket send함
     const voteAgree = (isAgree) => {
-      store.mafiaManager.isAgree = isAgree
+      store.state.root.mafiaManager.isAgree = isAgree
     }
     return { state }
   }
