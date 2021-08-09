@@ -93,7 +93,7 @@ export default {
 
         loopPredict = window.requestAnimationFrame(loop); // 반복적으로 프레임 가져오기 위해
 
-        myWebcam = document.getElementById("myWebcam");
+        myWebcam = document.getElementById("mafiaWebcam");
 
         labelContainer = document.getElementById("mission-container");
         for (let i = 0; i < maxPredictions; i++) {
