@@ -187,40 +187,6 @@ export default {
       }
     }
 
-    // const connectSocket = () => {
-    //   let socket = new SockJS("/narang")
-    //   state.stompClient = Stomp.over(socket)
-    //   state.stompClient.connect({},
-    //     frame => {
-    //       state.stompClient.subscribe(`/from/chat/${route.params.roomId}`, res => {
-    //         console.log(res.body)
-    //         const message = JSON.parse(res.body)
-    //         if (message.content) {
-    //           state.chatList.push(message)
-    //         } else if (message.roomInfoChange === true) {
-    //           requestRoomInfo()
-    //         } else if (message.gameStart === true) {
-    //           if (state.room.game) {
-    //             state.gameStart = true
-    //             countDown()
-    //             setTimeout(() => {
-    //               router.push({
-    //                 name: state.room.game,
-    //                 params: route.params.roomId
-    //               })
-    //             }, 5000)
-    //           } else {
-    //             ElMessage({
-    //               type: 'error',
-    //               message: '게임이 선택되지 않았습니다.'
-    //             })
-    //           }
-    //         }
-    //       })
-    //     }
-    //   )
-    // }
-
     // [Func|socket] 게임 시작 send
     const sendGameStart = () => {
       state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)

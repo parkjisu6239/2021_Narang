@@ -1,13 +1,22 @@
 <template>
-  <div :class="{'mafia-webcam-container': true, 'under-four': state.subscribers.length <= 4}">
-      <div id="label-container"></div>
-    <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
+  <div
+    :class="{
+      'webcam-container': true,
+      'under-two': state.subscribers.length >= 1,
+      'under-four': state.subscribers.length >= 2,
+      'under-nine': state.subscribers.length >= 4,
+    }">
+    <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <user-video
+      v-for="sub in state.subscribers"
+      :key="sub.stream.connection.connectionId"
+      :stream-manager="sub"
+      @click="updateMainVideoStreamManager(sub)"/>
   </div>
-
 </template>
 <script>
 import $axios from 'axios'
-import { computed, reactive } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
@@ -76,7 +85,11 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
+<<<<<<< HEAD
 							resolution: '640x320',  // The resolution of your video
+=======
+							resolution: '600x320',  // The resolution of your video
+>>>>>>> a670c5758f79c4197ea1bf6f16cf0432f8910a75
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -159,7 +172,14 @@ export default {
 			})
 		}
 
+    //* Life Cycle *//
+    // created
     joinSession()
+
+    // beforeunmount
+    onBeforeUnmount(() => {
+      leaveSession()
+    })
 
     return { state, updateMainVideoStreamManager }
 
