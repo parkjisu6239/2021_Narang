@@ -12,7 +12,9 @@
 }
 
 .game-start {
-  padding: 17px 10px 3px 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 10px 10px;
   height: 50px;
   font-size: 2vw;
   text-align: center;

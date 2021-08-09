@@ -4,7 +4,7 @@
     <span class="chat-header" style="border-radius: 20px">Live Chat</span>
     <span class="close-chat"><i class="el-icon-close"></i></span>
 
-    <div class="chat-area" style="border-radius: 0px">
+    <div class="chat-area" ref="chatArea" style="border-radius: 0px">
       <div v-for="(chat, idx) in state.chatList" :key="idx">
 
         <div v-if="chat.userName === state.myUserName">
@@ -42,7 +42,7 @@
 <script>
 import { reactive } from '@vue/reactivity'
 import { useStore } from 'vuex'
-import { computed } from 'vue'
+import { computed, ref, onUpdated } from 'vue'
 
 export default {
   name: 'GameRoomChat',
@@ -62,6 +62,7 @@ export default {
   },
   setup(props, { emit }) {
     const store = useStore()
+    const chatArea = ref(null);
 
     const state = reactive({
       myChat: '',
@@ -74,7 +75,13 @@ export default {
       state.myChat = ''
     }
 
-    return { state, sendMessage }
+    onUpdated(() => {
+      chatArea.value.scrollTop = chatArea.value.scrollHeight;
+    })
+
+
+
+    return { state, sendMessage, chatArea }
   }
 }
 </script>
