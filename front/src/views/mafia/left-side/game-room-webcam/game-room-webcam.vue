@@ -21,6 +21,9 @@ export default {
   props: {
     roomId: {
       type: Number
+    },
+    stage: {
+      type: String
     }
   },
   setup(props, { emit }) {

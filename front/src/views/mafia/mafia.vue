@@ -2,7 +2,7 @@
   <div class="mafia-main-container">
     <LeftSide
       class="mafia-left-side"
-      :roomId="state.roomId"/>
+      :roomId="state.roomId" :stage="state.stage"/>
     <RightSide
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
@@ -243,17 +243,52 @@ export default {
           state.userRole = userRole
         }
     }
-
+    /**
+     *
+     * 낮과 밤 구별 방법:
+     * 1. 낮1 : 단두대에 오를 사람이 있을 때 isFinished = false, selectedUsername = "아무개" , complateVote = false,  --> 낮 2가 된다.
+     *          단두대에 오를 사람이 없을 때 isFinished = false, selectedUsername = "", complateVote = true --> 밤이 된다.
+     * 2. 낮2 :  selectedUsername = "" or "아무개",complateVote = true --> 밤이 된다.
+     *            isFinished  = true, completeVote = true, msg = " MAFIA_WIN_MESSAGE" or "CITIZEN_WIN_MESSAGE"; --> 게임 종료
+     * 3. 밤 :  electedUsername = "" or "아무개",complateVote = true --> 밤이 된다.
+     *          isFinished  = true, completeVote = true, msg = " MAFIA_WIN_MESSAGE" or "CITIZEN_WIN_MESSAGE"; --> 게임 종료
+     */
     // [Func|sys] 투표 결과 해석
     const getVoteResult = (result) => {
       if (result.finished) { // 게임 종료
         console.log('게임 종료! 결과:', result.msg)
-      } else if (result.completeVote){
+        // 각자 직업 나오는것도 해야함
+
+
+      } else if (!result.completeVote && result.msg != ""){
+        if(result.msg == "투표가 진행 중입니다") {
+          console.log('투표 진행중! 좀만 기달')
+        } else {
+          goDay2(result.msg)
+        }
+      }
+      else if (result.completeVote){
         console.log('투표 종료! 결과:', result.msg)
-      } else {
-        console.log('투표 진행중! 좀만 기달', result.msg)
+        nextStage(result);
+      }
+
+
+    const goDay2 = (selectedUsername) => {
+      state.stage = "day2";
+      // ui 변경 --> selectedUsername에 대하여 찬반 투표 진행(isAgree 변수 (Boolean val = true | false), theVoted 변수 (String val = selectedUsername))
+    }
+
+    const nextStage = (setNextStage) => {
+      if(state.stage == "day1") {
+        state.stage == "night";
+
+      } else if (state.stage == "night") {
+        state.stage =="day1";
+        // 마피아가 죽일
       }
     }
+
+
 
     //* created *//
     connectSocket()
