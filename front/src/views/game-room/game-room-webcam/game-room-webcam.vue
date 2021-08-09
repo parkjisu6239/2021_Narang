@@ -1,15 +1,17 @@
 <template>
   <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
-    <div
-      :class="{
-        'webcam-container': true,
-        'under-four': state.subscribers.length <= 4}">
-      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher)"/>
-      <user-video
-        v-for="sub in state.subscribers"
-        :key="sub.stream.connection.connectionId"
-        :stream-manager="sub"
-        @click="updateMainVideoStreamManager(sub)"/>
+    <div class="webcam-container">
+      <div
+        :class="{
+          'webcam-container': true,
+          'under-four': state.subscribers.length <= 4}">
+        <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+        <user-video
+          v-for="sub in state.subscribers"
+          :key="sub.stream.connection.connectionId"
+          :stream-manager="sub"
+          @click="updateMainVideoStreamManager(sub)"/>
+      </div>
     </div>
   </div>
 
@@ -17,6 +19,7 @@
 <style scoped>
   @import url('game-room-webcam.css');
 </style>
+
 <script>
 import $axios from 'axios'
 import { computed, reactive } from 'vue'
@@ -35,8 +38,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET";
     const store = useStore();
     const state = reactive({
 			OV: undefined,
@@ -70,8 +73,6 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
 				state.subscribers.push(subscriber);
-
-
 			});
 
 			// On every Stream destroyed...

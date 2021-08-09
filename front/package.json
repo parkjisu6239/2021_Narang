@@ -12,6 +12,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
     "@mdi/font": "5.9.55",
+    "@teachablemachine/pose": "^0.8.6",
+    "@tensorflow/tfjs": "^3.8.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.44",

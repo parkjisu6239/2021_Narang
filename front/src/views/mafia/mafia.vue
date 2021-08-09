@@ -5,7 +5,8 @@
       :roomId="state.roomId"/>
     <RightSide
       class="mafia-right-side"
-      @sendGetRole="sendGetRole"/>
+      @sendGetRole="sendGetRole"
+      @clickStartMission="clickStartMission"/>
   </div>
 
   <MafiaRoleCard
@@ -40,6 +41,10 @@ import SockJS from 'sockjs-client'
 import { reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import '@tensorflow/tfjs';
+import * as tmPose from '@teachablemachine/pose';
+
 
 export default {
   name: 'mafia',
@@ -61,6 +66,9 @@ export default {
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
+      myMission : null,
+      myMissionKeepCnt : 0,
+      myMissionSuccess : false,
       destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '메시지',
@@ -68,6 +76,76 @@ export default {
       userRole: {},
       surviver: {},
     })
+
+    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
+    let model, myWebcam, labelContainer, maxPredictions, loopPredict;
+    async function poseEstimationInit() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        // load the model and metadata
+        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+        // Note: the pose library adds a tmPose object to your window (window.tmPose)
+        // model = await tmPose.load(posemeta, posemodel);
+        model = await tmPose.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        // window.requestAnimationFrame(loop);
+        loopPredict = window.requestAnimationFrame(loop);
+
+        myWebcam = document.getElementById("myWebcam");
+        console.log("에ㅜㅂㅁ둡캠가져옴",myWebcam);
+        labelContainer = document.getElementById("mission-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+    }
+
+    async function loop(timestamp) {
+      console.log("루프 메서드")
+      console.log("루프프레딕트:",loopPredict)
+      await predict();
+      if(loopPredict){
+        console.log("루프")
+        loopPredict = window.requestAnimationFrame(loop);
+      }
+
+    }
+
+    async function predict() {
+        // Prediction #1: run input through posenet
+        // estimatePose can take in an image, video or canvas html element
+        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
+        // Prediction 2: run input through teachable machine classification model
+        const prediction = await model.predict(posenetOutput);
+
+        for (let i = 0; i < maxPredictions; i++) {
+            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
+            if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
+        }
+        if(state.myMissionKeepCnt >= 300) {
+          console.log("미션 성공!");
+          ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
+          cancelAnimationFrame(loop);
+          state.myMissionSuccess = true;
+          if(loopPredict){ // 동작 인식 loop 멈춤
+            window.cancelAnimationFrame(loopPredict);
+            loopPredict = undefined;
+          }
+        }
+
+    }
+
+    // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
+    const clickStartMission = () => {
+      if (state.myMission == null) ElMessage.error('역할 받기 전에는 안 됨.');
+      else if(state.myMission == -1) ElMessage.success('시민이라서 미션 시작 안 되지롱');
+      else{
+        console.log("마피아니까 미션 가능")
+        poseEstimationInit()
+      }
+    }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = () => {
@@ -87,9 +165,12 @@ export default {
     const connectGetRoleSocket = () => {
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
       state.stompClient.subscribe(fromRoleUrl, res => {
-        console.log(res)
-        state.myRole = res.body
-        console.log('역할을 받았다!', res.body)
+        const result = JSON.parse(res.body)
+        state.myRole = result.roleName
+        state.myMission = result.missionNumber;
+        console.log('미션을 받았다!', result.missionNumber)
+        // setUserRole(result.roleString) // 유저 롤 세팅
+        // getVoteResult(result) // 결과 해석
       })
     }
 
@@ -178,7 +259,7 @@ export default {
     connectSocket()
     requestUserList()
 
-    return { state, connectSocket, connectGetRoleSocket, sendGetRole, requestUserList, clickPlayer}
+    return { state, connectSocket, connectGetRoleSocket, sendGetRole, requestUserList, clickPlayer, clickStartMission}
   }
 
 }
