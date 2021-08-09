@@ -47,17 +47,7 @@ export default {
 			mainStreamManager: undefined,
 			publisher: undefined,
 			subscribers: [],
-      activesubscribers: computed(() => {
-        state.sbscribers.filter( () => {
-          if(store.state.root.mafiaManager.stage != "night") {
-            return true;
-          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Citizen") {
-            return false;
-          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Mafia") {
-            return true;
-          }
-        })
-      }),
+      activesubscribers: [],
 
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
