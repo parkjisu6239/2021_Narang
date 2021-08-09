@@ -7,7 +7,7 @@
       <button @click="clickStartMission">동작 인식</button>
     </div>
     <Timer/>
-    <Board/>
+    <Board :msg="msg"/>
     <Chat/>
     <Setting/>
   </div>
@@ -15,6 +15,7 @@
 
 <script>
 import Board from './board/board.vue'
+import Voard from './board/vote.vue'
 import Timer from './timer/timer.vue'
 import Chat from './chat/chat.vue'
 import Setting from './setting/setting.vue'
@@ -25,6 +26,12 @@ import { useRouter, useRoute } from 'vue-router'
 
 export default {
   name: 'rightSide',
+
+  props: {
+    msg: {
+      type: String,
+    }
+  },
 
   components: {
     Board,

@@ -23,7 +23,6 @@
     :open="state.open"
     :roomId="route.params.roomId"
     :room="state.room"/>
-
   <div v-if="state.gameStart" class="countdown">
     <div class="counter">{{ state.count }}</div>
   </div>

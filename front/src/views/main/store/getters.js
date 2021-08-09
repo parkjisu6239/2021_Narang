@@ -45,3 +45,11 @@ export function onVideo (state) {
 export function onAudio (state) {
   return state.onAudio
 }
+
+export function mafiaManager (state) {
+  return state.mafiaManager
+}
+
+export function mafiaStage (state) {
+  return state.mafiaStage
+}

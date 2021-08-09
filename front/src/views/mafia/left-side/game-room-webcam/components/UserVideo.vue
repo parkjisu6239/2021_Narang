@@ -31,6 +31,7 @@ export default {
 			return JSON.parse(connection.data);
 		}
 
+
     return { state, getConnectionData }
   },
 
