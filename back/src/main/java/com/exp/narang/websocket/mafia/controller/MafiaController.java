@@ -5,6 +5,7 @@ import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.*;
 import com.exp.narang.websocket.mafia.response.RoleResult;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,7 @@ public class MafiaController {
     private RoomService roomService;
 
     @PostConstruct
-    public void init() {
-        gameManagerMap = new ConcurrentHashMap<>();
+    public void init() { gameManagerMap = new ConcurrentHashMap<>();
     }
 
     // 방장이 gameStart 버튼을 누르면 roomId를 전송하여 mafia 게임에 필요한 설정을 한다. (역할 분배)
@@ -53,5 +53,11 @@ public class MafiaController {
     public GameResult broadcasting(VoteMessage voteMessage, @DestinationVariable long roomId) throws Exception {
     	log.debug("voteMessage arrived: /vote/{}, voteMessage: {}", roomId, voteMessage);
         return gameManagerMap.get(roomId).returnVoteResult(voteMessage);
+    }
+
+    @MessageMapping("/mafia/players/{roomId}")
+    @SendTo("/from/mafia/players/{roomId}")
+    public List<Player> getPlayers(@DestinationVariable long roomId) throws Exception {
+        return gameManagerMap.get(roomId).getGamePlayers().getPlayers();
     }
 }
