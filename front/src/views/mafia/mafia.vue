@@ -229,9 +229,11 @@ export default {
     const connectGetPlayerList = () => {
       const fromPlayersUrl = `/from/mafia/players/${route.params.roomId}`
       state.stompClient.subscribe(fromPlayersUrl, res => {
-        console.log(res)
         const result = JSON.parse(res.body)
         console.log('Players 받았다!', result)
+        store.state.root.mafiaManager.players = result;
+        console.log(result)
+        console.log(store.state.root.mafiaManager.players[0])
         return;
       })
         sendPlayers();
@@ -324,7 +326,10 @@ export default {
     }
 
     const goDay1 = () => {
-      store.state.root.mafiaManager.stage == "day1";
+      store.state.root.mafiaManager.stage = "day1";
+      store.state.root.mafiaStage = "day1";
+      console.log("회의 시작!")
+      console
       setTimeout(() => {
         sendVoteSocket();
       }, 3000)
@@ -364,7 +369,7 @@ export default {
     store.state.root.mafiaManager.username = state.username
 
     onMounted(() => {
-      store.state.root.mafiaManager.stage == "default";
+      store.state.root.mafiaManager.stage = "default";
       console.log("회의 시작!!")
       setTimeout(() => {
         goDay1();

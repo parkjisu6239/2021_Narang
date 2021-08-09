@@ -3,18 +3,14 @@
     <div>투표</div>
     <div v-if="state.mafiaManager.stage == 'default'"></div>
     <div v-else-if="state.mafiaManager.stage == 'day1'" >
-<<<<<<< HEAD
-      <div v-for="player in mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
-=======
-      <div v-for="player in state.mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
->>>>>>> c6b6e1bd3ce240c7f4de7d9c835286354a2a4c01
+      <div v-for="name in state.mafiaManager.players" :key="name" @click="voteUser(name)">{{name}}</div>
     </div>
     <div v-else-if="state.mafiaManager.stage == 'day2'">
       <button @click="voteAgree(true)">찬성</button>
       <button @click="voteAgree(false)">반대</button>
     </div>
     <div v-else-if="state.mafiaManager.stage == 'night' && state.mafiaManager.myRole == 'Mafia'">
-      <div v-for="player in state.mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
+      <div v-for="name in state.mafiaManager.players" :key="name" @click="voteUser(name)">{{name}}</div>
     </div>
   </div>
 </template>
@@ -23,19 +19,18 @@
 import { computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 
-
 export default {
   name: 'vote',
 
   setup(props, { emit }) {
     const store = useStore()
 
-
     const state = reactive({
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
     const voteUser = (theVoted) => {
+      console.log(theVoted)
       store.state.root.mafiaManager.theVoted = theVoted
     }
 
@@ -43,7 +38,7 @@ export default {
     const voteAgree = (isAgree) => {
       store.state.root.mafiaManager.isAgree = isAgree
     }
-    return { state }
+    return { state, voteUser}
   }
 }
 </script>

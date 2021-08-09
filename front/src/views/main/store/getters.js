@@ -49,3 +49,7 @@ export function onAudio (state) {
 export function mafiaManager (state) {
   return state.mafiaManager
 }
+
+export function mafiaStage (state) {
+  return state.mafiaStage
+}

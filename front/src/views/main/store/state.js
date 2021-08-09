@@ -9,12 +9,13 @@ const myRoom = {}
 const publisher = {}
 const onVideo = true;
 const onAudio = true;
+const mafiaStage = 'default';
 const mafiaManager = {
   username : '', // 자기 이름
   theVoted : null, // 마피아가 죽이는애, 시민이 1차 투표 선정 유저
   isAgree : false, // 단두대 오른사람 찬반여부
   stage : 'default', // day1, day2, night
-  players : [], // socket으로 생존 players 가져오는거
+  players : null, // socket으로 생존 players 가져오는거
   secondVoteUsername : '', // 단두대 오른사람 이름
   myRole : '', // 자기 역할 Citizen or Mafia
 }
@@ -57,5 +58,6 @@ export default {
   userId,
   onVideo,
   onAudio,
-  mafiaManager
+  mafiaManager,
+  mafiaStage
 }
