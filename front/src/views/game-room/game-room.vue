@@ -120,7 +120,7 @@ export default {
 
     // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang")
+      let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
@@ -171,7 +171,7 @@ export default {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://localhost:8080/' + thumbnailURL
+            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
           }
         })
 
@@ -238,9 +238,9 @@ export default {
 
     // [Func|req] 방 나가기 가져오기
     const leaveRoom = () => {
+      informGameRoomInfoChange()
       store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
         .then(res => {
-          informGameRoomInfoChange()
           ElMessage({
             type: 'success',
             message: '방에서 퇴장하셨습니다.'

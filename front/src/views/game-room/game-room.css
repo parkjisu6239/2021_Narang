@@ -11,6 +11,6 @@
 
 .game-cam-chat-container {
   display: grid;
-  grid-template-columns: 5fr 1fr;
+  grid-template-columns: 6fr 1fr;
   height: 79vh;
 }
