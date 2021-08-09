@@ -1,12 +1,18 @@
 <template>
   <div>
-    알림
+    {{ msg }}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'notice'
+  name: 'notice',
+
+  props: {
+    msg: {
+      type: String,
+    }
+  },
 }
 </script>
 
