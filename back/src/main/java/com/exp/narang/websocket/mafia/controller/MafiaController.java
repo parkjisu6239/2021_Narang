@@ -5,7 +5,10 @@ import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.response.GameResult;
 import com.exp.narang.websocket.mafia.request.*;
 import com.exp.narang.websocket.mafia.response.RoleResult;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +60,12 @@ public class MafiaController {
 
     @MessageMapping("/mafia/players/{roomId}")
     @SendTo("/from/mafia/players/{roomId}")
-    public List<Player> getPlayers(@DestinationVariable long roomId) throws Exception {
-        return null;
+    public List<String> getPlayers(@DestinationVariable long roomId) throws Exception {
+        List<Player> list =gameManagerMap.get(roomId).getGamePlayers().getPlayers();
+        List<String> players = new ArrayList<>();
+        for(int i = 0; i < list.size(); i++) {
+            players.add(list.get(i).getUser().getUsername());
+        }
+        return players;
     }
 }

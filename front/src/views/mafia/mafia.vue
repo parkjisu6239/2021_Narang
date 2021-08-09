@@ -35,6 +35,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
+    import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -231,6 +232,7 @@ export default {
         console.log(res)
         const result = JSON.parse(res.body)
         console.log('Players 받았다!', result)
+        return;
       })
         sendPlayers();
     }
@@ -357,10 +359,20 @@ export default {
 
     //* created *//
     connectSocket()
+
     console.log(store.state.root.mafiaManager);
     store.state.root.mafiaManager.username = state.username
+
+    onMounted(() => {
+      store.state.root.mafiaManager.stage == "default";
+      console.log("회의 시작!!")
+      setTimeout(() => {
+        goDay1();
+      }, 3000)
+      store.state.root.mafiaManager.theVoted = null;
+    })
     return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, changeStage, sendPlayers}
-  }
+  },
 }
 </script>
 
