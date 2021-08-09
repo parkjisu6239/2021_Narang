@@ -6,14 +6,18 @@
       <button>도움말</button>
       <button @click="clickStartMission">동작 인식</button>
     </div>
+    <Timer/>
     <Board/>
     <Chat/>
+    <Setting/>
   </div>
 </template>
 
 <script>
 import Board from './board/board.vue'
+import Timer from './timer/timer.vue'
 import Chat from './chat/chat.vue'
+import Setting from './setting/setting.vue'
 
 import { reactive } from 'vue'
 import { useStore } from 'vuex'
@@ -24,7 +28,9 @@ export default {
 
   components: {
     Board,
+    Timer,
     Chat,
+    Setting,
   },
 
   setup(props, { emit }) {
