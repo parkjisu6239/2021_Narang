@@ -1,0 +1,97 @@
+.loading-wrap {
+  height: 100vh;
+  width: 100vw;
+  background-color: #2727368e;
+  backdrop-filter: blur(30px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  position: absolute;
+  z-index: 1000;
+  top: 0%;
+}
+
+.duck-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.water-circle {
+  position: relative;
+  z-index: 1;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  border: 5px solid white;
+  background: url('../../../assets/images/loading/wave.png');
+  background-size: 200px 100px;
+  background-repeat: repeat-x;
+  animation: flow 4s linear infinite;
+}
+
+.duck{
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  z-index: 0;
+  padding-bottom: 0px;
+  animation: duck 1s linear infinite;
+}
+
+.loading::after {
+  content: "Loading";
+  position: absolute;
+  color: white;
+  text-align: center;
+  transform: translate(-40px, 0px);
+  animation: type 1.5s linear infinite;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+@keyframes type {
+  0% {
+      content: "Loading";
+  }
+  33% {
+      content: "Loading.";
+  }
+  66% {
+      content: "Loading..";
+  }
+  100% {
+      content: "Loading...";
+  }
+}
+
+@keyframes duck {
+  0% {
+    padding-bottom: 0px;
+    transform: rotate(0deg);
+  }
+  33% {
+    padding-bottom: 20px;
+    transform: rotate(-5deg);
+  }
+  66% {
+    padding-bottom: 10px;
+    transform: rotate(5deg);
+  }
+  100% {
+    padding-bottom: 0px;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes flow {
+  0% {
+      background-position: -1200px 100px;
+  }
+  100% {
+      background-position: 0px 100px;
+  }
+}
