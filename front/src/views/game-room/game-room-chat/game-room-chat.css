@@ -103,7 +103,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: solid 1px rgba(0, 0, 0, 0.1) ;
+  border: solid 1px rgba(0, 0, 0, 0.1);
+  margin-top: 3px;
 }
 
 .chat-username {
