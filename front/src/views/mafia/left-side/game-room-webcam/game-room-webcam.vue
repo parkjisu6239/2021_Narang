@@ -85,14 +85,10 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-<<<<<<< HEAD
-							resolution: '640x320',  // The resolution of your video
-=======
 							resolution: '600x320',  // The resolution of your video
->>>>>>> a670c5758f79c4197ea1bf6f16cf0432f8910a75
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: true       	// Whether to mirror your local video or not
 						})
 
 						state.mainStreamManager = publisher
@@ -172,7 +168,9 @@ export default {
 			})
 		}
 
-    //* Life Cycle *//
+
+
+
     // created
     joinSession()
 

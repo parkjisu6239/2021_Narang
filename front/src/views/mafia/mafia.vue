@@ -109,7 +109,6 @@ export default {
         console.log("루프")
         loopPredict = window.requestAnimationFrame(loop);
       }
-
     }
 
     async function predict() {
@@ -134,7 +133,6 @@ export default {
             loopPredict = undefined;
           }
         }
-
     }
 
     // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
