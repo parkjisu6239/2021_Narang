@@ -3,7 +3,11 @@
     <div>투표</div>
     <div v-if="state.mafiaManager.stage == 'default'"></div>
     <div v-else-if="state.mafiaManager.stage == 'day1'" >
+<<<<<<< HEAD
       <div v-for="player in mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
+=======
+      <div v-for="player in state.mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
+>>>>>>> c6b6e1bd3ce240c7f4de7d9c835286354a2a4c01
     </div>
     <div v-else-if="state.mafiaManager.stage == 'day2'">
       <button @click="voteAgree(true)">찬성</button>

@@ -58,7 +58,6 @@ export default {
           }
         })
       }),
-
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
     })
