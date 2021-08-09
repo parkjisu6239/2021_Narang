@@ -69,6 +69,7 @@ export default {
       username: localStorage.getItem('username'),
       myRole: null,
       myMission : null,
+      myMissionName : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
       destinationUrl: 'https://localhost:8080/narang',
@@ -94,8 +95,12 @@ export default {
         // window.requestAnimationFrame(loop);
         loopPredict = window.requestAnimationFrame(loop);
 
-        myWebcam = document.getElementById("myWebcam");
-        console.log("에ㅜㅂㅁ둡캠가져옴",myWebcam);
+        myWebcam = document.getElementById("myWebcam").firstChild;
+        console.log("에ㅜㅂㅁ둡캠가져옴", myWebcam);
+        console.log("미션 번호 : "+state.myMission);
+        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
+        const prediction = await model.predict(posenetOutput);
+        console.log("너의 미션은?"+prediction[state.myMission].className);
         labelContainer = document.getElementById("mission-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
@@ -103,11 +108,10 @@ export default {
     }
 
     async function loop(timestamp) {
-      console.log("루프 메서드")
-      console.log("루프프레딕트:",loopPredict)
+      // console.log("루프프레딕트:",loopPredict)
       await predict();
       if(loopPredict){
-        console.log("루프")
+        // console.log("루프")
         loopPredict = window.requestAnimationFrame(loop);
       }
 
@@ -118,6 +122,7 @@ export default {
         // estimatePose can take in an image, video or canvas html element
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         // Prediction 2: run input through teachable machine classification model
+        // console.log("프레딕트왔음")
         const prediction = await model.predict(posenetOutput);
 
         for (let i = 0; i < maxPredictions; i++) {
@@ -125,6 +130,7 @@ export default {
             labelContainer.childNodes[i].innerHTML = classPrediction;
             if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
         }
+        console.log(state.myMissionKeepCnt);
         if(state.myMissionKeepCnt >= 300) {
           console.log("미션 성공!");
           ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
@@ -135,6 +141,7 @@ export default {
             loopPredict = undefined;
           }
         }
+        // console.log("여기서 프레딕션은??"+prediction);
     }
 
     // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
@@ -166,9 +173,10 @@ export default {
     const connectGetRoleSocket = () => {
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
         state.stompClient.subscribe(fromRoleUrl, res => {
+          console.log("롤 배분 받음!!!!!!!!!!!!!!!!!!!!!!!!")
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
-        store.state.root.mafiaManager.myRole =  result.roleName;
+        store.state.root.mafiaManager.myRole = result.roleName;
         state.myMission = result.missionNumber;
         console.log('미션을 받았다!', result.missionNumber)
       })
@@ -176,6 +184,7 @@ export default {
 
     // [Func|socket] 롤카드 배분 소켓 send
     const sendGetRole = () => {
+      console.log("롤카드 배분 버튼 누름!")
       const toRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
       state.stompClient.send(toRoleUrl)
       PopUpRoleCard()

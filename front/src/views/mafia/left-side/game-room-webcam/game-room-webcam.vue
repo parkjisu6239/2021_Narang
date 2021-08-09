@@ -6,7 +6,7 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
-    <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <user-video id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <user-video
       v-for="sub in state.activesubscribers"
       :key="sub.stream.connection.connectionId"
