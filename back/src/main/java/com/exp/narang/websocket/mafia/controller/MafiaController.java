@@ -58,6 +58,6 @@ public class MafiaController {
     @MessageMapping("/mafia/players/{roomId}")
     @SendTo("/from/mafia/players/{roomId}")
     public List<Player> getPlayers(@DestinationVariable long roomId) throws Exception {
-        return gameManagerMap.get(roomId).getGamePlayers().getPlayers();
+        return null;
     }
 }

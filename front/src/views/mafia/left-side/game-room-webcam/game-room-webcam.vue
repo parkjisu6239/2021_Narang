@@ -48,7 +48,7 @@ export default {
 			publisher: undefined,
 			subscribers: [],
       activesubscribers: computed(() => {
-        state.sbscribers.filter( () => {
+        state.subscribers.filter( () => {
           if(store.state.root.mafiaManager.stage != "night") {
             return true;
           } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Citizen") {

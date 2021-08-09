@@ -1,16 +1,16 @@
 <template>
   <div>
     <div>투표</div>
-    <div v-if="mafiaManager.stage == 'default'"></div>
-    <div v-else-if="mafiaManager.stage == 'day1'" >
+    <div v-if="state.mafiaManager.stage == 'default'"></div>
+    <div v-else-if="state.mafiaManager.stage == 'day1'" >
       <div v-for="player in mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
     </div>
-    <div v-else-if="mafiaManager.stage == 'day2'">
+    <div v-else-if="state.mafiaManager.stage == 'day2'">
       <button @click="voteAgree(true)">찬성</button>
       <button @click="voteAgree(false)">반대</button>
     </div>
-    <div v-else-if="mafiaManager.stage == 'night' && mafiaManager.myRole == 'Mafia'">
-      <div v-for="player in mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
+    <div v-else-if="state.mafiaManager.stage == 'night' && state.mafiaManager.myRole == 'Mafia'">
+      <div v-for="player in state.mafiaManager.players" :key="player" @click="voteUser(player.user.username)">{{player.user.username}}</div>
     </div>
   </div>
 </template>

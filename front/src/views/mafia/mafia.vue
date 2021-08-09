@@ -15,7 +15,6 @@
   :myRole="state.myRole"
   @click="state.roleCardVisible = false"/>
 
-  <div v-if="store.state.root.state.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
     <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
     <div class="circle moon"></div>
@@ -229,11 +228,11 @@ export default {
     const connectGetPlayerList = () => {
       const fromPlayersUrl = `/from/mafia/players/${route.params.roomId}`
       state.stompClient.subscribe(fromPlayersUrl, res => {
+        console.log(res)
         const result = JSON.parse(res.body)
         console.log('Players 받았다!', result)
       })
         sendPlayers();
-
     }
 
     // [Func|socket] 마피아 투표 소켓 send
@@ -360,7 +359,7 @@ export default {
     connectSocket()
     console.log(store.state.root.mafiaManager);
     store.state.root.mafiaManager.username = state.username
-    return { state, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, changeStage, sendPlayers}
+    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, changeStage, sendPlayers}
   }
 }
 </script>
