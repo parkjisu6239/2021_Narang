@@ -1,9 +1,34 @@
 .mafia-webcam-container {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.under-two {
+  grid-template-columns: 1fr 1fr;
 }
 
 .under-four {
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: 1fr 1fr;
+}
+
+.under-nine {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .under-two {
+    grid-template-columns: 1fr;
+  }
+  .under-four {
+    grid-template-columns: 1fr;
+  }
+  .under-nine {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1115px) {
+  .under-nine {
+    grid-template-columns: 1fr 1fr;
+  }
 }
