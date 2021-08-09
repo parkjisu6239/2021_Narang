@@ -72,7 +72,7 @@ export default {
       myMission : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
-      destinationUrl: 'https://localhost:8080/narang',
+      destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '메시지',
       userRole: {},
@@ -111,7 +111,6 @@ export default {
         console.log("루프")
         loopPredict = window.requestAnimationFrame(loop);
       }
-
     }
 
     async function predict() {
