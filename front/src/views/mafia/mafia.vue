@@ -77,6 +77,7 @@ export default {
       surviver: {},
     })
 
+    //
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, myWebcam, labelContainer, maxPredictions, loopPredict;
     async function poseEstimationInit() {
@@ -90,19 +91,18 @@ export default {
         model = await tmPose.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
 
-        // window.requestAnimationFrame(loop);
-        loopPredict = window.requestAnimationFrame(loop);
+        loopPredict = window.requestAnimationFrame(loop); // 반복적으로 프레임 가져오기 위해
 
         myWebcam = document.getElementById("myWebcam");
-        console.log("에ㅜㅂㅁ둡캠가져옴",myWebcam);
+
         labelContainer = document.getElementById("mission-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
+        for (let i = 0; i < maxPredictions; i++) {
             labelContainer.appendChild(document.createElement("div"));
         }
     }
 
+    // 반복적으로 프레임 가져오고 동작 인식 호출
     async function loop(timestamp) {
-      console.log("루프 메서드")
       console.log("루프프레딕트:",loopPredict)
       await predict();
       if(loopPredict){
@@ -112,6 +112,7 @@ export default {
 
     }
 
+    // 학습된 동작 비교
     async function predict() {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
@@ -134,10 +135,9 @@ export default {
             loopPredict = undefined;
           }
         }
-
     }
 
-    // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
+    // 동작 인식 시작 (myMission 종류 없으면 작동 안 함)
     const clickStartMission = () => {
       if (state.myMission == null) ElMessage.error('역할 받기 전에는 안 됨.');
       else if(state.myMission == -1) ElMessage.success('시민이라서 미션 시작 안 되지롱');
