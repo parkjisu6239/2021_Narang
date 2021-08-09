@@ -1,6 +1,6 @@
 <template>
   <div :class="{'mafia-webcam-container': true, 'under-four': state.subscribers.length <= 4}">
-      <div id="label-container"></div>
+    <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
   </div>
 

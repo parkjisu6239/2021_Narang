@@ -7,7 +7,10 @@ module.exports = {
     proxy: {
       '/api/v1': {
         target: 'https://localhost:8080/'
-      }
+      },
+      '/narang':{
+        target: 'https://localhost:8080/'
+      },
     },
     historyApiFallback: true,
     hot: true

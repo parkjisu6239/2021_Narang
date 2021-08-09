@@ -68,7 +68,7 @@ export default {
       myRole: null,
       myMission : null,
       myMissionKeepCnt : 0,
-      myMissionSuccess : false,
+      isMissionComplete : false,
       destinationUrl: 'https://localhost:8080/narang',
       roleCardVisible: false,
       msg: '메시지',
@@ -122,13 +122,13 @@ export default {
         for (let i = 0; i < maxPredictions; i++) {
             const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
+            if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.isMissionComplete) state.myMissionKeepCnt++;
         }
         if(state.myMissionKeepCnt >= 300) {
           console.log("미션 성공!");
           ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
           cancelAnimationFrame(loop);
-          state.myMissionSuccess = true;
+          state.isMissionComplete = true;
           if(loopPredict){ // 동작 인식 loop 멈춤
             window.cancelAnimationFrame(loopPredict);
             loopPredict = undefined;
@@ -199,7 +199,8 @@ export default {
           theVoted: theVoted, // 내가 투표한 사람의 유저 네임
           stage: stage, // day1, day2, night
           isAgree: isAgree, // false : 살린다, true: 죽인다
-          secondVoteusername: secondVoteusername // 2차 투표 진행시 해당 유저의 이름
+          secondVoteusername: secondVoteusername, // 2차 투표 진행시 해당 유저의 이름
+          isMissionComplete: state.isMissionComplete, // 마피아 미션 성공 시 true, 실패 시 false
         }
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
