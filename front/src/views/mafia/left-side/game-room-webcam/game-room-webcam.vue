@@ -8,7 +8,7 @@
     }">
     <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <user-video
-      v-for="sub in state.activesubscribers"
+      v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"
 
@@ -37,8 +37,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({

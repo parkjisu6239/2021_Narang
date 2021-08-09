@@ -20,10 +20,10 @@ export default {
     })
 
     const startExpressDetection = async () => {
-      await faceapi.nets.faceRecognitionNet.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceLandmark68Net.load('https://localhost:8080/static/models')
-      await faceapi.nets.tinyFaceDetector.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceExpressionNet.load('https://localhost:8080/static/models')
+      await faceapi.nets.faceRecognitionNet.load('/static/models')
+      await faceapi.nets.faceLandmark68Net.load('/static/models')
+      await faceapi.nets.tinyFaceDetector.load('/static/models')
+      await faceapi.nets.faceExpressionNet.load('/static/models')
 
       let timerId = setInterval(async () => {
         state.detections = await faceapi.detectAllFaces(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
