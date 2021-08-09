@@ -15,7 +15,7 @@
   :myRole="state.myRole"
   @click="state.roleCardVisible = false"/>
 
-  <div v-if="store.state.mafiaManager.stage === 'night'">
+  <div v-if="store.state.root.state.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
     <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
     <div class="circle moon"></div>
@@ -168,7 +168,7 @@ export default {
         state.stompClient.subscribe(fromRoleUrl, res => {
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
-        stroe.mafiaManager.myRole =  result.roleName;
+        stroe.state.root.mafiaManager.myRole =  result.roleName;
         state.myMission = result.missionNumber;
         console.log('미션을 받았다!', result.missionNumber)
       })
@@ -195,11 +195,11 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: store.mafiaManager.username, // 내 이름
-          theVoted: store.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
-          stage: store.mafiaManager.stage, // day1, day2, night
-          isAgree: store.mafiaManager.isAgree, // false : 살린다, true: 죽인다
-          secondVoteusername: store.mafiaManager.secondVoteusername // 2차 투표 진행시 해당 유저의 이름
+          username: store.state.root.mafiaManager.username, // 내 이름
+          theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
+          stage: store.state.root.mafiaManager.stage, // day1, day2, night
+          isAgree: store.state.root.mafiaManager.isAgree, // false : 살린다, true: 죽인다
+          secondVoteusername: store.state.root.mafiaManager.secondVoteusername // 2차 투표 진행시 해당 유저의 이름
         }
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
@@ -298,13 +298,13 @@ export default {
 
     const nextStage = (result) => {
       sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
-      if(store.mafiaManager.stage == "day1") {
+      if(store.state.root.mafiaManager.stage == "day1") {
         console.log("투표 XXXXX 밤으로 가즈아")
         setTimeout(() => {
         goNight();
       }, 1000);
       }
-      else if(store.mafiaManager.stage == "day2") {
+      else if(store.state.root.mafiaManager.stage == "day2") {
       // day2 결과 말해주기 , 역할 뭐였는지도 말해줘야하나?
       console.log(result.msg, " 가 투표에 의해 죽었습니다.")
       console.log("직업은 000 였습니다.")
@@ -312,8 +312,8 @@ export default {
         goNight();
       }, 1000);
 
-      } else if (store.mafiaManager.stage == "night") {
-        store.mafiaManager.stage = "default";
+      } else if (store.state.root.mafiaManager.stage == "night") {
+        store.state.root.mafiaManager.stage = "default";
         console.log("낮이되었다 100초간 토의 진행해주세요")
         setTimeout(() => {
           // 투표하러 갈끄니까
@@ -323,43 +323,43 @@ export default {
     }
 
     const goDay1 = () => {
-      store.mafiaManager.stage == "day1";
+      store.state.root.mafiaManager.stage == "day1";
       setTimeout(() => {
         sendVoteSocket();
       }, 3000)
-      store.mafiaManager.theVoted = null;
+      store.state.root.mafiaManager.theVoted = null;
     }
 
     const goDay2 = (secondVoteUsername) => {
       console.log(selectedUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
       // 단두대 오른 대상자 설정
 
-      store.mafiaManager.secondVoteUsername = secondVoteUsername;
+      store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       // 투표 상태 day2로 변경
-      store.mafiaManager.stage = "day2";
+      store.state.root.mafiaManager.stage = "day2";
       setTimeout(() => {
         sendVoteSocket();
       }, 3000);
       // 초기값 설정
-      store.mafiaManager.isAgree = false;
+      store.state.root.mafiaManager.isAgree = false;
       // 초기값 설정
-      store.mafiaManager.secondVoteUsername = '';
+      store.state.root.mafiaManager.secondVoteUsername = '';
     }
 
     const goNight = () => {
       console.log("밤이됩니다")
-      store.mafiaManager.stage = "night";
+      store.state.root.mafiaManager.stage = "night";
       // 마피아끼리 말할 수 있고 투표 할 수 있게 된다.
       setTimeout(() => {
         sendVoteSocket();
       }, 3000)
-      store.mafiaManager.theVoted = null;
+      store.state.root.mafiaManager.theVoted = null;
     }
 
     //* created *//
     connectSocket()
-    console.log( store.mafiaManager);
-    store.mafiaManager.username = state.username
+    console.log(store.state.root.mafiaManager);
+    store.state.root.mafiaManager.username = state.username
     return { state, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, changeStage, sendPlayers}
   }
 }
