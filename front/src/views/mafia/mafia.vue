@@ -46,7 +46,6 @@ import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import '@tensorflow/tfjs-core'
 import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
 
@@ -360,6 +359,7 @@ const clickLie=()=>{
         store.state.root.mafiaManager.stage = "default";
         console.log("낮이되었다 100초간 토의 진행해주세요")
         state.msg = `낮이되었다 100초간 토의 진행해주세요`
+        state.missionNumber = result.missionNumber; // 마피아에게 새로운 미션 부여함
         setTimeout(() => {
           // 투표하러 갈끄니까
           goDay1()
