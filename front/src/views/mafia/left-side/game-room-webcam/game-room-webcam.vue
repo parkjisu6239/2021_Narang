@@ -8,10 +8,9 @@
     }">
     <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <user-video
-      v-for="sub in state.activesubscribers"
+      v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"
-
       @click="updateMainVideoStreamManager(sub)"/>
   </div>
 </template>
@@ -47,17 +46,6 @@ export default {
 			mainStreamManager: undefined,
 			publisher: undefined,
 			subscribers: [],
-      activesubscribers: computed(() => {
-        state.subscribers.filter( () => {
-          if(store.state.root.mafiaManager.stage != "night") {
-            return true;
-          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Citizen") {
-            return false;
-          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Mafia") {
-            return true;
-          }
-        })
-      }),
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
     })
