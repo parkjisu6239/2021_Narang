@@ -2,7 +2,7 @@
   <div class="right-side-container">
     <div class="btn-group">
       <button @click="clickGetRole">롤카드 보기</button>
-      <button>거짓말탐지</button>
+      <button @click="clickLie">거짓말탐지</button>
       <button>도움말</button>
       <button @click="clickStartMission">동작 인식</button>
     </div>
@@ -56,7 +56,11 @@ export default {
       emit('clickStartMission')
     }
 
-    return { state, clickGetRole, clickStartMission }
+const clickLie = () => {
+      emit('clickLie')
+    }
+
+    return { state, clickGetRole, clickStartMission, clickLie }
   }
 }
 </script>

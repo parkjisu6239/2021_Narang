@@ -13,6 +13,7 @@ public class GameResult {
     private boolean isFinished;
     private boolean completeVote;
     private String roleString;
+    private int missionNumber;
 
     public GameResult() { }
 
@@ -61,15 +62,14 @@ public class GameResult {
         this.isFinished = false;
         this.completeVote = completeVote;
         this.msg = killedUser;
+        this.missionNumber = (int)(Math.random() * 100) % 15;
     }
 
     public static GameResult votingStatus() {
         return new GameResult("투표가 진행 중입니다", false);
     }
 
-    public static GameResult returnMafiaWin() {
-        return new GameResult(GameResultType.MAFIA_WIN);
-    }
+    public static GameResult returnMafiaWin() { return new GameResult(GameResultType.MAFIA_WIN); }
 
     public static GameResult returnCitizenWin() {
         return new GameResult(GameResultType.CITIZEN_WIN);
