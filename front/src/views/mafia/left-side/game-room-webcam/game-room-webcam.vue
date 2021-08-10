@@ -1,13 +1,23 @@
 <template>
-  <div :class="{'mafia-webcam-container': true, 'under-four': state.subscribers.length <= 4}">
-      <div id="label-container"></div>
-    <user-video v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId" :stream-manager="sub" @click="updateMainVideoStreamManager(sub)"/>
-  </div>
+  <div
+    :class="{
+      'webcam-container': true,
+      'under-two': state.subscribers.length >= 1,
+      'under-four': state.subscribers.length >= 2,
+      'under-nine': state.subscribers.length >= 4,
+    }">
+    <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <user-video
+      v-for="sub in state.subscribers"
+      :key="sub.stream.connection.connectionId"
+      :stream-manager="sub"
 
+      @click="updateMainVideoStreamManager(sub)"/>
+  </div>
 </template>
 <script>
 import $axios from 'axios'
-import { computed, reactive } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
@@ -21,11 +31,14 @@ export default {
   props: {
     roomId: {
       type: Number
+    },
+    stage: {
+      type: String
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({
@@ -34,6 +47,17 @@ export default {
 			mainStreamManager: undefined,
 			publisher: undefined,
 			subscribers: [],
+      activesubscribers: computed(() => {
+        state.subscribers.filter( () => {
+          if(store.state.root.mafiaManager.stage != "night") {
+            return true;
+          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Citizen") {
+            return false;
+          } else if (store.state.root.mafiaManager.stage == "night" && store.state.root.mafiaManager.myRole == "Mafia") {
+            return true;
+          }
+        })
+      }),
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
     })
@@ -76,10 +100,10 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '640x320',  // The resolution of your video
+							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: true       	// Whether to mirror your local video or not
 						})
 
 						state.mainStreamManager = publisher
@@ -159,10 +183,17 @@ export default {
 			})
 		}
 
+
+
+
+    // created
     joinSession()
 
+    // beforeunmount
+    onBeforeUnmount(() => {
+      leaveSession()
+    })
     return { state, updateMainVideoStreamManager }
-
   },
 }
 </script>

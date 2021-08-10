@@ -16,6 +16,7 @@ public class RoleManager {
     static {
         // 참여자 수에 따라 마피아, 시민의 수가 달라진다.
         mappings.put(2, new AssignRole(2, 1,1));
+        mappings.put(3, new AssignRole(3, 1,2));
         mappings.put(4, new AssignRole(4, 1,3));
         mappings.put(5, new AssignRole(5,1,4));
         mappings.put(6, new AssignRole(6,2, 4));
@@ -26,8 +27,7 @@ public class RoleManager {
 
     // 마피아, 시민 수에 맞게 역할 분담을 한다.
     public static List<Role> assignRoleToPlayers(GamePlayers players) {
-//        AssignRole ar = mappings.get(players.countOfPlayers());
-        AssignRole ar = mappings.get(5);
+        AssignRole ar = mappings.get(players.countOfPlayers());
         List<Role> roles = ar.makeRole();
 
         // 섞어

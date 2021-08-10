@@ -6,14 +6,19 @@
       <button>도움말</button>
       <button @click="clickStartMission">동작 인식</button>
     </div>
-    <Board/>
+    <Timer/>
+    <Board :msg="msg"/>
     <Chat/>
+    <Setting/>
   </div>
 </template>
 
 <script>
 import Board from './board/board.vue'
+import Voard from './board/vote.vue'
+import Timer from './timer/timer.vue'
 import Chat from './chat/chat.vue'
+import Setting from './setting/setting.vue'
 
 import { reactive } from 'vue'
 import { useStore } from 'vuex'
@@ -22,9 +27,17 @@ import { useRouter, useRoute } from 'vue-router'
 export default {
   name: 'rightSide',
 
+  props: {
+    msg: {
+      type: String,
+    }
+  },
+
   components: {
     Board,
+    Timer,
     Chat,
+    Setting,
   },
 
   setup(props, { emit }) {

@@ -1,6 +1,6 @@
 .right-side-container {
   display: grid;
-  grid-template-rows: 1fr 4fr 7fr;
+  grid-template-rows: 1fr 1fr 2fr 7fr 1fr;
 }
 
 .right-side-container > * {

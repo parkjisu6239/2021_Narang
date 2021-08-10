@@ -1,17 +1,18 @@
 <template>
   <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
-    <div class="webcam-container">
-      <div
-        :class="{
-          'webcam-container': true,
-          'under-four': state.subscribers.length <= 4}">
-        <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-        <user-video
-          v-for="sub in state.subscribers"
-          :key="sub.stream.connection.connectionId"
-          :stream-manager="sub"
-          @click="updateMainVideoStreamManager(sub)"/>
-      </div>
+    <div
+      :class="{
+        'webcam-container': true,
+        'under-two': state.subscribers.length >= 1,
+        'under-four': state.subscribers.length >= 2,
+        'under-nine': state.subscribers.length >= 4,
+      }">
+      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <user-video
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
     </div>
   </div>
 
@@ -22,7 +23,7 @@
 
 <script>
 import $axios from 'axios'
-import { computed, reactive } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
@@ -38,9 +39,10 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore();
+
     const state = reactive({
 			OV: undefined,
 			session: undefined,
@@ -53,14 +55,6 @@ export default {
         return findMode();
       }),
     })
-    const findMode = () => {
-      let len = state.subscribers.length + 1;
-      console.log("Asdasdasdasdasd")
-      console.log(len)
-      if(len == 1) return 1;
-      else if(len <= 4) return 2;
-      else return 3;
-    }
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
@@ -102,7 +96,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '600x300',  // The resolution of your video
+							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false       	// Whether to mirror your local video or not
@@ -117,11 +111,15 @@ export default {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
 			});
+
+      window.addEventListener('beforeunload', leaveSession)
 		}
 
     const leaveSession = () => {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
-			if (state.session) state.session.disconnect();
+			if (state.session) {
+        state.session.disconnect();
+      }
 
 			state.session = undefined;
 			state.mainStreamManager = undefined;
@@ -129,7 +127,7 @@ export default {
 			state.subscribers = [];
 			state.OV = undefined;
 
-			window.removeEventListener('beforeunload', leaveSession);
+      window.removeEventListener('beforeunload', leaveSession)
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
@@ -183,11 +181,16 @@ export default {
 			});
 		}
 
+    //* Life Cycle *//
+    // created
     joinSession()
 
-    window.addEventListener('beforeunload', leaveSession)
+    // beforeunmount
+    onBeforeUnmount(() => {
+      leaveSession()
+    })
 
-    return { state, updateMainVideoStreamManager, findMode }
+    return { state, updateMainVideoStreamManager }
 
   },
 }
