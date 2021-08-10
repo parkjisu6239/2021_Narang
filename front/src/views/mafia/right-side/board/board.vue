@@ -1,7 +1,12 @@
 <template>
   <div>
-    <Notice :msg="msg" v-if="state.mafiaManager.stage == 'default'"/>
-    <Vote :msg="msg" v-else/>
+    <Notice :msg="msg"/>
+    <Vote v-if="
+    (state.mafiaManager.isAlive === true) &&
+    (
+      (state.mafiaManager.stage !== 'night') || (state.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night')
+    )"
+    />
   </div>
 </template>
 

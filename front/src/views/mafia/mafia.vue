@@ -36,7 +36,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-    import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
+import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -148,9 +148,6 @@ export default {
         poseEstimationInit()
       }
     }
-
-
-
 
     // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = async () => {
@@ -282,6 +279,9 @@ export default {
       } else if (result.completeVote){
         console.log('투표 종료! 결과:', result.msg) // 사람 이름 죽은 사람 이름 ""
         state.msg = `투표 종료! 결과: ${result.msg}`
+        if ( state.mafiaManager.username ===  result.msg) { // -> 사람이 죽는 곳
+          store.state.root.mafiaManager.isALive = false
+        }
         nextStage(result);
       }
     }
@@ -315,7 +315,6 @@ export default {
     }
     const goDay1 = async () => {
       store.state.root.mafiaManager.stage = "day1";
-      store.state.root.mafiaStage = "day1";
       state.msg = `투표 시간입니다`
       setTimeout(() => {
         sendVoteSocket();
