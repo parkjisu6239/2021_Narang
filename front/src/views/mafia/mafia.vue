@@ -147,7 +147,7 @@ export default {
           console.log("미션 성공!");
           ElMessage.success(prediction[state.myMissionNumber].className + '하기 미션에 성공하였습니다!');
           state.myMissionSuccess = true;
-          sendMafias();
+          // sendMafias();
           cancelAnimationFrame(loop);
           console.log("미션 성공 결과 : ", state.myMissionSuccess);
           if(loopPredict){ // 동작 인식 loop 멈춤
@@ -238,16 +238,16 @@ export default {
       })
     }
 
-     // [Func|socket] 마피아끼리 소켓 send
-    const sendMafias = () => {
-      console.log("마피아 미션 성공 여부 소켓 send")
-      const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
-      const message = {
-          username: store.state.root.mafiaManager.username, // 내 이름
-          isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
-        }
-      state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
-    }
+    //  // [Func|socket] 마피아끼리 소켓 send
+    // const sendMafias = () => {
+    //   console.log("마피아 미션 성공 여부 소켓 send")
+    //   const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
+    //   const message = {
+    //       username: store.state.root.mafiaManager.username, // 내 이름
+    //       isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
+    //     }
+    //   state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
+    // }
 
     // [Func|socket] 마피아 투표 소켓 연결
     const connectVoteSocket =  () => {
@@ -428,7 +428,7 @@ export default {
       state.isVoteTime = true
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
-      if(state.myRole === 'Mafia') sendMafias();
+      // if(state.myRole === 'Mafia') sendMafias();
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
