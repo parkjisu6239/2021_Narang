@@ -266,12 +266,12 @@ export default {
     })
 
     //* 브라우저 언로드 감지 *//
-    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
-      e.preventDefault()
-      e.returnValue = ''
-      window.alert('test')
-      leaveRoom()
-    })
+    // window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
+    //   e.preventDefault()
+    //   e.returnValue = ''
+    //   window.alert('test')
+    //   leaveRoom()
+    // })
 
     //* created *//
     requestRoomInfo()

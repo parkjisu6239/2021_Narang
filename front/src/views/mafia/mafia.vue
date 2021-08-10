@@ -8,6 +8,7 @@
       @sendGetRole="sendGetRole"
       @clickStartMission="clickStartMission"
       @clickLie="clickLie"
+      :msg="state.msg"
       />
   </div>
 
@@ -78,9 +79,10 @@ export default {
       destinationUrl: 'https://localhost:8080/narang',
       // destinationUrl: '/narang',
       roleCardVisible: false,
-      msg: '메시지',
+      msg: '',
       userRole: {},
       surviver: {},
+      time: [10000, 10000, 10000, 5000],
     })
 
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
@@ -161,9 +163,6 @@ export default {
         poseEstimationInit()
       }
     }
-
-
-
 
     // [Func|socket] 전체 소켓 연결 컨트롤
     const connectSocket = async () => {
@@ -248,7 +247,7 @@ export default {
 
     // [Func|socket] 마피아 투표 소켓 연결
     const connectVoteSocket = async () => {
-       console.log("마피아 투표 소켓 연결")
+      console.log("마피아 투표 소켓 연결")
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       await state.stompClient.subscribe(fromVoteUrl, async res => {
         const result = JSON.parse(res.body)
@@ -280,7 +279,6 @@ export default {
       const fromPlayersUrl = `/from/mafia/players/${route.params.roomId}`
       state.stompClient.subscribe(fromPlayersUrl, res => {
         const result = JSON.parse(res.body)
-        console.log('Players 받았다!', result)
         store.state.root.mafiaManager.players = result;
       })
     }
@@ -310,8 +308,7 @@ const clickLie=()=>{
           const userRole = []
           const userRoleList = roleString.split('&')
           userRoleList.forEach(ele => {
-            userRolePair = ele.roleString.split(':')
-            userRole.push(userRolePair)
+            userRole.push(ele.split(':'))
           })
           state.userRole = userRole
         }
@@ -321,15 +318,23 @@ const clickLie=()=>{
     const getVoteResult = async (result) => {
       if (result.finished) { // 게임 종료
         console.log('게임 종료! 결과:', result.msg)
+        state.msg = `게임 종료! 결과: ${result.msg}, ${result.roleString}`
+        store.state.root.mafiaManager.stage = 'default'
+
         // 각자 직업 나오는것도 해야함
       } else if (!result.completeVote && result.msg != ""){
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
+          state.msg = `투표 진행중! 좀만 기달`
         } else {
           goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
         }
       } else if (result.completeVote){
         console.log('투표 종료! 결과:', result.msg) // 사람 이름 죽은 사람 이름 ""
+        state.msg = `투표 종료! 결과: ${result.msg}`
+        if ( state.mafiaManager.username ===  result.msg) { // -> 사람이 죽는 곳
+          store.state.root.mafiaManager.isALive = false
+        }
         nextStage(result);
       }
     }
@@ -339,43 +344,48 @@ const clickLie=()=>{
       await sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage == "day1") {
         console.log("투표 XXXXX 밤으로 가즈아")
+        state.msg = `투표 XXXXX 밤으로 가즈아`
         setTimeout(() => {
-        goNight();
-      }, 1000);
+          goNight()
+        }, state.time[2])
       } else if(store.state.root.mafiaManager.stage == "day2") {
-      // day2 결과 말해주기 , 역할 뭐였는지도 말해줘야하나?
-      console.log(result.msg, " 가 투표에 의해 죽었습니다.")
-      console.log("직업은 000 였습니다.")
-      setTimeout(() => {
-        goNight();
-      }, 1000);
+        // day2 결과 말해주기 , 역할 뭐였는지도 말해줘야하나?
+        console.log(result.msg, " 가 투표에 의해 죽었습니다.")
+        console.log("직업은 000 였습니다.")
+        state.msg = `${result.msg} 가 투표에 의해 죽었습니다.`
+        setTimeout(() => {
+          goNight();
+        }, state.time[2])
       } else if (store.state.root.mafiaManager.stage == "night") {
         store.state.root.mafiaManager.stage = "default";
         console.log("낮이되었다 100초간 토의 진행해주세요")
+        state.msg = `낮이되었다 100초간 토의 진행해주세요`
         setTimeout(() => {
           // 투표하러 갈끄니까
           goDay1()
-        }, 3000);
+        }, state.time[0]);
       }
     }
     const goDay1 = async () => {
       store.state.root.mafiaManager.stage = "day1";
-      store.state.root.mafiaStage = "day1";
-      console
+      state.msg = `투표 시간입니다`
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000)
+      }, state.time[0])
       store.state.root.mafiaManager.theVoted = null;
     }
-    const goDay2 = async (secondVoteUsername) => {
+
+    // [Func|game] Day2 로직 ; 20초간 낮 2차 투표 진행 한 후, 투표결과 일괄 전송
+    const goDay2 = (secondVoteUsername) => {
       console.log(secondVoteUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
+      state.msg = `${secondVoteUsername} 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요`
       // 단두대 오른 대상자 설정
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       // 투표 상태 day2로 변경
       store.state.root.mafiaManager.stage = "day2";
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000);
+      }, state.time[1]);
       // 초기값 설정
       store.state.root.mafiaManager.isAgree = false;
       // 초기값 설정
@@ -384,12 +394,13 @@ const clickLie=()=>{
 
     const goNight = async () => {
       console.log("밤이됩니다")
+      state.msg = `밤이됩니다`
       store.state.root.mafiaManager.stage = "night";
       if(state.myRole === 'Mafia') sendMafias();
       // 마피아끼리 말할 수 있고 투표 할 수 있게 된다.
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000)
+      }, state.time[2])
       store.state.root.mafiaManager.theVoted = null;
     }
 
@@ -398,9 +409,10 @@ const clickLie=()=>{
       store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
       console.log("회의 시작!!")
+      state.msg = `회의 시작!!`
       setTimeout(() => {
         goDay1();
-      }, 3000)
+      }, state.time[0])
       store.state.root.mafiaManager.theVoted = null;
     }
     //* created *//
