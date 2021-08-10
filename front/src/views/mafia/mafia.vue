@@ -220,7 +220,6 @@ export default {
         console.log(store.state.root.mafiaManager.players[0])
         return;
       })
-      sendPlayers();
     }
 
     // [Func|socket] players 소켓 send
@@ -286,7 +285,7 @@ export default {
         state.msg = "투표 XXXXX 밤으로 가즈아"
         setTimeout(() => {
           goNight()
-        }, 1000)
+        }, 10000)
       } else if(store.state.root.mafiaManager.stage == "day2") {
         // day2 결과 말해주기 , 역할 뭐였는지도 말해줘야하나?
         console.log(result.msg, " 가 투표에 의해 죽었습니다.")
@@ -294,7 +293,7 @@ export default {
         state.msg = `${result.msg} 가 투표에 의해 죽었습니다.`
         setTimeout(() => {
           goNight();
-        }, 1000)
+        }, 10000)
       } else if (store.state.root.mafiaManager.stage == "night") {
         store.state.root.mafiaManager.stage = "default";
         console.log("낮이되었다 100초간 토의 진행해주세요")
@@ -302,7 +301,7 @@ export default {
         setTimeout(() => {
           // 투표하러 갈끄니까
           goDay1()
-        }, 3000);
+        }, 30000);
       }
     }
 
@@ -315,14 +314,14 @@ export default {
       console
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000)
+      }, 30000)
       store.state.root.mafiaManager.theVoted = null;
     }
 
     // [Func|game] Day2 로직 ; 20초간 낮 2차 투표 진행 한 후, 투표결과 일괄 전송
     const goDay2 = (secondVoteUsername) => {
-      console.log(selectedUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
-      state.msg = `${selectedUsername} 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요`
+      console.log(secondVoteUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
+      state.msg = `${secondVoteUsername} 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요`
       // 단두대 오른 대상자 설정
 
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
@@ -330,7 +329,7 @@ export default {
       store.state.root.mafiaManager.stage = "day2";
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000);
+      }, 30000);
       // 초기값 설정
       store.state.root.mafiaManager.isAgree = false;
       // 초기값 설정
@@ -345,7 +344,7 @@ export default {
       // 마피아끼리 말할 수 있고 투표 할 수 있게 된다.
       setTimeout(() => {
         sendVoteSocket();
-      }, 3000)
+      }, 30000)
       store.state.root.mafiaManager.theVoted = null;
     }
 
@@ -361,7 +360,7 @@ export default {
       state.msg = "회의 시작!!"
       setTimeout(() => {
         goDay1();
-      }, 3000)
+      }, 30000)
       store.state.root.mafiaManager.theVoted = null;
     })
 
