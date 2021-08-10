@@ -2,7 +2,6 @@
   <div class="vote-container">
     <div v-if="state.mafiaManager.stage == 'default'"></div>
     <div v-else-if="state.mafiaManager.stage == 'day1'" >
-      <div>선택됨 : {{ state.voteDay1 }}</div>
       <div class="vote-element" v-for="name in state.mafiaManager.players" :key="name" @click="setVote">
         <input type="radio" :id="name" name="vote-day1" v-model="state.voteDay1" :value="name">
         <label :for="name">{{ name }}</label>
@@ -19,7 +18,6 @@
       </div>
     </div>
     <div v-else-if="state.mafiaManager.stage == 'night' && state.mafiaManager.myRole == 'Mafia'">
-      <div>선택됨 : {{ state.voteNight }}</div>
       <div class="vote-element" v-for="name in state.mafiaManager.players" :key="name" @click="setVote">
         <input type="radio" :id="name" name="vote-night" v-model="state.voteNight" :value="name">
         <label :for="name">{{ name }}</label>

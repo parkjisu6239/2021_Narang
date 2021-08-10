@@ -1,5 +1,5 @@
 <template>
-  <div v-if="streamManager">
+  <div v-if="streamManager" style="position: relative">
     <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
     <ov-video v-else :stream-manager="streamManager"/>
   </div>
