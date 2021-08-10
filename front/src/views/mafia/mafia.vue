@@ -284,10 +284,10 @@ export default {
       })
     }
 
-const clickLie=()=>{
-  console.log("거짓말탐지기클릭")
-  sendMafias();
-}
+  const clickLie=()=>{
+    console.log("거짓말탐지기클릭")
+    sendMafias();
+  }
 
     // [Func|socket] players 소켓 send
     const sendPlayers = async () => {
