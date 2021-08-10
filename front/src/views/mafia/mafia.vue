@@ -44,8 +44,8 @@ import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import '@tensorflow/tfjs';
-import * as tmPose from '@teachablemachine/pose';
+import '@tensorflow/tfjs'
+import * as tmPose from '@teachablemachine/pose'
 
 
 export default {
@@ -71,12 +71,12 @@ export default {
       myMission : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
-      destinationUrl: 'https://localhost:8080/narang',
+      destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '',
       userRole: {},
       surviver: {},
-      time: [10000, 10000, 10000, 5000],
+      time: [30000, 30000, 30000, 10000],
     })
 
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
