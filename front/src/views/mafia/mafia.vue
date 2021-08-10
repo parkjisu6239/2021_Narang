@@ -36,7 +36,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-    import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
+import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -45,8 +45,9 @@ import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import '@tensorflow/tfjs';
-import * as tmPose from '@teachablemachine/pose';
+import '@tensorflow/tfjs-core'
+import '@tensorflow/tfjs'
+import * as tmPose from '@teachablemachine/pose'
 
 
 export default {
@@ -98,8 +99,8 @@ export default {
         // window.requestAnimationFrame(loop);
         loopPredict = window.requestAnimationFrame(loop);
 
-        myWebcam = document.getElementById("myWebcam").firstChild;
-        console.log("에ㅜㅂㅁ둡캠가져옴", myWebcam);
+        myWebcam = document.getElementById("myWebcam").childNodes[2];
+        console.log("웹캠가져옴", myWebcam);
         console.log("미션 번호 : "+state.myMissionNumber);
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         const prediction = await model.predict(posenetOutput);

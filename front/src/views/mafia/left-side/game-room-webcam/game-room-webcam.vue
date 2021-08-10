@@ -11,7 +11,6 @@
       v-for="sub in state.activesubscribers"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"
-
       @click="updateMainVideoStreamManager(sub)"/>
   </div>
 </template>
