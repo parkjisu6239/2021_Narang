@@ -5,7 +5,13 @@
     :style="{'display': state.hover}">
     <button @click="startExpressDetection" class="menu-button">거짓말 탐지기</button>
   </div>
-  <video ref="myWebCam" @mouseover="showVideoMenu" class="webcam" autoplay playsinline controls="false"/>
+  <video
+    ref="myWebCam"
+    @mouseover="showVideoMenu"
+    class="webcam"
+    autoplay
+    playsinline
+    controls="false"/>
 </template>
 
 <script>
@@ -27,6 +33,8 @@ export default {
       hover: 'none',
       overlayWidth: 0,
       overlayHeight: 0,
+      webCamWidth: 0,
+      webCamHeight: 0,
       emotions: {
         angry: 0,
         disgusted: 0,
@@ -92,6 +100,9 @@ export default {
     }
 
     const showVideoMenu = () => {
+      console.log(myWebCam.value.videoWidth, myWebCam.value.videoHeight)
+      state.webCamWidth= myWebCam.value.videoWidth
+      state.webCamHeight = myWebCam.value.videoHeight
       state.hover = 'block'
     }
 
