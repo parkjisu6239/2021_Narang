@@ -168,9 +168,6 @@ export default {
 			})
 		}
 
-
-
-
     // created
     joinSession()
 
