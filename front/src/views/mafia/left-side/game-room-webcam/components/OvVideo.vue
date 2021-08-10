@@ -1,10 +1,16 @@
 <template>
-  <h1 class="expression" v-if="state.detections" >{{ state.detections[0].expressions }}</h1>
-  <video ref="myWebCam" @click="startExpressDetection" class="webcam" autoplay playsinline controls="false"/>
+  <div
+    @mouseleave="hideVideoMenu"
+    class="video-overlay"
+    :style="{'display': state.hover}">
+    <button @click="startExpressDetection" class="menu-button">거짓말 탐지기</button>
+  </div>
+  <video ref="myWebCam" @mouseover="showVideoMenu" class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>
 import { onMounted, reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import * as faceapi from 'face-api.js'
 
 export default {
@@ -16,32 +22,88 @@ export default {
     const myWebCam = ref(null)
 
     const state = reactive({
-      detections: null
+      detections: null,
+      myEmotion: '',
+      hover: 'none',
+      overlayWidth: 0,
+      overlayHeight: 0,
+      emotions: {
+        angry: 0,
+        disgusted: 0,
+        fearful: 0,
+        happy: 0,
+        neutral: 0,
+        sad: 0,
+        surprised: 0,
+      }
     })
 
     const startExpressDetection = async () => {
       await faceapi.nets.faceRecognitionNet.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceLandmark68Net.load('https://localhost:8080/static/models')
       await faceapi.nets.tinyFaceDetector.load('https://localhost:8080/static/models')
       await faceapi.nets.faceExpressionNet.load('https://localhost:8080/static/models')
-
+      ElMessage({
+        type: 'success',
+        message: '거짓말 탐지기가 작동 중입니다.'
+      })
       let timerId = setInterval(async () => {
         state.detections = await faceapi.detectAllFaces(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks()
           .withFaceExpressions()
-        console.log(state.detections)
+
+        let maxVal = 0
+        let maxEmotion = ''
+        for (let emotion in state.detections[0].expressions) {
+          if (state.detections[0].expressions[emotion] > maxVal) {
+            maxVal = state.detections[0].expressions[emotion]
+            maxEmotion = emotion
+          }
+        }
+
+        state.emotions[maxEmotion]++
       }, 500)
 
       setTimeout(() => {
+        let maxVal = 0
+        let maxEmotion = ''
+        for (let emotion in state.emotions) {
+          if (state.emotions[emotion] > maxVal) {
+            maxVal = state.emotions[emotion]
+            maxEmotion = emotion
+          }
+        }
+
+        state.emotions = {
+          angry: 0,
+          disgusted: 0,
+          fearful: 0,
+          happy: 0,
+          neutral: 0,
+          sad: 0,
+          surprised: 0,
+        }
+
+        ElMessage({
+          type: 'success',
+          message: `${maxEmotion} 현재 감정 상태입니다.`
+        })
+
         clearTimeout(timerId)
       }, 5000)
+    }
+
+    const showVideoMenu = () => {
+      state.hover = 'block'
+    }
+
+    const hideVideoMenu = () => {
+      state.hover = 'none'
     }
 
     onMounted(() => {
       props.streamManager.addVideoElement(myWebCam.value)
     })
 
-    return { myWebCam, startExpressDetection, state }
+    return { state, myWebCam, startExpressDetection, showVideoMenu, hideVideoMenu }
   }
 }
 </script>

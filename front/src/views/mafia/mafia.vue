@@ -37,7 +37,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
+import { onMounted } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
