@@ -1,5 +1,5 @@
 <template>
-  <div>투표시간입니다</div>
+  <div>{{ msg }}</div>
   <div class="vote-container">
     <div v-if="state.mafiaManager.stage == 'default'"></div>
     <div v-else-if="state.mafiaManager.stage == 'day1'" >
@@ -36,6 +36,12 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'vote',
+
+  props: {
+    msg: {
+      type: String,
+    }
+  },
 
   setup(props, { emit }) {
     const store = useStore()
