@@ -7,6 +7,7 @@
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
       @clickStartMission="clickStartMission"
+      @clickLie="clickLie"
       />
   </div>
 
@@ -68,10 +69,11 @@ export default {
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
-      myMission : null,
+      myMissionNumber : null,
       myMissionName : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
+      canMafiaVote : false,
       destinationUrl: 'https://localhost:8080/narang',
       roleCardVisible: false,
       msg: '메시지',
@@ -81,7 +83,7 @@ export default {
 
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, myWebcam, labelContainer, maxPredictions, loopPredict;
-    async function poseEstimationInit() {
+    const poseEstimationInit = async() => {
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
@@ -97,17 +99,18 @@ export default {
 
         myWebcam = document.getElementById("myWebcam").firstChild;
         console.log("에ㅜㅂㅁ둡캠가져옴", myWebcam);
-        console.log("미션 번호 : "+state.myMission);
+        console.log("미션 번호 : "+state.myMissionNumber);
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         const prediction = await model.predict(posenetOutput);
-        console.log("너의 미션은?"+prediction[state.myMission].className);
+        state.myMissionName = prediction[state.myMissionNumber].className
+        console.log("너의 미션은?"+state.myMissionName);
         labelContainer = document.getElementById("mission-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
         }
     }
 
-    async function loop(timestamp) {
+    const loop = async(timestamp) => {
       // console.log("루프프레딕트:",loopPredict)
       await predict();
       if(loopPredict){
@@ -117,7 +120,7 @@ export default {
 
     }
 
-    async function predict() {
+    const predict = async() => {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
@@ -128,14 +131,17 @@ export default {
         for (let i = 0; i < maxPredictions; i++) {
             const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
+            if(prediction[state.myMissionNumber].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
         }
         console.log(state.myMissionKeepCnt);
         if(state.myMissionKeepCnt >= 300) {
+          state.myMissionKeepCnt = 0;
           console.log("미션 성공!");
-          ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
-          cancelAnimationFrame(loop);
+          ElMessage.success(prediction[state.myMissionNumber].className + '하기 미션에 성공하였습니다!');
           state.myMissionSuccess = true;
+          sendMafias();
+          cancelAnimationFrame(loop);
+          console.log("미션 성공 결과 : ", state.myMissionSuccess);
           if(loopPredict){ // 동작 인식 loop 멈춤
             window.cancelAnimationFrame(loopPredict);
             loopPredict = undefined;
@@ -146,8 +152,8 @@ export default {
 
     // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
     const clickStartMission = () => {
-      if (state.myMission == null) ElMessage.error('역할 받기 전에는 안 됨.');
-      else if(state.myMission == -1) ElMessage.success('시민이라서 미션 시작 안 되지롱');
+      if (state.myMissionNumber == null) ElMessage.error('역할 받기 전에는 안 됨.');
+      else if(state.myMissionNumber == -1) ElMessage.success('시민이라서 미션 시작 안 되지롱');
       else{
         console.log("마피아니까 미션 가능")
         poseEstimationInit()
@@ -172,22 +178,53 @@ export default {
     // [Func|socket] 롤 배분 소켓 연결
     const connectGetRoleSocket = () => {
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
-        state.stompClient.subscribe(fromRoleUrl, res => {
-          console.log("롤 배분 받음!!!!!!!!!!!!!!!!!!!!!!!!")
-        const result = JSON.parse(res.body)
-        state.myRole = result.roleName
-        store.state.root.mafiaManager.myRole = result.roleName;
-        state.myMission = result.missionNumber;
-        console.log('미션을 받았다!', result.missionNumber)
+          state.stompClient.subscribe(fromRoleUrl, (res) => {
+            const result = JSON.parse(res.body)
+            state.myRole = result.roleName
+            store.state.root.mafiaManager.myRole = result.roleName;
+            state.myMissionNumber = result.missionNumber;
+            if(state.myRole === 'Mafia'){
+              connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+            }
+        })
+    }
+
+      // [Func|socket] 롤카드 배분 소켓 send
+      const sendGetRole = () => {
+        console.log("롤카드 배분 버튼 누름!")
+        const toRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
+        state.stompClient.send(toRoleUrl)
+        PopUpRoleCard()
+      }
+
+     // [Func|socket] 마피아끼리 소켓 연결
+    const connectMafiasSocket = () => {
+      const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
+      state.stompClient.subscribe(fromMafiasUrl, res => {
+        if(res.body == 1) {
+          state.canMafiaVote = true;
+          console.log("모든 마피아들 미션 성공! 투표 가능!!");
+        }
+        else if(res.body == 0) {
+          state.canMafiaVote = false;
+          console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
+        }
+        else {
+          state.canMafiaVote = false;
+          console.log("아직 마피아 미션 집계 중입니다!");
+        }
       })
     }
 
-    // [Func|socket] 롤카드 배분 소켓 send
-    const sendGetRole = () => {
-      console.log("롤카드 배분 버튼 누름!")
-      const toRoleUrl = `/to/mafia/role/${route.params.roomId}/${state.username}`
-      state.stompClient.send(toRoleUrl)
-      PopUpRoleCard()
+     // [Func|socket] 마피아끼리 소켓 send
+    const sendMafias = () => {
+      console.log("마피아 미션 성공 여부 소켓 send")
+      const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
+      const message = {
+          username: store.state.root.mafiaManager.username, // 내 이름
+          isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
+        }
+      state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
     }
 
     // [Func|socket] 마피아 투표 소켓 연결
@@ -247,6 +284,11 @@ export default {
       })
         sendPlayers();
     }
+
+const clickLie=()=>{
+  console.log("거짓말탐지기클릭")
+  sendMafias();
+}
 
     // [Func|socket] 마피아 투표 소켓 send
     const sendPlayers = () => {
@@ -364,6 +406,7 @@ export default {
     const goNight = () => {
       console.log("밤이됩니다")
       store.state.root.mafiaManager.stage = "night";
+      if(state.myRole === 'Mafia') sendMafias();
       // 마피아끼리 말할 수 있고 투표 할 수 있게 된다.
       setTimeout(() => {
         sendVoteSocket();
@@ -385,7 +428,7 @@ export default {
       }, 3000)
       store.state.root.mafiaManager.theVoted = null;
     })
-    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, changeStage, sendPlayers}
+    return { state, store, connectSocket, connectGetRoleSocket, connectMafiasSocket, sendGetRole, clickLie, clickPlayer, clickStartMission, changeStage, sendPlayers}
   },
 }
 </script>
