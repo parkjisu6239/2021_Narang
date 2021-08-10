@@ -364,6 +364,9 @@ export default {
       store.state.root.mafiaManager.theVoted = null;
     })
 
+
+
+
     return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickStartMission, changeStage, sendPlayers}
   },
 }
