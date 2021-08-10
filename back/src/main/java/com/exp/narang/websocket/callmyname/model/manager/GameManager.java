@@ -28,6 +28,14 @@ public class GameManager {
     }
 
     /**
+     * 게임을 시작할 때 호출되는 메서드
+     * @return 처음 이름을 정할 사용자의 id
+     */
+    public long getFirstUserId(){
+        return users.get(0).getUserId();
+    }
+
+    /**
      * 정한 이름을 저장하는 메서드
      * @param req : userId와 정해진 이름을 멤버변수로 가진 객체
      * @return 다음으로 이름을 정할 사용자의 userId
@@ -39,11 +47,19 @@ public class GameManager {
     }
 
     /**
+     * @return 다음 질문시간을 갖는 사용자의 userId
+     */
+    public long getNextUserId(){
+        currentGuessTurn++;
+        return currentGuessTurn %= users.size();
+    }
+
+    /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
      * @param req : userId와 정해진 이름이 있는 객체
-     * @return 다음 이름을 정할 사용자의 userId 답이 맞았는지, nameMap이 비었는지 여부를 멤버변수로 가진 객체
+     * @return 답이 맞았는지, nameMap 이 비었는지 여부를 멤버변수로 가진 객체
      */
-    public GuessNameRes guess(NameReq req){
+    public GuessNameRes guessName(NameReq req){
         currentGuessTurn %= users.size();
         boolean isCorrect = nameMap.get(req.getUserId()).equals(req.getName());
         // 맞으면
@@ -54,13 +70,10 @@ public class GameManager {
             winList.add(req.getUserId());
             users.removeIf(it -> it.getUserId().equals(req.getUserId()));
         }
-        return new GuessNameRes(users.get(currentGuessTurn++).getUserId(), isCorrect, nameMap.isEmpty());
+        return new GuessNameRes(isCorrect, nameMap.isEmpty());
     }
 
-    /**
-     * @return 첫 사용자의 id
-     */
-    public long getFirstUserId(){
-        return users.get(0).getUserId();
+    public List<Long> getRank(){
+        return winList;
     }
 }
