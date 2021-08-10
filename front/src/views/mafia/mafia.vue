@@ -165,35 +165,35 @@ export default {
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = async () => {
+    const connectSocket = () => {
       console.log("1. 전체 소켓 연결 컨트롤")
-      const socket = await new SockJS(state.destinationUrl)
+      const socket =  new SockJS(state.destinationUrl)
 
       // 클라이언트 객체 생성
       state.stompClient = Stomp.over(socket)
 
-      await state.stompClient.connect({}, async () => {
+      state.stompClient.connect({}, () => {
         console.log("2. 롤 배분 소켓 연결 전")
-        await connectGetRoleSocket() // 롤 배분 소켓 연결
+        connectGetRoleSocket() // 롤 배분 소켓 연결
         console.log("3. 롤 배분 소켓 연결 후")
         console.log("4. 투표 소켓 연결 전")
-        await connectVoteSocket() // 투표 소켓 연결
+        connectVoteSocket() // 투표 소켓 연결
         console.log("5. 투표 소켓 연결 후")
         console.log("6. player 소켓 연결 전")
-        await connectGetPlayerList()
+        connectGetPlayerList()
         console.log("7. plater 소켓 연결 후")
         console.log("8. setGane sendPlayers 전")
-        await sendPlayers();
+        sendPlayers();
         console.log("9. setGame sendPlayers 후")
         console.log("setGame gameInit 전")
-        await gameInit();
+        gameInit();
         console.log("setGame gameInit 후")
         }
       )
     }
 
     // [Func|socket] 롤 배분 소켓 연결
-    const connectGetRoleSocket = async () => {
+    const connectGetRoleSocket =  () => {
       console.log("롤 배분 소켓 연결")
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
           state.stompClient.subscribe(fromRoleUrl, (res) => {
@@ -246,13 +246,13 @@ export default {
     }
 
     // [Func|socket] 마피아 투표 소켓 연결
-    const connectVoteSocket = async () => {
+    const connectVoteSocket =  () => {
       console.log("마피아 투표 소켓 연결")
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
-      await state.stompClient.subscribe(fromVoteUrl, async res => {
+      state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
-          await getVoteResult(result) // 결과 해석
+           getVoteResult(result) // 결과 해석
         }
       })
     }
@@ -276,7 +276,7 @@ export default {
     }
 
      // [Func|socket] 생존하는 players 소켓 연결
-    const connectGetPlayerList = async () => {
+    const connectGetPlayerList =  () => {
       const fromPlayersUrl = `/from/mafia/players/${route.params.roomId}`
       state.stompClient.subscribe(fromPlayersUrl, res => {
         const result = JSON.parse(res.body)
@@ -290,13 +290,13 @@ const clickLie=()=>{
 }
 
     // [Func|socket] players 소켓 send
-    const sendPlayers = async () => {
+    const sendPlayers = () => {
       const toPlayersUrl = `/to/mafia/players/${route.params.roomId}`
       state.stompClient.send(toPlayersUrl)
     }
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
-    const getVoteResult = async (result) => {
+    const getVoteResult =  (result) => {
       // 이전에 내가 한 투표 초기화
       store.state.root.mafiaManager.theVoted = null
       store.state.root.mafiaManager.isAgree = false;
@@ -343,8 +343,8 @@ const clickLie=()=>{
     }
 
     // [Func|game] 다음 스테이지 이동
-    const nextStage = async (result) => {
-      await sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
+    const nextStage =  (result) => {
+       sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
         goNight()
       } else { // 밤 -> 낮 1차
@@ -353,7 +353,7 @@ const clickLie=()=>{
     }
 
     // [Func|game] 낮 자유 토론
-    const goDay = async () => {
+    const goDay =  () => {
       // 상태 초기화, 메시지 변경
       store.state.root.mafiaManager.stage = "default";
       console.log(`낮이되었습니다. ${state.time[0]/1000}초간 토의 진행해주세요`)
@@ -366,7 +366,7 @@ const clickLie=()=>{
     }
 
     // [Func|game] 낮 1차 투표
-    const goDay1 = async () => {
+    const goDay1 =  () => {
       store.state.root.mafiaManager.stage = "day1";
       console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 미피아로 의심되는 사람을 투표해주세요.`)
       state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 미피아로 의심되는 사람을 투표해주세요.`
@@ -393,7 +393,7 @@ const clickLie=()=>{
       }, state.time[2]);
     }
 
-    const goNight = async () => {
+    const goNight =  () => {
       // 상태 변경
       store.state.root.mafiaManager.stage = "night";
       if(state.myRole === 'Mafia') sendMafias();
@@ -406,7 +406,7 @@ const clickLie=()=>{
       }, state.time[3])
     }
 
-    const gameInit = async () => {
+    const gameInit =  () => {
       console.log('gameInit', store.state.root.mafiaManager);
 
       // 상태 초기화
@@ -423,9 +423,9 @@ const clickLie=()=>{
     }
 
     //* created *//
-    const setGame = async () => {
+    const setGame =  () => {
         console.log("setGame 소켓 연결 전")
-        await connectSocket()
+        connectSocket()
         console.log("setGame 소켓 연결 후")
     }
 
