@@ -4,6 +4,7 @@ package com.exp.narang.websocket.mafia.response;
 import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.mafia.model.Player;
 import com.exp.narang.websocket.mafia.model.role.Role;
+import com.exp.narang.websocket.mafia.request.MafiaMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import java.util.*;
 // 게임 참가자들과 관련된 로직을 처리한다.
 public class GamePlayers {
     private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
+
+    private int countMafiaMissionResult, countMafiaMissionCompelte;
 
     private List<Player> players;
 
@@ -64,6 +67,25 @@ public class GamePlayers {
             }
         }
         return null;
+    }
+
+    public int everyMafiaMissionComplete(MafiaMessage mafiaMessage){
+        this.countMafiaMissionResult++; // 마피아 미션 수행 결과 카운트
+        if(mafiaMessage.getIsMissionComplete()) this.countMafiaMissionCompelte++; // 미션 성공한 경우만 카운트
+        if(this.countMafiaMissionResult == countOfMafias()){ // 모든 마피아의 결과를 가져온 경우 투표 가능 여부 판단
+            System.out.println("미션 결과 받은 개수 : "+this.countMafiaMissionResult);
+            System.out.println("미션 성공 개수 : "+this.countMafiaMissionCompelte);
+            if (this.countMafiaMissionCompelte == this.countMafiaMissionResult){
+                this.countMafiaMissionCompelte = this.countMafiaMissionResult = 0;
+                return 1;
+            }
+            else{
+                this.countMafiaMissionCompelte = this.countMafiaMissionResult = 0;
+                return 0;
+            }
+//            return (this.countMafiaMissionCompelte == this.countMafiaMissionResult) ? 1 : 0; // 모두 성공 -> 1, 하나라도 실패 -> 0 반환
+        }
+        else return -1; // 아직 모든 마피아의 결과를 모으지 못 한 경우
     }
 
     public void removeDeadPlayer(Player player) {

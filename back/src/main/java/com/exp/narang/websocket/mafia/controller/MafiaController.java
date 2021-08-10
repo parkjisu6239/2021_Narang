@@ -59,6 +59,14 @@ public class MafiaController {
         return gameManagerMap.get(roomId).returnVoteResult(voteMessage);
     }
 
+    // 마피아들끼리 통신. 미션 성공 여부 전달, 투표 가능 여부 반환
+    @MessageMapping("/mafia/mafias/{roomId}")
+    @SendTo("/from/mafia/mafias/{roomId}")
+    public int broadcasting(MafiaMessage mafiaMessage, @DestinationVariable long roomId) throws Exception {
+        System.out.println("마피아끼리 통신 중 : "+mafiaMessage.getUsername() +", "+mafiaMessage.getIsMissionComplete());
+        return gameManagerMap.get(roomId).isEveryMafiaComplete(mafiaMessage);
+    }
+
     @MessageMapping("/mafia/players/{roomId}")
     @SendTo("/from/mafia/players/{roomId}")
     public List<String> getPlayers(@DestinationVariable long roomId) throws Exception {
