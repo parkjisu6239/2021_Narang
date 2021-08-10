@@ -78,6 +78,7 @@ export default {
       userRole: {},
       surviver: {},
       time: [10000, 10000, 10000, 5000],
+      gameOver: false,
     })
 
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
@@ -203,7 +204,9 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       await state.stompClient.subscribe(fromVoteUrl, async res => {
         const result = JSON.parse(res.body)
-        await getVoteResult(result) // 결과 해석
+        if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
+          await getVoteResult(result) // 결과 해석
+        }
       })
     }
 
@@ -248,18 +251,17 @@ export default {
       // sendVoteSocket(voted, 'day1', null, null)
     }
 
-    // [Func|sys] 투표 결과 해석
+    // [Func|sys] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = async (result) => {
       if (result.finished) { // 게임 종료
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `게임 종료! 결과: ${result.msg}, ${result.roleString}`
         store.state.root.mafiaManager.stage = 'default'
-
+        state.gameOver = true
         // 각자 직업 나오는것도 해야함
-      } else if (!result.completeVote && result.msg != ""){
+      } else if (!result.completeVote && result.msg != ""){ // 2차 투표 진행중
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
-          state.msg = `투표 진행중! 좀만 기달`
         } else {
           goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
         }
@@ -292,8 +294,8 @@ export default {
         }, state.time[2])
       } else if (store.state.root.mafiaManager.stage == "night") {
         store.state.root.mafiaManager.stage = "default";
-        console.log("낮이되었다 100초간 토의 진행해주세요")
-        state.msg = `낮이되었다 100초간 토의 진행해주세요`
+        console.log("낮이되었습니다. 100초간 토의 진행해주세요")
+        state.msg = `낮이되었습니다. 100초간 토의 진행해주세요`
         setTimeout(() => {
           // 투표하러 갈끄니까
           goDay1()
@@ -302,7 +304,7 @@ export default {
     }
     const goDay1 = async () => {
       store.state.root.mafiaManager.stage = "day1";
-      state.msg = `투표 시간입니다`
+      state.msg = `낮 1차 투표 시간입니다.`
       setTimeout(() => {
         sendVoteSocket();
       }, state.time[0])
