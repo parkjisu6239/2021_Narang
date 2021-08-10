@@ -49,7 +49,6 @@ export default {
     }
   },
 
-
   setup(props, { emit }) {
     const store = useStore()
     const router = useRouter()
@@ -86,7 +85,6 @@ export default {
     }
 
     const leaveRoom = () => {
-      //DB 지우고 . then()
       router.push({
         name: 'waitingRoom'
       })
@@ -104,6 +102,7 @@ export default {
         store.onVideo = state.onVideo
         store.publisher.publishVideo(state.onVideo);
     }
+
     return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }

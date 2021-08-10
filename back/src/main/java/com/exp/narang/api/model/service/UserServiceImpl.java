@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteProfile(User user) {
-		String upload_path = "D:/images/profile/";
+		String upload_path = ":D/images/profile/";
 		try {
 			if (user.getThumbnailUrl() != null) {
 				File file = new File(upload_path + user.getUserId() + ".jpg");

@@ -28,7 +28,7 @@ import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
-$axios.defaults.headers.post['Content-Type'] = 'application/json'
+$axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8'
 export default {
   components: {
 		UserVideo,
@@ -39,7 +39,7 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
     const OPENVIDU_SERVER_SECRET = "MY_SECRET";
     const store = useStore();
 
@@ -156,9 +156,9 @@ export default {
 						if (error.response.status === 409) {
 							resolve(sessionId);
 						} else {
-							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
-							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`${OPENVIDU_SERVER_URL}/accept-certificate`);
+							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
+							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
+								location.assign(`https://i5b205.p.ssafy.io:4443/accept-certificate`);
 							}
 							reject(error.response);
 						}

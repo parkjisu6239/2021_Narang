@@ -7,7 +7,13 @@ module.exports = {
     proxy: {
       '/api/v1': {
         target: 'https://localhost:8080/'
-      }
+      },
+      '/narang':{
+        target: 'https://localhost:8080/'
+      },
+      // '/static/models': {
+      //   target: 'https://localhost:8080/'
+      // }
     },
     historyApiFallback: true,
     hot: true
@@ -19,5 +25,5 @@ module.exports = {
     'element-plus'
   ],
   lintOnSave: false,
-  outputDir: '../back/src/main/resources/dist'
+  outputDir: '../back/src/main/resources/dist',
 }

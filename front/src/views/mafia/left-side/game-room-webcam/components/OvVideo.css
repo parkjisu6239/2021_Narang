@@ -4,4 +4,9 @@
   position: relative;
   width: 100%;
   max-width: 600px;
+  cursor: pointer;
+}
+
+.expression {
+  z-index: 500;
 }
