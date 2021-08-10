@@ -205,9 +205,9 @@ export default {
             state.myRole = result.roleName
             store.state.root.mafiaManager.myRole = result.roleName;
             state.myMissionNumber = result.missionNumber;
-            if(state.myRole === 'Mafia'){
-              connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
-            }
+            // if(state.myRole === 'Mafia'){
+            //   connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+            // }
         })
     }
 
@@ -220,23 +220,23 @@ export default {
       }
 
      // [Func|socket] 마피아끼리 소켓 연결
-    const connectMafiasSocket = () => {
-      const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
-      state.stompClient.subscribe(fromMafiasUrl, res => {
-        if(res.body == 1) {
-          state.canMafiaVote = true;
-          console.log("모든 마피아들 미션 성공! 투표 가능!!");
-        }
-        else if(res.body == 0) {
-          state.canMafiaVote = false;
-          console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
-        }
-        else {
-          state.canMafiaVote = false;
-          console.log("아직 마피아 미션 집계 중입니다!");
-        }
-      })
-    }
+    // const connectMafiasSocket = () => {
+    //   const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
+    //   state.stompClient.subscribe(fromMafiasUrl, res => {
+    //     if(res.body == 1) {
+    //       state.canMafiaVote = true;
+    //       console.log("모든 마피아들 미션 성공! 투표 가능!!");
+    //     }
+    //     else if(res.body == 0) {
+    //       state.canMafiaVote = false;
+    //       console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
+    //     }
+    //     else {
+    //       state.canMafiaVote = false;
+    //       console.log("아직 마피아 미션 집계 중입니다!");
+    //     }
+    //   })
+    // }
 
     //  // [Func|socket] 마피아끼리 소켓 send
     // const sendMafias = () => {
@@ -465,7 +465,7 @@ export default {
 
     setGame();
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickStartMission, sendPlayers}
+    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickStartMission, sendPlayers}
   },
 }
 </script>
