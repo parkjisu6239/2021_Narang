@@ -1,6 +1,5 @@
 .webcam {
   border-radius: 20px;
-  display: inline-block;
   position: relative;
   width: 100%;
   max-width: 600px;
@@ -9,4 +8,29 @@
 
 .expression {
   z-index: 500;
+}
+
+.video-overlay {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  width: 600px;
+  height: 320px;
+  border-radius: 16px;
+}
+
+.menu-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(blueviolet, cornflowerblue);
+  border-radius: 10px;
+  width: 120px;
+  height: 60px;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  border: 0px;
+  box-shadow: 1px;
+  font-weight: bold;
 }

@@ -8,7 +8,7 @@
     }">
     <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <user-video
-      v-for="sub in state.activesubscribers"
+      v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"
 

@@ -36,7 +36,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
+import { onMounted } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -348,14 +348,6 @@ export default {
       }, 3000)
       store.state.root.mafiaManager.theVoted = null;
     }
-
-    const start = () => {
-      await faceapi.nets.faceRecognitionNet.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceLandmark68Net.load('https://localhost:8080/static/models')
-      await faceapi.nets.tinyFaceDetector.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceExpressionNet.load('https://localhost:8080/static/models')
-    }
-
 
     //* created *//
     connectSocket()
