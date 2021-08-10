@@ -1,6 +1,6 @@
 <template>
   <h1 class="expression" v-if="state.detections" >{{ state.detections[0].expressions }}</h1>
-  <video id="myWebcam" ref="myWebCam" @click="startExpressDetection" class="webcam" autoplay playsinline controls="false"/>
+  <video ref="myWebCam" @click="startExpressDetection" class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>

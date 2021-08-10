@@ -47,6 +47,7 @@ public class MafiaController {
     @SendTo("/from/mafia/role/{roomId}/{username}")
     public RoleResult broadcasting(@DestinationVariable Long roomId, @DestinationVariable String username) throws Exception {
         log.debug("GameStart arrived: /gameStart/{}/{}, gameStart: {}", roomId, username);
+        System.out.println("당신의 역할은???!!");
         return gameManagerMap.get(roomId).findRoleNameByUsername(username);
     }
 
@@ -56,6 +57,14 @@ public class MafiaController {
     public GameResult broadcasting(VoteMessage voteMessage, @DestinationVariable long roomId) throws Exception {
     	log.debug("voteMessage arrived: /vote/{}, voteMessage: {}", roomId, voteMessage);
         return gameManagerMap.get(roomId).returnVoteResult(voteMessage);
+    }
+
+    // 마피아들끼리 통신. 미션 성공 여부 전달, 투표 가능 여부 반환
+    @MessageMapping("/mafia/mafias/{roomId}")
+    @SendTo("/from/mafia/mafias/{roomId}")
+    public int broadcasting(MafiaMessage mafiaMessage, @DestinationVariable long roomId) throws Exception {
+        System.out.println("마피아끼리 통신 중 : "+mafiaMessage.getUsername() +", "+mafiaMessage.getIsMissionComplete());
+        return gameManagerMap.get(roomId).isEveryMafiaComplete(mafiaMessage);
     }
 
     @MessageMapping("/mafia/players/{roomId}")
