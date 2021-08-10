@@ -9,6 +9,8 @@
       @clickStartMission="clickStartMission"
       @clickLie="clickLie"
       :msg="state.msg"
+      :isVoteTime="state.isVoteTime"
+      :timer="state.timer/1000"
       />
   </div>
 
@@ -83,6 +85,8 @@ export default {
       surviver: {},
       time: [20000, 10000, 10000, 10000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
+      isVoteTime: false,
+      timer: 0,
     })
 
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
@@ -284,10 +288,10 @@ export default {
       })
     }
 
-const clickLie=()=>{
-  console.log("거짓말탐지기클릭")
-  sendMafias();
-}
+    const clickLie=()=>{
+      console.log("거짓말탐지기클릭")
+      sendMafias();
+    }
 
     // [Func|socket] players 소켓 send
     const sendPlayers = async () => {
@@ -297,11 +301,6 @@ const clickLie=()=>{
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = async (result) => {
-      // 이전에 내가 한 투표 초기화
-      store.state.root.mafiaManager.theVoted = null
-      store.state.root.mafiaManager.isAgree = false;
-      store.state.root.mafiaManager.secondVoteUsername = '';
-
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `게임 종료! ${result.msg}! 정체 공개 -> ${result.roleString}`
@@ -311,14 +310,23 @@ const clickLie=()=>{
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
         } else {
+          store.state.root.mafiaManager.theVoted = null // 투표 초기화
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
+          state.isVoteTime = false
 
           // 5초 쉬고 낮 2차로 이동
+          state.timer = state.time[4]
           setTimeout(() => {
             goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
           }, state.time[4]);
         }
-      } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤
+      } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
+
+        // 투표 초기화
+        store.state.root.mafiaManager.theVoted = null
+        store.state.root.mafiaManager.isAgree = false
+        state.isVoteTime = false
+
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
@@ -326,16 +334,27 @@ const clickLie=()=>{
           } else if (state.mafiaManager.stage === 'day2'){ // 2차 -> 밤
             console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.')
             state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.'
+          } else if (state.mafiaManager.stage === 'night') { // 밤 -> 낮
+            console.log('아무도 죽지 않았습니다. 잠시후 아침이 됩니다.')
+            state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
-        } else { // 죽은 사람이 나오는 경우 2차 -> 밤
-          console.log(`${result.msg}님이 투표에 의해 죽었습니다`)
-          state.msg = `${result.msg}님이 투표에 의해 죽었습니다`
+        } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
+          sendPlayers() // player update
+
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
           }
-        }
 
+          if (state.mafiaManager.stage === 'day2') {
+            console.log(`${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`)
+            state.msg = `${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`
+          } else if (state.mafiaManager.stage === 'night') {
+            console.log(`지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`)
+            state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`
+          }
+        }
         // 5초 쉬고 다음으로 이동
+        state.timer = state.time[4]
         setTimeout(() => {
           nextStage(result)
         }, state.time[4]);
@@ -354,8 +373,12 @@ const clickLie=()=>{
 
     // [Func|game] 낮 자유 토론
     const goDay = async () => {
-      // 상태 초기화, 메시지 변경
+      // 상태 변경
+      state.isVoteTime = false
+      state.timer = state.time[0]
       store.state.root.mafiaManager.stage = "default";
+
+      // 메시지 변경
       console.log(`낮이되었습니다. ${state.time[0]/1000}초간 토의 진행해주세요`)
       state.msg = `낮이되었습니다. ${state.time[0]/1000}초간 토의 진행해주세요`
 
@@ -367,9 +390,14 @@ const clickLie=()=>{
 
     // [Func|game] 낮 1차 투표
     const goDay1 = async () => {
+      // 상태 변경
       store.state.root.mafiaManager.stage = "day1";
-      console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 미피아로 의심되는 사람을 투표해주세요.`)
-      state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 미피아로 의심되는 사람을 투표해주세요.`
+      state.timer = state.time[1]
+      state.isVoteTime = true
+
+      // 메시지 변경
+      console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 마피아로 의심되는 사람을 투표해주세요.`)
+      state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 마피아로 의심되는 사람을 투표해주세요.`
 
       setTimeout(() => { // 투표하기
         sendVoteSocket();
@@ -377,8 +405,10 @@ const clickLie=()=>{
     }
 
     // [Func|game] 낮 2차 투표
-    const goDay2 = (secondVoteUsername) => {
+    const goDay2 = async (secondVoteUsername) => {
       // 상태 변경
+      state.isVoteTime = true
+      state.timer = state.time[2]
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       store.state.root.mafiaManager.stage = "day2";
 
@@ -395,8 +425,11 @@ const clickLie=()=>{
 
     const goNight = async () => {
       // 상태 변경
+      state.isVoteTime = true
+      state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
       if(state.myRole === 'Mafia') sendMafias();
+
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
       state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
@@ -412,6 +445,7 @@ const clickLie=()=>{
       // 상태 초기화
       store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
+      state.timer = state.time[4]
 
       // 메시지 변경
       console.log(`잠시후 게임이 시작됩니다. 롤카드를 확인해주세요.`)
