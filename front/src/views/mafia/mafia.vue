@@ -203,7 +203,6 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       await state.stompClient.subscribe(fromVoteUrl, async res => {
         const result = JSON.parse(res.body)
-        await setUserRole(result.roleString) // 유저 롤 세팅
         await getVoteResult(result) // 결과 해석
       })
     }
@@ -247,18 +246,6 @@ export default {
       //   return
       // }
       // sendVoteSocket(voted, 'day1', null, null)
-    }
-
-    // [Func|sys] 유저의 역할 정보 저장 -> 최종 결과에서 직업 밝힐때 사용
-    const setUserRole = async (roleString) => {
-      if (roleString) {
-          const userRole = []
-          const userRoleList = roleString.split('&')
-          userRoleList.forEach(ele => {
-            userRole.push(ele.split(':'))
-          })
-          state.userRole = userRole
-        }
     }
 
     // [Func|sys] 투표 결과 해석
