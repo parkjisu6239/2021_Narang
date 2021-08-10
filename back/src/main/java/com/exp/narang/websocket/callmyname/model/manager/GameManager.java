@@ -51,7 +51,8 @@ public class GameManager {
      */
     public long getNextUserId(){
         currentGuessTurn++;
-        return currentGuessTurn %= users.size();
+        currentGuessTurn %= users.size();
+        return users.get(currentGuessTurn).getUserId();
     }
 
     /**
