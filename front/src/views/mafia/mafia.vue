@@ -5,9 +5,9 @@
       :roomId="state.roomId" :stage="state.stage"/>
     <RightSide
       class="mafia-right-side"
-      :msg="state.msg"
       @sendGetRole="sendGetRole"
       @clickStartMission="clickStartMission"
+      :msg="state.msg"
       />
   </div>
 
@@ -36,7 +36,7 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
+    import { onBeforeMount, onMounted, onBeforeUpdate, onUpdated, onBeforeUnmount, onUnmounted, onActivated, onDeactivated, onErrorCaptured } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -72,9 +72,9 @@ export default {
       myMission : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
-      destinationUrl: '/narang',
+      destinationUrl: 'https://localhost:8080/narang',
       roleCardVisible: false,
-      msg: '메시지',
+      msg: '',
       userRole: {},
       surviver: {},
       time: [10000, 10000, 10000, 5000],
@@ -83,25 +83,25 @@ export default {
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, myWebcam, labelContainer, maxPredictions, loopPredict;
     async function poseEstimationInit() {
-      const modelURL = URL + "model.json";
-      const metadataURL = URL + "metadata.json";
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
 
-      // load the model and metadata
-      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-      // Note: the pose library adds a tmPose object to your window (window.tmPose)
-      // model = await tmPose.load(posemeta, posemodel);
-      model = await tmPose.load(modelURL, metadataURL);
-      maxPredictions = model.getTotalClasses();
+        // load the model and metadata
+        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+        // Note: the pose library adds a tmPose object to your window (window.tmPose)
+        // model = await tmPose.load(posemeta, posemodel);
+        model = await tmPose.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
 
-      // window.requestAnimationFrame(loop);
-      loopPredict = window.requestAnimationFrame(loop);
+        // window.requestAnimationFrame(loop);
+        loopPredict = window.requestAnimationFrame(loop);
 
-      myWebcam = document.getElementById("myWebcam");
-      console.log("에ㅜㅂㅁ둡캠가져옴",myWebcam);
-      labelContainer = document.getElementById("mission-container");
-      for (let i = 0; i < maxPredictions; i++) { // and class labels
-          labelContainer.appendChild(document.createElement("div"));
-      }
+        myWebcam = document.getElementById("myWebcam");
+        console.log("에ㅜㅂㅁ둡캠가져옴",myWebcam);
+        labelContainer = document.getElementById("mission-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
     }
 
     async function loop(timestamp) {
@@ -112,30 +112,31 @@ export default {
         console.log("루프")
         loopPredict = window.requestAnimationFrame(loop);
       }
+
     }
 
     async function predict() {
-      // Prediction #1: run input through posenet
-      // estimatePose can take in an image, video or canvas html element
-      const { pose, posenetOutput } = await model.estimatePose(myWebcam);
-      // Prediction 2: run input through teachable machine classification model
-      const prediction = await model.predict(posenetOutput);
+        // Prediction #1: run input through posenet
+        // estimatePose can take in an image, video or canvas html element
+        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
+        // Prediction 2: run input through teachable machine classification model
+        const prediction = await model.predict(posenetOutput);
 
-      for (let i = 0; i < maxPredictions; i++) {
-          const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-          labelContainer.childNodes[i].innerHTML = classPrediction;
-          if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
-      }
-      if(state.myMissionKeepCnt >= 300) {
-        console.log("미션 성공!");
-        ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
-        cancelAnimationFrame(loop);
-        state.myMissionSuccess = true;
-        if(loopPredict){ // 동작 인식 loop 멈춤
-          window.cancelAnimationFrame(loopPredict);
-          loopPredict = undefined;
+        for (let i = 0; i < maxPredictions; i++) {
+            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            labelContainer.childNodes[i].innerHTML = classPrediction;
+            if(prediction[state.myMission].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
         }
-      }
+        if(state.myMissionKeepCnt >= 300) {
+          console.log("미션 성공!");
+          ElMessage.success(prediction[state.myMission].className + '하기 미션에 성공하였습니다!');
+          cancelAnimationFrame(loop);
+          state.myMissionSuccess = true;
+          if(loopPredict){ // 동작 인식 loop 멈춤
+            window.cancelAnimationFrame(loopPredict);
+            loopPredict = undefined;
+          }
+        }
     }
 
     // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
@@ -148,25 +149,42 @@ export default {
       }
     }
 
+
+
+
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = () => {
-      const socket = new SockJS(state.destinationUrl)
+    const connectSocket = async () => {
+      console.log("1. 전체 소켓 연결 컨트롤")
+      const socket = await new SockJS(state.destinationUrl)
 
       // 클라이언트 객체 생성
       state.stompClient = Stomp.over(socket)
 
-      state.stompClient.connect({}, () => {
-          connectGetRoleSocket() // 롤 배분 소켓 연결
-          connectVoteSocket() // 투표 소켓 연결
-          connectGetPlayerList()
+      await state.stompClient.connect({}, async () => {
+        console.log("2. 롤 배분 소켓 연결 전")
+        await connectGetRoleSocket() // 롤 배분 소켓 연결
+        console.log("3. 롤 배분 소켓 연결 후")
+        console.log("4. 투표 소켓 연결 전")
+        await connectVoteSocket() // 투표 소켓 연결
+        console.log("5. 투표 소켓 연결 후")
+        console.log("6. player 소켓 연결 전")
+        await connectGetPlayerList()
+        console.log("7. plater 소켓 연결 후")
+        console.log("8. setGane sendPlayers 전")
+        await sendPlayers();
+        console.log("9. setGame sendPlayers 후")
+        console.log("setGame gameInit 전")
+        await gameInit();
+        console.log("setGame gameInit 후")
         }
       )
     }
 
     // [Func|socket] 롤 배분 소켓 연결
-    const connectGetRoleSocket = () => {
+    const connectGetRoleSocket = async () => {
+      console.log("롤 배분 소켓 연결")
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
-        state.stompClient.subscribe(fromRoleUrl, res => {
+        await state.stompClient.subscribe(fromRoleUrl,async res => {
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
         store.state.root.mafiaManager.myRole =  result.roleName;
@@ -183,13 +201,13 @@ export default {
     }
 
     // [Func|socket] 마피아 투표 소켓 연결
-    const connectVoteSocket = () => {
+    const connectVoteSocket = async () => {
+      console.log("마피아 투표 소켓 연결")
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
-      state.stompClient.subscribe(fromVoteUrl, res => {
+      await state.stompClient.subscribe(fromVoteUrl, async res => {
         const result = JSON.parse(res.body)
-        console.log('마피아투표소켓연결 위치', result)
-        setUserRole(result.roleString) // 유저 롤 세팅
-        getVoteResult(result) // 결과 해석
+        await setUserRole(result.roleString) // 유저 롤 세팅
+        await getVoteResult(result) // 결과 해석
       })
     }
 
@@ -211,26 +229,31 @@ export default {
       state.roleCardVisible = true
     }
 
-     // [Func|socket] players 소켓 연결
-    const connectGetPlayerList = () => {
+     // [Func|socket] 생존하는 players 소켓 연결
+    const connectGetPlayerList = async () => {
       const fromPlayersUrl = `/from/mafia/players/${route.params.roomId}`
       state.stompClient.subscribe(fromPlayersUrl, res => {
         const result = JSON.parse(res.body)
         store.state.root.mafiaManager.players = result;
-        console.log('현재 생존 유저, Players 받았다!', result)
-        return;
       })
-      sendPlayers();
     }
 
-    // [Func|socket] players 소켓 send
-    const sendPlayers = () => {
+    // [Func|socket] 마피아 투표 소켓 send
+    const sendPlayers = async () => {
       const toPlayersUrl = `/to/mafia/players/${route.params.roomId}`
       state.stompClient.send(toPlayersUrl)
     }
 
+    // [Func|sys] 유저 클릭 -> 투표
+    const clickPlayer = (voted) => {
+      // if (voted === state.username) { // 내가 나를 투표
+      //   return
+      // }
+      // sendVoteSocket(voted, 'day1', null, null)
+    }
+
     // [Func|sys] 유저의 역할 정보 저장 -> 최종 결과에서 직업 밝힐때 사용
-    const setUserRole = (roleString) => {
+    const setUserRole = async (roleString) => {
       if (roleString) {
           const userRole = []
           const userRoleList = roleString.split('&')
@@ -241,20 +264,8 @@ export default {
         }
     }
 
-    /* README
-     * 낮과 밤 구별 방법:
-     * 1. 낮1 : 단두대에 오를 사람이 있을 때 isFinished = false, selectedUsername = "아무개" , complateVote = false,  --> 낮 2가 된다.
-     *          단두대에 오를 사람이 없을 때 isFinished = false, selectedUsername = "", complateVote = true --> 밤이 된다.
-     * 2. 낮2 :  selectedUsername = "" or "아무개",complateVote = true --> 밤이 된다.
-     *            isFinished  = true, completeVote = true, msg = " MAFIA_WIN_MESSAGE" or "CITIZEN_WIN_MESSAGE"; --> 게임 종료
-     * 3. 밤 :  electedUsername = "" or "아무개",complateVote = true --> 밤이 된다.
-     *          isFinished  = true, completeVote = true, msg = " MAFIA_WIN_MESSAGE" or "CITIZEN_WIN_MESSAGE"; --> 게임 종료
-     */
-
-    /* [ 게임 진행 Cycle] */
-
-    // [Func|game] 투표 결과 해석
-    const getVoteResult = (result) => {
+    // [Func|sys] 투표 결과 해석
+    const getVoteResult = async (result) => {
       if (result.finished) { // 게임 종료
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `게임 종료! 결과: ${result.msg}, ${result.roleString}`
@@ -264,29 +275,23 @@ export default {
       } else if (!result.completeVote && result.msg != ""){
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
-          state.msg = '투표 진행중! 좀만 기달'
+          state.msg = `투표 진행중! 좀만 기달`
         } else {
           goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
         }
-      }
-      else if (result.completeVote){
+      } else if (result.completeVote){
         console.log('투표 종료! 결과:', result.msg) // 사람 이름 죽은 사람 이름 ""
         state.msg = `투표 종료! 결과: ${result.msg}`
         nextStage(result);
       }
     }
 
-    // [Func|game] 스테이지 변경 ; 투표 or 토론 완료 후 다음 단계 이동
-    const changeStage = (stage) => {
-      return stage;
-    }
 
-    // [Func|game] 스테이지 이동 ; 현재 스테이지에 따라 다음으로 이동할 스테이지 확인 및 이동
-    const nextStage = (result) => {
-      sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
+    const nextStage = async (result) => {
+      await sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage == "day1") {
         console.log("투표 XXXXX 밤으로 가즈아")
-        state.msg = "투표 XXXXX 밤으로 가즈아"
+        state.msg = `투표 XXXXX 밤으로 가즈아`
         setTimeout(() => {
           goNight()
         }, state.time[2])
@@ -301,21 +306,17 @@ export default {
       } else if (store.state.root.mafiaManager.stage == "night") {
         store.state.root.mafiaManager.stage = "default";
         console.log("낮이되었다 100초간 토의 진행해주세요")
-        state.msg = "낮이되었다 100초간 토의 진행해주세요"
+        state.msg = `낮이되었다 100초간 토의 진행해주세요`
         setTimeout(() => {
           // 투표하러 갈끄니까
           goDay1()
         }, state.time[0]);
       }
     }
-
-    // [Func|game] Day1 로직 ; 20초간 낮 1차 투표 진행 한 후, 투표결과 일괄 전송
-    const goDay1 = () => {
+    const goDay1 = async () => {
       store.state.root.mafiaManager.stage = "day1";
       store.state.root.mafiaStage = "day1";
-      console.log("투표 시작!")
-      state.msg = "투표 시작!"
-      console
+      state.msg = `투표 시간입니다`
       setTimeout(() => {
         sendVoteSocket();
       }, state.time[0])
@@ -327,7 +328,6 @@ export default {
       console.log(secondVoteUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
       state.msg = `${secondVoteUsername} 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요`
       // 단두대 오른 대상자 설정
-
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       // 투표 상태 day2로 변경
       store.state.root.mafiaManager.stage = "day2";
@@ -340,10 +340,9 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = '';
     }
 
-    // [Func|game] Night 로직 ; 30초간 마피아 투표 진행 한 후, 투표결과 일괄 전송
-    const goNight = () => {
+    const goNight = async () => {
       console.log("밤이됩니다")
-      state.msg = "밤이됩니다"
+      state.msg = `밤이됩니다`
       store.state.root.mafiaManager.stage = "night";
       // 마피아끼리 말할 수 있고 투표 할 수 있게 된다.
       setTimeout(() => {
@@ -352,23 +351,25 @@ export default {
       store.state.root.mafiaManager.theVoted = null;
     }
 
-    //* created *//
-    connectSocket()
-
-    console.log(store.state.root.mafiaManager);
-    store.state.root.mafiaManager.username = state.username
-
-    onMounted(() => {
+    const gameInit = async () => {
+      console.log(store.state.root.mafiaManager);
+      store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
       console.log("회의 시작!!")
-      state.msg = "회의 시작!!"
+      state.msg = `회의 시작!!`
       setTimeout(() => {
         goDay1();
       }, state.time[0])
       store.state.root.mafiaManager.theVoted = null;
-    })
-
-    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickStartMission, changeStage, sendPlayers}
+    }
+    //* created *//
+    const setGame = async () => {
+        console.log("setGame 소켓 연결 전")
+        await connectSocket()
+        console.log("setGame 소켓 연결 후")
+    }
+    setGame();
+    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickPlayer, clickStartMission, sendPlayers}
   },
 }
 </script>
