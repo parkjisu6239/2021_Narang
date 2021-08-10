@@ -169,7 +169,14 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "data": "user_data",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                  "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          }, {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
