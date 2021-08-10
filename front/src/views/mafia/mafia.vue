@@ -320,7 +320,7 @@ export default {
 
     // [Func|game] Day2 로직 ; 20초간 낮 2차 투표 진행 한 후, 투표결과 일괄 전송
     const goDay2 = (secondVoteUsername) => {
-      console.log(secondVoteUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요");
+      console.log(secondVoteUsername, " 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요")
       state.msg = `${secondVoteUsername} 이 단두대에 올랐습니다. 최후 변론 30초간 해주세요`
       // 단두대 오른 대상자 설정
 
