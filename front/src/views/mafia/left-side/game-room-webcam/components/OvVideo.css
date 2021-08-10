@@ -24,7 +24,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(blueviolet, cornflowerblue);
+  background: linear-gradient(white, cornflowerblue);
   border-radius: 10px;
   width: 120px;
   height: 60px;
@@ -33,4 +33,9 @@
   border: 0px;
   box-shadow: 1px;
   font-weight: bold;
+  box-shadow: 1px 4px 0 rgb(0,0,0,0.5);
+}
+
+.menu-button:active {
+  box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
 }
