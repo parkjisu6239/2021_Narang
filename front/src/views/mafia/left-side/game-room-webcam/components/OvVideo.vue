@@ -39,9 +39,9 @@ export default {
     })
 
     const startExpressDetection = async () => {
-      await faceapi.nets.faceRecognitionNet.load('https://localhost:8080/static/models')
-      await faceapi.nets.tinyFaceDetector.load('https://localhost:8080/static/models')
-      await faceapi.nets.faceExpressionNet.load('https://localhost:8080/static/models')
+      await faceapi.nets.faceRecognitionNet.load('https://0.0.0.0:8080/static/models')
+      await faceapi.nets.tinyFaceDetector.load('https://0.0.0.0:8080/static/models')
+      await faceapi.nets.faceExpressionNet.load('https://0.0.0.0:8080/static/models')
       ElMessage({
         type: 'success',
         message: '거짓말 탐지기가 작동 중입니다.'
