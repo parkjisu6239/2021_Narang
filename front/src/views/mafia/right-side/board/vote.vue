@@ -1,5 +1,4 @@
 <template>
-  <div>투표시간입니다</div>
   <div class="vote-container">
     <div v-if="state.mafiaManager.stage == 'default'"></div>
     <div v-else-if="state.mafiaManager.stage == 'day1'" >
@@ -9,8 +8,7 @@
         <label :for="name">{{ name }}</label>
       </div>
     </div>
-    <div v-else-if="state.mafiaManager.stage == 'day2'">
-      <div>선택됨 : {{ state.voteDay2 }}</div>
+    <div v-else-if="state.mafiaManager.stage == 'day2' && state.mafiaManager.secondVoteUsername !== state.mafiaManager.username">
       <div class="vote-element" @click="setVote">
         <input type="radio" id="찬성" name="vote-day2" v-model="state.voteDay2" value="true">
         <label for="찬성">찬성</label>

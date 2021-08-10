@@ -1,6 +1,7 @@
 <template>
   <div class="mafia-left-container">
     <GameRoomWebcam :roomId="roomId"/>
+    <div id="mission-container"></div>
   </div>
 </template>
 

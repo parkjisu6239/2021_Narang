@@ -5,7 +5,7 @@
     :style="{'display': state.hover}">
     <button @click="startExpressDetection" class="menu-button">거짓말 탐지기</button>
   </div>
-  <video id="myWebcam" ref="myWebCam" @mouseover="showVideoMenu" class="webcam" autoplay playsinline controls="false"/>
+  <video ref="myWebCam" @mouseover="showVideoMenu" class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>

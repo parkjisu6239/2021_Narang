@@ -9,7 +9,6 @@ const myRoom = {}
 const publisher = {}
 const onVideo = true;
 const onAudio = true;
-const mafiaStage = 'default';
 const mafiaManager = {
   username : '', // 자기 이름
   theVoted : null, // 마피아가 죽이는애, 시민이 1차 투표 선정 유저
@@ -18,6 +17,7 @@ const mafiaManager = {
   players : null, // socket으로 생존 players 가져오는거
   secondVoteUsername : '', // 단두대 오른사람 이름
   myRole : '', // 자기 역할 Citizen or Mafia
+  isAlive: true, // 내가 살았나 죽었나
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
@@ -59,5 +59,4 @@ export default {
   onVideo,
   onAudio,
   mafiaManager,
-  mafiaStage
 }
