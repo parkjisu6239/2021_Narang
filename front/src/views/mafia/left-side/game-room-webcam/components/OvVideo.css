@@ -39,3 +39,9 @@
 .menu-button:active {
   box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
 }
+
+.selected-border {
+  box-sizing: border-box;
+  border: solid 5px rgb(160, 18, 18);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.226);
+}

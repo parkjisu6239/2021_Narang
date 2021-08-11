@@ -8,7 +8,7 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-    class="webcam"
+    :class="{'webcam': true, 'selected-border': isSelected}"
     autoplay
     playsinline
     controls="false"/>
@@ -23,6 +23,7 @@ export default {
   name: 'OvVideo',
   props: {
     streamManager: Object,
+    isSelected: Boolean,
   },
   setup(props, {emit}) {
     const myWebCam = ref(null)
