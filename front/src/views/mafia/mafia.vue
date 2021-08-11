@@ -148,7 +148,7 @@ export default {
           sendMafias();
           cancelAnimationFrame(loop);
           console.log("미션 성공 결과 : ", state.myMissionSuccess);
-          stopMission(); // 마피아 동작 인식 중지
+          stopMission();
         }
         // console.log("여기서 프레딕션은??"+prediction);
     }
@@ -313,6 +313,7 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
+      state.myMissionNumber = result.missionNumber; // 투표 결과 받을 때마다 미션 번호 갱신.
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         console.log('게임 종료! 결과:', result.msg)
