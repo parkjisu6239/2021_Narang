@@ -1,0 +1,4 @@
+.callmy-container {
+  display: grid;
+  grid-template-columns: 6fr 1fr;
+}
