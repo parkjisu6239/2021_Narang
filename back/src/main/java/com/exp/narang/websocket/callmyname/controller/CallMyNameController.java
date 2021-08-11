@@ -4,6 +4,7 @@ import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
+import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -27,15 +28,15 @@ public class CallMyNameController {
 
     /**
      * 게임을 시작하는 메서드
-     * @param roomId : path로 받는 roomId (PK)
-     * @return 처음 이름을 정할 사용자의 userID (PK)
+     * @param roomId : path로 받는 roomId
+     * @return 처음 이름을 정할 사용자의 userId, 이름을 정해주는 사용자의 userId
      */
     @MessageMapping("/call/start/{roomId}")
-    @SendTo("/from/call/start/{roomtId}")
-    public long startGame(@DestinationVariable long roomId){
+    @SendTo("/from/call/start/{roomId}")
+    public SetNameRes startGame(@DestinationVariable long roomId){
         return ManagerHolder.gameManagerMap
                 .put(roomId, new GameManager(roomId, roomService))
-                .getFirstUserId();
+                .getFirstUserIds();
     }
 
     /**
@@ -47,7 +48,7 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/set-name/{roomId}")
     @SendTo("/from/call/set-name/{roomId}")
-    public long setName(@DestinationVariable long roomId, NameReq req){
+    public SetNameRes setName(@DestinationVariable long roomId, NameReq req){
         return ManagerHolder.gameManagerMap.get(roomId).setName(req);
     }
 
