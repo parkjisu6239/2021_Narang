@@ -13,7 +13,7 @@ public class GameResult {
     private boolean isFinished;
     private boolean completeVote;
     private String roleString;
-    private int missionNumber;
+    private int missionNumber = -1;
 
     public GameResult() { }
 
@@ -62,7 +62,7 @@ public class GameResult {
         this.isFinished = false;
         this.completeVote = completeVote;
         this.msg = killedUser;
-        if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 15; // 투표가 완전히 끝날 때만 미션 갱신
+        if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 15; // 투표가 완전히 끝날 때만 미션 갱신(0~10)
     }
 
     public static GameResult votingStatus() {
