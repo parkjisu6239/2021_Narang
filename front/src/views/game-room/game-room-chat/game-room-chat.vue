@@ -50,12 +50,6 @@ export default {
     roomId: {
       type: Number,
     },
-    userList: {
-      type: Array,
-    },
-    room: {
-      type: Object,
-    },
     chatList: {
       type: Array,
     },
@@ -71,15 +65,13 @@ export default {
     })
 
     const sendMessage = () => {
-      emit('sendMessage', state.myChat)
+      emit('sendChat', state.myChat)
       state.myChat = ''
     }
 
     onUpdated(() => {
       chatArea.value.scrollTop = chatArea.value.scrollHeight;
     })
-
-
 
     return { state, sendMessage, chatArea }
   }

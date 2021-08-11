@@ -10,6 +10,9 @@ module.exports = {
       },
       '/narang':{
         target: 'https://localhost:8080/'
+      },
+      '/call': {
+        target: 'https://localhost:8080/'
       }
     },
     historyApiFallback: true,
