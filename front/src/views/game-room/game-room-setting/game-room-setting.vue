@@ -110,17 +110,10 @@ export default {
     const setBtnDisabled = () => {
       store.dispatch('root/requestReadSingleGameRoom', props.roomId).then(roomRes => {
           store.dispatch('root/requestReadMyInfo').then(userRes => {
-              state.userId = userRes.data.user.userId;
-              console.log("여기...........방주인............은...",roomRes.data.room.ownerId);
-              state.ownerId = roomRes.data.room.ownerId;
-                console.log("훗...난 니가 원하는 대로 안 움직여주지",state.userId);
-                console.log("겨루기 결과 : ",state.ownerId == state.userId)
-              if(state.ownerId == state.userId) {
-                state.disableGameBtns = true;
-              }
-              else {
-                state.disableGameBtns = false;
-              }
+              state.userId = userRes.data.user.userId; // 현재 유저 ID
+              state.ownerId = roomRes.data.room.ownerId; // 방 주인 ID
+              if(state.ownerId == state.userId) state.disableGameBtns = true; // 같으면 게임 버튼 보이게
+              else state.disableGameBtns = false; // 다르면 게임 버튼 안 보이게
           })
           .catch(err => {
             ElMessage(err)
