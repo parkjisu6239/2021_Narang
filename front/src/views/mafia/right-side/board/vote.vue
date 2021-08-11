@@ -7,11 +7,13 @@
       </div>
     </div>
     <div v-else-if="state.mafiaManager.stage == 'day2' && state.mafiaManager.secondVoteUsername !== state.mafiaManager.username">
-      <div :class="{'default-username': true, 'is-selected': state.tOrF = true }" @click="clickTrueOfFalse(true)">찬성</div>
-      <div :class="{'default-username': true, 'is-selected': state.tOrF = false }" @click="clickTrueOfFalse(false)">반대</div>
+      <div :class="{'default-username': true, 'is-selected': state.tOrF === true }" @click="clickTrueOfFalse(true)">찬성</div>
+      <div :class="{'default-username': true, 'is-selected': state.tOrF === false }" @click="clickTrueOfFalse(false)">반대</div>
     </div>
     <div v-else-if="state.mafiaManager.stage == 'night' && state.mafiaManager.myRole == 'Mafia'">
-      <div :class="{'default-username': true, 'is-selected': name === state.victim }" @click="clickVictim(name)">{{ name }}</div>
+      <div v-for="name in state.mafiaManager.players" :key="name">
+        <div :class="{'default-username': true, 'is-selected': name === state.victim }" @click="clickVictim(name)">{{ name }}</div>
+      </div>
     </div>
   </div>
 </template>
