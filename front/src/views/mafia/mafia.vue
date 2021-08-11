@@ -194,7 +194,10 @@ export default {
       state.stompClient.connect({}, () => {
         console.log("2. 롤 배분 소켓 연결 전")
         connectGetRoleSocket() // 롤 배분 소켓 연결
-        console.log("3. 롤 배분 소켓 연결 후")
+        console.log("3-1. 롤 배분 소켓 연결 후")
+        console.log("3-2. 롤 배분 전송 전")
+        sendGetRole()
+        onsole.log("3-3. 롤 배분 전송 후")
         console.log("4. 투표 소켓 연결 전")
         connectVoteSocket() // 투표 소켓 연결
         console.log("5. 투표 소켓 연결 후")
@@ -280,15 +283,14 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: store.state.root.mafiaManager.stage === 'night' && store.state.root.mafiaManager.myRole === 'Citizen' ? null : store.state.root.mafiaManager.username, // 내 이름
-          theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
-          stage: store.state.root.mafiaManager.stage, // day1, day2, night
-          isAgree: store.state.root.mafiaManager.isAgree, // false : 살린다, true: 죽인다
-          secondVoteUsername: store.state.root.mafiaManager.secondVoteUsername // 2차 투표 진행시 해당 유저의 이름
+          username: state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen' ? null : state.mafiaManager.username, // 내 이름
+          theVoted: state.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
+          stage: state.mafiaManager.stage, // day1, day2, night
+          secondVoteUsername: state.mafiaManager.secondVoteUsername // 2차 투표 진행시 해당 유저의 이름
         }
 
+      // store에 내용 바꾸는거나중에 commit으로 바꾸기
       store.state.root.mafiaManager.theVoted = null
-      store.state.root.mafiaManager.isAgree = false
       state.isVoteTime = false
 
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
