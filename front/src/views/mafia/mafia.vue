@@ -39,7 +39,6 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-import { onMounted } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -76,9 +75,8 @@ export default {
       myMissionName : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
+      destinationUrl: '/narang',
       canMafiaVote : false,
-      destinationUrl: 'https://localhost:8080/narang',
-      // destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '',
       userRole: {},
@@ -196,7 +194,10 @@ export default {
       state.stompClient.connect({}, () => {
         console.log("2. 롤 배분 소켓 연결 전")
         connectGetRoleSocket() // 롤 배분 소켓 연결
-        console.log("3. 롤 배분 소켓 연결 후")
+        console.log("3-1. 롤 배분 소켓 연결 후")
+        console.log("3-2. 롤 배분 전송 전")
+        sendGetRole()
+        console.log("3-3. 롤 배분 전송 후")
         console.log("4. 투표 소켓 연결 전")
         connectVoteSocket() // 투표 소켓 연결
         console.log("5. 투표 소켓 연결 후")
@@ -282,12 +283,16 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: store.state.root.mafiaManager.username, // 내 이름
-          theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
-          stage: store.state.root.mafiaManager.stage, // day1, day2, night
-          isAgree: store.state.root.mafiaManager.isAgree, // false : 살린다, true: 죽인다
-          secondVoteusername: store.state.root.mafiaManager.secondVoteusername // 2차 투표 진행시 해당 유저의 이름
+          username: state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen' ? null : state.mafiaManager.username, // 내 이름
+          theVoted: state.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
+          stage: state.mafiaManager.stage, // day1, day2, night
+          secondVoteUsername: state.mafiaManager.secondVoteUsername // 2차 투표 진행시 해당 유저의 이름
         }
+
+      // store에 내용 바꾸는거나중에 commit으로 바꾸기
+      store.state.root.mafiaManager.theVoted = null
+      state.isVoteTime = false
+
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
 
@@ -313,6 +318,7 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
+       state.myMissionNumber = result.missionNumber; // 투표 결과 받을 때마다 미션 번호 갱신.
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         console.log('게임 종료! 결과:', result.msg)
@@ -323,7 +329,6 @@ export default {
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
         } else {
-          store.state.root.mafiaManager.theVoted = null // 투표 초기화
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
           state.isVoteTime = false
 
@@ -334,11 +339,6 @@ export default {
           }, state.time[4]);
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
-
-        // 투표 초기화
-        store.state.root.mafiaManager.theVoted = null
-        store.state.root.mafiaManager.isAgree = false
-        state.isVoteTime = false
 
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
