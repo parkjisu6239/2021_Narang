@@ -1,8 +1,28 @@
 .vote-container > * {
-  display: flex;
+  display: grid;
   gap: 10px;
 }
 
-.vote-element {
-  display: inline-block;
+.default-username {
+  border-radius: 15px;
+  box-shadow: -5px -5px 7px #fff,
+              5px 5px 7px rgba(0,0,0,0.1),
+              inset -2px -2px 7px #fff,
+              inset 2px 2px 7px rgba(0,0,0,0.1);
+  padding: 3px 10px;
+  width: 80%;
+  cursor: pointer;
 }
+
+.is-selected {
+  color: rgb(0, 110, 255);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
+.default-username:hover {
+  color: rgb(0, 110, 255);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+

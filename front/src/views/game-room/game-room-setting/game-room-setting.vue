@@ -75,7 +75,7 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '에러'
+            message: '방장만 시작할 수 있습니다.'
           })
         })
     }
@@ -95,6 +95,8 @@ export default {
         console.log(state.onAudio)
         store.onAudio = state.onAudio
         store.publisher.publishAudio(state.onAudio);
+
+
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
