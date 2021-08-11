@@ -1,0 +1,8 @@
+.vote-container > * {
+  display: flex;
+  gap: 10px;
+}
+
+.vote-element {
+  display: inline-block;
+}

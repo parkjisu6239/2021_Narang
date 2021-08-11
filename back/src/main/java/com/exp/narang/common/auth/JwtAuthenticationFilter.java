@@ -2,10 +2,10 @@ package com.exp.narang.common.auth;
 
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.util.JwtTokenUtil;
 import com.exp.narang.common.util.ResponseBodyWriteUtil;
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

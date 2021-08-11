@@ -1,0 +1,21 @@
+.friend {
+  display: flex;
+  column-gap: 20px;
+  margin-left: 20px;
+}
+
+.friend img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.friend .nickname {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.friend .email{
+  font-weight: 500;
+  font-size: 10px;
+}

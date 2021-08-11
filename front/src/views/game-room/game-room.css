@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
 .game-room-container {
+  display: flex;
+  flex-direction: column;
   margin: 40px 60px;
-  height: calc(85% - 60px);
-  border-radius: 10px;
+  row-gap: 20px;
 }
 
 .game-room-container * {
@@ -10,131 +13,44 @@
 
 .game-cam-chat-container {
   display: grid;
-  background-color: rgba(255, 255, 255, 0.7);
-  grid-template-columns: 3fr 1fr;
-  height: 100%;
-  min-width: 1000px;
+  grid-template-columns: 6fr 1fr;
+  height: 79vh;
 }
 
-.night-background {
-  width: 100vw;
-  height: 100vh;
+.countdown {
   position: absolute;
   top: 0px;
-  z-index: -1000;
-  background: linear-gradient(-45deg, #1A1A1A, #415058, #3d596b, rgba(155, 156, 88, 0.71));
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-}
-
-.day-background {
   width: 100vw;
   height: 100vh;
-  position: absolute;
-  top: 0px;
-  z-index: -1000;
-  background: linear-gradient(0deg, #A3E9FF, #95ddff, rgba(221, 133, 255, 0.555), rgba(248, 136, 76));
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 100;
 }
 
-@keyframes gradient {
+.countdown .counter {
+  font-size: 100px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 30vh;
+  font-family: 'Varela Round', sans-serif;
+  color: rgb(56, 197, 253);
+  animation: countdown 1s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+}
+
+@keyframes countdown {
   0% {
-    background-position: 50% 100%;
+      transform: rotateY(90deg);
+      color: rgb(56, 197, 253);
   }
-  50% {
-    background-position: 40% 80%;
+  20% {
+      transform: rotateY(0deg);
+      color: rgb(32, 160, 211);
   }
-  100% {
-    background-position: 0% 60%;
+  80% {
+      transform: rotateY(0deg);
+      color: rgb(32, 110, 211);
   }
-}
-
-.city {
-  width: 100vw;
-  position: absolute;
-  bottom: -5px;
-  z-index: -100;
-  mix-blend-mode: multiply;
-  filter: blur(3px);
-}
-
-.mafia-neorang {
-  width: 30vw;
-  position: absolute;
-  right: 2%;
-  bottom: 0px;
-  z-index: -100;
-  filter: blur(2px);
-}
-
-.circle {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  top: 20%;
-  left: -5%;
-  animation: move-circle 10s linear infinite;
-  offset-path: path("M-203 431C192.039 -142.175 1694 -142.492 2158 431");
-  z-index: -110;
-  filter: blur(2px);
-}
-
-.moon {
-  box-shadow:
-    0 0 20px 10px #fff,  /* inner */
-    0 0 20px 10px rgb(255, 238, 0), /* middle */
-    0 0 20px 10px rgb(205, 255, 248); /* outer */
-  background-color: #faff68;
-}
-
-.sun {
-  box-shadow:
-    0 0 20px 10px #fff,  /* inner */
-    0 0 20px 10px rgb(255, 238, 0), /* middle */
-    0 0 20px 10px rgb(205, 255, 248); /* outer */
-  background-color: #FFD050;
-}
-
-@keyframes move-circle {
-  0% {
-    offset-distance: 0%;
+  100%{
+      transform: rotateY(-90deg);
+      color: rgb(56, 197, 253);
   }
-  100% {
-    offset-distance: 100%;
-  }
-}
-
-.land {
-  width: 100vw;
-  position: absolute;
-  bottom: -50px;
-  z-index: -100;
-  filter: blur(2px);
-}
-
-.cloud1 {
-  position: absolute;
-  width: 30vw;
-  bottom: 27%;
-  z-index: -200;
-  filter: blur(2px);
-}
-
-.cloud2 {
-  position: absolute;
-  width: 60vw;
-  right: 0px;
-  bottom: 27%;
-  z-index: -200;
-  filter: blur(2px);
-}
-
-.cloud3 {
-  position: absolute;
-  width: 60vw;
-  bottom: 26%;
-  z-index: -200;
-  filter: blur(2px);
 }

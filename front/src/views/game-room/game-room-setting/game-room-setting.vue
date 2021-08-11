@@ -17,21 +17,25 @@
     </div>
 
     <div class="setting-btns">
-      <div class="setting-btn" @click="muteAudio"><i class="el-icon-microphone"></i></div>
-      <div class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+      <div v-if="state.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+      <div v-if="!state.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
+
+      <div v-if="state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+      <div v-if="!state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
+
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
       <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
     </div>
   </div>
 </template>
-<style scoped>
+<style>
   @import url('./game-room-setting.css');
 </style>
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
   name: 'GameRoomSetting',
@@ -43,31 +47,25 @@ export default {
       type: Object
     },
   },
+
   setup(props, { emit }) {
     const store = useStore()
-    const route = useRouter()
-
-    const state = reactive({
-      userList: [],
-      disableGameBtns:undefined,
+    const router = useRouter()
+    const route = useRoute()
+    const state =  reactive({
+      onVideo : true,
+      onAudio : true,
+      disableGameBtns : undefined,
+      ownerId : undefined,
+      userId : undefined,
+      disableGameBtns: true,
     })
-
-    const setBtnDisabled = () => {
-      console.log("방 주인 : " + props.room.ownerId);
-      console.log("접속 유저 : " + store.state.root.userId);
-      if (props.room.ownerId === store.state.root.userId) {
-        console.log("방장한테만 보이게");
-        state.disableGameBtns=true;
-      }
-      else state.disableGameBtns=true;
-    }
 
     const openDialog = () => {
       emit('openDialog')
     }
 
     const updateGameInfo = (event) => {
-      // if (props.room.ownerId !== store.state.root.userId) return
       const game = event.target.dataset.game
       const roomInfo = {
         ...props.room,
@@ -81,59 +79,62 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '방장만 변경할 수 있습니다.'
+            message: '방장만 시작할 수 있습니다.'
           })
         })
     }
 
     const gameStart = () => {
-      console.log("유저목록");
-      state.userList.forEach(user => {
-        console.log(user.userId)
-        })
       emit('gameStart')
     }
 
     const leaveRoom = () => {
-      store.dispatch('root/requestLeaveGameRoom', { roomId: Number(props.roomId) })
-        .then(res => {
-          ElMessage({
-            type: 'success',
-            message: '방에서 퇴장하셨습니다.'
-          })
-          emit('leaveRoom')
-          route.push({
-            name: 'waitingRoom'
-          })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      router.push({
+        name: 'waitingRoom'
+      })
     }
-    const ovSetting = {
-      onVideo : true,
-      onAudio : true
-    }
+
     const muteAudio = () => {
-        ovSetting.onAudio = !ovSetting.onAudio;
-        store.publisher.publishAudio(ovSetting.onAudio);
+        state.onAudio = !state.onAudio;
+        console.log(state.onAudio)
+        store.onAudio = state.onAudio
+        store.publisher.publishAudio(state.onAudio);
     }
     const muteVideo = () => {
-        ovSetting.onVideo = !ovSetting.onVideo;
-        store.publisher.publishVideo(ovSetting.onVideo);
+        state.onVideo = !state.onVideo;
+        console.log(state.onVideo)
+        store.onVideo = state.onVideo
+        store.publisher.publishVideo(state.onVideo);
     }
-    const requestUserList = () => {
-      store.dispatch('root/requestReadUserList', props.roomId)
-        .then(res => {
-          state.userList = res.data.userList
-        })
-        .catch(err => {
-          ElMessage(err)
-        })
+
+    const setBtnDisabled = () => {
+      store.dispatch('root/requestReadSingleGameRoom', props.roomId).then(roomRes => {
+          store.dispatch('root/requestReadMyInfo').then(userRes => {
+              state.userId = userRes.data.user.userId;
+              console.log("여기...........방주인............은...",roomRes.data.room.ownerId);
+              state.ownerId = roomRes.data.room.ownerId;
+                console.log("훗...난 니가 원하는 대로 안 움직여주지",state.userId);
+                console.log("겨루기 결과 : ",state.ownerId == state.userId)
+              if(state.ownerId == state.userId) {
+                state.disableGameBtns = true;
+              }
+              else {
+                state.disableGameBtns = false;
+              }
+          })
+          .catch(err => {
+            ElMessage(err)
+          })
+      })
+      .catch(err => {
+        ElMessage(err)
+      })
     }
-    requestUserList()
+
+    //* created *//
     setBtnDisabled()
-    return { state, openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+
+    return {state ,route, openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }
 </script>
