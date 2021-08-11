@@ -36,6 +36,8 @@ public class GameManager {
         return SetNameRes.Companion.of(users.get(0).getUserId(), users.get(1).getUserId());
     }
 
+    // 게임에
+
     /**
      * 정한 이름을 저장하는 메서드
      * @param req : userId와 정해진 이름을 멤버변수로 가진 객체
@@ -80,5 +82,9 @@ public class GameManager {
 
     public List<Long> getRank(){
         return winList;
+    }
+
+    public void addPlayer() {
+
     }
 }

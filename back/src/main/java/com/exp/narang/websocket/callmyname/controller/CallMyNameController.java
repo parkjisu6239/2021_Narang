@@ -5,6 +5,7 @@ import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
+import com.exp.narang.websocket.chat.model.ChatModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -40,6 +41,18 @@ public class CallMyNameController {
     }
 
     /**
+     * 콜마넴 게임방에 참여한 사용자를 추가하는 메서드
+     * @param roomId
+     * @param userId
+     */
+    @MessageMapping("/call/addPlayer/{roomId}")
+    public void addPlayer(@DestinationVariable long roomId, long userId){
+        ManagerHolder.gameManagerMap
+                .get(roomId)
+                .addPlayer();
+    }
+
+    /**
      * 정해진 이름을 저장하는 메서드
      * TODO : 순서대로 되는 로직인지 확인하기
      * @param roomId : path로 받는 roomId (PK)
@@ -52,17 +65,24 @@ public class CallMyNameController {
         return ManagerHolder.gameManagerMap.get(roomId).setName(req);
     }
 
-    /**
-     * 다음 질문 순서 userId를 반환하는 메서드
-     * TODO : 순서대로 되는 로직인지 확인하기
-     * @param roomId : path로 받는 roomId (PK)
-     * @return 다음에 질문할 사용자의 userId
-     */
-    @MessageMapping("/call/set-qtime/{roomId}")
-    @SendTo("/from/call/set-qtime/{roomId}")
-    public long setQuestionTime(@DestinationVariable long roomId){
-        return ManagerHolder.gameManagerMap.get(roomId).getNextUserId();
+    // 게임방 안 채팅 만들기
+    @MessageMapping("/call/chat/{roomId}")
+    @SendTo("/from/call/chat/{roomId}")
+    public ChatModel sendMessage(@DestinationVariable long roomId, ChatModel chatModel){
+        return chatModel;
     }
+
+//    /**
+//     * 다음 질문 순서 userId를 반환하는 메서드
+//     * TODO : 순서대로 되는 로직인지 확인하기
+//     * @param roomId : path로 받는 roomId (PK)
+//     * @return 다음에 질문할 사용자의 userId
+//     */
+//    @MessageMapping("/call/set-qtime/{roomId}")
+//    @SendTo("/from/call/set-qtime/{roomId}")
+//    public long setQuestionTime(@DestinationVariable long roomId){
+//        return ManagerHolder.gameManagerMap.get(roomId).getNextUserId();
+//    }
 
     /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
