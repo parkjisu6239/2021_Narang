@@ -16,6 +16,10 @@ const mafiaManager = {
   players : null, // socket으로 생존 players 가져오는거
   secondVoteUsername : '', // 단두대 오른사람 이름
   myRole : '', // 자기 역할 Citizen or Mafia
+  missionNumber : null, // 미션 번호
+  missionName : null, // 미션 이름
+  missionKeepCnt : 0, // 미션 동작 유지 시간 카운트
+  missionSuccess : false, // 미션 성공 여부
   isAlive: true, // 내가 살았나 죽었나
   onAudio : true
 }
