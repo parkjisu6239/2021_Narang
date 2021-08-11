@@ -9,11 +9,11 @@
     </div>
     <div v-else-if="state.mafiaManager.stage == 'day2' && state.mafiaManager.secondVoteUsername !== state.mafiaManager.username">
       <div class="vote-element" @click="setVote">
-        <input type="radio" id="찬성" name="vote-day2" v-model="state.voteDay2" value="true">
+        <input type="radio" id="찬성" name="vote-day2" v-model="state.voteDay2" :value="true">
         <label for="찬성">찬성</label>
       </div>
       <div class="vote-element" @click="setVote">
-        <input type="radio" id="반대" name="vote-day2" v-model="state.voteDay2" value="false">
+        <input type="radio" id="반대" name="vote-day2" v-model="state.voteDay2" :value="false">
         <label for="반대">반대</label>
       </div>
     </div>
@@ -48,8 +48,13 @@ export default {
         store.state.root.mafiaManager.theVoted = state.voteDay1
       } else if (state.mafiaManager.stage == 'night') {
         store.state.root.mafiaManager.theVoted = state.voteNight
+      } else if (state.mafiaManager.stage == 'day2') {
+        if (state.voteDay2 === true) {
+          store.state.root.mafiaManager.theVoted = state.mafiaManager.secondVoteUsername
+        } else {
+          store.state.root.mafiaManager.theVoted = null
+        }
       }
-      store.state.root.mafiaManager.isAgree = state.voteDay2
     }
 
     return { state, setVote }
