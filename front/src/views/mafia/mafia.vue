@@ -354,6 +354,8 @@ export default {
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
+            store.state.root.mafiaManager.onAudio = false
+            store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
           }
 
           if (state.mafiaManager.stage === 'day2') {
