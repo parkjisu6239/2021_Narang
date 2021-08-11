@@ -9,6 +9,7 @@
     ref="myWebCam"
     @mouseover="showVideoMenu"
     class="webcam"
+    :class="{ 'died-user' : state.mafiaManager.isAlive }"
     autoplay
     playsinline
     controls="false"/>
@@ -43,7 +44,8 @@ export default {
         neutral: 0,
         sad: 0,
         surprised: 0,
-      }
+      },
+      mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
     const startExpressDetection = async () => {

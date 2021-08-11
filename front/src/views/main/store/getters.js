@@ -36,7 +36,7 @@ export function myRoom (state) {
 
 export function publisher (state) {
   return state.publisher
-}
+}publisher
 
 export function onVideo (state) {
   return state.onVideo

@@ -14,6 +14,8 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
+    <!-- <button @click="test">적용</button>
+    <button @click="test2">삭제</button> -->
   </div>
 
 </template>
@@ -99,17 +101,18 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
-						});
+							mirror: false,       	// Whether to mirror your local video or not
 
+						});
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
             store.publisher = publisher;
-						state.session.publish(state.publisher);
+						state.session.publish(store.publisher);
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
+
 			});
 
       window.addEventListener('beforeunload', leaveSession)
@@ -131,7 +134,9 @@ export default {
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
+      console.log("이게뭐야1")
 			if (state.mainStreamManager === stream) return
+      console.log("이게뭐야2")
 			state.mainStreamManager = stream
 		}
 
@@ -169,13 +174,28 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						},
 					})
-					.then(response => response.data)
+					.then(response => {
+            console.log("tqtqtqtqtq")
+            console.log(response.data)
+            return response.data}
+            )
 					.then(data => resolve(data.token))
 					.catch(error => reject(error.response))
 			});
@@ -189,8 +209,25 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
+    const test = () => {
+    console.log("여기좀봐!!")
+    store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
+            .then(() => {
+                console.log("단두대 오른사람 필터 적용 완료")
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
-    return { state, updateMainVideoStreamManager }
+
+    }
+
+    const test2 = () => {
+      store.publisher.stream.removeFilter()
+        .then(() => console.log("Filter removed"))
+        .catch(error => console.error(error));
+    }
+    return { state, store,updateMainVideoStreamManager , test, test2}
 
   },
 }

@@ -19,6 +19,12 @@
   :myRole="state.myRole"
   @click="state.roleCardVisible = false"/>
 
+  <GameDialog v-if="state.gameOver">
+    <GameOverContent
+      :msg="state.msg"
+      :result="state.gameOverResult"/>
+  </GameDialog>
+
   <div v-if="store.state.root.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
     <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
@@ -39,6 +45,8 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
+import GameDialog from './game-dialog/game-dialog.vue'
+import GameOverContent from './game-dialog/game-over-content.vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -58,6 +66,8 @@ export default {
     LeftSide,
     RightSide,
     MafiaRoleCard,
+    GameDialog,
+    GameOverContent,
   },
 
   setup(props, { emit }) {
@@ -82,6 +92,8 @@ export default {
       gameOver: false,
       isVoteTime: false,
       timer: 0,
+      isDialogVisible: false,
+      gameOverResult: '',
       model: null,
       myWebcam: null,
       labelContainer: null,
@@ -330,9 +342,11 @@ export default {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         console.log('게임 종료! 결과:', result.msg)
-        state.msg = `게임 종료! ${result.msg}! 정체 공개 -> ${result.roleString}`
+        state.msg = `${result.msg}`
+        state.gameOverResult = result.roleString
         store.state.root.mafiaManager.stage = 'default'
         state.gameOver = true
+        gameOver()
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
@@ -366,6 +380,13 @@ export default {
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
+            store.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
+            .then(() => {
+                console.log("죽은 사람 화면 처리 완료");
+            })
+            .catch(error => {
+                console.error(error);
+            });
             store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
           }
 
@@ -398,7 +419,7 @@ export default {
 
     // [Func|game] 낮 자유 토론
     const goDay = () => {
-      console.log("토론시간이다이자식이ㅏ!!!!!!!!")
+      console.log("토론시간이다이자식이ㅏ개 쎄이야~!!!!!!!!")
       startMission(); // 낮이 되면 마피아들 미션 새로 부여 받고 동작 인식 시작.
 
       // 상태 변경
@@ -440,6 +461,16 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       store.state.root.mafiaManager.stage = "day2";
 
+    // 단두대 오른사람 필터 적용
+      if (store.state.root.mafiaManager.username === secondVoteUsername) {
+        store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=blue top=-20 bottom=-20 left=-10 right=-10" })
+          .then(() => {
+              console.log("단두대 오른사람 필터 적용 완료")
+          })
+          .catch(error => {
+              console.error(error);
+          });
+      }
       // 메시지 변경
       console.log(`${secondVoteUsername}님이 단두대에 올랐습니다.
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
@@ -447,6 +478,9 @@ export default {
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
 
       setTimeout(() => { // 투표하기
+        if (store.state.root.mafiaManager.username === secondVoteUsername) {
+          removeFilter();
+        }
         sendVoteSocket();
       }, state.time[2]);
     }
@@ -460,7 +494,11 @@ export default {
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
-      state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
+      if ( state.mafiaManager.myRole === 'Mafia') {
+        state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
+      } else {
+        state.msg = `밤이 되었습니다. 안심하지 마십시오. 마피아는 당신을 지켜보고 있습니다`
+      }
 
       setTimeout(() => { // 투표하기
         sendVoteSocket();
@@ -484,16 +522,39 @@ export default {
       }, state.time[4])
     }
 
-    //* created *//
-    const setGame =  () => {
-        console.log("setGame 소켓 연결 전")
-        connectSocket()
-        console.log("setGame 소켓 연결 후")
+    const gameOver = () => {
+      // 상태 초기화
+      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.stage = 'default'
+      store.state.root.mafiaManager.players = null
+      store.state.root.mafiaManager.secondVoteUsername = ''
+      store.state.root.mafiaManager.myRole = ''
+      store.state.root.mafiaManager.isAlive = true
+      removeFilter();
+      setTimeout(() => {
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
+        })
+      }, 5000);
     }
 
-    setGame();
+    const setGame =  () => {
+      console.log("setGame 소켓 연결 전")
+      connectSocket()
+      console.log("setGame 소켓 연결 후")
+    }
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
+    //* created *//
+    setGame();
+    const removeFilter = () => {
+      store.publisher.stream.removeFilter()
+      .then(() => console.log("필터 없애버려!"))
+      .catch(error => console.error(error));
+    }
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, removeFilter}
   },
 }
 </script>
