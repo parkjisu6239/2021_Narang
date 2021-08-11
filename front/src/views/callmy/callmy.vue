@@ -40,6 +40,7 @@ export default {
       let socket = new SockJS("/call")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
+          console.log('채팅 소켓 연결 중')
           connectChatSocket() // 채팅 소켓
         }
       )
@@ -53,7 +54,7 @@ export default {
       })
     }
 
-    const sandChat = (chat) => {
+    const sendChat = (chat) => {
       if (state.stompClient && state.stompClient.connected && msg) {
         const message = {
           userName: store.state.root.username,
@@ -68,7 +69,7 @@ export default {
     }
 
     connectSocket()
-    return { state, route }
+    return { state, route, sendChat }
   }
 }
 </script>

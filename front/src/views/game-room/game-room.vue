@@ -118,10 +118,11 @@ export default {
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = () => {
-      let socket = new SockJS("/narang")
+    const connectSocket = async () => {
+      let socket = await new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({}, () => {
+      console.log('채팅 소켓')
+      await state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
           connectMafiaStartSocket() // 게임 시작 소켓
         }
