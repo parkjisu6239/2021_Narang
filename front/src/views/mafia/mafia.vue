@@ -380,6 +380,13 @@ export default {
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
+            store.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
+            .then(() => {
+                console.log("죽은 사람 화면 처리 완료");
+            })
+            .catch(error => {
+                console.error(error);
+            });
             store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
           }
 
@@ -412,7 +419,7 @@ export default {
 
     // [Func|game] 낮 자유 토론
     const goDay = () => {
-      console.log("토론시간이다이자식이ㅏ!!!!!!!!")
+      console.log("토론시간이다이자식이ㅏ개 쎄이야~!!!!!!!!")
       startMission(); // 낮이 되면 마피아들 미션 새로 부여 받고 동작 인식 시작.
 
       // 상태 변경
@@ -454,6 +461,16 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       store.state.root.mafiaManager.stage = "day2";
 
+    // 단두대 오른사람 필터 적용
+      if (store.state.root.mafiaManager.username === secondVoteUsername) {
+        store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=blue top=-20 bottom=-20 left=-10 right=-10" })
+          .then(() => {
+              console.log("단두대 오른사람 필터 적용 완료")
+          })
+          .catch(error => {
+              console.error(error);
+          });
+      }
       // 메시지 변경
       console.log(`${secondVoteUsername}님이 단두대에 올랐습니다.
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
@@ -461,6 +478,9 @@ export default {
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
 
       setTimeout(() => { // 투표하기
+        if (store.state.root.mafiaManager.username === secondVoteUsername) {
+          removeFilter();
+        }
         sendVoteSocket();
       }, state.time[2]);
     }
@@ -510,8 +530,7 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
-
-
+      removeFilter();
       setTimeout(() => {
         router.push({
           name: 'gameRoom',
@@ -530,8 +549,12 @@ export default {
 
     //* created *//
     setGame();
-
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
+    const removeFilter = () => {
+      store.publisher.stream.removeFilter()
+      .then(() => console.log("필터 없애버려!"))
+      .catch(error => console.error(error));
+    }
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, removeFilter}
   },
 }
 </script>
