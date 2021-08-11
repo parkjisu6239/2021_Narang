@@ -183,5 +183,5 @@ export default {
 }
 </script>
 <style scoped>
-  @import url('game-room-webcam.css');
+  @import url('callmy-webcam.css');
 </style>

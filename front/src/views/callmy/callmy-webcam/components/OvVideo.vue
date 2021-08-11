@@ -1,5 +1,5 @@
 <template>
-  <video class="webcam" autoplay playsinline controls="false"/>
+  <video ref="myWebCam" class="webcam" autoplay playsinline controls="false"/>
 </template>
 
 <script>
@@ -16,6 +16,8 @@ export default {
     onMounted(() => {
       props.streamManager.addVideoElement(myWebCam.value)
     })
+
+    return { myWebCam }
   }
 }
 </script>

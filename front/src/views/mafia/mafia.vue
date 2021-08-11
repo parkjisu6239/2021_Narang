@@ -122,7 +122,6 @@ export default {
       if(loopPredict){
         loopPredict = window.requestAnimationFrame(loop);
       }
-
     }
 
     const predict = async() => {
