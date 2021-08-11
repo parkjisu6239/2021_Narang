@@ -39,3 +39,8 @@
 .menu-button:active {
   box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
 }
+
+.died-user{
+  -webkit-filter: grayscale(100%);
+  filter: #515151;
+}
