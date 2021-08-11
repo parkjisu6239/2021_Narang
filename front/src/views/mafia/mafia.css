@@ -142,19 +142,3 @@
   z-index: -200;
   filter: blur(2px);
 }
-
-.countdown {
-  position: absolute;
-  top: 0px;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(255, 255, 255, 0.9);
-  z-index: 100;
-}
-
-.countdown .counter {
-  font-size: 100px;
-  font-weight: 700;
-  text-align: center;
-  margin-top: 30vh;
-}

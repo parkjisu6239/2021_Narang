@@ -3,6 +3,7 @@ package com.exp.narang.websocket.mafia.model.manager;
 import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.mafia.model.Player;
+import com.exp.narang.websocket.mafia.request.MafiaMessage;
 import com.exp.narang.websocket.mafia.response.GamePlayers;
 
 import com.exp.narang.websocket.mafia.response.GameResult;
@@ -54,5 +55,9 @@ public class GameManager {
             gr.setRoleString(roleString);
         }
         return gr;
+    }
+
+    public int isEveryMafiaComplete(MafiaMessage mafiaMessage){
+        return gamePlayers.everyMafiaMissionComplete(mafiaMessage);
     }
 }

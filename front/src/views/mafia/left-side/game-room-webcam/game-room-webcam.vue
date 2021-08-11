@@ -6,7 +6,11 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
+<<<<<<< HEAD
     <user-video id="mafiaWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+=======
+    <user-video id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+>>>>>>> 165877f6c0c9c87ee932f11e308b9843bf74df45
     <user-video
       v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
@@ -30,6 +34,9 @@ export default {
   props: {
     roomId: {
       type: Number
+    },
+    stage: {
+      type: String
     }
   },
   setup(props, { emit }) {
@@ -88,7 +95,7 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: true,       	// Whether to mirror your local video or not
 						})
 
 						state.mainStreamManager = publisher
@@ -156,7 +163,15 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "data": "user_data",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                  "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
@@ -168,7 +183,6 @@ export default {
 			})
 		}
 
-    //* Life Cycle *//
     // created
     joinSession()
 
@@ -176,9 +190,7 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
-
     return { state, updateMainVideoStreamManager }
-
   },
 }
 </script>

@@ -1,8 +1,24 @@
 .right-side-container {
-  display: grid;
-  grid-template-rows: 1fr 1fr 2fr 7fr 1fr;
+  display: flex;
+  flex-direction: column;
 }
 
 .right-side-container > * {
   border: 1px solid black;
+}
+
+.right-btn-group {
+  max-height: 50px;
+}
+
+.right-board {
+  height: 100%;
+}
+
+.right-timer {
+  max-height: 50px;
+}
+
+.right-setting {
+  max-height: 50px;
 }

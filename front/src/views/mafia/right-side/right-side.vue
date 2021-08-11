@@ -1,22 +1,20 @@
 <template>
   <div class="right-side-container">
-    <div class="btn-group">
+    <div class="right-btn-group">
       <button @click="clickGetRole">롤카드 보기</button>
-      <button>거짓말탐지</button>
+      <button @click="clickLie">거짓말탐지</button>
       <button>도움말</button>
-      <button @click="clickStartMission">동작 인식</button>
+      <button @click="clickShowMission">미션 보기</button>
     </div>
-    <Timer/>
-    <Board/>
-    <Chat/>
-    <Setting/>
+    <Timer class="right-timer" :timer="timer"/>
+    <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime"/>
+    <Setting class="right-setting"/>
   </div>
 </template>
 
 <script>
 import Board from './board/board.vue'
 import Timer from './timer/timer.vue'
-import Chat from './chat/chat.vue'
 import Setting from './setting/setting.vue'
 
 import { reactive } from 'vue'
@@ -26,10 +24,21 @@ import { useRouter, useRoute } from 'vue-router'
 export default {
   name: 'rightSide',
 
+  props: {
+    msg: {
+      type: String,
+    },
+    isVoteTime: {
+      type: Boolean,
+    },
+    timer: {
+      tpye: Number,
+    }
+  },
+
   components: {
     Board,
     Timer,
-    Chat,
     Setting,
   },
 
@@ -45,11 +54,15 @@ export default {
       emit('sendGetRole')
     }
 
-    const clickStartMission = () => {
-      emit('clickStartMission')
+    const clickShowMission = () => {
+      emit('clickShowMission')
     }
 
-    return { state, clickGetRole, clickStartMission }
+const clickLie = () => {
+      emit('clickLie')
+    }
+
+    return { state, clickGetRole, clickShowMission, clickLie }
   }
 }
 </script>

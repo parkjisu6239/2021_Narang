@@ -10,7 +10,11 @@ module.exports = {
       },
       '/narang':{
         target: 'https://localhost:8080/'
+<<<<<<< HEAD
       },
+=======
+      }
+>>>>>>> 165877f6c0c9c87ee932f11e308b9843bf74df45
     },
     historyApiFallback: true,
     hot: true
@@ -22,5 +26,5 @@ module.exports = {
     'element-plus'
   ],
   lintOnSave: false,
-  outputDir: '../back/src/main/resources/dist'
+  outputDir: '../back/src/main/resources/dist',
 }
