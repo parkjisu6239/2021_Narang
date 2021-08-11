@@ -106,6 +106,8 @@ export default {
 						state.publisher = publisher;
             store.publisher = publisher;
 						state.session.publish(state.publisher);
+                        console.log("publisger")
+            console.log(state.publisher)
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
@@ -171,7 +173,6 @@ export default {
 				$axios
 					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
               "type": "WEBRTC",
-              "data": "user_data",
               "role": "PUBLISHER",
               "kurentoOptions": {
                   "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
@@ -182,7 +183,11 @@ export default {
 							password: OPENVIDU_SERVER_SECRET,
 						},
 					})
-					.then(response => response.data)
+					.then(response => {
+            console.log("tqtqtqtqtq")
+            console.log(response.data)
+            return response.data}
+            )
 					.then(data => resolve(data.token))
 					.catch(error => reject(error.response))
 			});
