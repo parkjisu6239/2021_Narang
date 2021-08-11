@@ -39,7 +39,6 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
-import { onMounted } from 'vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -76,9 +75,8 @@ export default {
       myMissionName : null,
       myMissionKeepCnt : 0,
       myMissionSuccess : false,
+      destinationUrl: '/narang',
       canMafiaVote : false,
-      destinationUrl: 'https://localhost:8080/narang',
-      // destinationUrl: '/narang',
       roleCardVisible: false,
       msg: '',
       userRole: {},
@@ -282,12 +280,17 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: store.state.root.mafiaManager.username, // 내 이름
+          username: store.state.root.mafiaManager.stage === 'night' && store.state.root.mafiaManager.myRole === 'Citizen' ? null : store.state.root.mafiaManager.username, // 내 이름
           theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
           stage: store.state.root.mafiaManager.stage, // day1, day2, night
           isAgree: store.state.root.mafiaManager.isAgree, // false : 살린다, true: 죽인다
-          secondVoteusername: store.state.root.mafiaManager.secondVoteusername // 2차 투표 진행시 해당 유저의 이름
+          secondVoteUsername: store.state.root.mafiaManager.secondVoteUsername // 2차 투표 진행시 해당 유저의 이름
         }
+
+      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.isAgree = false
+      state.isVoteTime = false
+
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
 
@@ -324,7 +327,6 @@ export default {
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
         } else {
-          store.state.root.mafiaManager.theVoted = null // 투표 초기화
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
           state.isVoteTime = false
 
@@ -335,11 +337,6 @@ export default {
           }, state.time[4]);
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
-
-        // 투표 초기화
-        store.state.root.mafiaManager.theVoted = null
-        store.state.root.mafiaManager.isAgree = false
-        state.isVoteTime = false
 
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
@@ -353,8 +350,6 @@ export default {
             state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
-          sendPlayers() // player update
-
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
           }
@@ -367,11 +362,8 @@ export default {
             state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`
           }
         }
-        // 5초 쉬고 다음으로 이동
-        state.timer = state.time[4]
-        setTimeout(() => {
-          nextStage(result)
-        }, state.time[4]);
+
+        nextStage(result)
       }
     }
 
@@ -379,9 +371,13 @@ export default {
     const nextStage =  (result) => {
        sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
-        goNight()
-      } else { // 밤 -> 낮 1차
-        goDay()
+        setTimeout(() => {
+          goNight()
+        }, state.time[4]);
+      } else { // 밤 -> 낮
+        setTimeout(() => {
+          goDay()
+        }, state.time[4]);
       }
     }
 
