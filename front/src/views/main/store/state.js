@@ -17,6 +17,7 @@ const mafiaManager = {
   secondVoteUsername : '', // 단두대 오른사람 이름
   myRole : '', // 자기 역할 Citizen or Mafia
   isAlive: true, // 내가 살았나 죽었나
+  onAudio : true
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비

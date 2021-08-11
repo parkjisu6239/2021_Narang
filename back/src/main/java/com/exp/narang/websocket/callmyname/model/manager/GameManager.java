@@ -4,6 +4,7 @@ import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
+import com.exp.narang.websocket.callmyname.response.SetNameRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,38 +16,43 @@ public class GameManager {
     private final List<User> users;
     private final List<Long> winList;
     private int currentSetNameTurn;
+    private int currentSetterTurn;
     private int currentGuessTurn;
-//    private volatile boolean isAnswering;
 
     public GameManager(long roomId, RoomService roomService){
         nameMap = new ConcurrentHashMap<>();
         users = roomService.findUserListByRoomId(roomId);
         winList = new ArrayList<>();
         currentSetNameTurn = 1;
+        currentSetterTurn = 2;
         currentGuessTurn = 1;
-//        isAnswering = false;
     }
 
     /**
      * 게임을 시작할 때 호출되는 메서드
-     * @return 처음 이름을 정할 사용자의 id
+     * @return 처음 이름을 정할 사용자의 id, 이름을 정해주는 사용자의 id를 가진 SetNameRes 객체
      */
-    public long getFirstUserId(){
-        return users.get(0).getUserId();
+    public SetNameRes getFirstUserIds(){
+        return SetNameRes.Companion.of(users.get(0).getUserId(), users.get(1).getUserId());
     }
+
+    // 게임에
 
     /**
      * 정한 이름을 저장하는 메서드
      * @param req : userId와 정해진 이름을 멤버변수로 가진 객체
-     * @return 다음으로 이름을 정할 사용자의 userId
+     * @return 다음으로 이름을 정할 사용자의 id, 이름을 정해주는 사용자의 id를 가진 SetNameRes 객체
      */
-    public long setName(NameReq req){
+    public SetNameRes setName(NameReq req){
         nameMap.put(req.getUserId(), req.getName());
-        if(currentSetNameTurn < users.size()) return users.get(currentSetNameTurn++).getUserId();
-        else return -1;
+        if(currentSetNameTurn < users.size())
+            return SetNameRes.Companion.of(
+                    users.get(currentSetNameTurn++).getUserId(),
+                    users.get(currentSetterTurn++).getUserId());
+        else return SetNameRes.Companion.getEndInstance();
     }
 
-    /**
+    /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
      * @return 다음 질문시간을 갖는 사용자의 userId
      */
     public long getNextUserId(){
@@ -55,7 +61,7 @@ public class GameManager {
         return users.get(currentGuessTurn).getUserId();
     }
 
-    /**
+    /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
      * @param req : userId와 정해진 이름이 있는 객체
      * @return 답이 맞았는지, nameMap 이 비었는지 여부를 멤버변수로 가진 객체
@@ -76,5 +82,9 @@ public class GameManager {
 
     public List<Long> getRank(){
         return winList;
+    }
+
+    public void addPlayer() {
+
     }
 }
