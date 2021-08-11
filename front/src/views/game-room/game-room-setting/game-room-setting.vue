@@ -95,17 +95,8 @@ export default {
         console.log(state.onAudio)
         store.onAudio = state.onAudio
         store.publisher.publishAudio(state.onAudio);
-        // store.state.pu
-            // store.publisher.publishVideo(state.onVideo);
-            // noir.effect
-            // historical.effect
-            store.publisher.stream.applyFilter("GStreamerFilter ", { command: "videoflip method=vertical-flip" })
-            .then(() => {
-                console.log("Video rotated!");
-            })
-            .catch(error => {
-                console.error(error);
-            });
+
+
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
