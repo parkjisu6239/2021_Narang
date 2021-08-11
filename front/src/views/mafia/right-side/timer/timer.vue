@@ -1,6 +1,6 @@
 <template>
-  <div>
-    타이머 째깍째깍 {{ state.gameTimer }}
+  <div class="timer-content">
+    <div class="time">타이머 째깍째깍 <span class="time-number">{{ state.gameTimer }}</span>초</div>
   </div>
 </template>
 
