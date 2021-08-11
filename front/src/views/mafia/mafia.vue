@@ -6,7 +6,7 @@
     <RightSide
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
-      @clickStartMission="clickStartMission"
+      @clickShowMission="clickShowMission"
       @clickLie="clickLie"
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
@@ -90,6 +90,7 @@ export default {
     const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
     let model, myWebcam, labelContainer, maxPredictions, loopPredict;
     const poseEstimationInit = async() => {
+        console.log("동작 인식 시작!!!")
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
@@ -105,11 +106,11 @@ export default {
 
         myWebcam = document.getElementById("myWebcam").childNodes[2];
         console.log("웹캠가져옴", myWebcam);
-        console.log("미션 번호 : "+state.myMissionNumber);
+        console.log("미션 번호 : ", state.myMissionNumber);
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         const prediction = await model.predict(posenetOutput);
         state.myMissionName = prediction[state.myMissionNumber].className
-        console.log("너의 미션은?"+state.myMissionName);
+        console.log("너의 미션은?", state.myMissionName);
         labelContainer = document.getElementById("mission-container");
         for (let i = 0; i < maxPredictions; i++) { // and class labels
             labelContainer.appendChild(document.createElement("div"));
@@ -117,10 +118,8 @@ export default {
     }
 
     const loop = async(timestamp) => {
-      // console.log("루프프레딕트:",loopPredict)
       await predict();
       if(loopPredict){
-        // console.log("루프")
         loopPredict = window.requestAnimationFrame(loop);
       }
 
@@ -131,7 +130,6 @@ export default {
         // estimatePose can take in an image, video or canvas html element
         const { pose, posenetOutput } = await model.estimatePose(myWebcam);
         // Prediction 2: run input through teachable machine classification model
-        // console.log("프레딕트왔음")
         const prediction = await model.predict(posenetOutput);
 
         for (let i = 0; i < maxPredictions; i++) {
@@ -145,25 +143,44 @@ export default {
           console.log("미션 성공!");
           ElMessage.success(prediction[state.myMissionNumber].className + '하기 미션에 성공하였습니다!');
           state.myMissionSuccess = true;
-          // sendMafias();
+          sendMafias();
           cancelAnimationFrame(loop);
           console.log("미션 성공 결과 : ", state.myMissionSuccess);
-          if(loopPredict){ // 동작 인식 loop 멈춤
-            window.cancelAnimationFrame(loopPredict);
-            loopPredict = undefined;
-          }
+          stopMission(); // 마피아 동작 인식 중지
         }
         // console.log("여기서 프레딕션은??"+prediction);
     }
 
-    // 동작 인식 시작 (mission 종류 없으면 작동 안 함)
-    const clickStartMission = () => {
-      if (state.myMissionNumber == null) ElMessage.error('역할 받기 전에는 안 됨.');
-      else if(state.myMissionNumber == -1) ElMessage.success('시민이라서 미션 시작 안 되지롱');
+    // 마피아 소켓 send 되는지 확인하려고 넣어놓음. 나중에 지울 예정
+    const clickLie = () => {
+      console.log("거짓말탐지기클릭")
+      sendMafias();
+    }
+
+    // [Func|mafia] 마피아 미션 확인
+    const clickShowMission = () => {
+      console.log("쇼미션인데........왜 저장 안 되지",state.myMissionName);
+      if (state.myMissionNumber == null) ElMessage.error('역할 받기 전에는 못 보지롱');
+      else if(state.myMissionNumber == -1) ElMessage.success('시민이라서 미션 없지롱');
       else{
-        console.log("마피아니까 미션 가능")
-        poseEstimationInit()
+        if(state.myMissionName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
+        else ElMessage.success('당신의 미션은 ['+state.myMissionName+'] 입니다. 밤이 되기 전에 해당 동작을 완료하세요.')
+        console.log("쇼미션",state.myMissionName);
       }
+    }
+
+    // [Func|mafia] 동작 인식 시작 (마피아일 때만 작동)
+    const startMission = () => {
+      if(state.myRole === 'Mafia') poseEstimationInit()
+    }
+
+    // [Func|mafia] 동작 인식 중지
+    const stopMission = () => {
+        if(loopPredict){
+          console.log("동작 인식 끝!!!")
+          window.cancelAnimationFrame(loopPredict);
+          loopPredict = undefined;
+        }
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
@@ -203,9 +220,9 @@ export default {
             state.myRole = result.roleName
             store.state.root.mafiaManager.myRole = result.roleName;
             state.myMissionNumber = result.missionNumber;
-            // if(state.myRole === 'Mafia'){
-            //   connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
-            // }
+            if(state.myRole === 'Mafia'){
+              connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+            }
         })
     }
 
@@ -218,34 +235,34 @@ export default {
       }
 
      // [Func|socket] 마피아끼리 소켓 연결
-    // const connectMafiasSocket = () => {
-    //   const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
-    //   state.stompClient.subscribe(fromMafiasUrl, res => {
-    //     if(res.body == 1) {
-    //       state.canMafiaVote = true;
-    //       console.log("모든 마피아들 미션 성공! 투표 가능!!");
-    //     }
-    //     else if(res.body == 0) {
-    //       state.canMafiaVote = false;
-    //       console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
-    //     }
-    //     else {
-    //       state.canMafiaVote = false;
-    //       console.log("아직 마피아 미션 집계 중입니다!");
-    //     }
-    //   })
-    // }
+    const connectMafiasSocket = () => {
+      const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
+      state.stompClient.subscribe(fromMafiasUrl, res => {
+        if(res.body == 1) {
+          state.canMafiaVote = true;
+          console.log("모든 마피아들 미션 성공! 투표 가능!!");
+        }
+        else if(res.body == 0) {
+          state.canMafiaVote = false;
+          console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
+        }
+        else {
+          state.canMafiaVote = false;
+          console.log("아직 마피아 미션 집계 중입니다!");
+        }
+      })
+    }
 
-    //  // [Func|socket] 마피아끼리 소켓 send
-    // const sendMafias = () => {
-    //   console.log("마피아 미션 성공 여부 소켓 send")
-    //   const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
-    //   const message = {
-    //       username: store.state.root.mafiaManager.username, // 내 이름
-    //       isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
-    //     }
-    //   state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
-    // }
+     // [Func|socket] 마피아끼리 소켓 send
+    const sendMafias = () => {
+      console.log("마피아 미션 성공 여부 소켓 send")
+      const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
+      const message = {
+          username: store.state.root.mafiaManager.username, // 내 이름
+          isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
+        }
+      state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
+    }
 
     // [Func|socket] 마피아 투표 소켓 연결
     const connectVoteSocket =  () => {
@@ -286,11 +303,6 @@ export default {
       })
     }
 
-    const clickLie=()=>{
-      console.log("거짓말탐지기클릭")
-      sendMafias();
-    }
-
     // [Func|socket] players 소켓 send
     const sendPlayers = () => {
       const toPlayersUrl = `/to/mafia/players/${route.params.roomId}`
@@ -300,6 +312,7 @@ export default {
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
+        stopMission(); // 마피아 동작 인식 중지
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `게임 종료! ${result.msg}! 정체 공개 -> ${result.roleString}`
         store.state.root.mafiaManager.stage = 'default'
@@ -337,8 +350,6 @@ export default {
             state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
-          sendPlayers() // player update
-
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
           }
@@ -351,11 +362,8 @@ export default {
             state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`
           }
         }
-        // 5초 쉬고 다음으로 이동
-        state.timer = state.time[4]
-        setTimeout(() => {
-          nextStage(result)
-        }, state.time[4]);
+
+        nextStage(result)
       }
     }
 
@@ -363,14 +371,20 @@ export default {
     const nextStage =  (result) => {
        sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
-        goNight()
-      } else { // 밤 -> 낮 1차
-        goDay()
+        setTimeout(() => {
+          goNight()
+        }, state.time[4]);
+      } else { // 밤 -> 낮
+        setTimeout(() => {
+          goDay()
+        }, state.time[4]);
       }
     }
 
     // [Func|game] 낮 자유 토론
     const goDay = () => {
+      startMission(); // 낮이 되면 마피아들 미션 새로 부여 받고 동작 인식 시작.
+
       // 상태 변경
       state.isVoteTime = false
       state.timer = state.time[0]
@@ -426,7 +440,7 @@ export default {
       state.isVoteTime = true
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
-      // if(state.myRole === 'Mafia') sendMafias();
+      if(state.myRole === 'Mafia') sendMafias();
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
@@ -463,7 +477,7 @@ export default {
 
     setGame();
 
-    return { state, store, connectSocket, connectGetRoleSocket, sendGetRole, clickStartMission, sendPlayers}
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
   },
 }
 </script>
