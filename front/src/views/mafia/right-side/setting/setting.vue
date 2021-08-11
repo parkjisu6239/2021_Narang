@@ -1,7 +1,7 @@
 <template>
   <div class="setting-btns">
-      <div v-if="state.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
-      <div v-if="!state.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
+      <div v-if="state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+      <div v-if="!state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
 
       <div v-if="state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
       <div v-if="!state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
@@ -13,7 +13,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 export default {
   name: 'setting',
@@ -22,7 +22,8 @@ export default {
     const router = useRouter()
     const state =  reactive({
       onVideo : true,
-      onAudio : true
+      mafiaManager: computed(() => store.getters['root/mafiaManager']),
+
     })
     const leaveRoom = () => {
       router.push({
@@ -31,10 +32,12 @@ export default {
     }
 
     const muteAudio = () => {
-        state.onAudio = !state.onAudio;
-        console.log(state.onAudio)
-        store.onAudio = state.onAudio
-        store.publisher.publishAudio(state.onAudio);
+      if(!state.mafiaManager.isAlive) {
+        return;
+      }
+        store.state.root.mafiaManager.onAudio = !store.state.root.mafiaManager.onAudio
+        console.log(store.state.root.mafiaManager.onAudio)
+        store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
