@@ -4,10 +4,10 @@
       <button @click="clickGetRole">롤카드 보기</button>
       <button @click="clickLie">거짓말탐지</button>
       <button>도움말</button>
-      <button @click="clickStartMission">동작 인식</button>
+      <button @click="clickShowMission">미션 보기</button>
     </div>
-    <Timer/>
-    <Board :msg="msg"/>
+    <Timer :timer="timer"/>
+    <Board :msg="msg" :isVoteTime="isVoteTime"/>
     <Chat/>
     <Setting/>
   </div>
@@ -15,7 +15,6 @@
 
 <script>
 import Board from './board/board.vue'
-import Voard from './board/vote.vue'
 import Timer from './timer/timer.vue'
 import Chat from './chat/chat.vue'
 import Setting from './setting/setting.vue'
@@ -30,6 +29,12 @@ export default {
   props: {
     msg: {
       type: String,
+    },
+    isVoteTime: {
+      type: Boolean,
+    },
+    timer: {
+      tpye: Number,
     }
   },
 
@@ -52,15 +57,15 @@ export default {
       emit('sendGetRole')
     }
 
-    const clickStartMission = () => {
-      emit('clickStartMission')
+    const clickShowMission = () => {
+      emit('clickShowMission')
     }
 
 const clickLie = () => {
       emit('clickLie')
     }
 
-    return { state, clickGetRole, clickStartMission, clickLie }
+    return { state, clickGetRole, clickShowMission, clickLie }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Notice :msg="msg"/>
-    <Vote v-if="state.mafiaManager.isAlive === true"/>
+    <Vote v-if="state.mafiaManager.isAlive === true && isVoteTime === true"/>
   </div>
 </template>
 
@@ -18,6 +18,9 @@ export default {
   props: {
     msg: {
       type: String,
+    },
+    isVoteTime: {
+      type: Boolean,
     }
   },
 
