@@ -197,7 +197,7 @@ export default {
         console.log("3-1. 롤 배분 소켓 연결 후")
         console.log("3-2. 롤 배분 전송 전")
         sendGetRole()
-        onsole.log("3-3. 롤 배분 전송 후")
+        console.log("3-3. 롤 배분 전송 후")
         console.log("4. 투표 소켓 연결 전")
         connectVoteSocket() // 투표 소켓 연결
         console.log("5. 투표 소켓 연결 후")
