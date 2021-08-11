@@ -352,8 +352,6 @@ export default {
             state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
-          sendPlayers() // player update
-
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
           }
@@ -366,11 +364,8 @@ export default {
             state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`
           }
         }
-        // 5초 쉬고 다음으로 이동
-        state.timer = state.time[4]
-        setTimeout(() => {
-          nextStage(result)
-        }, state.time[4]);
+
+        nextStage(result)
       }
     }
 
@@ -378,9 +373,13 @@ export default {
     const nextStage =  (result) => {
        sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
-        goNight()
-      } else { // 밤 -> 낮 1차
-        goDay()
+        setTimeout(() => {
+          goNight()
+        }, state.time[4]);
+      } else { // 밤 -> 낮
+        setTimeout(() => {
+          goDay()
+        }, state.time[4]);
       }
     }
 
