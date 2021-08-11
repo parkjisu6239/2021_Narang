@@ -1,6 +1,6 @@
 .right-side-container {
-  display: grid;
-  grid-template-rows: 1fr 1fr 9fr 1fr;
+  display: flex;
+  flex-direction: column;
 }
 
 .right-side-container > * {
@@ -9,6 +9,10 @@
 
 .right-btn-group {
   max-height: 50px;
+}
+
+.right-board {
+  height: 100%;
 }
 
 .right-timer {
