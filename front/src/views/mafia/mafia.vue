@@ -85,7 +85,7 @@ export default {
       myMissionKeepCnt : 0,
       isMissionComplete : false,
       destinationUrl: '/narang',
-      poseUrl: 'https://teachablemachine.withgoogle.com/models/J7odkV8ms/',
+      poseUrl: 'https://teachablemachine.withgoogle.com/models/Or4w15edw/',
       canMafiaVote : false,
       roleCardVisible: false,
       msg: '',
