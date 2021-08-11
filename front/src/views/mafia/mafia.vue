@@ -55,8 +55,8 @@ import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import '@tensorflow/tfjs'
 import * as tmPose from '@teachablemachine/pose'
+import '@tensorflow/tfjs'
 
 
 export default {
@@ -81,11 +81,9 @@ export default {
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
-      myMission : null,
-      myMissionKeepCnt : 0,
       isMissionComplete : false,
       destinationUrl: '/narang',
-      poseUrl: 'https://teachablemachine.withgoogle.com/models/Or4w15edw/',
+      poseUrl: 'https://teachablemachine.withgoogle.com/models/Rafr6YSIZ/',
       canMafiaVote : false,
       roleCardVisible: false,
       msg: '',
@@ -99,9 +97,11 @@ export default {
       gameOverResult: '',
       model: null,
       myWebcam: null,
-      labelContainer: null,
+      missionProgress: undefined,
+      missionMessage: undefined,
       maxPredictions: null,
       loopPredict: undefined,
+      missionMessageCnt: 0,
     })
 
     const poseEstimationInit = async() => {
@@ -118,9 +118,12 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
+        store.state.root.mafiaManager.missionNumber=8;
         store.state.root.mafiaManager.missonName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missonName);
+        state.missionProgress = document.getElementById("mission-progress");
+        state.missionMessage = document.getElementById("mission-message")
         // state.labelContainer = document.getElementById("mission-container");
         // for (let i = 0; i < state.maxPredictions; i++) {
         //     state.labelContainer.appendChild(document.createElement("div"));
@@ -142,19 +145,14 @@ export default {
         const prediction = await state.model.predict(posenetOutput);
 
         for (let i = 0; i < state.maxPredictions; i++) {
-            // const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            // state.labelContainer.childNodes[i].innerHTML = classPrediction;
+            state.missionProgress.innerHTML = "미션 " + (store.state.root.mafiaManager.missionKeepCnt / 6).toFixed(0) + "% 진행 중...";
             // 미션 동작인 경우 missionKeepCnt 카운트
             if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.87 && !store.state.root.mafiaManager.missionSuccess) {
-              if(store.state.root.mafiaManager.missionKeepCnt == 0) ElMessage.success("동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.");
-              else if(store.state.root.mafiaManager.missionKeepCnt == 150) ElMessage.success("동작 인식 25% 진행 중...");
-              else if(store.state.root.mafiaManager.missionKeepCnt == 300) ElMessage.success("동작 인식 50% 진행 중...");
-              else if(store.state.root.mafiaManager.missionKeepCnt == 450) ElMessage.success("동작 인식 75% 진행 중...");
+              if(store.state.root.mafiaManager.missionKeepCnt == 0) state.missionMessage.innerHTML = "동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.";
               store.state.root.mafiaManager.missionKeepCnt++;
             }
-            // 미션 동작이 아닌 경우 missionKeepCnt 초기화
-            else{
-              if(store.state.root.mafiaManager.missionKeepCnt > 0) ElMessage.error("그 동작이 아닙니다. 다른 자세로 다시 시도해주세요.");
+            else{ // 미션 동작이 아닌 경우 missionKeepCnt 초기화
+              state.missionMessage.innerHTML = "그 동작이 아닙니다. 다른 자세로 다시 시도해주세요.";
               store.state.root.mafiaManager.missionKeepCnt = 0;
             }
         }
@@ -162,7 +160,8 @@ export default {
         if(store.state.root.mafiaManager.missionKeepCnt >= 600) {
           store.state.root.mafiaManager.missionKeepCnt = 0; // 동작 유지 cnt 0으로 초기화
           console.log("미션 성공!");
-          ElMessage.success('[' + prediction[store.state.root.mafiaManager.missionNumber].className + '] 미션에 성공하였습니다!');
+          state.missionProgress.innerHTML = "미션 성공!";
+          state.missionMessage.innerHTML = "[" + prediction[store.state.root.mafiaManager.missionNumber].className + "] 미션에 성공하였습니다!";
           store.state.root.mafiaManager.missionSuccess = true;
           sendMafias();
           stopMission();
@@ -344,6 +343,8 @@ export default {
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
+        state.missionProgress.innerHTML = "";
+        state.missionMessage.innerHTML = "";
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `${result.msg}`
         state.gameOverResult = result.roleString
@@ -365,6 +366,8 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
+        state.missionProgress.innerHTML = "";
+        state.missionMessage.innerHTML = "";
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
         }

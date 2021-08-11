@@ -6,6 +6,10 @@
       <button>도움말</button>
       <button @click="clickShowMission">미션 보기</button>
     </div>
+    <div id="mission-container">
+      <div id="mission-progress"></div>
+      <div id="mission-message"></div>
+    </div>
     <Timer class="right-timer" :timer="timer"/>
     <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime"/>
     <Setting class="right-setting"/>
