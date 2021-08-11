@@ -95,7 +95,7 @@ export default {
         const metadataURL = state.poseUrl + "metadata.json";
 
         // load the model and metadata
-        state.model = await tmPose.load(modelURL, metadataURL);
+        state.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
         state.maxPredictions = state.model.getTotalClasses();
 
         state.loopPredict = window.requestAnimationFrame(loop); // 동작 인식 반복 시작
@@ -106,10 +106,10 @@ export default {
         store.state.root.mafiaManager.missonName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missonName);
-        state.labelContainer = document.getElementById("mission-container");
-        for (let i = 0; i < state.maxPredictions; i++) {
-            state.labelContainer.appendChild(document.createElement("div"));
-        }
+        // state.labelContainer = document.getElementById("mission-container");
+        // for (let i = 0; i < state.maxPredictions; i++) {
+        //     state.labelContainer.appendChild(document.createElement("div"));
+        // }
     }
 
     const loop = async(timestamp) => {
@@ -127,12 +127,24 @@ export default {
         const prediction = await state.model.predict(posenetOutput);
 
         for (let i = 0; i < state.maxPredictions; i++) {
-            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            state.labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.90 && !store.state.root.mafiaManager.missionSuccess) store.state.root.mafiaManager.missionKeepCnt++;
+            // const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            // state.labelContainer.childNodes[i].innerHTML = classPrediction;
+            // 미션 동작인 경우 missionKeepCnt 카운트
+            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.87 && !store.state.root.mafiaManager.missionSuccess) {
+              if(store.state.root.mafiaManager.missionKeepCnt == 0) ElMessage.success("동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 150) ElMessage.success("동작 인식 25% 진행 중...");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 300) ElMessage.success("동작 인식 50% 진행 중...");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 450) ElMessage.success("동작 인식 75% 진행 중...");
+              store.state.root.mafiaManager.missionKeepCnt++;
+            }
+            // 미션 동작이 아닌 경우 missionKeepCnt 초기화
+            else{
+              if(store.state.root.mafiaManager.missionKeepCnt > 0) ElMessage.error("그 동작이 아닙니다. 다른 자세로 다시 시도해주세요.");
+              store.state.root.mafiaManager.missionKeepCnt = 0;
+            }
         }
         console.log(store.state.root.mafiaManager.missionKeepCnt);
-        if(store.state.root.mafiaManager.missionKeepCnt >= 300) {
+        if(store.state.root.mafiaManager.missionKeepCnt >= 600) {
           store.state.root.mafiaManager.missionKeepCnt = 0; // 동작 유지 cnt 0으로 초기화
           console.log("미션 성공!");
           ElMessage.success('[' + prediction[store.state.root.mafiaManager.missionNumber].className + '] 미션에 성공하였습니다!');
