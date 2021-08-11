@@ -14,6 +14,7 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
+    <button @click="test"></button>
   </div>
 
 </template>
@@ -99,17 +100,24 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: false,       	// Whether to mirror your local video or not
+
 						});
 
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
             store.publisher = publisher;
-						state.session.publish(state.publisher);
+						state.session.publish(store.publisher);
+
+            console.log("publisger")
+            console.log(state.publisher)
+
+
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
+
 			});
 
       window.addEventListener('beforeunload', leaveSession)
@@ -169,13 +177,27 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "record": true,
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                  "videoMaxRecvBandwidth": 1000,
+                  "videoMinRecvBandwidth": 300,
+                  "videoMaxSendBandwidth": 1000,
+                  "videoMinSendBandwidth": 300,
+                  "allowedFilters": [ "GStreamerFilter", "ZBarFilter" ]
+          }}, {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						},
 					})
-					.then(response => response.data)
+					.then(response => {
+            console.log("tqtqtqtqtq")
+            console.log(response.data)
+            return response.data}
+            )
 					.then(data => resolve(data.token))
 					.catch(error => reject(error.response))
 			});
@@ -189,8 +211,18 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
+    const test = () => {
+             console.log("여기좀봐!!")
+      state.publisher.stream.applyFilter("GStreamerFilter", { command: "gamma gamma=5.0" })
+    .then(() => {
+        console.log("Video rotated!");
+    })
+    .catch(error => {
+        console.error(error);
+    });
 
-    return { state, updateMainVideoStreamManager }
+    }
+    return { state, store,updateMainVideoStreamManager , test}
 
   },
 }
