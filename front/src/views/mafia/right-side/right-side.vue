@@ -2,7 +2,7 @@
   <div class="right-side-container">
     <div class="right-btn-group">
       <button @click="clickGetRole">롤카드 보기</button>
-      <button @click="clickLie">거짓말탐지</button>
+      <button>거짓말탐지</button>
       <button>도움말</button>
       <button @click="clickShowMission">미션 보기</button>
     </div>

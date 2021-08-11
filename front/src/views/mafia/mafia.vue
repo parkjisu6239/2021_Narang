@@ -7,7 +7,6 @@
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
       @clickShowMission="clickShowMission"
-      @clickLie="clickLie"
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
       :timer="state.timer/1000"
@@ -24,6 +23,14 @@
       :msg="state.msg"
       :result="state.gameOverResult"/>
   </GameDialog>
+
+  <MissionDialog
+  v-if="state.clickMissionDialog"
+  @click="state.clickMissionDialog = false">
+    <MissionContent
+      :missionName="store.state.root.mafiaManager.missionName"
+      :missionNumber="store.state.root.mafiaManager.missionNumber"/>
+  </MissionDialog>
 
   <div v-if="store.state.root.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
@@ -47,6 +54,8 @@ import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
 import GameDialog from './game-dialog/game-dialog.vue'
 import GameOverContent from './game-dialog/game-over-content.vue'
+import MissionDialog from './game-dialog/mission-dialog.vue'
+import MissionContent from './game-dialog/mission-content.vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -68,6 +77,8 @@ export default {
     MafiaRoleCard,
     GameDialog,
     GameOverContent,
+    MissionDialog,
+    MissionContent,
   },
 
   setup(props, { emit }) {
@@ -102,6 +113,7 @@ export default {
       maxPredictions: null,
       loopPredict: undefined,
       missionMessageCnt: 0,
+      clickMissionDialog: false,
     })
 
     const poseEstimationInit = async() => {
@@ -118,10 +130,9 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
-        store.state.root.mafiaManager.missionNumber=8;
-        store.state.root.mafiaManager.missonName = prediction[store.state.root.mafiaManager.missionNumber].className
+        store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
-        console.log("너의 미션은?", store.state.root.mafiaManager.missonName);
+        console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
         state.missionMessage = document.getElementById("mission-message")
         // state.labelContainer = document.getElementById("mission-container");
@@ -170,20 +181,15 @@ export default {
         // console.log("여기서 프레딕션은??"+prediction);
     }
 
-    // 마피아 소켓 send 되는지 확인하려고 넣어놓음. 나중에 지울 예정
-    const clickLie = () => {
-      console.log("거짓말탐지기클릭")
-      sendMafias();
-    }
-
     // [Func|mafia] 마피아 미션 확인
     const clickShowMission = () => {
-      console.log("미션 보기 클릭함 : ",store.state.root.mafiaManager.missonName);
+      console.log("미션 보기 클릭함 : ",store.state.root.mafiaManager.missionName);
       if (store.state.root.mafiaManager.missionNumber == null) ElMessage.error('역할 받기 전에는 못 보지롱');
       else if(store.state.root.mafiaManager.missionNumber == -1) ElMessage.success('시민이라서 미션 없지롱');
+      else if(store.state.root.mafiaManager.missionSuccess == true) ElMessage.success('미션을 이미 완료했습니다!');
       else{
-        if(store.state.root.mafiaManager.missonName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
-        else ElMessage.success('당신의 미션은 ['+store.state.root.mafiaManager.missonName+'] 입니다. 밤이 되기 전에 해당 동작을 완료하세요.')
+        if(store.state.root.mafiaManager.missionName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
+        else state.clickMissionDialog = true;
       }
     }
 
