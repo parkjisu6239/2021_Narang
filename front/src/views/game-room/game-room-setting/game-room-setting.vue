@@ -95,6 +95,8 @@ export default {
         console.log(state.onAudio)
         store.onAudio = state.onAudio
         store.publisher.publishAudio(state.onAudio);
+
+
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
