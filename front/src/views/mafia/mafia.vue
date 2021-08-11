@@ -19,6 +19,12 @@
   :myRole="state.myRole"
   @click="state.roleCardVisible = false"/>
 
+  <GameDialog v-if="state.gameOver">
+    <GameOverContent
+      :msg="state.msg"
+      :result="state.gameOverResult"/>
+  </GameDialog>
+
   <div v-if="store.state.root.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
     <img class="mafia-neorang" :src="require('@/assets/images/mafia/mafia.png')" alt="">
@@ -39,6 +45,8 @@
 import LeftSide from './left-side/left-side.vue'
 import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
+import GameDialog from './game-dialog/game-dialog.vue'
+import GameOverContent from './game-dialog/game-over-content.vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -58,6 +66,8 @@ export default {
     LeftSide,
     RightSide,
     MafiaRoleCard,
+    GameDialog,
+    GameOverContent,
   },
 
   setup(props, { emit }) {
@@ -71,11 +81,8 @@ export default {
       stompClient: null,
       username: localStorage.getItem('username'),
       myRole: null,
-      myMissionNumber : null,
-      myMissionName : null,
-      myMissionKeepCnt : 0,
-      myMissionSuccess : false,
       destinationUrl: '/narang',
+      poseUrl: 'https://teachablemachine.withgoogle.com/models/J7odkV8ms/',
       canMafiaVote : false,
       roleCardVisible: false,
       msg: '',
@@ -85,67 +92,78 @@ export default {
       gameOver: false,
       isVoteTime: false,
       timer: 0,
+      isDialogVisible: false,
+      gameOverResult: '',
+      model: null,
+      myWebcam: null,
+      labelContainer: null,
+      maxPredictions: null,
+      loopPredict: undefined,
     })
 
-    const URL = "https://teachablemachine.withgoogle.com/models/J7odkV8ms/";
-    let model, myWebcam, labelContainer, maxPredictions, loopPredict;
     const poseEstimationInit = async() => {
         console.log("동작 인식 시작!!!")
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        const modelURL = state.poseUrl + "model.json";
+        const metadataURL = state.poseUrl + "metadata.json";
 
         // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // Note: the pose library adds a tmPose object to your window (window.tmPose)
-        // model = await tmPose.load(posemeta, posemodel);
-        model = await tmPose.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+        state.model = Object.freeze(await tmPose.load(modelURL, metadataURL));
+        state.maxPredictions = state.model.getTotalClasses();
 
-        // window.requestAnimationFrame(loop);
-        loopPredict = window.requestAnimationFrame(loop);
+        state.loopPredict = window.requestAnimationFrame(loop); // 동작 인식 반복 시작
 
-        myWebcam = document.getElementById("myWebcam").childNodes[2];
-        console.log("웹캠가져옴", myWebcam);
-        console.log("미션 번호 : ", state.myMissionNumber);
-        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
-        const prediction = await model.predict(posenetOutput);
-        state.myMissionName = prediction[state.myMissionNumber].className
-        console.log("너의 미션은?", state.myMissionName);
-        labelContainer = document.getElementById("mission-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
+        state.myWebcam = document.getElementById("myWebcam").childNodes[2];
+        const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
+        const prediction = await state.model.predict(posenetOutput);
+        store.state.root.mafiaManager.missonName = prediction[store.state.root.mafiaManager.missionNumber].className
+        console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
+        console.log("너의 미션은?", store.state.root.mafiaManager.missonName);
+        // state.labelContainer = document.getElementById("mission-container");
+        // for (let i = 0; i < state.maxPredictions; i++) {
+        //     state.labelContainer.appendChild(document.createElement("div"));
+        // }
     }
 
     const loop = async(timestamp) => {
       await predict();
-      if(loopPredict){
-        loopPredict = window.requestAnimationFrame(loop);
+      if(state.loopPredict){
+        state.loopPredict = window.requestAnimationFrame(loop);
       }
     }
 
     const predict = async() => {
         // Prediction #1: run input through posenet
         // estimatePose can take in an image, video or canvas html element
-        const { pose, posenetOutput } = await model.estimatePose(myWebcam);
+        const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         // Prediction 2: run input through teachable machine classification model
-        const prediction = await model.predict(posenetOutput);
+        const prediction = await state.model.predict(posenetOutput);
 
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-            if(prediction[state.myMissionNumber].probability.toFixed(2) >= 0.90 && !state.myMissionSuccess) state.myMissionKeepCnt++;
+        for (let i = 0; i < state.maxPredictions; i++) {
+            // const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+            // state.labelContainer.childNodes[i].innerHTML = classPrediction;
+            // 미션 동작인 경우 missionKeepCnt 카운트
+            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.87 && !store.state.root.mafiaManager.missionSuccess) {
+              if(store.state.root.mafiaManager.missionKeepCnt == 0) ElMessage.success("동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 150) ElMessage.success("동작 인식 25% 진행 중...");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 300) ElMessage.success("동작 인식 50% 진행 중...");
+              else if(store.state.root.mafiaManager.missionKeepCnt == 450) ElMessage.success("동작 인식 75% 진행 중...");
+              store.state.root.mafiaManager.missionKeepCnt++;
+            }
+            // 미션 동작이 아닌 경우 missionKeepCnt 초기화
+            else{
+              if(store.state.root.mafiaManager.missionKeepCnt > 0) ElMessage.error("그 동작이 아닙니다. 다른 자세로 다시 시도해주세요.");
+              store.state.root.mafiaManager.missionKeepCnt = 0;
+            }
         }
-        console.log(state.myMissionKeepCnt);
-        if(state.myMissionKeepCnt >= 300) {
-          state.myMissionKeepCnt = 0;
+        console.log(store.state.root.mafiaManager.missionKeepCnt);
+        if(store.state.root.mafiaManager.missionKeepCnt >= 600) {
+          store.state.root.mafiaManager.missionKeepCnt = 0; // 동작 유지 cnt 0으로 초기화
           console.log("미션 성공!");
-          ElMessage.success(prediction[state.myMissionNumber].className + '하기 미션에 성공하였습니다!');
-          state.myMissionSuccess = true;
+          ElMessage.success('[' + prediction[store.state.root.mafiaManager.missionNumber].className + '] 미션에 성공하였습니다!');
+          store.state.root.mafiaManager.missionSuccess = true;
           sendMafias();
-          cancelAnimationFrame(loop);
-          console.log("미션 성공 결과 : ", state.myMissionSuccess);
-          stopMission(); // 마피아 동작 인식 중지
+          stopMission();
+          console.log("미션 성공 결과 : ", store.state.root.mafiaManager.missionSuccess);
         }
         // console.log("여기서 프레딕션은??"+prediction);
     }
@@ -158,27 +176,30 @@ export default {
 
     // [Func|mafia] 마피아 미션 확인
     const clickShowMission = () => {
-      console.log("쇼미션인데........왜 저장 안 되지",state.myMissionName);
-      if (state.myMissionNumber == null) ElMessage.error('역할 받기 전에는 못 보지롱');
-      else if(state.myMissionNumber == -1) ElMessage.success('시민이라서 미션 없지롱');
+      console.log("미션 보기 클릭함 : ",store.state.root.mafiaManager.missonName);
+      if (store.state.root.mafiaManager.missionNumber == null) ElMessage.error('역할 받기 전에는 못 보지롱');
+      else if(store.state.root.mafiaManager.missionNumber == -1) ElMessage.success('시민이라서 미션 없지롱');
       else{
-        if(state.myMissionName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
-        else ElMessage.success('당신의 미션은 ['+state.myMissionName+'] 입니다. 밤이 되기 전에 해당 동작을 완료하세요.')
-        console.log("쇼미션",state.myMissionName);
+        if(store.state.root.mafiaManager.missonName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
+        else ElMessage.success('당신의 미션은 ['+store.state.root.mafiaManager.missonName+'] 입니다. 밤이 되기 전에 해당 동작을 완료하세요.')
       }
     }
 
     // [Func|mafia] 동작 인식 시작 (마피아일 때만 작동)
     const startMission = () => {
-      if(state.myRole === 'Mafia') poseEstimationInit()
+      console.log("미션시작한다이자식아!")
+      if(store.state.root.mafiaManager.myRole === 'Mafia') {
+        store.state.root.mafiaManager.missionSuccess = false; // 미션 성공 여부 false로 초기화
+        poseEstimationInit();
+      }
     }
 
-    // [Func|mafia] 동작 인식 중지
+    // [Func|mafia] 동작 인식 종료
     const stopMission = () => {
-        if(loopPredict){
+        if(state.loopPredict){
           console.log("동작 인식 끝!!!")
-          window.cancelAnimationFrame(loopPredict);
-          loopPredict = undefined;
+          window.cancelAnimationFrame(state.loopPredict);
+          state.loopPredict = undefined;
         }
     }
 
@@ -221,8 +242,8 @@ export default {
             const result = JSON.parse(res.body)
             state.myRole = result.roleName
             store.state.root.mafiaManager.myRole = result.roleName;
-            state.myMissionNumber = result.missionNumber;
-            if(state.myRole === 'Mafia'){
+            store.state.root.mafiaManager.missionNumber = result.missionNumber;
+            if(store.state.root.mafiaManager.myRole === 'Mafia'){
               connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
             }
         })
@@ -261,7 +282,7 @@ export default {
       const toMafiasUrl = `/to/mafia/mafias/${route.params.roomId}`
       const message = {
           username: store.state.root.mafiaManager.username, // 내 이름
-          isMissionComplete: state.myMissionSuccess, // 미션 성공 여부
+          isMissionComplete: store.state.root.mafiaManager.missionSuccess, // 미션 성공 여부
         }
       state.stompClient.send(toMafiasUrl, JSON.stringify(message), {})
     }
@@ -285,7 +306,8 @@ export default {
           username: state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen' ? null : state.mafiaManager.username, // 내 이름
           theVoted: state.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
           stage: state.mafiaManager.stage, // day1, day2, night
-          secondVoteUsername: state.mafiaManager.secondVoteUsername // 2차 투표 진행시 해당 유저의 이름
+          secondVoteUsername: state.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
+          missionNumber: store.state.root.mafiaManager.missionNumber, // 현재 미션 넘버 (시민 : -1, 마피아 : 0 ~ 10)
         }
 
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
@@ -317,13 +339,14 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
-       state.myMissionNumber = result.missionNumber; // 투표 결과 받을 때마다 미션 번호 갱신.
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         console.log('게임 종료! 결과:', result.msg)
-        state.msg = `게임 종료! ${result.msg}! 정체 공개 -> ${result.roleString}`
+        state.msg = `${result.msg}`
+        state.gameOverResult = result.roleString
         store.state.root.mafiaManager.stage = 'default'
         state.gameOver = true
+        gameOver()
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
@@ -338,7 +361,10 @@ export default {
           }, state.time[4]);
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
-
+        stopMission(); // 마피아 동작 인식 중지
+        if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
+          store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
+        }
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
@@ -386,6 +412,7 @@ export default {
 
     // [Func|game] 낮 자유 토론
     const goDay = () => {
+      console.log("토론시간이다이자식이ㅏ!!!!!!!!")
       startMission(); // 낮이 되면 마피아들 미션 새로 부여 받고 동작 인식 시작.
 
       // 상태 변경
@@ -443,11 +470,15 @@ export default {
       state.isVoteTime = true
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
-      if(state.myRole === 'Mafia') sendMafias();
+      if(store.state.root.mafiaManager.myRole === 'Mafia') sendMafias();
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
-      state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
+      if ( state.mafiaManager.myRole === 'Mafia') {
+        state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
+      } else {
+        state.msg = `밤이 되었습니다. 안심하지 마십시오. 마피아는 당신을 지켜보고 있습니다`
+      }
 
       setTimeout(() => { // 투표하기
         sendVoteSocket();
@@ -471,13 +502,33 @@ export default {
       }, state.time[4])
     }
 
-    //* created *//
-    const setGame =  () => {
-        console.log("setGame 소켓 연결 전")
-        connectSocket()
-        console.log("setGame 소켓 연결 후")
+    const gameOver = () => {
+      // 상태 초기화
+      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.stage = 'default'
+      store.state.root.mafiaManager.players = null
+      store.state.root.mafiaManager.secondVoteUsername = ''
+      store.state.root.mafiaManager.myRole = ''
+      store.state.root.mafiaManager.isAlive = true
+
+
+      setTimeout(() => {
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
+        })
+      }, 5000);
     }
 
+    const setGame =  () => {
+      console.log("setGame 소켓 연결 전")
+      connectSocket()
+      console.log("setGame 소켓 연결 후")
+    }
+
+    //* created *//
     setGame();
 
     return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}

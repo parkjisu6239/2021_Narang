@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div class="board-container">
     <Notice :msg="msg"/>
+    <hr>
     <Vote v-if="state.mafiaManager.isAlive === true && isVoteTime === true"/>
   </div>
 </template>
@@ -40,6 +41,8 @@ export default {
   }
 }
 </script>
-<style>
-
+<style scoped>
+  .board-container {
+    padding: 10px;
+  }
 </style>
