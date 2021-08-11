@@ -135,14 +135,17 @@ public class VoteManager {
             if(playerVoting.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) continue;
 
             Player playerVoted = voteStatus.get(playerVoting);
-            System.out.println("playerVoter : " + playerVoted);
-            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
-            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
-            if(playerVoted.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) {
-                countStatus.put(true, countStatus.get(true) + 1);
-            } else {
+
+//            System.out.println("playerVoter : " + playerVoted);
+//            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
+//            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
+            if(playerVoted == null) {
                 countStatus.put(false, countStatus.get(false) + 1);
+            } else {
+                countStatus.put(true, countStatus.get(true) + 1);
             }
+            // 찬성일때 true false가 아니라 찬성이면 SecondVoteUsername 반대면 null
+
         }
         log.debug("countStatus setting: {}", countStatus);
         return countStatus;
