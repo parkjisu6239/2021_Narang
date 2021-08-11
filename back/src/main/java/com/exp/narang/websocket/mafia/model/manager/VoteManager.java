@@ -131,10 +131,13 @@ public class VoteManager {
         // voteStatus <투표한사람, 지목당한사람>
         // 찬성(단두대에 있는 사람 이름이 지목당한사람으로 온다) 반대(null) or 투표 안했을경우도 null
         for(Player playerVoting : voteStatus.keySet()) {
+
             if(playerVoting.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) continue;
 
             Player playerVoted = voteStatus.get(playerVoting);
-
+            System.out.println("playerVoter : " + playerVoted);
+            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
+            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
             if(playerVoted.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) {
                 countStatus.put(true, countStatus.get(true) + 1);
             } else {
