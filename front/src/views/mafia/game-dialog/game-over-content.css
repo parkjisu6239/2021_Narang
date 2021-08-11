@@ -1,0 +1,17 @@
+.game-over-content {
+  text-align: center;
+}
+
+.mafia-ele {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(184, 24, 24);
+  margin: 0px 5px 0px 5px;
+}
+
+.game-over-content img {
+  background-color: rgb(14, 14, 14);
+  border-radius: 20px;
+  width: 200px;
+  height: auto;
+}
