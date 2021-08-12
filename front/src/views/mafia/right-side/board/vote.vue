@@ -39,7 +39,7 @@ export default {
       voteDay1: '',
       voteDay2: false,
       voteNight: '',
-      victim: '',
+      victim: state.mafiaManager.username,
       tOrF: false,
     })
 
@@ -53,7 +53,7 @@ export default {
       if (value === true) {
         store.state.root.mafiaManager.theVoted = state.mafiaManager.secondVoteUsername
       } else {
-        store.state.root.mafiaManager.theVoted = null
+        store.state.root.mafiaManager.theVoted = state.mafiaManager.username
       }
     }
 
