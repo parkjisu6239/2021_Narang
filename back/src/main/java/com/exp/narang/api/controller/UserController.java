@@ -145,16 +145,15 @@ public class UserController {
 			@ApiResponse(code = 404, message = "사용자 없음"),
 			@ApiResponse(code = 500, message = "서버 오류")
 	})
-	public ResponseEntity<? extends BaseResponseBody> userSecession(@ApiIgnore Authentication authentication){
+	public ResponseEntity<? extends BaseResponseBody> deleteUser(@ApiIgnore Authentication authentication){
 		if(authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
-		String email = userDetails.getUsername();
-		User user = userService.getUserByEmail(email);
+		User user = userDetails.getUser();
+		userService.deleteById(user.getUserId());
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
-
 
 	@DeleteMapping("/profile")
 	@ApiOperation(value = "프로필 삭제", notes = "프로필을 삭제한다")

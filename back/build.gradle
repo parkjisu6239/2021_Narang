@@ -1,6 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript{
+    ext.kotlin_version = '1.5.30-M1'
     ext {
         springBootVer = '2.4.5'
         querydslVer = '4.4.0'
@@ -17,6 +18,7 @@ buildscript{
         classpath "io.spring.gradle:dependency-management-plugin:${springDependencyMgmtVer}.RELEASE"
         classpath "org.springframework:springloaded:${springLoadedVer}.RELEASE"
         classpath "com.github.node-gradle:gradle-node-plugin:3.1.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -27,9 +29,10 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'kotlin'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.node-gradle.node'
-
+apply plugin: 'base'
 
 repositories {
     mavenCentral()
@@ -157,8 +160,19 @@ dependencies {
     // OpenVidu Java Client
     // https://mvnrepository.com/artifact/io.openvidu/openvidu-java-client
     implementation group: 'io.openvidu', name: 'openvidu-java-client', version: '2.18.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 test {
     useJUnitPlatform()
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

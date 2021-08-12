@@ -4,7 +4,7 @@ import $axios from 'axios'
 // 로그인
 export function requestLogin({ state }, payload) {
   console.log('requestLogin', state, payload)
-  const url = '/auth/login'
+  const url = '/api/v1/auth/login'
   let body = payload
   return $axios.post(url, body)
 }
@@ -22,7 +22,7 @@ export function requestLogout({ state }) {
 // 회원가입
 export function requestSignup({ state }, payload) {
   console.log('requestSignup', state, payload)
-  const url = '/user'
+  const url = '/api/v1/user'
   let body = payload
   return $axios.post(url, body)
 }
@@ -30,14 +30,14 @@ export function requestSignup({ state }, payload) {
 // 유저 정보 : 이메일 중복 체크
 export function requestEmailCheck({ state }, payload) {
   console.log('requestEmailCheck', state, payload)
-  const url = `/user/chkemail/${payload.email}`
+  const url = `/api/v1/user/chkemail/${payload.email}`
   return $axios.get(url)
 }
 
 // 유저 정보 : 이름 중복 체크
 export function requestNameCheck({ state }, payload) {
   console.log('requestNameCheck', state, payload)
-  const url = `/user/chkusername/${payload.username}`
+  const url = `/api/v1/user/chkusername/${payload.username}`
   return $axios.get(url)
 }
 
@@ -45,7 +45,7 @@ export function requestNameCheck({ state }, payload) {
 export function requestReadMyInfo({ state }) {
   console.log('requestMyInfo', state)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = '/user'
+  const url = '/api/v1/user'
   return $axios.get(url, {headers: headers})
 }
 
@@ -53,7 +53,7 @@ export function requestReadMyInfo({ state }) {
 export function requestUpdateMyInfo({ state }, payload) {
   console.log('requestMyInfo', state, payload)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = '/user'
+  const url = '/api/v1/user'
   let body = payload
   console.log(body)
   return $axios.patch(url, body, {headers: headers})
@@ -63,14 +63,14 @@ export function requestUpdateMyInfo({ state }, payload) {
 export function requestDeleteMyInfo({ state }) {
   console.log('requestMyInfo', state)
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = '/user'
+  const url = '/api/v1/user'
   return $axios.delete(url, {headers: headers})
 }
 
 // 유저 프로필 삭제
 export function requestDeleteMyProfile({ state }) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''} // 토큰
-  const url = '/user/profile'
+  const url = '/api/v1/user/profile'
   return $axios.delete(url, { headers: headers })
 }
 
@@ -80,7 +80,7 @@ export function requestChangeMyPassword({ state }, payload) {
     'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : '',
     'Content-Type': 'multipart/form-data'
   }
-  const url = '/user'
+  const url = '/api/v1/user'
   const body = payload
   return $axios.patch(url, body, {headers: headers})
 }
@@ -88,7 +88,7 @@ export function requestChangeMyPassword({ state }, payload) {
 // 게임룸 조회
 export function requestReadGameRoomList({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  let url = '/room'
+  let url = '/api/v1/room'
   const params = payload
   return $axios.get(url, {
     headers: headers,
@@ -99,7 +99,7 @@ export function requestReadGameRoomList({ state }, payload) {
 // 게임룸 생성
 export function requestCreateGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = '/room'
+  const url = '/api/v1/room'
   const body = payload
   return $axios.post(url, body, { headers: headers })
 }
@@ -107,7 +107,7 @@ export function requestCreateGameRoom({ state }, payload) {
 // 게임룸 입장
 export function requestEnterGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = `/room/${payload.roomId}`
+  const url = `/api/v1/room/${payload.roomId}`
   const body = { password: payload.password }
   return $axios.post(url, body, {headers: headers})
 }
@@ -115,7 +115,7 @@ export function requestEnterGameRoom({ state }, payload) {
 // 게임룸 퇴장
 export function requestLeaveGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = `/room/${payload.roomId}`
+  const url = `/api/v1/room/${payload.roomId}`
   console.log(payload.roomId)
   return $axios.delete(url, {headers: headers})
 }
@@ -123,7 +123,7 @@ export function requestLeaveGameRoom({ state }, payload) {
 // 게임 룸 내에서 설정 변경
 export function requestUpdateGameRoom({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = `/room/${payload.roomId}`
+  const url = `/api/v1/room/${payload.roomId}`
   const body = {
     ...payload
   }
@@ -133,13 +133,13 @@ export function requestUpdateGameRoom({ state }, payload) {
 
 export function requestReadSingleGameRoom({ state }, roomId) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = `/room/${roomId}`
+  const url = `/api/v1/room/${roomId}`
   return $axios.get(url, { headers: headers })
 }
 
 // 게임에 참여하고 있는 유저 정보 가져오기
 export function requestReadUserList({ state }, roomId) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
-  const url = `/room/userlist/${roomId}`
+  const url = `/api/v1/room/userlist/${roomId}`
   return $axios.get(url, { headers: headers })
 }

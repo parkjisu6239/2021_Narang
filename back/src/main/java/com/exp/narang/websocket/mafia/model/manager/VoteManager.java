@@ -122,19 +122,30 @@ public class VoteManager {
 
     private Map<Boolean, Integer> countVoteOfDay(VoteMessage voteMessage) {
         // <(찬성 or 반대), 해당 횟수>
+
+
         Map<Boolean, Integer> countStatus = new HashMap<>();
         countStatus.put(false, 0);
         countStatus.put(true, 0);
         // voteStatus <투표한사람, 지목당한사람>
         // 찬성(단두대에 있는 사람 이름이 지목당한사람으로 온다) 반대(null) or 투표 안했을경우도 null
-        voteStatus.values().forEach(player -> {
-            if(player == null) {
+        for(Player playerVoting : voteStatus.keySet()) {
+
+            if(playerVoting.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) continue;
+
+            Player playerVoted = voteStatus.get(playerVoting);
+
+//            System.out.println("playerVoter : " + playerVoted);
+//            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
+//            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
+            if(playerVoted == null) {
                 countStatus.put(false, countStatus.get(false) + 1);
-            } else if(player.getUser().getUsername().equals(voteMessage.getSecondVoteUsername())) {
+            } else {
                 countStatus.put(true, countStatus.get(true) + 1);
             }
+            // 찬성일때 true false가 아니라 찬성이면 SecondVoteUsername 반대면 null
 
-        });
+        }
         log.debug("countStatus setting: {}", countStatus);
         return countStatus;
     }

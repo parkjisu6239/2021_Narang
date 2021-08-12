@@ -1,5 +1,5 @@
 <template>
-  <article :class="{'game-room-container': true}">
+  <article class="game-room-container">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
       <GameRoomChat
@@ -23,7 +23,6 @@
     :open="state.open"
     :roomId="route.params.roomId"
     :room="state.room"/>
-
   <div v-if="state.gameStart" class="countdown">
     <div class="counter">{{ state.count }}</div>
   </div>
@@ -119,10 +118,11 @@ export default {
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang")
+    const connectSocket = async () => {
+      let socket = await new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({}, () => {
+      console.log('채팅 소켓')
+      await state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
           connectMafiaStartSocket() // 게임 시작 소켓
         }
@@ -179,10 +179,11 @@ export default {
           userName: store.state.root.username,
           content: msg,
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL,
           roomInfoChange: false,
           gameStart: false,
         }
+        console.log(message, '메시지')
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
@@ -238,9 +239,9 @@ export default {
 
     // [Func|req] 방 나가기 가져오기
     const leaveRoom = () => {
+      informGameRoomInfoChange()
       store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
         .then(res => {
-          informGameRoomInfoChange()
           ElMessage({
             type: 'success',
             message: '방에서 퇴장하셨습니다.'
@@ -264,14 +265,6 @@ export default {
       if (!state.gameStart) {
         leaveRoom()
       }
-    })
-
-    //* 브라우저 언로드 감지 *//
-    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
-      e.preventDefault()
-      e.returnValue = ''
-      window.alert('test')
-      leaveRoom()
     })
 
     //* created *//

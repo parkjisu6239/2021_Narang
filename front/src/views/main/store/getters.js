@@ -27,7 +27,7 @@ export function profileImageURL (state) {
     return ''
   }
   console.log('바껴땅')
-  return `https://localhost:8080/${state.profileImageURL}`
+  return `https://0.0.0.0:8080/${state.profileImageURL}`
 }
 
 export function myRoom (state) {
@@ -36,7 +36,7 @@ export function myRoom (state) {
 
 export function publisher (state) {
   return state.publisher
-}
+}publisher
 
 export function onVideo (state) {
   return state.onVideo
@@ -44,4 +44,12 @@ export function onVideo (state) {
 
 export function onAudio (state) {
   return state.onAudio
+}
+
+export function mafiaManager (state) {
+  return state.mafiaManager
+}
+
+export function mafiaStage (state) {
+  return state.mafiaStage
 }

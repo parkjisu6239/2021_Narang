@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
 .game-room-container {
+  display: flex;
+  flex-direction: column;
   margin: 40px 60px;
-  height: calc(85% - 60px);
-  border-radius: 10px;
+  row-gap: 20px;
 }
 
 .game-room-container * {
@@ -10,8 +13,44 @@
 
 .game-cam-chat-container {
   display: grid;
-  background-color: rgba(255, 255, 255, 0.7);
-  grid-template-columns: 3fr 1fr;
-  height: 100%;
-  min-width: 1000px;
+  grid-template-columns: 6fr 1fr;
+  height: 79vh;
+}
+
+.countdown {
+  position: absolute;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 100;
+}
+
+.countdown .counter {
+  font-size: 100px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 30vh;
+  font-family: 'Varela Round', sans-serif;
+  color: rgb(56, 197, 253);
+  animation: countdown 1s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+}
+
+@keyframes countdown {
+  0% {
+      transform: rotateY(90deg);
+      color: rgb(56, 197, 253);
+  }
+  20% {
+      transform: rotateY(0deg);
+      color: rgb(32, 160, 211);
+  }
+  80% {
+      transform: rotateY(0deg);
+      color: rgb(32, 110, 211);
+  }
+  100%{
+      transform: rotateY(-90deg);
+      color: rgb(56, 197, 253);
+  }
 }
