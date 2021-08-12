@@ -8,7 +8,7 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : isDead}"
+    :class="{'webcam': true, 'selected-border': isSelected, 'died-user': isDead}"
     autoplay
     playsinline
     controls="false"/>
