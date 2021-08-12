@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Getter
 @Setter
 @Slf4j
@@ -23,7 +25,7 @@ public class VoteManager {
 
     public VoteManager(GamePlayers gamePlayers) {
         this.gamePlayers = gamePlayers;
-        this.voteStatus = new HashMap<>(this.gamePlayers.countOfPlayers());
+        this.voteStatus = new ConcurrentHashMap<>(this.gamePlayers.countOfPlayers());
     }
 
     public boolean handleVote(VoteMessage voteMessage) {
@@ -106,7 +108,7 @@ public class VoteManager {
     // 투표 결과 집계 하는 상황 개표!!
     private Map<Player, Integer> countVoteOfDay() {
         // <지목당한사람, 지목당한 횟수>
-        Map<Player, Integer> countStatus = new HashMap<>();
+        Map<Player, Integer> countStatus = new ConcurrentHashMap<>();
         // voteStatus <투표한사람, 지목당한사람>
         voteStatus.keySet().forEach(player -> countStatus.put(player, 0)); // 초기값 설정
         
@@ -124,7 +126,7 @@ public class VoteManager {
         // <(찬성 or 반대), 해당 횟수>
 
 
-        Map<Boolean, Integer> countStatus = new HashMap<>();
+        Map<Boolean, Integer> countStatus = new ConcurrentHashMap<>();
         countStatus.put(false, 0);
         countStatus.put(true, 0);
         // voteStatus <투표한사람, 지목당한사람>
@@ -151,7 +153,7 @@ public class VoteManager {
     }
 
     private Map<Player, Integer> countVoteOfNight() {
-        Map<Player, Integer> countStatusOfMafia = new HashMap<>();
+        Map<Player, Integer> countStatusOfMafia = new ConcurrentHashMap<>();
         // voteStatus <마피아 이름 , 마피아가 죽인 사람>
 //        gamePlayers
         List<Player> playerList = gamePlayers.getPlayers();

@@ -130,11 +130,12 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
+        store.state.root.mafiaManager.missionNumber = 0;
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
-        state.missionMessage = document.getElementById("mission-message")
+        state.missionMessage = document.getElementById("mission-message");
         // state.labelContainer = document.getElementById("mission-container");
         // for (let i = 0; i < state.maxPredictions; i++) {
         //     state.labelContainer.appendChild(document.createElement("div"));
@@ -349,8 +350,10 @@ export default {
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
-        state.missionProgress.innerHTML = "";
-        state.missionMessage.innerHTML = "";
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          state.missionProgress.innerHTML = "";
+          state.missionMessage.innerHTML = "";
+        }
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `${result.msg}`
         state.gameOverResult = result.roleString
@@ -372,8 +375,10 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
-        state.missionProgress.innerHTML = "";
-        state.missionMessage.innerHTML = "";
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          state.missionProgress.innerHTML = "";
+          state.missionMessage.innerHTML = "";
+        }
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
         }

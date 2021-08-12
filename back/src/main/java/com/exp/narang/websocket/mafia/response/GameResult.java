@@ -21,7 +21,6 @@ public class GameResult {
         return completeVote;
     }
 
-
     public boolean isFinished() {
         return isFinished;
     }

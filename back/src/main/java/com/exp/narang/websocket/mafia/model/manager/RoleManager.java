@@ -8,10 +8,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 // 참가자의 역할을 분배한다.
 public class RoleManager {
-    private static Map<Integer, AssignRole> mappings = new HashMap<>();
+    private static Map<Integer, AssignRole> mappings = new ConcurrentHashMap<>();
 
     static {
         // 참여자 수에 따라 마피아, 시민의 수가 달라진다.
