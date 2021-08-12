@@ -400,7 +400,7 @@ export default {
 
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus.playerName;
-              onsole.log("저쩌라구~~~")
+              console.log("저쩌라구~~~")
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
@@ -436,7 +436,7 @@ export default {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus.playerName;
-              onsole.log("저쩌라구~~~")
+              console.log("저쩌라구~~~")
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
