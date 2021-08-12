@@ -134,10 +134,8 @@ export default {
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
-      console.log("이게뭐야1")
 			if (state.mainStreamManager === stream) return
-      console.log("이게뭐야2")
-			state.mainStreamManager = stream
+			  state.mainStreamManager = stream
 		}
 
     const getToken = (mySessionId) => {
