@@ -4,7 +4,7 @@
     <ov-video v-else
       :stream-manager="streamManager"
       :isSelected="state.clientData === state.mafiaManager.secondVoteUsername"
-      :isDead="!(state.clientData in state.mafiaManager.players)"
+      :isDead="!state.mafiaManager.players.includes(state.clientData)"
       />
   </div>
 </template>
