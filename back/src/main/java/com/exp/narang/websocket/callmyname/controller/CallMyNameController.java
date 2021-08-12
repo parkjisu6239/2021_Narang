@@ -29,7 +29,7 @@ public class CallMyNameController {
 
     /**
      * 게임을 시작하는 메서드
-     * TODO : 게임 참가 인원 몇명인지 받기!!!!
+     * TODO : 게임 참가 인원 몇명인지 받기
      * @param roomId : path로 받는 roomId
      */
     @MessageMapping("/call/start/{roomId}")
