@@ -103,17 +103,17 @@ export default {
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false,       	// Whether to mirror your local video or not
 
-						});
-						state.mainStreamManager = publisher;
-						state.publisher = publisher;
-            store.publisher = publisher;
-						state.session.publish(store.publisher);
+						})
+						state.mainStreamManager = publisher
+						state.publisher = publisher
+            store.state.root.publisher = publisher
+						state.session.publish(store.state.root.publisher)
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
+					})
 
-			});
+			})
 
       window.addEventListener('beforeunload', leaveSession)
 		}
@@ -134,10 +134,8 @@ export default {
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
-      console.log("이게뭐야1")
 			if (state.mainStreamManager === stream) return
-      console.log("이게뭐야2")
-			state.mainStreamManager = stream
+			  state.mainStreamManager = stream
 		}
 
     const getToken = (mySessionId) => {
@@ -211,7 +209,7 @@ export default {
     })
     const test = () => {
     console.log("여기좀봐!!")
-    store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
+    store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
             .then(() => {
                 console.log("단두대 오른사람 필터 적용 완료")
             })
@@ -223,7 +221,7 @@ export default {
     }
 
     const test2 = () => {
-      store.publisher.stream.removeFilter()
+      store.state.root.publisher.stream.removeFilter()
         .then(() => console.log("Filter removed"))
         .catch(error => console.error(error));
     }

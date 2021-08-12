@@ -1,5 +1,6 @@
 package com.exp.narang;
 
+import com.exp.narang.api.controller.UserController;
 import com.exp.narang.api.model.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
