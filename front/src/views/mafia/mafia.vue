@@ -392,9 +392,22 @@ export default {
           console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
-          state.msg += ``
+          state.msg += `
+          `
           state.isVoteTime = false
+          for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
+              console.log(store.state.root.mafiaManager.players)
 
+              let playerName = store.state.root.mafiaManager.players[i];
+              let votedCount = state.voteStatus.playerName;
+              onsole.log("저쩌라구~~~")
+              console.log(state.voteStatus)
+              console.log("어쩌라구~~~")
+              console.log(votedCount)
+              console.log(votedCount.toFixed(0))
+              state.msg += `${playerName} : ${votedCount}표
+              `
+          }
           // 5초 쉬고 낮 2차로 이동
           state.timer = state.time[4]
           setTimeout(() => {
@@ -416,15 +429,22 @@ export default {
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
+            state.msg  += `
+            `;
             console.log(state.voteStatus);
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus.playerName;
-              state.msg += `${playerName} : ${votedCount}표`
-              state.msg += '\n';
+              onsole.log("저쩌라구~~~")
+              console.log(state.voteStatus)
+              console.log("어쩌라구~~~")
+              console.log(votedCount)
+              // console.log(votedCount.toFixed(0))
+              state.msg += `${playerName} : ${votedCount}표
+              `
             }
-            state.msg  += ``;
+
           } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
             console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.')
             state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.'
