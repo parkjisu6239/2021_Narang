@@ -109,14 +109,14 @@ public class CallMyNameController {
         return guessNameRes;
     }
 
-    /**
-     * 정답 순서를 반환하는 메서드
-     * @param roomId
-     * @return 정답을 맞힌 순서대로 userId가 담긴 리스트
-     */
-    @MessageMapping("/call/get-rank/{roomId}")
-    @SendTo("/from/call/get-rank/{roomId}")
-    public List<Long> getRank(@DestinationVariable long roomId){
-        return ManagerHolder.gameManagerMap.get(roomId).getRank();
-    }
+//    /**
+//     * 정답 순서를 반환하는 메서드
+//     * @param roomId
+//     * @return 정답을 맞힌 순서대로 userId가 담긴 리스트
+//     */
+//    @MessageMapping("/call/get-rank/{roomId}")
+//    @SendTo("/from/call/get-rank/{roomId}")
+//    public List<Long> getRank(@DestinationVariable long roomId){
+//        return ManagerHolder.gameManagerMap.get(roomId).getRank();
+//    }
 }
