@@ -17,10 +17,7 @@ public class GameResult {
     private boolean isFinished;
     private boolean completeVote;
     private String roleString;
-    private static String nono = "nonono";
-    private int testtt = 123;
     private Map<String, Integer> voteStatus;
-    private String voteResult; // 누가 몇 표 나왔는지 {username}:{voteCnt}&
     private int missionNumber = -1;
 
     public GameResult() { }
@@ -68,7 +65,6 @@ public class GameResult {
         this.isFinished = false;
         this.completeVote = completeVote;
         this.msg = killedUser;
-        this.nono = "yesyesyes";
         if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
     }
 
@@ -99,9 +95,6 @@ public class GameResult {
     }
     public static GameResult returnSelectedUser(String selectedUsername, Map<Player, Integer> countStatus) {
         return new GameResult(selectedUsername, false, countStatus); }
-//    public static void returnCountStatus(Map<String, Integer> countStatus){
-//        countStatus.keySet().forEach(username -> voteStatus.put(username, countStatus.get(username))); // map 복사
-//    }
 
     @Override
     public String toString() {

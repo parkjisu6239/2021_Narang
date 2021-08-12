@@ -343,7 +343,7 @@ export default {
         }
 
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
-      store.state.root.mafiaManager.theVoted = state.username
+      store.state.root.mafiaManager.theVoted = null;
       state.isVoteTime = false
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
@@ -547,7 +547,7 @@ export default {
       // 상태 초기화
       store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
-      store.state.root.mafiaManager.theVoted = state.username
+      store.state.root.mafiaManager.theVoted = null;
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.isAlive = true
       state.timer = state.time[4]
