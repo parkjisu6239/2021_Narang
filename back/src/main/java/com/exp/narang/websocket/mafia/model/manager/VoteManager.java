@@ -22,6 +22,7 @@ public class VoteManager {
 
     private Map<Player, Player> voteStatus;
     private GamePlayers gamePlayers;
+    private GameResult gameResult;
 
     public VoteManager(GamePlayers gamePlayers) {
         this.gamePlayers = gamePlayers;
@@ -70,7 +71,6 @@ public class VoteManager {
     }
 
     public GameResult returnGameResult(VoteMessage voteMessage) {
-
         String stage = voteMessage.getStage();
         log.debug("returnGameResult:stage: {}", stage);
         String selectedUsername = null;
@@ -109,15 +109,20 @@ public class VoteManager {
     private Map<Player, Integer> countVoteOfDay() {
         // <지목당한사람, 지목당한 횟수>
         Map<Player, Integer> countStatus = new ConcurrentHashMap<>();
+        Map<String, Integer> countVoteStatus = new ConcurrentHashMap<>(); // 프론트에 send용 map
         // voteStatus <투표한사람, 지목당한사람>
         voteStatus.keySet().forEach(player -> countStatus.put(player, 0)); // 초기값 설정
-        
+        voteStatus.keySet().forEach(player -> countVoteStatus.put(player.getUser().getUsername(), 0)); // 초기값 설정
+
         voteStatus.values().forEach(player -> {
             if (player != null) { //기권표를 걸러낸다. (기권을 누른경우와 시간내에 투표한 경우)
                 countStatus.put(player, countStatus.get(player) + 1);
+                countVoteStatus.put(player.getUser().getUsername(), countVoteStatus.get(player.getUser().getUsername() + 1));
             }
         });
         log.debug("countStatus setting: {}", countStatus);
+        GameResult.returnCountStatus(countVoteStatus);
+//        gameResult.setVoteStatus(countVoteStatus);////////////////////////////////
         // return <지목당한사람, 지목당한 횟수>
         return countStatus;
     }

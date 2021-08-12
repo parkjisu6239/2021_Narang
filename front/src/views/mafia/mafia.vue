@@ -346,6 +346,7 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
+      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ",result);
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
@@ -374,11 +375,12 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
-        if(store.state.root.mafiaManager.myRole === 'Mafia'){
-          sendMafias();
+         if(store.state.root.mafiaManager.myRole === 'Mafia'){
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
+          sendMafias();
         }
+
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
         }
@@ -398,13 +400,13 @@ export default {
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
             store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
-            .then(() => {
-                console.log("죽은 사람 화면 처리 완료");
-            })
-            .catch(error => {
-                console.error(error);
-            });
-            store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
+              .then(res => {
+                  console.log("죽은 사람 화면 처리 완료");
+              })
+              .catch(error => {
+                  console.error(error)
+              })
+            store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
           if (state.mafiaManager.stage === 'day2') {

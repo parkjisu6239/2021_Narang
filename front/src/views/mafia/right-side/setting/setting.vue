@@ -37,13 +37,13 @@ export default {
       }
         store.state.root.mafiaManager.onAudio = !store.state.root.mafiaManager.onAudio
         console.log(store.state.root.mafiaManager.onAudio)
-        store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
+        store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
-        store.onVideo = state.onVideo
-        store.publisher.publishVideo(state.onVideo);
+        store.state.root.onVideo = state.onVideo
+        store.state.root.publisher.publishVideo(state.onVideo);
     }
 
     return {state, leaveRoom, muteAudio, muteVideo}

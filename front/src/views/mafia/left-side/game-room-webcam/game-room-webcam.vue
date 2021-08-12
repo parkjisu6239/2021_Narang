@@ -36,8 +36,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({
@@ -96,7 +96,7 @@ export default {
 
 						state.mainStreamManager = publisher
 						state.publisher = publisher
-            store.publisher = publisher
+            store.state.root.publisher = publisher
 						state.session.publish(state.publisher)
 					})
 					.catch(error => {

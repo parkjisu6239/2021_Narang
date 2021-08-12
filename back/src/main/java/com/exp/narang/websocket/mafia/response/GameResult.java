@@ -3,6 +3,8 @@ package com.exp.narang.websocket.mafia.response;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 public class GameResult {
@@ -13,6 +15,10 @@ public class GameResult {
     private boolean isFinished;
     private boolean completeVote;
     private String roleString;
+    private static String nono = "nonono";
+    private int testtt = 123;
+    private static Map<String, Integer> voteStatus;
+    private String voteResult; // 누가 몇 표 나왔는지 {username}:{voteCnt}&
     private int missionNumber = -1;
 
     public GameResult() { }
@@ -61,6 +67,8 @@ public class GameResult {
         this.isFinished = false;
         this.completeVote = completeVote;
         this.msg = killedUser;
+        this.nono = "yesyesyes";
+        this.testtt = voteStatus.get("aaa");
         if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
     }
 
@@ -77,8 +85,9 @@ public class GameResult {
     public static GameResult returnKilledUser(String killedUsername) {
         return new GameResult(killedUsername, true);
     }
-    public static GameResult returnSelectedUser(String selectedUsername) {
-        return new GameResult(selectedUsername, false);
+    public static GameResult returnSelectedUser(String selectedUsername) { return new GameResult(selectedUsername, false); }
+    public static void returnCountStatus(Map<String, Integer> countStatus){
+        countStatus.keySet().forEach(username -> voteStatus.put(username, countStatus.get(username))); // map 복사
     }
 
     @Override

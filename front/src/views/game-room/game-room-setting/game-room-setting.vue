@@ -97,16 +97,14 @@ export default {
     const muteAudio = () => {
         state.onAudio = !state.onAudio;
         console.log(state.onAudio)
-        store.onAudio = state.onAudio
-        store.publisher.publishAudio(state.onAudio);
+        store.state.root.publisher.publishAudio(state.onAudio);
 
 
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
-        store.onVideo = state.onVideo
-        store.publisher.publishVideo(state.onVideo);
+        store.state.root.publisher.publishVideo(state.onVideo);
     }
 
     const setBtnDisabled = () => {
