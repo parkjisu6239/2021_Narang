@@ -528,7 +528,7 @@ export default {
       // 상태 초기화
       store.state.root.mafiaManager.theVoted = null
       store.state.root.mafiaManager.stage = 'default'
-      store.state.root.mafiaManager.players = null
+      store.state.root.mafiaManager.players = []
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
