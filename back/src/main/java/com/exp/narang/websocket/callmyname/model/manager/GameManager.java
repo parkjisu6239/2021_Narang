@@ -38,7 +38,7 @@ public class GameManager {
 
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
-     * @param userId
+     * @param userId : 사용자의 userId
      */
     public boolean addPlayer(long userId) {
         userIdSet.add(userId);

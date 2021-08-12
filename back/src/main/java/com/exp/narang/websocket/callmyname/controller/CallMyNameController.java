@@ -33,7 +33,6 @@ public class CallMyNameController {
      * @param roomId : path로 받는 roomId
      */
     @MessageMapping("/call/start/{roomId}")
-//    @SendTo("/from/call/start/{roomId}")
     public void startGame(@DestinationVariable long roomId, int playerCnt){
         ManagerHolder.gameManagerMap.put(roomId, new GameManager(playerCnt));
     }
