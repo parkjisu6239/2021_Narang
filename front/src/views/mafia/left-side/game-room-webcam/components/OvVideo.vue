@@ -8,8 +8,12 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
+<<<<<<< HEAD
+    :class="{'webcam': true, 'selected-border': isSelected}"
+=======
     class="webcam"
     :class="{ 'died-user' : state.mafiaManager.isAlive }"
+>>>>>>> 6baaf498044358ec0f5b96e43dea677773c89228
     autoplay
     playsinline
     controls="false"/>
@@ -25,6 +29,7 @@ export default {
   name: 'OvVideo',
   props: {
     streamManager: Object,
+    isSelected: Boolean,
   },
   setup(props, {emit}) {
     const store = useStore()

@@ -40,7 +40,14 @@
   box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
 }
 
+<<<<<<< HEAD
+.selected-border {
+  box-sizing: border-box;
+  border: solid 5px rgb(160, 18, 18);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.226);
+=======
 .died-user{
   -webkit-filter: grayscale(100%);
   filter: #515151;
+>>>>>>> 6baaf498044358ec0f5b96e43dea677773c89228
 }

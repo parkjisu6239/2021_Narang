@@ -1,13 +1,13 @@
 <template>
   <div class="setting-btns">
-      <div v-if="state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
-      <div v-if="!state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
+    <div v-if="state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+    <div v-if="!state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
 
-      <div v-if="state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
-      <div v-if="!state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
+    <div v-if="state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+    <div v-if="!state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
 
-      <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
-    </div>
+    <div class="mafia-setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
+  </div>
 </template>
 
 <script>
@@ -51,6 +51,6 @@ export default {
 }
 </script>
 
-<style>
- @import url('./setting.css');
+<style scoped>
+  @import url('./setting.css');
 </style>
