@@ -130,11 +130,12 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
+        store.state.root.mafiaManager.missionNumber = 0;
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
-        state.missionMessage = document.getElementById("mission-message")
+        state.missionMessage = document.getElementById("mission-message");
         // state.labelContainer = document.getElementById("mission-container");
         // for (let i = 0; i < state.maxPredictions; i++) {
         //     state.labelContainer.appendChild(document.createElement("div"));
@@ -347,6 +348,7 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
+      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ",result);
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
