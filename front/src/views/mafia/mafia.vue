@@ -335,10 +335,10 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen' ? null : state.mafiaManager.username, // 내 이름
-          theVoted: state.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
-          stage: state.mafiaManager.stage, // day1, day2, night
-          secondVoteUsername: state.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
+          username: store.state.root.mafiaManager.stage === 'night' && store.state.root.mafiaManager.myRole === 'Citizen' ? null : store.state.root.mafiaManager.username, // 내 이름
+          theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
+          stage: store.state.root.mafiaManager.stage, // day1, day2, night
+          secondVoteUsername: store.state.root.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
           missionNumber: store.state.root.mafiaManager.missionNumber, // 현재 미션 넘버 (시민 : -1, 마피아 : 0 ~ 10)
         }
 
@@ -423,21 +423,21 @@ export default {
               state.msg += '\n';
             }
             state.msg  += ``;
-          } else if (state.mafiaManager.stage === 'day2'){ // 2차 -> 밤
+          } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
             console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.')
             state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.'
-          } else if (state.mafiaManager.stage === 'night') { // 밤 -> 낮
+          } else if (store.state.root.mafiaManager.stage === 'night') { // 밤 -> 낮
             console.log('아무도 죽지 않았습니다. 잠시후 아침이 됩니다.')
             state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
-          if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
+          if (store.state.root.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
             store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
-          if (state.mafiaManager.stage === 'day2') {
+          if (store.state.root.mafiaManager.stage === 'day2') {
             console.log(`${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`)
             state.msg = `${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`
           } else if (state.mafiaManager.stage === 'night') {
@@ -563,7 +563,7 @@ export default {
 
     const gameOver = () => {
       // 상태 초기화
-      store.state.root.mafiaManager.theVoted = state.username
+      store.state.root.mafiaManager.theVoted = null
       store.state.root.mafiaManager.stage = 'default'
       store.state.root.mafiaManager.players = []
       store.state.root.mafiaManager.secondVoteUsername = ''
