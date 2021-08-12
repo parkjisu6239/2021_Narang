@@ -91,7 +91,7 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: true       	// Whether to mirror your local video or not
+							mirror: true,       	// Whether to mirror your local video or not
 						})
 
 						state.mainStreamManager = publisher
@@ -159,7 +159,15 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "data": "user_data",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                  "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,

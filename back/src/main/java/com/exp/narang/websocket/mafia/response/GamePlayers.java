@@ -52,7 +52,7 @@ public class GamePlayers {
             if (player.getUser().getUsername().equals(username)) {
                 roleResult.setRoleName(player.getRole().getRoleName()); // 역할 저장
                 System.out.println("역할역할"+roleResult.getRoleName());
-                if(player.getRole().isMafia()) roleResult.setMissionNumber((int)(Math.random() * 100) % 15); // 마피아는 미션 번호 저장(0~15 중 랜덤)
+                if(player.getRole().isMafia()) roleResult.setMissionNumber((int)(Math.random() * 100) % 12); // 마피아는 미션 번호 저장(0~11)
                 else roleResult.setMissionNumber(-1); // 시민은 미션 번호에 -1 저장
                 return roleResult;
             }

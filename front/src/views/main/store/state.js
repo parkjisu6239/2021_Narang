@@ -59,7 +59,6 @@ export default {
   username,
   profileImageURL: profileImageURL,
   myRoom,
-  userId,
   onVideo,
   onAudio,
   mafiaManager,

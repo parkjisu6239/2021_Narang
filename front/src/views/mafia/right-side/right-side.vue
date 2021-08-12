@@ -11,6 +11,10 @@
         <img @click="clickShowMission" :src="require('@/assets/images/icon/mission.png')" alt="미션 보기">
       </el-tooltip>
     </div>
+    <div id="mission-container">
+      <div id="mission-progress"></div>
+      <div id="mission-message"></div>
+    </div>
     <Timer class="right-timer" :timer="timer"/>
     <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime"/>
     <Setting class="right-setting"/>
