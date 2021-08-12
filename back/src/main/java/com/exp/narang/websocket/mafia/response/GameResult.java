@@ -76,10 +76,12 @@ public class GameResult {
     public GameResult(String killedUser, boolean completeVote, Map<Player, Integer> countStatus) {
         this(killedUser, completeVote);
         this.voteStatus = new HashMap<>();
-        for (Map.Entry<Player, Integer> entry : countStatus.entrySet()) {
-            String username = entry.getKey().getUser().getUsername();
-            Integer count = entry.getValue();
-            this.voteStatus.put(username, count);
+        if(countStatus != null) {
+            for (Map.Entry<Player, Integer> entry : countStatus.entrySet()) {
+                String username = entry.getKey().getUser().getUsername();
+                Integer count = entry.getValue();
+                this.voteStatus.put(username, count);
+            }
         }
     }
 
@@ -93,8 +95,8 @@ public class GameResult {
         return new GameResult(GameResultType.CITIZEN_WIN);
     }
 
-    public static GameResult returnKilledUser(String killedUsername) {
-        return new GameResult(killedUsername, true);
+    public static GameResult returnKilledUser(String killedUsername, Map<Player, Integer> countStatus) {
+        return new GameResult(killedUsername, true, countStatus);
     }
     public static GameResult returnSelectedUser(String selectedUsername, Map<Player, Integer> countStatus) {
         return new GameResult(selectedUsername, false, countStatus); }

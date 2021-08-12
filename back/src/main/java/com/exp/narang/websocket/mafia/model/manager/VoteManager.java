@@ -74,8 +74,9 @@ public class VoteManager {
         String stage = voteMessage.getStage();
         log.debug("returnGameResult:stage: {}", stage);
         String selectedUsername = null;
+        Map<Player, Integer> countStatus = null;
         if (stage.equals("day1")) {
-            Map<Player, Integer> countStatus = countVoteOfDay();
+             countStatus = countVoteOfDay();
             selectedUsername = determineResultOfDay(countStatus); // 죽은사람 이름 또는 ""
             log.debug("returnGameResult:Day logic:selectedUserNickName: {}", selectedUsername);
             // 2차 투표 대상자로 지목된 사람이 있을 경우 return 한 후 day2투표 진행
@@ -101,7 +102,7 @@ public class VoteManager {
                 return GameResult.returnCitizenWin();
             case KEEP_GOING:
                 log.debug("KEEP_GOING::killedUser: {}", selectedUsername);
-                return GameResult.returnKilledUser(selectedUsername); // username or ""
+                return GameResult.returnKilledUser(selectedUsername, countStatus); // username or ""
             default:
                 throw new RuntimeException("Unexpected Error!");
         }
