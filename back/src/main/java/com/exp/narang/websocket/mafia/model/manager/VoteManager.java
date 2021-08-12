@@ -37,7 +37,9 @@ public class VoteManager {
         if (playerVoting == null) {
             return false;
         }
-
+        //playerVoting != null???
+        log.debug("this.voteStatus: {}", this.voteStatus);
+        log.debug("voteStatus: {}", voteStatus);
         voteStatus.put(playerVoting, playerVoted);
         //TODO Below code is TEST CODE, DELETE or COMMENT this code before commit.
 //        if (this.players.getPlayer("testUser1") != null) {
