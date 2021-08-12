@@ -14,8 +14,6 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
-    <button @click="test">적용</button>
-    <button @click="test2">삭제</button>
   </div>
 
 </template>
@@ -41,8 +39,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore();
 
     const state = reactive({
@@ -91,7 +89,6 @@ export default {
         console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
-
 						// --- Get your own camera stream with the desired properties ---
 						let publisher = state.OV.initPublisher(undefined, {
 							audioSource: undefined, // The source of audio. If undefined default microphone
@@ -102,18 +99,17 @@ export default {
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false,       	// Whether to mirror your local video or not
-
-						})
-						state.mainStreamManager = publisher
-						state.publisher = publisher
-            store.state.root.publisher = publisher
-						state.session.publish(store.state.root.publisher)
+						});
+						state.mainStreamManager = publisher;
+						state.publisher = publisher;
+            store.state.root.publisher = publisher;
+						state.session.publish(store.state.root.publisher);
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
-					})
+					});
 
-			})
+			});
 
       window.addEventListener('beforeunload', leaveSession)
 		}
@@ -135,7 +131,7 @@ export default {
 
 		const updateMainVideoStreamManager = (stream) => {
 			if (state.mainStreamManager === stream) return
-			  state.mainStreamManager = stream
+			state.mainStreamManager = stream
 		}
 
     const getToken = (mySessionId) => {
@@ -172,17 +168,7 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
-              "type": "WEBRTC",
-              "role": "PUBLISHER",
-              "kurentoOptions": {
-                "videoMaxRecvBandwidth": 1000,
-                "videoMinRecvBandwidth": 300,
-                "videoMaxSendBandwidth": 1000,
-                "videoMinSendBandwidth": 300,
-                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
-              }
-          },
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {},
           {
 						auth: {
 							username: 'OPENVIDUAPP',
@@ -207,25 +193,8 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
-    const test = () => {
-    console.log("여기좀봐!!")
-    store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
-            .then(() => {
-                console.log("단두대 오른사람 필터 적용 완료")
-            })
-            .catch(error => {
-                console.error(error);
-            });
 
-
-    }
-
-    const test2 = () => {
-      store.state.root.publisher.stream.removeFilter()
-        .then(() => console.log("Filter removed"))
-        .catch(error => console.error(error));
-    }
-    return { state, store,updateMainVideoStreamManager , test, test2}
+    return { state, store, updateMainVideoStreamManager}
 
   },
 }
