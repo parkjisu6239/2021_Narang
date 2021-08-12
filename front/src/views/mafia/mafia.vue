@@ -238,15 +238,15 @@ export default {
     const connectGetRoleSocket =  () => {
       console.log("롤 배분 소켓 연결")
       const fromRoleUrl = `/from/mafia/role/${route.params.roomId}/${state.username}`
-          state.stompClient.subscribe(fromRoleUrl, (res) => {
-            const result = JSON.parse(res.body)
-            state.myRole = result.roleName
-            store.state.root.mafiaManager.myRole = result.roleName;
-            store.state.root.mafiaManager.missionNumber = result.missionNumber;
-            if(store.state.root.mafiaManager.myRole === 'Mafia'){
-              connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
-            }
-        })
+      state.stompClient.subscribe(fromRoleUrl, (res) => {
+        const result = JSON.parse(res.body)
+        state.myRole = result.roleName
+        store.state.root.mafiaManager.myRole = result.roleName;
+        store.state.root.mafiaManager.missionNumber = result.missionNumber;
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+        }
+     })
     }
 
       // [Func|socket] 롤카드 배분 소켓 send

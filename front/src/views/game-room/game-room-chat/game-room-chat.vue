@@ -65,7 +65,7 @@ export default {
     })
 
     const sendMessage = () => {
-      emit('sendChat', state.myChat)
+      emit('sendMessage', state.myChat)
       state.myChat = ''
     }
 

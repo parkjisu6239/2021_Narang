@@ -37,10 +37,10 @@ export default {
     })
 
     const connectSocket = () => {
-      let socket = new SockJS("/call")
+      let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
-          console.log('채팅 소켓 연결 중')
+          console.log('콜마이')
           connectChatSocket() // 채팅 소켓
         }
       )
@@ -50,21 +50,24 @@ export default {
       const chatEndPoint = `/from/call/chat/${route.params.roomId}`
       state.stompClient.subscribe(chatEndPoint, res => {
         const chat = JSON.parse(res.body)
+        console.log(chat)
         chatList.push(chat)
       })
     }
 
     const sendChat = (chat) => {
-      if (state.stompClient && state.stompClient.connected && msg) {
+      console.log('챗 보냄', state.stompClient)
+      if (state.stompClient && state.stompClient.connected && chat) {
         const message = {
           userName: store.state.root.username,
           content: chat,
-          roomId: rotue.params.roomId,
+          roomId: route.params.roomId,
           profileImageURL: '',
           roomInfoChange: false,
           gameStart: false,
         }
-        state.stompClient.send(`/call/chat/${route.params.roomId}`)
+        console.log('챗 보내는 중')
+        state.stompClient.send(`/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 

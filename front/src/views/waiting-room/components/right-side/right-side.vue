@@ -154,6 +154,8 @@ export default {
       })
     }
 
+    readGameRoomList()
+
     return { state, load, clickConference, clickCreateRoom, readGameRoomList, clickSearch, clickActivateTypeBtn }
   }
 }

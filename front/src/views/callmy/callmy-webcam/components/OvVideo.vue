@@ -1,7 +1,9 @@
 <template>
   <video ref="myWebCam" class="webcam" autoplay playsinline controls="false"/>
 </template>
-
+<style scoped>
+  @import url('./OvVideo.css');
+</style>
 <script>
 import { onMounted, ref } from 'vue'
 
@@ -21,7 +23,5 @@ export default {
   }
 }
 </script>
-<style scoped>
-  @import url('OvVideo.css');
-</style>
+
 

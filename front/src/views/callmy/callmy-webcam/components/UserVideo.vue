@@ -4,6 +4,9 @@
     <ov-video v-else :stream-manager="streamManager"/>
   </div>
 </template>
+<style scoped>
+  @import url('./uservideo.css');
+</style>
 <script>
 import OvVideo from './OvVideo';
 import { computed, reactive } from 'vue'
@@ -42,6 +45,4 @@ export default {
 
 };
 </script>
-<style scoped>
-  @import url('./uservideo.css');
-</style>
+
