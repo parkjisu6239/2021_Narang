@@ -21,7 +21,8 @@ const mafiaManager = {
   missionKeepCnt : 0, // 미션 동작 유지 시간 카운트
   missionSuccess : false, // 미션 성공 여부
   isAlive: true, // 내가 살았나 죽었나
-  onAudio : true
+  onAudio : true,
+  canMafiaVote : false
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
