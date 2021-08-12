@@ -96,7 +96,7 @@ export default {
 
 						state.mainStreamManager = publisher
 						state.publisher = publisher
-            store.publisher = publisher
+            store.root.state.publisher = publisher
 						state.session.publish(state.publisher)
 					})
 					.catch(error => {
