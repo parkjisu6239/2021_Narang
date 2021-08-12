@@ -129,7 +129,6 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
-        store.state.root.mafiaManager.missionNumber = 0;
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
@@ -404,7 +403,6 @@ export default {
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
-              console.log(votedCount.toFixed(0))
               state.msg += `${playerName} : ${votedCount}표
               `
           }
@@ -440,7 +438,6 @@ export default {
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
-              // console.log(votedCount.toFixed(0))
               state.msg += `${playerName} : ${votedCount}표
               `
             }
