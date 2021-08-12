@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
-    private final List<Long> winList;
+//    private final List<Long> winList;
     private final Queue<Long> userIdQueue;
     private int currentSetNameTurn;
     private int currentSetterTurn;
@@ -20,7 +20,7 @@ public class GameManager {
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
-        winList = new ArrayList<>();
+//        winList = new ArrayList<>();
         userIdQueue = new ArrayDeque<>();
         currentSetNameTurn = 1;
         currentSetterTurn = 2;
@@ -92,7 +92,7 @@ public class GameManager {
         return new GuessNameRes(isCorrect, nameMap.isEmpty());
     }
 
-    public List<Long> getRank(){
-        return winList;
-    }
+//    public List<Long> getRank(){
+//        return winList;
+//    }
 }
