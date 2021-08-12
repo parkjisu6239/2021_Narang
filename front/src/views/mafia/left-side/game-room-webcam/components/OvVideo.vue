@@ -8,23 +8,26 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-    class="webcam"
+    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : state.mafiaManager.isAlive}"
     autoplay
     playsinline
     controls="false"/>
 </template>
 
 <script>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, computed, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useStore } from 'vuex'
 import * as faceapi from 'face-api.js'
 
 export default {
   name: 'OvVideo',
   props: {
     streamManager: Object,
+    isSelected: Boolean,
   },
   setup(props, {emit}) {
+    const store = useStore()
     const myWebCam = ref(null)
 
     const state = reactive({
@@ -43,7 +46,8 @@ export default {
         neutral: 0,
         sad: 0,
         surprised: 0,
-      }
+      },
+      mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
     const startExpressDetection = async () => {

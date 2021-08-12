@@ -14,7 +14,8 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
-    <button @click="test"></button>
+    <!-- <button @click="test">적용</button>
+    <button @click="test2">삭제</button> -->
   </div>
 
 </template>
@@ -103,16 +104,10 @@ export default {
 							mirror: false,       	// Whether to mirror your local video or not
 
 						});
-
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
             store.publisher = publisher;
 						state.session.publish(store.publisher);
-
-            console.log("publisger")
-            console.log(state.publisher)
-
-
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
@@ -139,7 +134,9 @@ export default {
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
+      console.log("이게뭐야1")
 			if (state.mainStreamManager === stream) return
+      console.log("이게뭐야2")
 			state.mainStreamManager = stream
 		}
 
@@ -179,15 +176,16 @@ export default {
 				$axios
 					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
               "type": "WEBRTC",
-              "record": true,
               "role": "PUBLISHER",
               "kurentoOptions": {
-                  "videoMaxRecvBandwidth": 1000,
-                  "videoMinRecvBandwidth": 300,
-                  "videoMaxSendBandwidth": 1000,
-                  "videoMinSendBandwidth": 300,
-                  "allowedFilters": [ "GStreamerFilter", "ZBarFilter" ]
-          }}, {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
@@ -212,17 +210,24 @@ export default {
       leaveSession()
     })
     const test = () => {
-             console.log("여기좀봐!!")
-      state.publisher.stream.applyFilter("GStreamerFilter", { command: "gamma gamma=5.0" })
-    .then(() => {
-        console.log("Video rotated!");
-    })
-    .catch(error => {
-        console.error(error);
-    });
+    console.log("여기좀봐!!")
+    store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
+            .then(() => {
+                console.log("단두대 오른사람 필터 적용 완료")
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
 
     }
-    return { state, store,updateMainVideoStreamManager , test}
+
+    const test2 = () => {
+      store.publisher.stream.removeFilter()
+        .then(() => console.log("Filter removed"))
+        .catch(error => console.error(error));
+    }
+    return { state, store,updateMainVideoStreamManager , test, test2}
 
   },
 }
