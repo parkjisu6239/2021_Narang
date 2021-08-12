@@ -14,8 +14,8 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
-    <!-- <button @click="test">적용</button>
-    <button @click="test2">삭제</button> -->
+    <button @click="test">적용</button>
+    <button @click="test2">삭제</button>
   </div>
 
 </template>
@@ -106,7 +106,7 @@ export default {
 						});
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
-            store.publisher = publisher;
+            store.state.root.publisher = publisher;
 						state.session.publish(store.publisher);
 					})
 					.catch(error => {
@@ -211,7 +211,7 @@ export default {
     })
     const test = () => {
     console.log("여기좀봐!!")
-    store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
+    store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=yellow top=-120 bottom=-120 left=-240 right=-240" })
             .then(() => {
                 console.log("단두대 오른사람 필터 적용 완료")
             })
@@ -223,7 +223,7 @@ export default {
     }
 
     const test2 = () => {
-      store.publisher.stream.removeFilter()
+      store.state.root.publisher.stream.removeFilter()
         .then(() => console.log("Filter removed"))
         .catch(error => console.error(error));
     }

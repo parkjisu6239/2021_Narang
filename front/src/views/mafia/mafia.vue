@@ -269,15 +269,15 @@ export default {
       const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
       state.stompClient.subscribe(fromMafiasUrl, res => {
         if(res.body == 1) {
-          store.mafiaManager.canMafiaVote = true;
+          store.state.root.mafiaManager.canMafiaVote = true;
           console.log("모든 마피아들 미션 성공! 투표 가능!!");
         }
         else if(res.body == 0) {
-           store.mafiaManager.canMafiaVote = false;
+           store.state.root.mafiaManager.canMafiaVote = false;
           console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
         }
         else {
-           store.mafiaManager.canMafiaVote = false;
+           store.state.root.mafiaManager.canMafiaVote = false;
           console.log("아직 마피아 미션 집계 중입니다!");
         }
       })
@@ -320,7 +320,6 @@ export default {
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
       store.state.root.mafiaManager.theVoted = null
       state.isVoteTime = false
-      store.state.root.mafiaManager.canMafiaVote = false
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
 
@@ -348,7 +347,8 @@ export default {
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
-         if(store.state.root.mafiaManager.myRole === 'Mafia'){
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          sendMafias();
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
         }
@@ -373,8 +373,12 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
-        state.missionProgress.innerHTML = "";
-        state.missionMessage.innerHTML = "";
+         if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          state.missionProgress.innerHTML = "";
+          state.missionMessage.innerHTML = "";
+          sendMafias();
+        }
+
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
         }
@@ -393,7 +397,7 @@ export default {
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
-            store.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
+            store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
             .then(() => {
                 console.log("죽은 사람 화면 처리 완료");
             })
@@ -425,6 +429,7 @@ export default {
         }, state.time[4]);
       } else { // 밤 -> 낮
         setTimeout(() => {
+          store.state.root.mafiaManager.canMafiaVote = false;
           goDay()
         }, state.time[4]);
       }
@@ -476,7 +481,7 @@ export default {
 
     // 단두대 오른사람 필터 적용
       if (store.state.root.mafiaManager.username === secondVoteUsername) {
-        store.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=blue top=-20 bottom=-20 left=-10 right=-10" })
+        store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=blue top=-20 bottom=-20 left=-10 right=-10" })
           .then(() => {
               console.log("단두대 오른사람 필터 적용 완료")
           })
@@ -501,9 +506,10 @@ export default {
     const goNight =  () => {
       // 상태 변경
       state.isVoteTime = true
+      store.state.root.mafiaManager.secondVoteUsername = '';
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
-      if(store.state.root.mafiaManager.myRole === 'Mafia') sendMafias();
+
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
@@ -563,7 +569,7 @@ export default {
     //* created *//
     setGame();
     const removeFilter = () => {
-      store.publisher.stream.removeFilter()
+      store.state.root.publisher.stream.removeFilter()
       .then(() => console.log("필터 없애버려!"))
       .catch(error => console.error(error));
     }
