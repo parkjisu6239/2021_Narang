@@ -97,7 +97,6 @@ export default {
     const muteAudio = () => {
         state.onAudio = !state.onAudio;
         console.log(state.onAudio)
-        state.onAudio = state.onAudio
         store.state.root.publisher.publishAudio(state.onAudio);
 
 
@@ -105,7 +104,6 @@ export default {
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
-        state.onVideo = state.onVideo
         store.state.root.publisher.publishVideo(state.onVideo);
     }
 
