@@ -397,8 +397,8 @@ export default {
           for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
 
-              let playerName = store.state.root.mafiaManager.players[i];
-              let votedCount = state.voteStatus.playerName;
+              let playerName = store.state.root.mafiaManager.players[i]; // username
+              let votedCount = state.voteStatus[playerName];
               console.log("저쩌라구~~~")
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
@@ -433,7 +433,7 @@ export default {
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
-              let votedCount = state.voteStatus.playerName;
+              let votedCount = state.voteStatus[playerName];
               console.log("저쩌라구~~~")
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
