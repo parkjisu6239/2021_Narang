@@ -322,9 +322,11 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
+        console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
+        console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
-           getVoteResult(result) // 결과 해석
-           state.voteStatus = result.voteStatus;
+          getVoteResult(result) // 결과 해석
+          state.voteStatus = result.voteStatus;
         }
       })
     }
@@ -368,7 +370,8 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
-      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ",result);
+      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ2");
+      console.log(result);
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
