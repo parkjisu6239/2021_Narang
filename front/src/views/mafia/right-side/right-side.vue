@@ -67,7 +67,7 @@ export default {
       emit('clickShowMission')
     }
 
-const clickLie = () => {
+    const clickLie = () => {
       emit('clickLie')
     }
 

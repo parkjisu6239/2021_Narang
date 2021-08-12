@@ -2,11 +2,12 @@
   <div class="mafia-main-container">
     <LeftSide
       class="mafia-left-side"
-      :roomId="state.roomId" :stage="state.stage"/>
+      :roomId="state.roomId"/>
     <RightSide
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
       @clickShowMission="clickShowMission"
+      @clickLie="clickLie"
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
       :timer="state.timer/1000"
@@ -14,9 +15,9 @@
   </div>
 
   <MafiaRoleCard
-  v-if="state.roleCardVisible"
-  :myRole="state.myRole"
-  @click="state.roleCardVisible = false"/>
+    v-if="state.roleCardVisible"
+    :myRole="state.myRole"
+    @click="state.roleCardVisible = false"/>
 
   <GameDialog v-if="state.gameOver">
     <GameOverContent
@@ -24,13 +25,13 @@
       :result="state.gameOverResult"/>
   </GameDialog>
 
-  <MissionDialog
-  v-if="state.clickMissionDialog"
-  @click="state.clickMissionDialog = false">
+  <GameDialog
+    v-if="state.clickMissionDialog"
+    @click="state.clickMissionDialog = false">
     <MissionContent
       :missionName="store.state.root.mafiaManager.missionName"
       :missionNumber="store.state.root.mafiaManager.missionNumber"/>
-  </MissionDialog>
+  </GameDialog>
 
   <div v-if="store.state.root.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
@@ -54,7 +55,6 @@ import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
 import GameDialog from './game-dialog/game-dialog.vue'
 import GameOverContent from './game-dialog/game-over-content.vue'
-import MissionDialog from './game-dialog/mission-dialog.vue'
 import MissionContent from './game-dialog/mission-content.vue'
 
 import Stomp from 'webstomp-client'
@@ -77,7 +77,6 @@ export default {
     MafiaRoleCard,
     GameDialog,
     GameOverContent,
-    MissionDialog,
     MissionContent,
   },
 
@@ -208,6 +207,27 @@ export default {
           window.cancelAnimationFrame(state.loopPredict);
           state.loopPredict = undefined;
         }
+    }
+
+    // [Func|Item] 거짓말 탐지 아이템 활성화
+    const clickLie = () => {
+      if (state.mafiaManager.lierItem) { // 아이템이 남아 있는 경우
+        store.state.root.mafiaManager.isLierItemActivate = true // 캠 누를 수 있게
+        ElMessage({
+          type: 'success',
+          message: '거짓말 탐지 아이템이 활성화되었습니다. 10초 안에 정체가 궁금한 사람의 비디오를 눌러주세요.'
+        })
+
+        setTimeout(() => {
+          store.state.root.mafiaManager.isLierItemActivate = false
+          if (state.mafiaManager.lierItem) {
+            ElMessage({
+              type: 'success',
+              message: '비디오를 클릭하지 않아서, 아이템이 비활성화 되었습니다. 다시 사용이 가능합니다.'
+            })
+          }
+        }, 10000)
+      }
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
@@ -551,7 +571,7 @@ export default {
     //* created *//
     setGame();
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie}
   },
 }
 </script>

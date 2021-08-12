@@ -22,7 +22,9 @@ const mafiaManager = {
   missionSuccess : false, // 미션 성공 여부
   isAlive: true, // 내가 살았나 죽었나
   onAudio : true,
-  canMafiaVote : false
+  canMafiaVote : false,
+  isLierItemActivate: false,
+  lierItem: true,
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
