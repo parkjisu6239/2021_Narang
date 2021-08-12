@@ -373,12 +373,18 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
+<<<<<<< HEAD
          if(store.state.root.mafiaManager.myRole === 'Mafia'){
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
           sendMafias();
         }
 
+=======
+        sendMafias();
+        state.missionProgress.innerHTML = "";
+        state.missionMessage.innerHTML = "";
+>>>>>>> 0601cc497633e3b0fdaf4e263364e83e691d79a1
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
         }

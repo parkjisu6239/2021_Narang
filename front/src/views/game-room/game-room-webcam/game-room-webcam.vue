@@ -103,17 +103,17 @@ export default {
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false,       	// Whether to mirror your local video or not
 
-						});
-						state.mainStreamManager = publisher;
-						state.publisher = publisher;
-            store.state.root.publisher = publisher;
-						state.session.publish(store.publisher);
+						})
+						state.mainStreamManager = publisher
+						state.publisher = publisher
+            store.state.root.publisher = publisher
+						state.session.publish(store.state.root.publisher)
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
-					});
+					})
 
-			});
+			})
 
       window.addEventListener('beforeunload', leaveSession)
 		}
