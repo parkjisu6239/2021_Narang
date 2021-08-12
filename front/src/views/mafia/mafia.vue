@@ -416,9 +416,9 @@ export default {
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
+            console.log(state.voteStatus);
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
-              store.state.root.mafiaManager.players[]
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus.playerName;
               state.msg += `${playerName} : ${votedCount}표`
