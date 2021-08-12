@@ -39,7 +39,7 @@ export default {
       voteDay1: '',
       voteDay2: false,
       voteNight: '',
-      victim: state.mafiaManager.username,
+      victim: store.state.root.mafiaManager.username,
       tOrF: false,
     })
 

@@ -418,7 +418,7 @@ export default {
             state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               let playerName = store.state.root.mafiaManager.players[i];
-              let votedCount = state.dayOneResult.playerName;
+              let votedCount = state.voteStatus.playerName;
               state.msg += `${playerName} : ${votedCount}표`
               state.msg += '\n';
             }
