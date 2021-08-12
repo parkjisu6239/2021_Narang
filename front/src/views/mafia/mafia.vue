@@ -273,11 +273,11 @@ export default {
           console.log("모든 마피아들 미션 성공! 투표 가능!!");
         }
         else if(res.body == 0) {
-           store.state.root.mafiaManager.canMafiaVote = false;
+          store.state.root.mafiaManager.canMafiaVote = false;
           console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
         }
         else {
-           store.state.root.mafiaManager.canMafiaVote = false;
+          store.state.root.mafiaManager.canMafiaVote = false;
           console.log("아직 마피아 미션 집계 중입니다!");
         }
       })
@@ -373,7 +373,7 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
-         if(store.state.root.mafiaManager.myRole === 'Mafia'){
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
           sendMafias();
