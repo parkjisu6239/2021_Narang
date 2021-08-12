@@ -388,6 +388,8 @@ export default {
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
+          console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
+          console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
           state.msg += ``
