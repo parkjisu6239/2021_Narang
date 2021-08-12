@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="state.mafiaManager.isLierItemActivate"
     @mouseleave="hideVideoMenu"
     class="video-overlay"
     :style="{'display': state.hover}">
@@ -8,7 +9,7 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : isDead}"
+    :class="{'webcam': true, 'selected-border': isSelected, 'died-user': isDead}"
     autoplay
     playsinline
     controls="false"/>
@@ -52,6 +53,9 @@ export default {
     })
 
     const startExpressDetection = async () => {
+      store.state.root.mafiaManager.lierItem = false
+      store.state.root.mafiaManager.isLierItemActivate = false
+
       await faceapi.nets.faceRecognitionNet.load('/static/models')
       await faceapi.nets.tinyFaceDetector.load('/static/models')
       await faceapi.nets.faceExpressionNet.load('/static/models')

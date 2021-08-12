@@ -2,11 +2,12 @@
   <div class="mafia-main-container">
     <LeftSide
       class="mafia-left-side"
-      :roomId="state.roomId" :stage="state.stage"/>
+      :roomId="state.roomId"/>
     <RightSide
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
       @clickShowMission="clickShowMission"
+      @clickLie="clickLie"
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
       :timer="state.timer/1000"
@@ -14,9 +15,9 @@
   </div>
 
   <MafiaRoleCard
-  v-if="state.roleCardVisible"
-  :myRole="state.myRole"
-  @click="state.roleCardVisible = false"/>
+    v-if="state.roleCardVisible"
+    :myRole="state.myRole"
+    @click="state.roleCardVisible = false"/>
 
   <GameDialog v-if="state.gameOver">
     <GameOverContent
@@ -24,13 +25,13 @@
       :result="state.gameOverResult"/>
   </GameDialog>
 
-  <MissionDialog
-  v-if="state.clickMissionDialog"
-  @click="state.clickMissionDialog = false">
+  <GameDialog
+    v-if="state.clickMissionDialog"
+    @click="state.clickMissionDialog = false">
     <MissionContent
       :missionName="store.state.root.mafiaManager.missionName"
       :missionNumber="store.state.root.mafiaManager.missionNumber"/>
-  </MissionDialog>
+  </GameDialog>
 
   <div v-if="store.state.root.mafiaManager.stage === 'night'">
     <img class="city" :src="require('@/assets/images/mafia/city.png')" alt="">
@@ -54,7 +55,6 @@ import RightSide from './right-side/right-side.vue'
 import MafiaRoleCard from './role-card/mafia-role-card.vue'
 import GameDialog from './game-dialog/game-dialog.vue'
 import GameOverContent from './game-dialog/game-over-content.vue'
-import MissionDialog from './game-dialog/mission-dialog.vue'
 import MissionContent from './game-dialog/mission-content.vue'
 
 import Stomp from 'webstomp-client'
@@ -77,7 +77,6 @@ export default {
     MafiaRoleCard,
     GameDialog,
     GameOverContent,
-    MissionDialog,
     MissionContent,
   },
 
@@ -130,7 +129,6 @@ export default {
         state.myWebcam = document.getElementById("myWebcam").childNodes[2];
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
-        store.state.root.mafiaManager.missionNumber = 0;
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
         console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
         console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
@@ -210,6 +208,27 @@ export default {
           window.cancelAnimationFrame(state.loopPredict);
           state.loopPredict = undefined;
         }
+    }
+
+    // [Func|Item] 거짓말 탐지 아이템 활성화
+    const clickLie = () => {
+      if (state.mafiaManager.lierItem) { // 아이템이 남아 있는 경우
+        store.state.root.mafiaManager.isLierItemActivate = true // 캠 누를 수 있게
+        ElMessage({
+          type: 'success',
+          message: '거짓말 탐지 아이템이 활성화되었습니다. 10초 안에 정체가 궁금한 사람의 비디오를 눌러주세요.'
+        })
+
+        setTimeout(() => {
+          store.state.root.mafiaManager.isLierItemActivate = false
+          if (state.mafiaManager.lierItem) {
+            ElMessage({
+              type: 'success',
+              message: '비디오를 클릭하지 않아서, 아이템이 비활성화 되었습니다. 다시 사용이 가능합니다.'
+            })
+          }
+        }, 10000)
+      }
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
@@ -302,10 +321,11 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
-        console.log("투표 리절트트트트트ㅡ",result);
+        console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
+        console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
-           getVoteResult(result) // 결과 해석
-           state.voteStatus = result.voteStatus;
+          state.voteStatus = result.voteStatus;
+          getVoteResult(result) // 결과 해석
         }
       })
     }
@@ -314,15 +334,15 @@ export default {
     const sendVoteSocket = () => {
       const toVoteUrl = `/to/mafia/vote/${route.params.roomId}`
       const message = {
-          username: state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen' ? null : state.mafiaManager.username, // 내 이름
-          theVoted: state.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
-          stage: state.mafiaManager.stage, // day1, day2, night
-          secondVoteUsername: state.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
+          username: store.state.root.mafiaManager.stage === 'night' && store.state.root.mafiaManager.myRole === 'Citizen' ? null : store.state.root.mafiaManager.username, // 내 이름
+          theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
+          stage: store.state.root.mafiaManager.stage, // day1, day2, night
+          secondVoteUsername: store.state.root.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
           missionNumber: store.state.root.mafiaManager.missionNumber, // 현재 미션 넘버 (시민 : -1, 마피아 : 0 ~ 10)
         }
 
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
-      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.theVoted = null;
       state.isVoteTime = false
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
@@ -349,7 +369,8 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
-      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ",result);
+      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ2");
+      console.log(result);
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
@@ -366,11 +387,25 @@ export default {
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
+          console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
+          console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
-          state.msg += ``
+          state.msg += `
+          `
           state.isVoteTime = false
+          for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
+              console.log(store.state.root.mafiaManager.players)
 
+              let playerName = store.state.root.mafiaManager.players[i]; // username
+              let votedCount = state.voteStatus[playerName];
+              console.log("저쩌라구~~~")
+              console.log(state.voteStatus)
+              console.log("어쩌라구~~~")
+              console.log(votedCount)
+              state.msg += `${playerName} : ${votedCount}표
+              `
+          }
           // 5초 쉬고 낮 2차로 이동
           state.timer = state.time[4]
           setTimeout(() => {
@@ -392,28 +427,36 @@ export default {
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
+            state.msg  += `
+            `;
+            console.log(state.voteStatus);
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
+              console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
-              let votedCount = state.dayOneResult.playerName;
-              state.msg += `${playerName} : ${votedCount}표`
-              state.msg += '\n';
+              let votedCount = state.voteStatus[playerName];
+              console.log("저쩌라구~~~")
+              console.log(state.voteStatus)
+              console.log("어쩌라구~~~")
+              console.log(votedCount)
+              state.msg += `${playerName} : ${votedCount}표
+              `
             }
-            state.msg  += ``;
-          } else if (state.mafiaManager.stage === 'day2'){ // 2차 -> 밤
+
+          } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
             console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.')
             state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.'
-          } else if (state.mafiaManager.stage === 'night') { // 밤 -> 낮
+          } else if (store.state.root.mafiaManager.stage === 'night') { // 밤 -> 낮
             console.log('아무도 죽지 않았습니다. 잠시후 아침이 됩니다.')
             state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
-          if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
+          if (store.state.root.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
             store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
-          if (state.mafiaManager.stage === 'day2') {
+          if (store.state.root.mafiaManager.stage === 'day2') {
             console.log(`${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`)
             state.msg = `${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`
           } else if (state.mafiaManager.stage === 'night') {
@@ -506,7 +549,7 @@ export default {
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
-      if ( state.mafiaManager.myRole === 'Mafia') {
+      if ( store.state.root.mafiaManager.myRole === 'Mafia') {
         state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
       } else {
         state.msg = `밤이 되었습니다. 안심하지 마십시오. 마피아는 당신을 지켜보고 있습니다`
@@ -523,7 +566,7 @@ export default {
       // 상태 초기화
       store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
-      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.theVoted = null;
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.isAlive = true
       state.timer = state.time[4]
@@ -541,7 +584,7 @@ export default {
       // 상태 초기화
       store.state.root.mafiaManager.theVoted = null
       store.state.root.mafiaManager.stage = 'default'
-      store.state.root.mafiaManager.players = null
+      store.state.root.mafiaManager.players = []
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
@@ -564,7 +607,7 @@ export default {
     //* created *//
     setGame();
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie}
   },
 }
 </script>

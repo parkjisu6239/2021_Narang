@@ -6,12 +6,12 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
-    <user-video id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <user-video id="myWebcam"
+      :stream-manager="state.publisher"/>
     <user-video
       v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
-      :stream-manager="sub"
-      @click="updateMainVideoStreamManager(sub)"/>
+      :stream-manager="sub"/>
   </div>
 </template>
 <script>
@@ -27,17 +27,16 @@ export default {
   components: {
 		UserVideo,
 	},
+
   props: {
     roomId: {
       type: Number
     },
-    stage: {
-      type: String
-    }
   },
+
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({
@@ -120,11 +119,6 @@ export default {
 			window.removeEventListener('beforeunload', leaveSession)
 		}
 
-		const updateMainVideoStreamManager = (stream) => {
-			if (state.mainStreamManager === stream) return
-			state.mainStreamManager = stream
-		}
-
     const getToken = (mySessionId) => {
 			return createSession(mySessionId).then(sessionId => createToken(sessionId))
 		}
@@ -189,7 +183,7 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
-    return { state, updateMainVideoStreamManager }
+    return { state }
   },
 }
 </script>

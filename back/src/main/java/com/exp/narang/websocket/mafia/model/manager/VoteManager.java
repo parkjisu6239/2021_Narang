@@ -26,7 +26,7 @@ public class VoteManager {
 
     public VoteManager(GamePlayers gamePlayers) {
         this.gamePlayers = gamePlayers;
-        this.voteStatus = new ConcurrentHashMap<>(this.gamePlayers.countOfPlayers());
+        this.voteStatus = new HashMap<>(this.gamePlayers.countOfPlayers());
     }
 
     public boolean handleVote(VoteMessage voteMessage) {
@@ -39,22 +39,7 @@ public class VoteManager {
         }
 
         voteStatus.put(playerVoting, playerVoted);
-        //TODO Below code is TEST CODE, DELETE or COMMENT this code before commit.
-//        if (this.players.getPlayer("testUser1") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser1"), this.players.getPlayer("testUser1"));
-//        }
-//        if (this.players.getPlayer("testUser2") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser2"), this.players.getPlayer("testUser2"));
-//        }
-//        if (this.players.getPlayer("testUser3") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser3"), this.players.getPlayer("testUser3"));
-//        }
-//        if (this.players.getPlayer("testUser4") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser4"), this.players.getPlayer("testUser4"));
-//        }
-//        if (this.players.getPlayer("testUser5") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser5"), this.players.getPlayer("testUser5"));
-//        }
+
         // test room 에 미리 들어가 있던 세명의 testUser 는 각각 자신을 vote 한다.
         // night가 아닐 경우 --> 낮 1, 낮 2 
         log.debug("VOTESTATUS.SIZE: {}       PLAYERS: {}", voteStatus.size(), this.gamePlayers.countOfPlayers());
@@ -74,13 +59,15 @@ public class VoteManager {
         String stage = voteMessage.getStage();
         log.debug("returnGameResult:stage: {}", stage);
         String selectedUsername = null;
+        Map<Player, Integer> countStatus = null;
         if (stage.equals("day1")) {
-            selectedUsername = determineResultOfDay(countVoteOfDay()); // 죽은사람 이름 또는 ""
+             countStatus = countVoteOfDay();
+            selectedUsername = determineResultOfDay(countStatus); // 죽은사람 이름 또는 ""
             log.debug("returnGameResult:Day logic:selectedUserNickName: {}", selectedUsername);
             // 2차 투표 대상자로 지목된 사람이 있을 경우 return 한 후 day2투표 진행
             if(!selectedUsername.equals("")) {
                 log.debug("SECOND_VOTE::selectedUser: {}", selectedUsername);
-                return GameResult.returnSelectedUser(selectedUsername);
+                return GameResult.returnSelectedUser(selectedUsername, countStatus);
             }
         } else if (stage.equals("day2")) {
             selectedUsername = determineResultOfDay(countVoteOfDay(voteMessage), voteMessage);
@@ -100,7 +87,7 @@ public class VoteManager {
                 return GameResult.returnCitizenWin();
             case KEEP_GOING:
                 log.debug("KEEP_GOING::killedUser: {}", selectedUsername);
-                return GameResult.returnKilledUser(selectedUsername); // username or ""
+                return GameResult.returnKilledUser(selectedUsername, countStatus); // username or ""
             default:
                 throw new RuntimeException("Unexpected Error!");
         }
@@ -109,20 +96,15 @@ public class VoteManager {
     private Map<Player, Integer> countVoteOfDay() {
         // <지목당한사람, 지목당한 횟수>
         Map<Player, Integer> countStatus = new ConcurrentHashMap<>();
-        Map<String, Integer> countVoteStatus = new ConcurrentHashMap<>(); // 프론트에 send용 map
-        // voteStatus <투표한사람, 지목당한사람>
-        voteStatus.keySet().forEach(player -> countStatus.put(player, 0)); // 초기값 설정
-        voteStatus.keySet().forEach(player -> countVoteStatus.put(player.getUser().getUsername(), 0)); // 초기값 설정
 
+        voteStatus.keySet().forEach(player -> countStatus.put(player, 0)); // 초기값 설정
         voteStatus.values().forEach(player -> {
             if (player != null) { //기권표를 걸러낸다. (기권을 누른경우와 시간내에 투표한 경우)
                 countStatus.put(player, countStatus.get(player) + 1);
-                countVoteStatus.put(player.getUser().getUsername(), countVoteStatus.get(player.getUser().getUsername()) + 1);
             }
         });
         log.debug("countStatus setting: {}", countStatus);
-        GameResult.returnCountStatus(countVoteStatus);
-//        gameResult.setVoteStatus(countVoteStatus);////////////////////////////////
+
         // return <지목당한사람, 지목당한 횟수>
         return countStatus;
     }
@@ -142,9 +124,6 @@ public class VoteManager {
 
             Player playerVoted = voteStatus.get(playerVoting);
 
-//            System.out.println("playerVoter : " + playerVoted);
-//            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
-//            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
             if(playerVoted == null) {
                 countStatus.put(false, countStatus.get(false) + 1);
             } else {
