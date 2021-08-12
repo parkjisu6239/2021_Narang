@@ -402,9 +402,9 @@ export default {
                 console.log("죽은 사람 화면 처리 완료");
             })
             .catch(error => {
-                console.error(error);
-            });
-            store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
+                console.error(error)
+            })
+            store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
           if (state.mafiaManager.stage === 'day2') {
