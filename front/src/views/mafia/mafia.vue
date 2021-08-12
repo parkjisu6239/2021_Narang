@@ -397,13 +397,6 @@ export default {
           if (state.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
-            store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
-              .then(res => {
-                  console.log("죽은 사람 화면 처리 완료");
-              })
-              .catch(error => {
-                  console.error(error)
-              })
             store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
@@ -479,16 +472,6 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = secondVoteUsername;
       store.state.root.mafiaManager.stage = "day2";
 
-    // 단두대 오른사람 필터 적용
-      if (store.state.root.mafiaManager.username === secondVoteUsername) {
-        store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videobox fill=blue top=-20 bottom=-20 left=-10 right=-10" })
-          .then(() => {
-              console.log("단두대 오른사람 필터 적용 완료")
-          })
-          .catch(error => {
-              console.error(error);
-          });
-      }
       // 메시지 변경
       console.log(`${secondVoteUsername}님이 단두대에 올랐습니다.
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
@@ -496,9 +479,6 @@ export default {
         최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
 
       setTimeout(() => { // 투표하기
-        if (store.state.root.mafiaManager.username === secondVoteUsername) {
-          removeFilter();
-        }
         sendVoteSocket();
       }, state.time[2]);
     }
@@ -530,6 +510,9 @@ export default {
       // 상태 초기화
       store.state.root.mafiaManager.username = state.username
       store.state.root.mafiaManager.stage = "default";
+      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.secondVoteUsername = ''
+      store.state.root.mafiaManager.isAlive = true
       state.timer = state.time[4]
 
       // 메시지 변경
@@ -549,7 +532,6 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
-      removeFilter();
       setTimeout(() => {
         router.push({
           name: 'gameRoom',
@@ -568,12 +550,8 @@ export default {
 
     //* created *//
     setGame();
-    const removeFilter = () => {
-      store.state.root.publisher.stream.removeFilter()
-      .then(() => console.log("필터 없애버려!"))
-      .catch(error => console.error(error));
-    }
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, removeFilter}
+
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers}
   },
 }
 </script>
