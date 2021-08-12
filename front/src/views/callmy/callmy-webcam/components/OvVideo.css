@@ -24,7 +24,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(white, cornflowerblue);
+  background: whitesmoke;
   border-radius: 10px;
   width: 120px;
   height: 60px;
@@ -38,15 +38,4 @@
 
 .menu-button:active {
   box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
-}
-
-.selected-border {
-  box-sizing: border-box;
-  border: solid 5px rgb(160, 18, 18);
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.226);
-}
-
-.died-user {
-  -webkit-filter: grayscale(100%);
-  filter: #515151;
 }
