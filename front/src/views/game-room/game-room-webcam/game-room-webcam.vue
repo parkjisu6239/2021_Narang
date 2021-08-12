@@ -14,8 +14,8 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
-    <!-- <button @click="test">적용</button>
-    <button @click="test2">삭제</button> -->
+    <button @click="test">적용</button>
+    <button @click="test2">삭제</button>
   </div>
 
 </template>

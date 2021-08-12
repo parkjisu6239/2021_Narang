@@ -161,10 +161,13 @@ export default {
 				$axios
 					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
               "type": "WEBRTC",
-              "data": "user_data",
               "role": "PUBLISHER",
               "kurentoOptions": {
-                  "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
               }
           },
           {
