@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserTest {
     @InjectMocks
     private UserController userController;
-    
+
     @Mock
     private UserService userService;
 
