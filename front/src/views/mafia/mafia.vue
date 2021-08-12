@@ -320,7 +320,6 @@ export default {
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
       store.state.root.mafiaManager.theVoted = null
       state.isVoteTime = false
-      store.state.root.mafiaManager.canMafiaVote = false
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
 
@@ -348,7 +347,8 @@ export default {
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
-         if(store.state.root.mafiaManager.myRole === 'Mafia'){
+        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          sendMafias();
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
         }
@@ -373,6 +373,7 @@ export default {
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
         stopMission(); // 마피아 동작 인식 중지
+        sendMafias();
         state.missionProgress.innerHTML = "";
         state.missionMessage.innerHTML = "";
         if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
@@ -425,6 +426,7 @@ export default {
         }, state.time[4]);
       } else { // 밤 -> 낮
         setTimeout(() => {
+          store.state.root.mafiaManager.canMafiaVote = false;
           goDay()
         }, state.time[4]);
       }
@@ -501,9 +503,10 @@ export default {
     const goNight =  () => {
       // 상태 변경
       state.isVoteTime = true
+      store.state.root.mafiaManager.secondVoteUsername = '';
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
-      if(store.state.root.mafiaManager.myRole === 'Mafia') sendMafias();
+
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
