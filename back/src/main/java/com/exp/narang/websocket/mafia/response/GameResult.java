@@ -1,8 +1,10 @@
 package com.exp.narang.websocket.mafia.response;
 
+import com.exp.narang.websocket.mafia.model.Player;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -17,7 +19,7 @@ public class GameResult {
     private String roleString;
     private static String nono = "nonono";
     private int testtt = 123;
-    private static Map<String, Integer> voteStatus;
+    private Map<String, Integer> voteStatus;
     private String voteResult; // 누가 몇 표 나왔는지 {username}:{voteCnt}&
     private int missionNumber = -1;
 
@@ -62,7 +64,6 @@ public class GameResult {
                 this.msg = CITIZEN_WIN_MESSAGE;
         }
     }
-
     public GameResult(String killedUser, boolean completeVote) {
         this.isFinished = false;
         this.completeVote = completeVote;
@@ -70,6 +71,16 @@ public class GameResult {
         this.nono = "yesyesyes";
         this.testtt = voteStatus.get("aaa");
         if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
+    }
+
+    public GameResult(String killedUser, boolean completeVote, Map<Player, Integer> countStatus) {
+        this(killedUser, completeVote);
+        this.voteStatus = new HashMap<>();
+        for (Map.Entry<Player, Integer> entry : countStatus.entrySet()) {
+            String username = entry.getKey().getUser().getUsername();
+            Integer count = entry.getValue();
+            this.voteStatus.put(username, count);
+        }
     }
 
     public static GameResult votingStatus() {
@@ -85,10 +96,11 @@ public class GameResult {
     public static GameResult returnKilledUser(String killedUsername) {
         return new GameResult(killedUsername, true);
     }
-    public static GameResult returnSelectedUser(String selectedUsername) { return new GameResult(selectedUsername, false); }
-    public static void returnCountStatus(Map<String, Integer> countStatus){
-        countStatus.keySet().forEach(username -> voteStatus.put(username, countStatus.get(username))); // map 복사
-    }
+    public static GameResult returnSelectedUser(String selectedUsername, Map<Player, Integer> countStatus) {
+        return new GameResult(selectedUsername, false, countStatus); }
+//    public static void returnCountStatus(Map<String, Integer> countStatus){
+//        countStatus.keySet().forEach(username -> voteStatus.put(username, countStatus.get(username))); // map 복사
+//    }
 
     @Override
     public String toString() {
