@@ -11,7 +11,6 @@ import lombok.Setter;
 public class Player {
     private User user;
     private Role role;
-    private int missionNumber; // -1
     private boolean stillAlive; // true
 
     public Player(User user) {

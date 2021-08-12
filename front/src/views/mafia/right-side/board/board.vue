@@ -1,5 +1,7 @@
 <template>
   <div class="board-container">
+    <div class="board-title">Notice 📣</div>
+    <hr>
     <Notice :msg="msg"/>
     <hr>
     <Vote v-if="state.mafiaManager.isAlive === true && isVoteTime === true"/>
@@ -44,5 +46,12 @@ export default {
 <style scoped>
   .board-container {
     padding: 10px;
+  }
+
+  .board-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
   }
 </style>
