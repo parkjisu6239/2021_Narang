@@ -398,12 +398,12 @@ export default {
             store.state.root.mafiaManager.isAlive = false
             store.state.root.mafiaManager.onAudio = false
             store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "chromahold target-r=0 target-g=0 target-b=0 tolerance=0" })
-            .then(() => {
-                console.log("죽은 사람 화면 처리 완료");
-            })
-            .catch(error => {
-                console.error(error)
-            })
+              .then(res => {
+                  console.log("죽은 사람 화면 처리 완료");
+              })
+              .catch(error => {
+                  console.error(error)
+              })
             store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
 
