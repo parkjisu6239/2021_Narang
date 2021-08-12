@@ -325,8 +325,8 @@ export default {
         console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
         console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
-          getVoteResult(result) // 결과 해석
           state.voteStatus = result.voteStatus;
+          getVoteResult(result) // 결과 해석
         }
       })
     }
@@ -417,6 +417,8 @@ export default {
             console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
+              console.log(store.state.root.mafiaManager.players)
+              store.state.root.mafiaManager.players[]
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus.playerName;
               state.msg += `${playerName} : ${votedCount}표`
