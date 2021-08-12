@@ -68,7 +68,7 @@ public class GameResult {
         this.completeVote = completeVote;
         this.msg = killedUser;
         this.nono = "yesyesyes";
-        this.testtt = voteStatus.get("aaa");
+//        this.testtt = voteStatus.get("aaa");
         if(completeVote == true) this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
     }
 

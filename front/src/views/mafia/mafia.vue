@@ -302,6 +302,7 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
+        console.log("투표 리절트트트트트ㅡ",result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
            getVoteResult(result) // 결과 해석
            state.voteStatus = result.voteStatus;

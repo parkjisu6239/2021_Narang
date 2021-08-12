@@ -117,7 +117,7 @@ public class VoteManager {
         voteStatus.values().forEach(player -> {
             if (player != null) { //기권표를 걸러낸다. (기권을 누른경우와 시간내에 투표한 경우)
                 countStatus.put(player, countStatus.get(player) + 1);
-                countVoteStatus.put(player.getUser().getUsername(), countVoteStatus.get(player.getUser().getUsername() + 1));
+                countVoteStatus.put(player.getUser().getUsername(), countVoteStatus.get(player.getUser().getUsername()) + 1);
             }
         });
         log.debug("countStatus setting: {}", countStatus);
