@@ -8,7 +8,7 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : state.mafiaManager.isAlive}"
+    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : isDead}"
     autoplay
     playsinline
     controls="false"/>
@@ -25,6 +25,7 @@ export default {
   props: {
     streamManager: Object,
     isSelected: Boolean,
+    isDead: Boolean,
   },
   setup(props, {emit}) {
     const store = useStore()

@@ -1,7 +1,7 @@
 <template>
   <div class="mission-content">
     <h2>{{ missionName }}</h2>
-    <img v-if="missionNumber" :src="require(`@/assets/images/mafia/mission/m` + missionNumber + `.png`)" alt="">
+    <img :src="require(`@/assets/images/mafia/mission/m${missionNumber}.png`)" alt="">
   </div>
 </template>
 
