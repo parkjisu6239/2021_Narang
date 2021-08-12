@@ -95,7 +95,6 @@ export default {
       isMissionComplete : false,
       destinationUrl: '/narang',
       poseUrl: 'https://teachablemachine.withgoogle.com/models/Rafr6YSIZ/',
-      canMafiaVote : false,
       roleCardVisible: false,
       msg: '',
       userRole: {},
@@ -254,7 +253,7 @@ export default {
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
           connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
         }
-     })
+    })
     }
 
       // [Func|socket] 롤카드 배분 소켓 send
@@ -270,15 +269,15 @@ export default {
       const fromMafiasUrl = `/from/mafia/mafias/${route.params.roomId}`
       state.stompClient.subscribe(fromMafiasUrl, res => {
         if(res.body == 1) {
-          state.canMafiaVote = true;
+          store.mafiaManager.canMafiaVote = true;
           console.log("모든 마피아들 미션 성공! 투표 가능!!");
         }
         else if(res.body == 0) {
-          state.canMafiaVote = false;
+           store.mafiaManager.canMafiaVote = false;
           console.log("모든 마피아들이 미션 성공 실패! 투표 불가!!!")
         }
         else {
-          state.canMafiaVote = false;
+           store.mafiaManager.canMafiaVote = false;
           console.log("아직 마피아 미션 집계 중입니다!");
         }
       })
@@ -321,7 +320,7 @@ export default {
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
       store.state.root.mafiaManager.theVoted = null
       state.isVoteTime = false
-
+      store.state.root.mafiaManager.canMafiaVote = false
       state.stompClient.send(toVoteUrl, JSON.stringify(message), {})
     }
 
@@ -349,8 +348,10 @@ export default {
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
-        state.missionProgress.innerHTML = "";
-        state.missionMessage.innerHTML = "";
+         if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          state.missionProgress.innerHTML = "";
+          state.missionMessage.innerHTML = "";
+        }
         console.log('게임 종료! 결과:', result.msg)
         state.msg = `${result.msg}`
         state.gameOverResult = result.roleString
