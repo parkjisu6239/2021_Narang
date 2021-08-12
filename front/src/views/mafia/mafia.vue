@@ -530,7 +530,7 @@ export default {
 
       // 메시지 변경
       console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
-      if ( state.mafiaManager.myRole === 'Mafia') {
+      if ( store.state.root.mafiaManager.myRole === 'Mafia') {
         state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
       } else {
         state.msg = `밤이 되었습니다. 안심하지 마십시오. 마피아는 당신을 지켜보고 있습니다`
