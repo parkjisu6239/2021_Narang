@@ -86,7 +86,7 @@ public class GameManager {
             // Map에서 삭제
             nameMap.remove(req.getUserId());
             // 정답자 처리
-            winList.add(req.getUserId());
+//            winList.add(req.getUserId());
             userIdSet.remove(req.getUserId());
         }
         return new GuessNameRes(isCorrect, nameMap.isEmpty());
