@@ -35,10 +35,9 @@
 
   </div>
 </template>
-<style scoped>
+<style>
   @import url('./callmy-chat.css');
 </style>
-
 <script>
 import { reactive } from '@vue/reactivity'
 import { useStore } from 'vuex'
@@ -78,8 +77,6 @@ export default {
     onUpdated(() => {
       chatArea.value.scrollTop = chatArea.value.scrollHeight;
     })
-
-
 
     return { state, sendChat, chatArea }
   }

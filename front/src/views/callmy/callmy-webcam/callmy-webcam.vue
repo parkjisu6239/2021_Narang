@@ -6,20 +6,23 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
-    <user-video id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-    <user-video
+    <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <UserVideo
       v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"
       @click="updateMainVideoStreamManager(sub)"/>
   </div>
 </template>
+<style>
+  @import url('./callmy-webcam.css');
+</style>
 <script>
 import $axios from 'axios'
 import { computed, reactive, onBeforeUnmount } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
 import { useStore } from 'vuex'
-import UserVideo from './components/UserVideo'
+import UserVideo from './components/UserVideo.vue'
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json'
 
@@ -29,15 +32,15 @@ export default {
 	},
   props: {
     roomId: {
-      type: Number
+      type: String
     },
     stage: {
       type: String
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore()
 
     const state = reactive({
@@ -182,6 +185,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-  @import url('callmy-webcam.css');
-</style>

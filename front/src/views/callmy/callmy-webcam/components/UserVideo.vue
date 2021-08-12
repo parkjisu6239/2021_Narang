@@ -1,4 +1,5 @@
 <template>
+  <h1>{{ streamManager }}</h1>
   <div v-if="streamManager" style="position: relative">
     <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
     <ov-video v-else :stream-manager="streamManager"/>
@@ -8,7 +9,7 @@
   @import url('./uservideo.css');
 </style>
 <script>
-import OvVideo from './OvVideo';
+import OvVideo from './OvVideo.css';
 import { computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 
@@ -17,11 +18,9 @@ export default {
 	components: {
 		OvVideo,
 	},
-
 	props: {
 		streamManager: Object,
 	},
-
   setup(props, { emit }) {
     const store = useStore()
 
