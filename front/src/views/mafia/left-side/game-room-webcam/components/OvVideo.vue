@@ -8,12 +8,7 @@
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
-<<<<<<< HEAD
-    :class="{'webcam': true, 'selected-border': isSelected}"
-=======
-    class="webcam"
-    :class="{ 'died-user' : state.mafiaManager.isAlive }"
->>>>>>> 6baaf498044358ec0f5b96e43dea677773c89228
+    :class="{'webcam': true, 'selected-border': isSelected, 'died-user' : state.mafiaManager.isAlive}"
     autoplay
     playsinline
     controls="false"/>
