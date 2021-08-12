@@ -1,5 +1,5 @@
 <template >
-  <video autoplay style="width: 98%; max-width: 540px;"/>
+  <video class="'died-user'" autoplay style="width: 98%; max-width: 540px;"/>
 </template>
 
 <script>
@@ -13,4 +13,9 @@ export default {
   },
 }
 </script>
-
+<style scoped>
+.died-user {
+  -webkit-filter: grayscale(100%);
+  filter: #515151;
+}
+</style>
