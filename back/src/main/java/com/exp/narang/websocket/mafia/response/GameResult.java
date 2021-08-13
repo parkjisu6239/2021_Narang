@@ -3,6 +3,7 @@ package com.exp.narang.websocket.mafia.response;
 import com.exp.narang.websocket.mafia.model.Player;
 import lombok.Getter;
 import lombok.Setter;
+import retrofit2.http.HEAD;
 
 import java.util.HashMap;
 import java.util.Map;
