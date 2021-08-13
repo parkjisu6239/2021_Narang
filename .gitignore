@@ -9,7 +9,7 @@ dist/
 
 # Compiled Java class files
 *.class
-
+vue.config.js
 # Compiled Python bytecode
 *.py[cod]
 

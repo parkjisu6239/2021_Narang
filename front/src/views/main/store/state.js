@@ -26,6 +26,9 @@ const mafiaManager = {
   isLierItemActivate: false,
   lierItem: true,
 }
+const callmyManager = {
+
+}
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
  */
@@ -65,4 +68,5 @@ export default {
   onVideo,
   onAudio,
   mafiaManager,
+  callmyManager,
 }
