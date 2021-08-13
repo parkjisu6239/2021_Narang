@@ -11,6 +11,9 @@ module.exports = {
       '/narang':{
         target: 'https://localhost:8080/'
       },
+      '/static/models': {
+        target: 'https://localhost:8080/'
+      }
     },
     historyApiFallback: true,
     hot: true
