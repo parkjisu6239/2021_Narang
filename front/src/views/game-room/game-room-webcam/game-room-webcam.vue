@@ -229,7 +229,7 @@ export default {
     }
 
     const test3 = () => {
-store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=https://cdn.pixabay.com/photo/2013/07/12/14/14/derby-148046_960_720.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
+store.state.root.publisher.stream.applyFilter("GstGdkPixbufOverlay", { command: "gdkpixbufoverlay location=https://cdn.pixabay.com/photo/2013/07/12/14/14/derby-148046_960_720.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
     .then(() => {
         console.log("Video rotated!");
     })
