@@ -4,6 +4,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class CheckConnectRes {
-    private long userId1;
-    private long userId2;
+    private final long userId1;
+    private final long userId2;
 }
