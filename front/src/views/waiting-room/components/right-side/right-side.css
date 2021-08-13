@@ -12,15 +12,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .search-group {
   display: flex;
   align-items: center;
-}
-
-.search-group > *{
-  margin-right: 10px;
+  gap: 10px;
 }
 
 .search-group .el-select {
@@ -47,12 +45,16 @@
     min-width: 350px;
   }
 
-  .nav-bottom {
-    flex-direction: column;
-  }
-
   .top-btn-group {
     max-width: 100%;
+  }
+
+  .select-type > * {
+    display: none;
+  }
+
+  .select-game {
+    display: none;
   }
 }
 

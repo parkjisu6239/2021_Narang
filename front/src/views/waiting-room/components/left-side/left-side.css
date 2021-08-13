@@ -9,6 +9,11 @@
   grid-template-rows: 2fr 15fr 20px;
 }
 
+.btn-group {
+  display: flex;
+  justify-content: center;
+}
+
 .left-screen img {
   border-radius: 50%;
 }
