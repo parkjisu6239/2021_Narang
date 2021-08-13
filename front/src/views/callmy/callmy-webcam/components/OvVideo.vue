@@ -1,5 +1,5 @@
 <template>
-  <video ref="myWebCam" class="webcam" autoplay/>
+  <video ref="myWebCam" autoplay/>
 </template>
 <style>
   @import url('./OvVideo.css');
