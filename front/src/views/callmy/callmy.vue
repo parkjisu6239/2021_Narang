@@ -54,7 +54,6 @@ export default {
       const chatEndPoint = `/from/call/chat/${route.params.roomId}`
       state.stompClient.subscribe(chatEndPoint, res => {
         const chat = JSON.parse(res.body)
-        console.log(chat)
         chatList.push(chat)
       })
     }

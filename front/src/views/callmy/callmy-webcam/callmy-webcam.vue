@@ -6,7 +6,7 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
-    <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <UserVideo id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
     <UserVideo
       v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
@@ -32,11 +32,8 @@ export default {
 	},
   props: {
     roomId: {
-      type: String
+      type: Number,
     },
-    stage: {
-      type: String
-    }
   },
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
@@ -63,6 +60,7 @@ export default {
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
+        console.log(subscriber, '구독자 생성')
 				state.subscribers.push(subscriber)
 			})
 
@@ -82,6 +80,7 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
+        console.log(token, '토큰 받음')
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 
@@ -91,7 +90,7 @@ export default {
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '600x320',  // The resolution of your video
+							resolution: '700x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: true       	// Whether to mirror your local video or not
@@ -100,7 +99,8 @@ export default {
 						state.mainStreamManager = publisher
 						state.publisher = publisher
             store.state.root.publisher = publisher
-						state.session.publish(state.publisher)
+            console.log(publisher, '여기다 퍼블리셔')
+						state.session.publish(publisher)
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message)
@@ -181,7 +181,7 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
-    return { state, updateMainVideoStreamManager }
+    return { state, store, updateMainVideoStreamManager }
   },
 }
 </script>

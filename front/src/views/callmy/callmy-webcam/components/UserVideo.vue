@@ -1,8 +1,6 @@
 <template>
-  <h1>{{ streamManager }}</h1>
-  <div v-if="streamManager" style="position: relative">
-    <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
-    <ov-video v-else :stream-manager="streamManager"/>
+  <div style="position:relative">
+    <ov-video :stream-manager="streamManager"/>
   </div>
 </template>
 <style scoped>
@@ -19,7 +17,9 @@ export default {
 		OvVideo,
 	},
 	props: {
-		streamManager: Object,
+		streamManager: {
+      type: Object,
+    },
 	},
   setup(props, { emit }) {
     const store = useStore()
@@ -29,17 +29,16 @@ export default {
         const { clientData } = getConnectionData();
         return clientData;
       }),
-      mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
     const getConnectionData = () => {
 			const { connection } = props.streamManager.stream;
-      console.log(connection.data)
+      console.log(connection.data, '여기가 connection data')
 			return JSON.parse(connection.data);
 		}
 
 
-    return { state, getConnectionData }
+    return { state }
   },
 
 };
