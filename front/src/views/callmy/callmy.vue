@@ -46,7 +46,7 @@ export default {
       isAllConnected: false,
       userId: computed(() => store.state.root.userId),
       draw: computed(() => store.state.root.draw),
-      socketConnected: false
+      socketConnected: false,
     })
 
 

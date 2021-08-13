@@ -1,7 +1,7 @@
 <template>
-  <h1>{{ gameStart }}</h1>
   <div
     :class="{
+      'webcam-nonstart': !gameStart,
       'webcam-container': true,
       'under-two': state.subscribers.length >= 1,
       'under-four': state.subscribers.length >= 2,
