@@ -50,12 +50,6 @@ export default {
     roomId: {
       type: Number,
     },
-    userList: {
-      type: Array,
-    },
-    room: {
-      type: Object,
-    },
     chatList: {
       type: Array,
     },
@@ -78,8 +72,6 @@ export default {
     onUpdated(() => {
       chatArea.value.scrollTop = chatArea.value.scrollHeight;
     })
-
-
 
     return { state, sendMessage, chatArea }
   }

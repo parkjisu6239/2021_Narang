@@ -89,7 +89,6 @@ export default {
         console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
-
 						// --- Get your own camera stream with the desired properties ---
 						let publisher = state.OV.initPublisher(undefined, {
 							audioSource: undefined, // The source of audio. If undefined default microphone
@@ -99,17 +98,17 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: false,       	// Whether to mirror your local video or not
 						});
-
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
-            store.publisher = publisher;
-						state.session.publish(state.publisher);
+            store.state.root.publisher = publisher;
+						state.session.publish(store.state.root.publisher);
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
+
 			});
 
       window.addEventListener('beforeunload', leaveSession)
@@ -169,13 +168,18 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {},
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						},
 					})
-					.then(response => response.data)
+					.then(response => {
+            console.log("tqtqtqtqtq")
+            console.log(response.data)
+            return response.data}
+            )
 					.then(data => resolve(data.token))
 					.catch(error => reject(error.response))
 			});
@@ -190,7 +194,7 @@ export default {
       leaveSession()
     })
 
-    return { state, updateMainVideoStreamManager }
+    return { state, store, updateMainVideoStreamManager}
 
   },
 }

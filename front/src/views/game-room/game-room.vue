@@ -118,10 +118,11 @@ export default {
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = () => {
-      let socket = new SockJS("/narang")
+    const connectSocket = async () => {
+      let socket = await new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({}, () => {
+      console.log('채팅 소켓')
+      await state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
           connectMafiaStartSocket() // 게임 시작 소켓
         }
@@ -178,10 +179,11 @@ export default {
           userName: store.state.root.username,
           content: msg,
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL,
           roomInfoChange: false,
           gameStart: false,
         }
+        console.log(message, '메시지')
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
@@ -264,14 +266,6 @@ export default {
         leaveRoom()
       }
     })
-
-    //* 브라우저 언로드 감지 *//
-    // window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
-    //   e.preventDefault()
-    //   e.returnValue = ''
-    //   window.alert('test')
-    //   leaveRoom()
-    // })
 
     //* created *//
     requestRoomInfo()

@@ -1,14 +1,23 @@
 .right-side-container {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .right-side-container > * {
-  border: 1px solid black;
+  border-radius: 10px;
+  background-color: rgba(102, 102, 102, 0.13);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 
 .right-btn-group {
-  max-height: 50px;
+  max-height: 70px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 15px;
 }
 
 .right-board {
@@ -17,8 +26,23 @@
 
 .right-timer {
   max-height: 50px;
+  padding: 10px;
 }
 
 .right-setting {
   max-height: 50px;
+}
+
+.right-btn-group img {
+  display: inline-block;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+.right-btn-group img:hover {
+  color: rgb(255, 0, 221);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
 }

@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Getter
 @Setter
 @Slf4j
@@ -20,6 +22,7 @@ public class VoteManager {
 
     private Map<Player, Player> voteStatus;
     private GamePlayers gamePlayers;
+    private GameResult gameResult;
 
     public VoteManager(GamePlayers gamePlayers) {
         this.gamePlayers = gamePlayers;
@@ -36,22 +39,7 @@ public class VoteManager {
         }
 
         voteStatus.put(playerVoting, playerVoted);
-        //TODO Below code is TEST CODE, DELETE or COMMENT this code before commit.
-//        if (this.players.getPlayer("testUser1") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser1"), this.players.getPlayer("testUser1"));
-//        }
-//        if (this.players.getPlayer("testUser2") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser2"), this.players.getPlayer("testUser2"));
-//        }
-//        if (this.players.getPlayer("testUser3") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser3"), this.players.getPlayer("testUser3"));
-//        }
-//        if (this.players.getPlayer("testUser4") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser4"), this.players.getPlayer("testUser4"));
-//        }
-//        if (this.players.getPlayer("testUser5") != null) {
-//            this.voteStatus.put(this.players.getPlayer("testUser5"), this.players.getPlayer("testUser5"));
-//        }
+
         // test room 에 미리 들어가 있던 세명의 testUser 는 각각 자신을 vote 한다.
         // night가 아닐 경우 --> 낮 1, 낮 2 
         log.debug("VOTESTATUS.SIZE: {}       PLAYERS: {}", voteStatus.size(), this.gamePlayers.countOfPlayers());
@@ -68,17 +56,18 @@ public class VoteManager {
     }
 
     public GameResult returnGameResult(VoteMessage voteMessage) {
-
         String stage = voteMessage.getStage();
         log.debug("returnGameResult:stage: {}", stage);
         String selectedUsername = null;
+        Map<Player, Integer> countStatus = null;
         if (stage.equals("day1")) {
-            selectedUsername = determineResultOfDay(countVoteOfDay()); // 죽은사람 이름 또는 ""
+             countStatus = countVoteOfDay();
+            selectedUsername = determineResultOfDay(countStatus); // 죽은사람 이름 또는 ""
             log.debug("returnGameResult:Day logic:selectedUserNickName: {}", selectedUsername);
             // 2차 투표 대상자로 지목된 사람이 있을 경우 return 한 후 day2투표 진행
             if(!selectedUsername.equals("")) {
                 log.debug("SECOND_VOTE::selectedUser: {}", selectedUsername);
-                return GameResult.returnSelectedUser(selectedUsername);
+                return GameResult.returnSelectedUser(selectedUsername, countStatus);
             }
         } else if (stage.equals("day2")) {
             selectedUsername = determineResultOfDay(countVoteOfDay(voteMessage), voteMessage);
@@ -87,7 +76,6 @@ public class VoteManager {
             selectedUsername = determineResultOfNight(countVoteOfNight());
             log.debug("returnGameResult:Night logic:selectedUserNickName: {}", selectedUsername);
         }
-
 
         GameResultType gameResultType = this.gamePlayers.judgementPlayersCount();
         switch (gameResultType) {
@@ -99,7 +87,7 @@ public class VoteManager {
                 return GameResult.returnCitizenWin();
             case KEEP_GOING:
                 log.debug("KEEP_GOING::killedUser: {}", selectedUsername);
-                return GameResult.returnKilledUser(selectedUsername); // username or ""
+                return GameResult.returnKilledUser(selectedUsername, countStatus); // username or ""
             default:
                 throw new RuntimeException("Unexpected Error!");
         }
@@ -107,16 +95,16 @@ public class VoteManager {
     // 투표 결과 집계 하는 상황 개표!!
     private Map<Player, Integer> countVoteOfDay() {
         // <지목당한사람, 지목당한 횟수>
-        Map<Player, Integer> countStatus = new HashMap<>();
-        // voteStatus <투표한사람, 지목당한사람>
+        Map<Player, Integer> countStatus = new ConcurrentHashMap<>();
+
         voteStatus.keySet().forEach(player -> countStatus.put(player, 0)); // 초기값 설정
-        
         voteStatus.values().forEach(player -> {
             if (player != null) { //기권표를 걸러낸다. (기권을 누른경우와 시간내에 투표한 경우)
                 countStatus.put(player, countStatus.get(player) + 1);
             }
         });
         log.debug("countStatus setting: {}", countStatus);
+
         // return <지목당한사람, 지목당한 횟수>
         return countStatus;
     }
@@ -125,7 +113,7 @@ public class VoteManager {
         // <(찬성 or 반대), 해당 횟수>
 
 
-        Map<Boolean, Integer> countStatus = new HashMap<>();
+        Map<Boolean, Integer> countStatus = new ConcurrentHashMap<>();
         countStatus.put(false, 0);
         countStatus.put(true, 0);
         // voteStatus <투표한사람, 지목당한사람>
@@ -136,9 +124,6 @@ public class VoteManager {
 
             Player playerVoted = voteStatus.get(playerVoting);
 
-//            System.out.println("playerVoter : " + playerVoted);
-//            System.out.println("playerVoter.getUser : " + playerVoted.getUser());
-//            System.out.println("playerVoter.getUser().getUsername : " + playerVoted.getUser().getUsername());
             if(playerVoted == null) {
                 countStatus.put(false, countStatus.get(false) + 1);
             } else {
@@ -152,7 +137,7 @@ public class VoteManager {
     }
 
     private Map<Player, Integer> countVoteOfNight() {
-        Map<Player, Integer> countStatusOfMafia = new HashMap<>();
+        Map<Player, Integer> countStatusOfMafia = new ConcurrentHashMap<>();
         // voteStatus <마피아 이름 , 마피아가 죽인 사람>
 //        gamePlayers
         List<Player> playerList = gamePlayers.getPlayers();
@@ -197,9 +182,10 @@ public class VoteManager {
 
     // 최종 반론 결과를 수행하는 로직
     private String determineResultOfDay(Map<Boolean, Integer> countStatus, VoteMessage voteMessage) {
+        // 찬성이 더 많으면 player의 stillAlive가 false됨.
         if(countStatus.get(false) < countStatus.get(true)) {
             Player player = this.gamePlayers.getPlayer(voteMessage.getSecondVoteUsername());
-            player.kill();
+            player.kill(); //
             this.gamePlayers.removeDeadPlayer(player);
             log.debug("determineResultOfDay:selectPlayer: {}, \n1. {}가 플레이어에서 제외되었습니다.", player, player);
             voteStatus.clear();

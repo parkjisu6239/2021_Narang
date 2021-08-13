@@ -6,18 +6,18 @@
       'under-four': state.subscribers.length >= 2,
       'under-nine': state.subscribers.length >= 4,
     }">
-    <user-video id="myWebcam" :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+    <user-video id="myWebcam"
+      :stream-manager="state.publisher"/>
     <user-video
       v-for="sub in state.subscribers"
       :key="sub.stream.connection.connectionId"
-      :stream-manager="sub"
-      @click="updateMainVideoStreamManager(sub)"/>
+      :stream-manager="sub"/>
   </div>
 </template>
 <script>
 import $axios from 'axios'
 import { computed, reactive, onBeforeUnmount } from 'vue'
-import { OpenVidu, Subscriber } from 'openvidu-browser'
+import { OpenVidu } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
@@ -27,14 +27,13 @@ export default {
   components: {
 		UserVideo,
 	},
+
   props: {
     roomId: {
       type: Number
     },
-    stage: {
-      type: String
-    }
   },
+
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
     const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
@@ -91,12 +90,12 @@ export default {
 							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: true       	// Whether to mirror your local video or not
+							mirror: true,       	// Whether to mirror your local video or not
 						})
 
 						state.mainStreamManager = publisher
 						state.publisher = publisher
-            store.publisher = publisher
+            store.state.root.publisher = publisher
 						state.session.publish(state.publisher)
 					})
 					.catch(error => {
@@ -118,11 +117,6 @@ export default {
 			state.OV = undefined
 
 			window.removeEventListener('beforeunload', leaveSession)
-		}
-
-		const updateMainVideoStreamManager = (stream) => {
-			if (state.mainStreamManager === stream) return
-			state.mainStreamManager = stream
 		}
 
     const getToken = (mySessionId) => {
@@ -159,7 +153,18 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+              "type": "WEBRTC",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
@@ -178,7 +183,7 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
-    return { state, updateMainVideoStreamManager }
+    return { state }
   },
 }
 </script>

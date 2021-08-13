@@ -1,10 +1,19 @@
 <template>
   <div class="right-side-container">
     <div class="right-btn-group">
-      <button @click="clickGetRole">롤카드 보기</button>
-      <button @click="clickLie">거짓말탐지</button>
-      <button>도움말</button>
-      <button @click="clickShowMission">미션 보기</button>
+      <el-tooltip class="item" effect="light" content="롤카드 보기" placement="top">
+        <img @click="clickGetRole" :src="require('@/assets/images/icon/role.png')" alt="롤카드 보기">
+      </el-tooltip>
+      <el-tooltip class="item" effect="light" content="거짓말 탐지" placement="top">
+        <img @click="clickLie" :src="require('@/assets/images/icon/liar.png')" alt="거짓말 탐지">
+      </el-tooltip>
+      <el-tooltip class="item" effect="light" content="미션 보기" placement="top">
+        <img @click="clickShowMission" :src="require('@/assets/images/icon/mission.png')" alt="미션 보기">
+      </el-tooltip>
+    </div>
+    <div id="mission-container">
+      <div id="mission-progress"></div>
+      <div id="mission-message"></div>
     </div>
     <Timer class="right-timer" :timer="timer"/>
     <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime"/>
@@ -58,7 +67,7 @@ export default {
       emit('clickShowMission')
     }
 
-const clickLie = () => {
+    const clickLie = () => {
       emit('clickLie')
     }
 

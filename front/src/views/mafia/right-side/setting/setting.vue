@@ -1,13 +1,13 @@
 <template>
   <div class="setting-btns">
-      <div v-if="state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
-      <div v-if="!state.mafiaManager.onAudio" class="setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
+    <div v-if="state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+    <div v-if="!state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
 
-      <div v-if="state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
-      <div v-if="!state.onVideo" class="setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
+    <div v-if="state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
+    <div v-if="!state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
 
-      <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
-    </div>
+    <div class="mafia-setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
+  </div>
 </template>
 
 <script>
@@ -37,13 +37,13 @@ export default {
       }
         store.state.root.mafiaManager.onAudio = !store.state.root.mafiaManager.onAudio
         console.log(store.state.root.mafiaManager.onAudio)
-        store.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
+        store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
-        store.onVideo = state.onVideo
-        store.publisher.publishVideo(state.onVideo);
+        store.state.root.onVideo = state.onVideo
+        store.state.root.publisher.publishVideo(state.onVideo);
     }
 
     return {state, leaveRoom, muteAudio, muteVideo}
@@ -51,6 +51,6 @@ export default {
 }
 </script>
 
-<style>
- @import url('./setting.css');
+<style scoped>
+  @import url('./setting.css');
 </style>
