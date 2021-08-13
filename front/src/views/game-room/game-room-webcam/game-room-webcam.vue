@@ -27,7 +27,7 @@
 <script>
 import $axios from 'axios'
 import { computed, reactive, onBeforeUnmount } from 'vue'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
@@ -190,7 +190,6 @@ export default {
 						},
 					})
 					.then(response => {
-            console.log("tqtqtqtqtq")
             console.log(response.data)
             return response.data}
             )

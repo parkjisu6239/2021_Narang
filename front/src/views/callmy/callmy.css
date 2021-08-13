@@ -7,6 +7,7 @@
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 15px;
+  min-width: 1070px;
 }
 
 .callmy-right-side {

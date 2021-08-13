@@ -1,6 +1,7 @@
 <template>
   <div
     :class="{
+      'webcam-nonstart': !gameStart,
       'webcam-container': true,
       'under-two': state.subscribers.length >= 1,
       'under-four': state.subscribers.length >= 2,
@@ -13,13 +14,14 @@
       :stream-manager="sub"
       @click="updateMainVideoStreamManager(sub)"/>
   </div>
+  <div v-if="gameStart" class="game-not-start"></div>
 </template>
 <style>
   @import url('./callmy-webcam.css');
 </style>
 <script>
 import $axios from 'axios'
-import { computed, reactive, onBeforeUnmount } from 'vue'
+import { computed, reactive, onBeforeUnmount, watch } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo.vue'
@@ -34,6 +36,12 @@ export default {
     roomId: {
       type: String,
     },
+    socketConnected: {
+      type: Boolean,
+    },
+    gameStart: {
+      type: Boolean,
+    }
   },
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
@@ -50,6 +58,7 @@ export default {
 			myUserName: computed(() => store.getters['root/username']),
     })
 
+
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
 			state.OV = new OpenVidu()
@@ -60,14 +69,13 @@ export default {
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
-        console.log(subscriber, '---------------구독자 생성---------------')
 				state.subscribers.push(subscriber)
 			})
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
-				if (index >= 0) {
+        if (index >= 0) {
 					state.subscribers.splice(index, 1)
 				}
 			})
@@ -94,11 +102,12 @@ export default {
                 insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
                 mirror: true       	// Whether to mirror your local video or not
               })
-
               state.mainStreamManager = publisher
               state.publisher = publisher
               store.state.root.publisher = publisher
+              console.log('나 들어왔어')
               state.session.publish(publisher)
+              if (publisher) emit('joinCallMyRoom')
             })
             .catch(error => {
               console.log('There was an error connecting to the session:', error.code, error.message)
@@ -107,6 +116,7 @@ export default {
 
 			window.addEventListener('beforeunload', leaveSession)
 		}
+
 
     const leaveSession = () => {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
@@ -121,14 +131,17 @@ export default {
 			window.removeEventListener('beforeunload', leaveSession)
 		}
 
+
 		const updateMainVideoStreamManager = (stream) => {
 			if (state.mainStreamManager === stream) return
 			state.mainStreamManager = stream
 		}
 
+
     const getToken = (mySessionId) => {
 			return createSession(mySessionId).then(sessionId => createToken(sessionId))
 		}
+
 
 		const createSession = (sessionId) => {
 			return new Promise((resolve, reject) => {
@@ -172,13 +185,17 @@ export default {
 			})
 		}
 
-    // created
-    joinSession()
+
+    watch(() => props.socketConnected, () => {
+      joinSession()
+    })
+
 
     // beforeunmount
     onBeforeUnmount(() => {
       leaveSession()
     })
+
     return { state, store, updateMainVideoStreamManager }
   },
 }
