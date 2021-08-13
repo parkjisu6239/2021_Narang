@@ -35,32 +35,52 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
-
     const state = reactive({
       stompClient: null,
       chatList: [],
+      isAllConnected: false,
     })
+
 
     const connectSocket = () => {
       let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
-          SubcribeChatSocket() // 채팅 소켓
+          subscribeChat() // 채팅 소켓
+          subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
+          subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
         }
       )
     }
 
-    const SubcribeChatSocket = () => {
-      const chatEndPoint = `/from/call/chat/${route.params.roomId}`
-      state.stompClient.subscribe(chatEndPoint, res => {
+
+    const subscribeChat = () => {
+      state.stompClient.subscribe(`/from/call/chat/${route.params.roomId}`, res => {
         const chat = JSON.parse(res.body)
         state.chatList.push(chat)
       })
     }
 
-    const SubcribeStartSocket = () => {
 
+    const subscribeCheckConnect = () => {
+      state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
+        console.log(res)
+        const data = JSON.parse(res.body)
+        console.log(res.body)
+        console.log(data)
+        state.isAllConnected = true
+      })
     }
+
+
+    const subscribeGuessName = () => {
+      state.stompClient.subscribe(`/from/call/guess-name/${route.params.roomId}`, res => {
+        const guessNameRes = JSON.parse(res.body)
+        console.log("guessNameRes")
+        console.log(guessNameRes)
+      })
+    }
+
 
     const sendChat = (chat) => {
       if (state.stompClient && state.stompClient.connected && chat) {
@@ -76,7 +96,9 @@ export default {
       }
     }
 
+
     connectSocket()
+
     return { state, route, sendChat }
   }
 }

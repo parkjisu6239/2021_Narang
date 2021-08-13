@@ -85,7 +85,7 @@ export function requestChangeMyPassword({ state }, payload) {
   return $axios.patch(url, body, {headers: headers})
 }
 
-// 게임룸 조회
+// 게임룸 전체 조회
 export function requestReadGameRoomList({ state }, payload) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   let url = '/api/v1/room'
@@ -131,6 +131,7 @@ export function requestUpdateGameRoom({ state }, payload) {
   return $axios.patch(url, body, { headers: headers })
 }
 
+// 단일 게임룸 조회
 export function requestReadSingleGameRoom({ state }, roomId) {
   const headers = {'Authorization': state.accessToken ? `Bearer ${state.accessToken}` : ''}
   const url = `/api/v1/room/${roomId}`

@@ -390,9 +390,7 @@ export default {
           console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
           console.log(result);
         } else {
-          state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
-          state.msg += `
-          `
+          state.msg = `${result.msg}님이 선택되었습니다. \n잠시후 최후반론과 최종투표가 진행됩니다.`
           state.isVoteTime = false
           for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
@@ -402,8 +400,7 @@ export default {
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
-              state.msg += `${playerName} : ${votedCount}표
-              `
+              state.msg += `\n${playerName} : ${votedCount}표`
           }
           // 5초 쉬고 낮 2차로 이동
           state.timer = state.time[4]
@@ -425,8 +422,8 @@ export default {
         }
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
-            console.log('최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.')
-            state.msg = '최다 득표자가 결정되지 않았습니다. 잠시후 밤이 됩니다.'
+            console.log('최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.')
+            state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
             state.msg  += `
             `;
             console.log(state.voteStatus);
@@ -443,11 +440,11 @@ export default {
             }
 
           } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
-            console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.')
-            state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. 잠시후 밤이 됩니다.'
+            console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. \n잠시후 밤이 됩니다.')
+            state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. \n잠시후 밤이 됩니다.'
           } else if (store.state.root.mafiaManager.stage === 'night') { // 밤 -> 낮
-            console.log('아무도 죽지 않았습니다. 잠시후 아침이 됩니다.')
-            state.msg = '아무도 죽지 않았습니다. 잠시후 아침이 됩니다.'
+            console.log('아무도 죽지 않았습니다. \n잠시후 아침이 됩니다.')
+            state.msg = '아무도 죽지 않았습니다. \n잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
           if (store.state.root.mafiaManager.username ===  result.msg) { // 죽은 사람이 나인 경우
@@ -457,11 +454,11 @@ export default {
           }
 
           if (store.state.root.mafiaManager.stage === 'day2') {
-            console.log(`${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`)
-            state.msg = `${result.msg}님이 투표에 의해 죽었습니다. 잠시후 밤이 됩니다.`
+            console.log(`${result.msg}님이 투표에 의해 죽었습니다. \n잠시후 밤이 됩니다.`)
+            state.msg = `${result.msg}님이 투표에 의해 죽었습니다. \n잠시후 밤이 됩니다.`
           } else if (state.mafiaManager.stage === 'night') {
-            console.log(`지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`)
-            state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. 잠시후 아침이 됩니다.`
+            console.log(`지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. \n잠시후 아침이 됩니다.`)
+            state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. \n잠시후 아침이 됩니다.`
           }
         }
 
@@ -495,8 +492,8 @@ export default {
       store.state.root.mafiaManager.stage = "default";
 
       // 메시지 변경
-      console.log(`낮이되었습니다. ${state.time[0]/1000}초간 토의 진행해주세요`)
-      state.msg = `낮이되었습니다. ${state.time[0]/1000}초간 토의 진행해주세요`
+      console.log(`낮이되었습니다. \n${state.time[0]/1000}초간 토의 진행해주세요`)
+      state.msg = `낮이되었습니다. \n${state.time[0]/1000}초간 토의 진행해주세요`
 
       // 토론 후 이동
       setTimeout(() => {
@@ -512,8 +509,8 @@ export default {
       state.isVoteTime = true
 
       // 메시지 변경
-      console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 마피아로 의심되는 사람을 투표해주세요.`)
-      state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. 마피아로 의심되는 사람을 투표해주세요.`
+      console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. \n마피아로 의심되는 사람을 투표해주세요.`)
+      state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. \n마피아로 의심되는 사람을 투표해주세요.`
 
       setTimeout(() => { // 투표하기
         sendVoteSocket();
@@ -529,10 +526,8 @@ export default {
       store.state.root.mafiaManager.stage = "day2";
 
       // 메시지 변경
-      console.log(`${secondVoteUsername}님이 단두대에 올랐습니다.
-        최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
-      state.msg = `${secondVoteUsername}님이 단두대에 올랐습니다.
-        최후 변론(${state.time[2]/1000}초)을 듣고,  ${secondVoteUsername}님을 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
+      console.log(`${secondVoteUsername}님이 단두대에 올랐습니다. \n최후 변론(${state.time[2]/1000}초)을 듣고 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
+      state.msg = `${secondVoteUsername}님이 단두대에 올랐습니다. \n최후 변론(${state.time[2]/1000}초)을 듣고 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
 
       setTimeout(() => { // 투표하기
         sendVoteSocket();
@@ -548,11 +543,11 @@ export default {
 
 
       // 메시지 변경
-      console.log(`밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`)
+      console.log(`밤(${state.time[3]/1000}초)이 되었습니다. \n마피아는 고개를 들어주세요`)
       if ( store.state.root.mafiaManager.myRole === 'Mafia') {
-        state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. 마피아는 고개를 들어주세요`
+        state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. \n마피아는 고개를 들어주세요`
       } else {
-        state.msg = `밤이 되었습니다. 안심하지 마십시오. 마피아는 당신을 지켜보고 있습니다`
+        state.msg = `밤이 되었습니다. 안심하지 마십시오. \n마피아는 당신을 지켜보고 있습니다`
       }
 
       setTimeout(() => { // 투표하기
@@ -572,8 +567,8 @@ export default {
       state.timer = state.time[4]
 
       // 메시지 변경
-      console.log(`잠시후 게임이 시작됩니다. 롤카드를 확인해주세요.`)
-      state.msg = `잠시후 게임이 시작됩니다. 롤카드를 확인해주세요.`
+      console.log(`잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`)
+      state.msg = `잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`
 
       setTimeout(() => {
         goDay();
@@ -589,6 +584,21 @@ export default {
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
       setTimeout(() => {
+
+        // 게임 정보 변경
+        const roomInfo = {
+          ...state.room,
+          isActivate: true
+        }
+
+        store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
         router.push({
           name: 'gameRoom',
           params: {
