@@ -51,7 +51,7 @@ export default {
       state.stompClient.subscribe(chatEndPoint, res => {
         const chat = JSON.parse(res.body)
         console.log(chat)
-        chatList.push(chat)
+        state.chatList.push(chat)
       })
     }
 
@@ -67,7 +67,7 @@ export default {
           gameStart: false,
         }
         console.log('챗 보내는 중')
-        state.stompClient.send(`/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
+        state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 

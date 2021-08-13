@@ -12,7 +12,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/to");
-        registry.enableSimpleBroker("/from/chat", "/from/mafia/start", "/from/mafia/role", "/from/mafia/vote", "/from/mafia/mafias", "/from/mafia/players", "/from/call");
+        registry.enableSimpleBroker("/from/chat",
+                "/from/mafia/start", "/from/mafia/role", "/from/mafia/vote", "/from/mafia/mafias", "/from/mafia/players",
+                "/from/call/checkConnect/", "/from/call/chat/", "/from/call/guess-name/");
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
