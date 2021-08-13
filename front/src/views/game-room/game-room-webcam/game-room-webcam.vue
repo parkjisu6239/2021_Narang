@@ -16,6 +16,7 @@
     </div>
     <button @click="test1">실행</button>
     <button @click="test2">제거</button>
+    <button @click="test3">이미지</button>
   </div>
 
 </template>
@@ -101,12 +102,6 @@ export default {
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false,       	// Whether to mirror your local video or not
-              filter: {
-        type: "GStreamerFilter",
-        options: {
-            command: "gdkpixbufoverlay location=/images/Neurang.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200"
-        }
-    }
 						});
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
@@ -232,7 +227,17 @@ export default {
         console.error(error);
     });
     }
-    return { state, store, updateMainVideoStreamManager, test1, test2}
+
+    const test3 = () => {
+store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=https://cdn.pixabay.com/photo/2013/07/12/14/14/derby-148046_960_720.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
+    .then(() => {
+        console.log("Video rotated!");
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    }
+    return { state, store, updateMainVideoStreamManager, test1, test2, test3}
 
   },
 }
