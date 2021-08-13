@@ -246,8 +246,8 @@ export default {
 						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
 						"offsetXPercent": "0F", // -0.1
 						"offsetYPercent": "0F", //-0.8
-						"widthPercent": "1.5F",
-						"heightPercent": "1.0F"
+						"widthPercent": "0F",
+						"heightPercent": "0F"
 					});
 			}
 		});
