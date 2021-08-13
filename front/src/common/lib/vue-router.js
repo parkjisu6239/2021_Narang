@@ -17,7 +17,6 @@ function makeRoutesFromMenu() {
     path: '/waiting-room',
     name: 'waitingRoom',
     component: waitingRoom,
-    beforeEnter: [],
   },
   {
     path: '/mypage',

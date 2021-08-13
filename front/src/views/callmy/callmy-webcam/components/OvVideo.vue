@@ -1,7 +1,7 @@
 <template>
-  <video ref="myWebCam" class="webcam" autoplay playsinline controls="false"/>
+  <video ref="myWebCam" autoplay/>
 </template>
-<style scoped>
+<style>
   @import url('./OvVideo.css');
 </style>
 <script>
