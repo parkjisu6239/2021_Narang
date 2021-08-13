@@ -244,16 +244,15 @@ export default {
 					"setOverlayedImage",
 					{
 						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
-						"offsetXPercent": "0F", // -0.1
-						"offsetYPercent": "0F", //-0.8
-						"widthPercent": "0F",
-						"heightPercent": "0F"
+						"offsetXPercent": "1.5F", // -0.1
+						"offsetYPercent": "1.5F", //-0.8
+						"widthPercent": "2.0F",
+						"heightPercent": "1.5F"
 					});
 			}
 		});
     }
     return { state, store, updateMainVideoStreamManager, test1, test2, test3}
-
-  },
+  }
 }
 </script>
