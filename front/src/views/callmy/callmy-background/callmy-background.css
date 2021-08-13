@@ -1,0 +1,38 @@
+.callmy-background-container {
+  position: absolute;
+  z-index: -20;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(#b8e41b, #60BB19, #60BB19);
+  animation: background-change 3s cubic-bezier(0.645, 0.045, 0.355, 1) infinite;
+}
+
+@keyframes background-change {
+  0% {
+    background-position: 0% 40%;
+  }
+  33% {
+    background-position: 20% 60%;
+  }
+  66% {
+    background-position: 40% 80%;
+  }
+  100%{
+    background-position: 60% 100%;
+  }
+}
+
+.callmy-background-container div {
+  position: relative;
+  left: -20px;
+  color: rgba(255, 255, 255, 0.2);
+  font-weight: 900;
+  font-size: 300px;
+  width: 200vw;
+  margin: 0px;
+  letter-spacing: -10px;
+  word-spacing: -10px;
+  line-height: 240px;
+  transform: translate(0px, 30px) rotate(10deg);
+}
