@@ -244,8 +244,8 @@ export default {
 					"setOverlayedImage",
 					{
 						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
-						"offsetXPercent": "-0.1F",
-						"offsetYPercent": "-0.8F",
+						"offsetXPercent": "-0.5F", // -0.1
+						"offsetYPercent": "-0.5F", //-0.8
 						"widthPercent": "1.5F",
 						"heightPercent": "1.0F"
 					});
