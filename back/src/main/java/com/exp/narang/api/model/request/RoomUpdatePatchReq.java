@@ -17,4 +17,6 @@ public class RoomUpdatePatchReq {
     int maxPlayer;
     @ApiModelProperty(name="방 비밀번호", example="1234")
     int password;
+    @ApiModelProperty(name="방 활성화", example="true")
+    Boolean isActivate;
 }
