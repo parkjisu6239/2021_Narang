@@ -53,7 +53,6 @@ public class RoomController {
         if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
         UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser();//
-//        User user = userService.getUserByEmail("a@aa.aa");//임시
         Long roomId = roomService.createRoom(roomRegisterPostReq, user.getUserId());
         Room room = roomService.findById(roomId); // 들어가려는 방 정보
         System.out.println("유저 pk : "+user.getUserId() + "유저 이름 : "+user.getUsername());
@@ -116,7 +115,6 @@ public class RoomController {
         if(room.getPassword() == 0 || password == room.getPassword()){ // 비밀번호가 없거나 일치하면 성공
             UserDetails userDetails = (UserDetails)authentication.getDetails();
             User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
-//          User user = userService.getUserByEmail("b@bb.bb");//임시
             roomService.enterRoom(room, user);
             return ResponseEntity.status(200).body(RoomRes.of(200, "Success", room));
         }
@@ -136,14 +134,13 @@ public class RoomController {
         UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
-//        User user = userService.getUserByEmail("a@aa.aa");//임시
         if(user.getUserId() != room.getOwnerId()) return ResponseEntity.status(401).body(UserRes.of(401, "방장이 아니면 설정 바꿀 수 없음.", null));
         roomService.updateRoom(roomUpdatePatchReq, room);//
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
     @DeleteMapping("/{roomId}")
-    @ApiOperation(value = "방 나가기", notes = "일반인들은 그냥 나가지고 방장이 나가면 방이 삭제된다.")
+    @ApiOperation(value = "방 나가기", notes = "일반 사람은 그냥 나가지고, 방장이 나가면 남은 사람 중 한 명이 방장이 된다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "인증 실패"),
@@ -152,11 +149,15 @@ public class RoomController {
     })
     public ResponseEntity<? extends BaseResponseBody> deleteRoom(@ApiIgnore Authentication authentication, @PathVariable String roomId) {
         if(authentication == null) return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
+        log.debug("Leaving room STARTED.");
         UserDetails userDetails = (UserDetails)authentication.getDetails();//
         User user = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
         Room room = roomService.findById(Long.parseLong(roomId));
-//        roomService.deleteRoom(room, userService.getUserByEmail("f@ff.ff"));//임시
+        log.debug("Username who want to leave : " + user.getUsername());
+        log.debug("RoomId that [" + user.getUsername() + "] wants to leave : " + room.getRoomId());
         roomService.deleteRoom(room, user);//
+        log.debug("Username who left : " + user.getUsername());
+        log.debug("Leaving room FINISHED.");
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 

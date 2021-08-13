@@ -39,7 +39,7 @@ export default {
       voteDay1: '',
       voteDay2: false,
       voteNight: '',
-      victim: '',
+      victim: null,
       tOrF: false,
     })
 

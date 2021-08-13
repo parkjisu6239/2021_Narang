@@ -13,4 +13,9 @@ export default {
   },
 }
 </script>
-
+<style scoped>
+.died-user {
+  -webkit-filter: grayscale(100%);
+  filter: #515151;
+}
+</style>

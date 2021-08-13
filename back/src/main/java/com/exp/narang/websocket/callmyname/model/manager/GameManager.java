@@ -1,17 +1,16 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
-import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
-import com.exp.narang.websocket.callmyname.response.SetNameRes;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameManager {
     private final Map<Long, String> nameMap;
-    private final Set<Long> userSet;
-    private final List<Long> winList;
+    private final Set<Long> userIdSet;
+//    private final List<Long> winList;
+    private final Queue<Long> userIdQueue;
     private int currentSetNameTurn;
     private int currentSetterTurn;
     private int currentGuessTurn;
@@ -20,8 +19,9 @@ public class GameManager {
     public GameManager(int playerCnt){
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
-        userSet = new HashSet<>();
-        winList = new ArrayList<>();
+        userIdSet = new HashSet<>();
+//        winList = new ArrayList<>();
+        userIdQueue = new ArrayDeque<>();
         currentSetNameTurn = 1;
         currentSetterTurn = 2;
         currentGuessTurn = 1;
@@ -38,11 +38,16 @@ public class GameManager {
 
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
-     * @param userId
+     * @param userId : 사용자의 userId
      */
     public boolean addPlayer(long userId) {
-        userSet.add(userId);
-        return userSet.size() == playerCnt;
+        userIdSet.add(userId);
+        boolean allConnected = userIdSet.size() == playerCnt;
+        if(allConnected) {
+            userIdQueue.addAll(userIdSet);
+            // TODO : 붙을 사람 정하기
+        }
+        return allConnected;
     }
 
 //    /**
@@ -74,20 +79,20 @@ public class GameManager {
      * @return 답이 맞았는지, nameMap 이 비었는지 여부를 멤버변수로 가진 객체
      */
     public GuessNameRes guessName(NameReq req){
-        currentGuessTurn %= userSet.size();
+        currentGuessTurn %= userIdSet.size();
         boolean isCorrect = nameMap.get(req.getUserId()).equals(req.getName());
         // 맞으면
         if(isCorrect){
             // Map에서 삭제
             nameMap.remove(req.getUserId());
             // 정답자 처리
-            winList.add(req.getUserId());
-            userSet.remove(req.getUserId());
+//            winList.add(req.getUserId());
+            userIdSet.remove(req.getUserId());
         }
         return new GuessNameRes(isCorrect, nameMap.isEmpty());
     }
 
-    public List<Long> getRank(){
-        return winList;
-    }
+//    public List<Long> getRank(){
+//        return winList;
+//    }
 }
