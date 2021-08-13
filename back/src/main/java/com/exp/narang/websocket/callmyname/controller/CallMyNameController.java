@@ -47,9 +47,7 @@ public class CallMyNameController {
     @MessageMapping("/call/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, long userId){
         CheckConnectRes res = ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId);
-        if(res != null) {
-            broadcastAllConnected(roomId, res);
-        }
+        if(res != null) broadcastAllConnected(roomId, res);
     }
 
     /**

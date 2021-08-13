@@ -11,21 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
-    private final Deque<Long> userDeque;
+    private final Deque<Long> userIdDeque;
     // 승리한 플레이어의 userId 리스트
 //    private final List<Long> winList;
     private final int playerCnt;
     private boolean isGameStarted;
-    private boolean allSelected;
-    private int currentUserId1;
-    private int currentUserId2;
 
     public GameManager(int playerCnt){
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
-        userDeque = new ArrayDeque<>();
-//        drawTree = new long[playerCnt];
+        userIdDeque = new ArrayDeque<>();
 //        winList = new ArrayList<>();
     }
 
@@ -38,23 +34,33 @@ public class GameManager {
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
         if(allConnected) {
-
             // 첫 대진표 만들기
-            makeDraw();
+            makeRandomDraw();
             // 이미 게임이 시작되었으면 null 반환
             if (isGameStarted) return null;
             // 게임이 시작되지 않았으면 게임 시작 표시
             isGameStarted = true;
-            return new CheckConnectRes(currentUserId1, currentUserId2);
+            return new CheckConnectRes(userIdDeque.pollFirst(), userIdDeque.pollFirst());
         }
         return null;
     }
 
     /**
-     * 대진표를 만드는 메서드
+     * 랜덤 대진표를 만드는 메서드
      */
-    private void makeDraw(){
-
+    private void makeRandomDraw(){
+        boolean[] selected = new boolean[playerCnt];
+        Long[] userIdArr = (Long[]) userIdSet.toArray();
+        int sCnt = 0;
+        Random r = new Random();
+        while(sCnt < playerCnt){
+            int ri = r.nextInt(playerCnt);
+            if(!selected[ri]){
+                selected[ri] = true;
+                userIdDeque.offer(userIdArr[ri]);
+                sCnt++;
+            }
+        }
     }
 
     /**
@@ -84,6 +90,10 @@ public class GameManager {
             // Map에서 삭제
             nameMap.remove(req.getUserId());
             // 정답자 처리
+            // TODO :
+            //  대결을 위해 이긴 사람은 userDeque 에 넣기
+            //  홀수일 때 n / 2 번째 게임이면 offerFirst
+            //  나머지 경우는 offerLast
 //            winList.add(req.getUserId());
             userIdSet.remove(req.getUserId());
         }
