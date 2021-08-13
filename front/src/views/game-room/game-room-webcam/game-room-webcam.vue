@@ -243,7 +243,7 @@ export default {
 				f.execMethod(
 					"setOverlayedImage",
 					{
-						"uri": "https://cdn.pixabay.com/photo/2017/09/30/09/29/cowboy-hat-2801582_960_720.png",
+						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
 						"offsetXPercent": "-0.1F",
 						"offsetYPercent": "-0.8F",
 						"widthPercent": "1.5F",
