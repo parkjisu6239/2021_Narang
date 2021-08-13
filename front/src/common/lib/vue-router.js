@@ -9,24 +9,25 @@ import Mypage from '@/views/mypage/mypage'
 
 /* navigation guard beforeEnter func */
 const requireMafia = () => (to, from, next) => {
-  if (from.name !== 'gameRoom') {
+  const roomId = to.params.roomId
+  if (from.fullPath !== `/game-room/${roomId}` && history.state.back !== `/game-room/${roomId}`) {
     ElMessage({
       type: 'error',
       message: '접근이 불가능 합니다.'
     })
-    return next(from)
+    return next({name: 'waitingRoom'})
   } else {
     return next()
   }
 }
 
 const requireGameRoom = () => (to, from, next) => {
-  if (from.name !== 'waitingRoom' && from.name !== 'mafia' && from.name !== 'callmy') {
+  if (from.name !== 'waitingRoom' && history.state.back !== '/waiting-room' && from.name !== 'mafia' && from.name !== 'callmy') {
     ElMessage({
       type: 'error',
       message: '접근이 불가능 합니다.'
     })
-    return next(from)
+    return next({name: 'waitingRoom'})
   } else {
     return next()
   }
@@ -83,20 +84,20 @@ router.afterEach((to) => {
   console.log(to)
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
+  console.log('프롬', from, '투', to, history)
   if (to.name !== 'home') {
     if (!isLogedin()) {
       ElMessage({
         type: 'error',
         message: '미로그인 사용자는 접근할 수 없습니다.'
       })
-      return '/'
+      return next({name: 'home'})
     } else {
-      return true
+      return next()
     }
   }
-
-  return true
+  return next()
 })
 
 const isLogedin = () => {
