@@ -229,13 +229,28 @@ export default {
     }
 
     const test3 = () => {
-store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
-    .then(() => {
-        console.log("Video rotated!");
-    })
-    .catch(error => {
-        console.error(error);
-    });
+// store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
+//     .then(() => {
+//         console.log("Video rotated!");
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
+
+    store.state.root.publisher.stream.applyFilter('FaceOverlayFilter', {})
+		.then(f => {
+			if (f.type === 'FaceOverlayFilter') {
+				f.execMethod(
+					"setOverlayedImage",
+					{
+						"uri": "https://cdn.pixabay.com/photo/2017/09/30/09/29/cowboy-hat-2801582_960_720.png",
+						"offsetXPercent": "-0.1F",
+						"offsetYPercent": "-0.8F",
+						"widthPercent": "1.5F",
+						"heightPercent": "1.0F"
+					});
+			}
+		});
     }
     return { state, store, updateMainVideoStreamManager, test1, test2, test3}
 
