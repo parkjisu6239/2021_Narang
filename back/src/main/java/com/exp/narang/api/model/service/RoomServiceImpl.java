@@ -54,6 +54,7 @@ public class RoomServiceImpl implements RoomService {
         room.setGame(roomUpdatePatchReq.getGame());
         room.setMaxPlayer(roomUpdatePatchReq.getMaxPlayer());
         room.setPassword(roomUpdatePatchReq.getPassword());
+        room.setIsActivate(roomUpdatePatchReq.getIsActivate());
         roomRepository.save(room);
     }
 
