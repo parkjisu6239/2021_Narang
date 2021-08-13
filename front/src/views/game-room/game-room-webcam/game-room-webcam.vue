@@ -221,6 +221,8 @@ export default {
         console.error(error);
     });
 
+    }
+
     const test2 = () => {
       store.state.root.publisher.stream.removeFilter()
     .then(() => {
@@ -229,7 +231,6 @@ export default {
     .catch(error => {
         console.error(error);
     });
-    }
     }
     return { state, store, updateMainVideoStreamManager, test1, test2}
 
