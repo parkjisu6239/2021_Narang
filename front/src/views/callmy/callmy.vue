@@ -1,6 +1,7 @@
 <template>
   <div class="callmy-container">
-    <CallMyWebCam/>
+    <CallMyWebCam
+      :roomId="route.params.roomId"/>
     <div class="callmy-right-side">
       <CallMyGameBoard/>
       <CallMyChat

@@ -32,7 +32,7 @@ export default {
 	},
   props: {
     roomId: {
-      type: Number,
+      type: String,
     },
   },
   setup(props, { emit }) {
