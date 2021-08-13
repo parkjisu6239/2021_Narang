@@ -14,6 +14,8 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
+    <button @click="test1">실행</button>
+    <button @click="test2">제거</button>
   </div>
 
 </template>
@@ -99,6 +101,12 @@ export default {
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
 							mirror: false,       	// Whether to mirror your local video or not
+              filter: {
+        type: "GStreamerFilter",
+        options: {
+            command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200"
+        }
+    }
 						});
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
@@ -168,7 +176,18 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {},
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+            "type": "WEBRTC",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+
+          },
           {
 						auth: {
 							username: 'OPENVIDUAPP',
@@ -193,8 +212,26 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
+    const test1 = () => {
+      store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videoflip method=vertical-flip" })
+    .then(() => {
+        console.log("Video rotated!");
+    })
+    .catch(error => {
+        console.error(error);
+    });
 
-    return { state, store, updateMainVideoStreamManager}
+    const test2 = () => {
+      store.state.root.publisher.stream.removeFilter()
+    .then(() => {
+        console.log("Filter removed");
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    }
+    }
+    return { state, store, updateMainVideoStreamManager, test1, test2}
 
   },
 }
