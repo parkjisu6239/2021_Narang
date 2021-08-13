@@ -30,7 +30,6 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
-
     const state = reactive({
       stompClient: null,
       chatList: [],
@@ -69,6 +68,16 @@ export default {
         console.log('챗 보내는 중')
         state.stompClient.send(`/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
+    }
+
+    const isAllConnectedSocket = () => {
+      const chatEndPoint = `/from/call/checkConnect/${route.params.roomId}`
+      state.stompClient.subscribe(chatEndPoint, res => {
+        console.log(res)
+        const chat = JSON.parse(res.body)
+        console.log(chat)
+        chatList.push(chat)
+      })
     }
 
     connectSocket()
