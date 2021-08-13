@@ -13,6 +13,7 @@
         @sendChat="sendChat"/>
     </div>
   </div>
+  <CallmyBackground/>
 </template>
 <style>
   @import url('./callmy.css');
@@ -23,6 +24,8 @@ import SockJS from 'sockjs-client'
 import CallMyWebCam from './callmy-webcam/callmy-webcam.vue'
 import CallMyChat from './callmy-chat/callmy-chat.vue'
 import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
+import CallmyBackground from './callmy-background/callmy-background.vue'
+
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -32,7 +35,8 @@ export default {
   components: {
     CallMyWebCam,
     CallMyChat,
-    CallMyGameBoard
+    CallMyGameBoard,
+    CallmyBackground
   },
   setup(props, { emit }) {
     const route = useRoute()
