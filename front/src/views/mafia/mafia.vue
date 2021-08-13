@@ -321,7 +321,7 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
-        console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
+        console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
         console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
           state.voteStatus = result.voteStatus;
@@ -387,7 +387,7 @@ export default {
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
           console.log('투표 진행중! 좀만 기달')
-          console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ1");
+          console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
           console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. 잠시후 최후반론과 최종투표가 진행됩니다.`
@@ -396,7 +396,6 @@ export default {
           state.isVoteTime = false
           for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
-
               let playerName = store.state.root.mafiaManager.players[i]; // username
               let votedCount = state.voteStatus[playerName];
               console.log("저쩌라구~~~")
@@ -417,6 +416,7 @@ export default {
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
           state.missionProgress.innerHTML = "";
           state.missionMessage.innerHTML = "";
+          console.log("미션 수행 상태 지움");
           sendMafias();
         }
 
