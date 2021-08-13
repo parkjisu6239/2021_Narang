@@ -104,7 +104,7 @@ export default {
               filter: {
         type: "GStreamerFilter",
         options: {
-            command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200"
+            command: "gdkpixbufoverlay location=/images/Neurang.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200"
         }
     }
 						});
