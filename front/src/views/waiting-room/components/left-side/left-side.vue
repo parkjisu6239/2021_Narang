@@ -11,12 +11,12 @@
         <friend />
       </li>
     </ul>
-    <el-row class="btn-group">
+    <div class="btn-group">
       <el-button type="primary" icon="el-icon-info" circle></el-button>
       <el-button type="success" icon="el-icon-s-tools" circle></el-button>
       <el-button type="info" icon="el-icon-message" circle></el-button>
       <el-button type="warning" icon="el-icon-star-off" circle></el-button>
-    </el-row>
+    </div>
   </div>
 </template>
 
@@ -51,7 +51,7 @@ export default {
     const setMyInfo = function () {
       state.email = localStorage.getItem('email')
       state.username = localStorage.getItem('username')
-      state.profileImageURL = `https://localhost:8080${localStorage.getItem('profileImageURL')}`
+      state.profileImageURL = `https://0.0.0.0:8080${localStorage.getItem('profileImageURL')}`
     }
 
     setMyInfo()
