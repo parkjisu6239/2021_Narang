@@ -94,8 +94,24 @@ export default {
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
 
         // 게임 시작 소켓에 메시지 전송 -> 백엔드에서 게임 매니저 생성
+        sendGameStart()
+
         if (state.room.game) {
-          sendGameStart()
+          const roomInfo = {
+              ...state.room,
+              isActivate: false
+            }
+          store.dispatch('root/requestUpdateGameRoom', roomInfo)
+          .then(res => {
+            console.log('방정보가 정상적으로 변경되었습니다. 게임중: 입장 불가')
+
+          })
+          .catch(err => {
+            ElMessage({
+              type: 'error',
+              message: '게임 시작에 문제가 발생했습니다.'
+            })
+          })
         }
       }
     }
@@ -171,7 +187,7 @@ export default {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
+            profileImageURL = 'https://localhost:8080/' + thumbnailURL
           }
         })
 
@@ -193,8 +209,10 @@ export default {
       if (state.room.game === 'mafia') {
         state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
         console.log('마피아 게임 시작 send')
-      } else {
+      } else if (state.room.game === 'callmy') {
         console.log('콜마이 게임 시작')
+      } else {
+        console.log('게임 미선택')
       }
     }
 
