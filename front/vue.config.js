@@ -11,7 +11,7 @@ module.exports = {
       '/narang':{
         target: 'https://0.0.0.0:8080/'
       },
-      '/call': {
+      'static/models': {
         target: 'https://0.0.0.0:8080/'
       }
     },

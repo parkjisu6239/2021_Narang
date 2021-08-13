@@ -190,8 +190,12 @@ export default {
 
     // [Func|socket] 게임 시작 send
     const sendGameStart = () => {
-      state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
-      console.log('마피아 게임 시작 send')
+      if (state.room.game === 'mafia') {
+        state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
+        console.log('마피아 게임 시작 send')
+      } else {
+        console.log('콜마이 게임 시작')
+      }
     }
 
     // [Func|req] 방 정보 가져오기

@@ -35,8 +35,8 @@ export default {
   },
 
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore()
 
     const state = reactive({
@@ -188,5 +188,5 @@ export default {
 }
 </script>
 <style scoped>
-  @import url('game-room-webcam.css');
+  @import url('./game-room-webcam.css');
 </style>

@@ -1,11 +1,13 @@
 <template>
   <div class="callmy-container">
-    <callMyWebCam/>
-    <callMyChat
-      :chatList="state.chatList"
-      :roomId="route.params.roomId"
-      @sendChat="sendChat"
-      />
+    <CallMyWebCam/>
+    <div class="callmy-right-side">
+      <CallMyGameBoard/>
+      <CallMyChat
+        :chatList="state.chatList"
+        :roomId="route.params.roomId"
+        @sendChat="sendChat"/>
+    </div>
   </div>
 </template>
 <style>
@@ -14,8 +16,9 @@
 <script>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
-import callMyWebCam from './callmy-webcam/callmy-webcam.vue'
-import callMyChat from './callmy-chat/callmy-chat.vue'
+import CallMyWebCam from './callmy-webcam/callmy-webcam.vue'
+import CallMyChat from './callmy-chat/callmy-chat.vue'
+import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive } from '@vue/reactivity'
@@ -23,8 +26,9 @@ import { reactive } from '@vue/reactivity'
 export default {
   name: 'callMy',
   components: {
-    callMyWebCam,
-    callMyChat,
+    CallMyWebCam,
+    CallMyChat,
+    CallMyGameBoard
   },
   setup(props, { emit }) {
     const route = useRoute()
@@ -50,8 +54,7 @@ export default {
       const chatEndPoint = `/from/call/chat/${route.params.roomId}`
       state.stompClient.subscribe(chatEndPoint, res => {
         const chat = JSON.parse(res.body)
-        console.log(chat)
-        state.chatList.push(chat)
+        chatList.push(chat)
       })
     }
 
