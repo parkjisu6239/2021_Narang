@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
-    private final List<Long> winList;
+//    private final List<Long> winList;
     private final Queue<Long> userIdQueue;
     private int currentSetNameTurn;
     private int currentSetterTurn;
@@ -20,7 +20,7 @@ public class GameManager {
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
-        winList = new ArrayList<>();
+//        winList = new ArrayList<>();
         userIdQueue = new ArrayDeque<>();
         currentSetNameTurn = 1;
         currentSetterTurn = 2;
@@ -38,7 +38,7 @@ public class GameManager {
 
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
-     * @param userId
+     * @param userId : 사용자의 userId
      */
     public boolean addPlayer(long userId) {
         userIdSet.add(userId);
@@ -86,13 +86,13 @@ public class GameManager {
             // Map에서 삭제
             nameMap.remove(req.getUserId());
             // 정답자 처리
-            winList.add(req.getUserId());
+//            winList.add(req.getUserId());
             userIdSet.remove(req.getUserId());
         }
         return new GuessNameRes(isCorrect, nameMap.isEmpty());
     }
 
-    public List<Long> getRank(){
-        return winList;
-    }
+//    public List<Long> getRank(){
+//        return winList;
+//    }
 }

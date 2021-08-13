@@ -10,9 +10,12 @@ module.exports = {
       },
       '/narang':{
         target: 'https://0.0.0.0:8080/'
+<<<<<<< HEAD
+=======
       },
       '/call': {
         target: 'https://0.0.0.0:8080/'
+>>>>>>> d502a27633c4c49ed2754a0c6d7feac5110795e7
       }
     },
     historyApiFallback: true,
