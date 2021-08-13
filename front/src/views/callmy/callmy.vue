@@ -45,17 +45,21 @@ export default {
       let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
-          connectChatSocket() // 채팅 소켓
+          SubcribeChatSocket() // 채팅 소켓
         }
       )
     }
 
-    const connectChatSocket = () => {
+    const SubcribeChatSocket = () => {
       const chatEndPoint = `/from/call/chat/${route.params.roomId}`
       state.stompClient.subscribe(chatEndPoint, res => {
         const chat = JSON.parse(res.body)
         state.chatList.push(chat)
       })
+    }
+
+    const SubcribeStartSocket = () => {
+
     }
 
     const sendChat = (chat) => {

@@ -94,7 +94,6 @@ export default {
                 insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
                 mirror: true       	// Whether to mirror your local video or not
               })
-
               state.mainStreamManager = publisher
               state.publisher = publisher
               store.state.root.publisher = publisher
