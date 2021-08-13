@@ -1,7 +1,10 @@
 <template>
   <div class="callmy-container">
     <CallMyWebCam
-      :roomId="route.params.roomId"/>
+      @joinCallMyRoom="joinCallMyRoom"
+      :socketConnected="state.socketConnected"
+      :roomId="route.params.roomId"
+      :gameStart="state.isAllConnected"/>
     <div class="callmy-right-side">
       <CallMyGameBoard/>
       <CallMyChat
@@ -22,7 +25,7 @@ import CallMyChat from './callmy-chat/callmy-chat.vue'
 import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { reactive } from '@vue/reactivity'
+import { reactive, computed } from 'vue'
 
 export default {
   name: 'callMy',
@@ -35,10 +38,15 @@ export default {
     const route = useRoute()
     const router = useRouter()
     const store = useStore()
+
+
     const state = reactive({
       stompClient: null,
       chatList: [],
       isAllConnected: false,
+      userId: computed(() => store.state.root.userId),
+      draw: computed(() => store.state.root.draw),
+      socketConnected: false
     })
 
 
@@ -46,6 +54,7 @@ export default {
       let socket = new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
       state.stompClient.connect({}, () => {
+          state.socketConnected = true // webcam으로 connected 됐다는 props를 내림.
           subscribeChat() // 채팅 소켓
           subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
@@ -64,10 +73,7 @@ export default {
 
     const subscribeCheckConnect = () => {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
-        console.log(res)
-        const data = JSON.parse(res.body)
-        console.log(res.body)
-        console.log(data)
+        state.draw =  JSON.parse(res.body)
         state.isAllConnected = true
       })
     }
@@ -82,24 +88,33 @@ export default {
     }
 
 
-    const sendChat = (chat) => {
-      if (state.stompClient && state.stompClient.connected && chat) {
-        const message = {
-          userName: store.state.root.username,
-          content: chat,
-          roomId: route.params.roomId,
-          profileImageURL: '',
-          roomInfoChange: false,
-          gameStart: false,
-        }
+    const sendChat = (message) => {
+      if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
 
+    const joinCallMyRoom = () => {
+      state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
+    }
+
+
+    const requestMyInfo = () => {
+      store.dispatch('root/requestReadMyInfo')
+        .then(res => {
+          console.log(res, '내 정보')
+          store.commit('root/setUserInfo', res.data.user)
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+    requestMyInfo()
     connectSocket()
 
-    return { state, route, sendChat }
+    return { state, route, sendChat, joinCallMyRoom }
   }
 }
 </script>

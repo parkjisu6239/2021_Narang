@@ -24,7 +24,7 @@
 <script>
 import $axios from 'axios'
 import { computed, reactive, onBeforeUnmount } from 'vue'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
@@ -39,8 +39,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore();
 
     const state = reactive({
@@ -176,7 +176,6 @@ export default {
 						},
 					})
 					.then(response => {
-            console.log("tqtqtqtqtq")
             console.log(response.data)
             return response.data}
             )
@@ -195,7 +194,6 @@ export default {
     })
 
     return { state, store, updateMainVideoStreamManager}
-
-  },
+  }
 }
 </script>

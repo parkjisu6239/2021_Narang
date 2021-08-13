@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-container" style="border-radius: 0px 10px 10px 0px">
+  <div class="chat-container" style="border-radius: 0px 0px 0px 0px">
 
     <span class="chat-header" style="border-radius: 20px">Live Chat</span>
     <span class="close-chat"><i class="el-icon-close"></i></span>
@@ -70,7 +70,18 @@ export default {
     })
 
     const sendChat = () => {
-      emit('sendChat', state.myChat)
+      if (state.myChat) {
+        const message = {
+          userName: store.state.root.username,
+          content: state.myChat,
+          roomId: props.roomId,
+          profileImageURL: '',
+          roomInfoChange: false,
+          gameStart: false,
+        }
+        emit('sendChat', message)
+      }
+
       state.myChat = ''
     }
 
