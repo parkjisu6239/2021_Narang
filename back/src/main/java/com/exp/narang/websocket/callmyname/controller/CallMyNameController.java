@@ -1,7 +1,9 @@
 package com.exp.narang.websocket.callmyname.controller;
 
+import com.exp.narang.websocket.callmyname.model.CallMyNameChatModel;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
+import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import com.exp.narang.websocket.chat.model.ChatModel;
@@ -44,17 +46,20 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, long userId){
-        if(ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId))
-            broadcastAllConnected(roomId);
+        CheckConnectRes res = ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId);
+        if(res != null) {
+            broadcastAllConnected(roomId, res);
+        }
     }
 
     /**
      * 모든 사용자가 들어왔는지 메세지를 전달하는 메서드
      * @param roomId
      */
-    public void broadcastAllConnected(long roomId){
+    public void broadcastAllConnected(long roomId, CheckConnectRes res){
         ManagerHolder.gameManagerMap.get(roomId);
-        template.convertAndSend("/from/call/checkConnect/" + roomId, true);
+        // 디폴트 이름과 이번에 게임할 userId 보내기
+        template.convertAndSend("/from/call/checkConnect/" + roomId, res);
     }
 
     /**
@@ -64,7 +69,7 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/chat/{roomId}")
     @SendTo("/from/call/chat/{roomId}")
-    public ChatModel sendMessage(ChatModel chatModel){
+    public CallMyNameChatModel sendMessage(CallMyNameChatModel chatModel){
         return chatModel;
     }
 
@@ -103,10 +108,10 @@ public class CallMyNameController {
     @MessageMapping("/call/guess-name/{roomId}")
     @SendTo("/from/call/guess-name/{roomId}")
     public GuessNameRes guessName(@DestinationVariable long roomId, NameReq req){
-        GuessNameRes guessNameRes = ManagerHolder.gameManagerMap.get(roomId).guessName(req);
+        GuessNameRes res = ManagerHolder.gameManagerMap.get(roomId).guessName(req);
         // 게임 끝나면 Map에서 Manager 삭제
-        if(guessNameRes.isGameEnd()) ManagerHolder.gameManagerMap.remove(roomId);
-        return guessNameRes;
+        if(res.isGameEnd()) ManagerHolder.gameManagerMap.remove(roomId);
+        return res;
     }
 
 //    /**
