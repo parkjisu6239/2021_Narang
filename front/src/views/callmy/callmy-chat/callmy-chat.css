@@ -18,10 +18,10 @@
 
 .chat-area {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 35px;
   padding: 10px;
-  height: calc(100% - 125px);
   overflow: auto;
+  min-height: 250px;
+  max-height: 390px;
 }
 
 .chat-header {
