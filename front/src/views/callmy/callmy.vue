@@ -70,7 +70,7 @@ export default {
           gameStart: false,
         }
         console.log('챗 보내는 중')
-        state.stompClient.send(`to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
+        state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
