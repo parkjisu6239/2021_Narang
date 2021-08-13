@@ -103,6 +103,7 @@ export default {
             }
           store.dispatch('root/requestUpdateGameRoom', roomInfo)
           .then(res => {
+            console.log(res)
             console.log('방정보가 정상적으로 변경되었습니다. 게임중: 입장 불가')
 
           })
