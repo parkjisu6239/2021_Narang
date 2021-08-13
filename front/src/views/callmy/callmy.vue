@@ -1,12 +1,12 @@
 <template>
   <div class="callmy-container">
     <CallMyWebCam
-      :roomId="Number(route.params.roomId)"/>
+      :roomId="route.params.roomId"/>
     <div class="callmy-right-side">
       <CallMyGameBoard/>
       <CallMyChat
         :chatList="state.chatList"
-        :roomId="Number(route.params.roomId)"
+        :roomId="route.params.roomId"
         @sendChat="sendChat"/>
     </div>
   </div>
