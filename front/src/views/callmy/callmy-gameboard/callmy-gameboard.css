@@ -1,3 +1,5 @@
 .game-board-container {
   height:40%;
+  max-width: 350px;
+  min-width: 280px;
 }
