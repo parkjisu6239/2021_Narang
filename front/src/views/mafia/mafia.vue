@@ -391,8 +391,6 @@ export default {
           console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. \n잠시후 최후반론과 최종투표가 진행됩니다.`
-          state.msg += `
-          `
           state.isVoteTime = false
           for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
@@ -402,8 +400,7 @@ export default {
               console.log(state.voteStatus)
               console.log("어쩌라구~~~")
               console.log(votedCount)
-              state.msg += `${playerName} : ${votedCount}표
-              `
+              state.msg += `\n${playerName} : ${votedCount}표`
           }
           // 5초 쉬고 낮 2차로 이동
           state.timer = state.time[4]
