@@ -36,8 +36,8 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore()
 
     const state = reactive({
@@ -60,7 +60,7 @@ export default {
 			// On every new Stream received...
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
-        console.log(subscriber, '구독자 생성')
+        console.log(subscriber, '---------------구독자 생성---------------')
 				state.subscribers.push(subscriber)
 			})
 
@@ -98,7 +98,6 @@ export default {
               state.mainStreamManager = publisher
               state.publisher = publisher
               store.state.root.publisher = publisher
-              console.log(publisher, '여기다 퍼블리셔')
               state.session.publish(publisher)
             })
             .catch(error => {
