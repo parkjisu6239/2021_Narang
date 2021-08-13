@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-group">
+  <div class="home-btn-group">
     <el-button type="primary" round @click="clickGameStart">Game Start</el-button>
     <el-button type="success" round @click="clickMyPage">My page</el-button>
     <el-button type="danger" round @click="clickLogOut">Logout</el-button>
@@ -50,9 +50,13 @@ export default {
 </script>
 
 <style scoped>
-.btn-group {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
+.home-btn-group {
+  display: flex;
+  flex-direction: column;
   row-gap: 20px;
+}
+
+.home-btn-group > * {
+  margin: 0px;
 }
 </style>
