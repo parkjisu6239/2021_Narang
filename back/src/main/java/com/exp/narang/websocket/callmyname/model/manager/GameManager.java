@@ -1,20 +1,24 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
 import com.exp.narang.websocket.callmyname.request.NameReq;
+import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
+import com.exp.narang.websocket.callmyname.response.SetNameRes2;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GameManager {
+    private SetNameRes setNameRes;
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
     private final Deque<Long> userIdDeque;
     // 승리한 플레이어의 userId 리스트
 //    private final List<Long> winList;
     private final int playerCnt;
+    private int voteCompleteCnt;
     private boolean isGameStarted;
 
     public GameManager(int playerCnt){
@@ -22,6 +26,7 @@ public class GameManager {
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
         userIdDeque = new ArrayDeque<>();
+        setNameRes = new SetNameRes();
 //        winList = new ArrayList<>();
     }
 
@@ -65,17 +70,19 @@ public class GameManager {
 
     /**
      * 정한 이름을 저장하는 메서드
-     * @param req : userId와 정해진 이름을 멤버변수로 가진 객체
-     * @return 다음으로 이름을 정할 사용자의 id, 이름을 정해주는 사용자의 id를 가진 SetNameRes 객체
+     * @param req : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
+     * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
-    public SetNameRes setName(NameReq req){
-        nameMap.put(req.getUserId(), req.getName());
-//        if(currentSetNameTurn < userSet.size())
-//            return SetNameRes.Companion.of(
-//                    userSet.get(currentSetNameTurn++).getUserId(),
-//                    userSet.get(currentSetterTurn++).getUserId());
-//        else
-            return SetNameRes.Companion.getEndInstance();
+    public SetNameRes setName(SetNameReq req){
+        if(!req.isFinished()) return setNameRes.handleVote(req, playerCnt);
+        else {
+            setNameRes.determineResult(req, ++voteCompleteCnt, playerCnt);
+            if(req.isFinished()) {
+                nameMap.put(req.getTargetId(), setNameRes.getResult());
+                voteCompleteCnt = 0;
+            }
+            return setNameRes;
+        }
     }
 
     /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기

@@ -23,34 +23,6 @@ public class GameResult {
 
     public GameResult() { }
 
-    public boolean isCompleteVote() {
-        return completeVote;
-    }
-
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(boolean finished) {
-        isFinished = finished;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public String getRoleString() {
-        return roleString;
-    }
-
-    public void setRoleString(String roleString) {
-        this.roleString = roleString;
-    }
-
     public GameResult(GameResultType type) {
         this.isFinished = true;
         this.completeVote = true;
@@ -79,6 +51,10 @@ public class GameResult {
                 this.voteStatus.put(username, count);
             }
         }
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public static GameResult votingStatus() {
