@@ -27,7 +27,7 @@
       <el-input v-model="state.form.checkPass" autocomplete="off" show-password></el-input>
     </el-form-item>
   </el-form>
-  <el-button type="primary" @click="clickSignup">회원가입</el-button>
+  <div class="signup-btn" @click="clickSignup">회원가입</div>
 </template>
 
 <script>
@@ -172,6 +172,21 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+.signup-btn {
+  background: linear-gradient(90deg, rgba(114, 65, 254, 0.8) 0%, #FF5BF8 100%);
+  text-align: center;
+  border-radius: 40px;
+  width: 90%;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
+.signup-btn:hover {
+  background: linear-gradient(90deg, rgba(99, 57, 216, 0.8) 0%, #d44bce 100%);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
 </style>

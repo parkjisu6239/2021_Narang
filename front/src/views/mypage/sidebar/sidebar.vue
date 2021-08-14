@@ -19,7 +19,7 @@
   </div>
 </template>
 <style>
- @import url('./sidebar.css');
+  @import url('./sidebar.css');
 </style>
 <script>
 import SidebarMenu from './sidebar-menu.vue'
