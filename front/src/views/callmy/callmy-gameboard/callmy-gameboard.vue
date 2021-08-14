@@ -1,18 +1,16 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div class="callmy-board-title">pick my name!</div>
+      <div class="callmy-board-title" @click="sendVoteFinish">pick my name!</div>
     </div>
     <div class="callmy-board-vote-container">
       <div class="callmy-board-vote">
-        {{nicknameList}}
         <div
-          v-for="nickname in nicknameList" :key="nickname"
+          v-for="nickname in Object.keys(nicknameList)" :key="nickname"
           :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === nickname}"
           @click="clickNicknameSelect(nickname)">
-          {{ nickname }}
-          <!-- <div class="callmy-nickname">제시어asdasdasdasadas</div>
-          <div class="callmy-nickname-vote-count"><span>5</span></div> -->
+          <div class="callmy-nickname">{{ nickname }}</div>
+          <div class="callmy-nickname-vote-count"><span>{{nicknameList[nickname]}}</span></div>
         </div>
       </div>
     </div>
@@ -44,7 +42,7 @@ export default {
   name: 'CallMyGameBoard',
 
   props: {
-    nicknameList: Array,
+    nicknameList: Object,
   },
 
   setup(props, { emit }) {
@@ -74,9 +72,9 @@ export default {
 
         emit('sendVote', message)
 
-        // console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
+        console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
-        // state.nicknameSendchance = false
+        state.nicknameSendchance = false
       }
     }
 
@@ -115,7 +113,19 @@ export default {
       state.selectedNickname = nickname
     }
 
-    return { state, clickNicknameBtn, clickNicknameSelect }
+    const sendVoteFinish = () => {
+      const message = {
+          userId: state.userId,
+          targetId: state.userId,
+          content: '',
+          vote: 0,
+          isFinished: true,
+        }
+
+        emit('sendVote', message)
+    }
+
+    return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
 }
 </script>

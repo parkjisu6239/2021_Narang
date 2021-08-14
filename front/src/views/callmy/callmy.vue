@@ -55,7 +55,7 @@ export default {
       userId: computed(() => store.state.root.userId),
       draw: computed(() => store.state.root.draw),
       socketConnected: false,
-      nicknameList: [],
+      nicknameList: {},
     })
 
 
@@ -100,6 +100,9 @@ export default {
     const subscribeSetName = () => {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
+        if (setNamRes.isFinished) {
+          console.log(`제시어는 ${setNamRes.result}입니다.`)
+        }
         state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
         console.log(setNamRes)
