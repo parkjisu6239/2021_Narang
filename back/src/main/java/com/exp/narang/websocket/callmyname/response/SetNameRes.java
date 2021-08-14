@@ -49,6 +49,9 @@ public class SetNameRes {
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes determineResult(SetNameReq req, int voteCompleteCnt, int playerCnt){
+        System.out.println("디털마인 들어옴");
+        System.out.println("보트ㅡ카운트:" + voteCompleteCnt);
+        System.out.println("플레이어 카운트:" + playerCnt);
         if(voteCompleteCnt == playerCnt - 2){ // 모든 사람 투표 완료
             String result = "";
             int max = -1;
