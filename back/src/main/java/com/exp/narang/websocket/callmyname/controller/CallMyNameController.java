@@ -3,10 +3,10 @@ package com.exp.narang.websocket.callmyname.controller;
 import com.exp.narang.websocket.callmyname.model.CallMyNameChatModel;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
+import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
-import com.exp.narang.websocket.chat.model.ChatModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -15,7 +15,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -71,19 +70,19 @@ public class CallMyNameController {
         return chatModel;
     }
 
-//    /**
-//     * 정해진 이름을 저장하는 메서드
-//     * TODO : 2명이서 하도록 변경. 순서대로 되는 로직인지 확인하기
-//     * @param roomId : path로 받는 roomId (PK)
-//     * @param req : userId와 정해진 이름을 멤버변수로 가진 객체
-//     * @return 다음으로 이름을 정할 사용자의 userId, 이름 다 정하면 -1
-//     */
-//    @MessageMapping("/call/set-name/{roomId}")
-//    @SendTo("/from/call/set-name/{roomId}")
-//    public SetNameRes setName(@DestinationVariable long roomId, NameReq req){
-//        return ManagerHolder.gameManagerMap.get(roomId).setName(req);
-//    }
-//
+    /**
+     * 이름 투표하는 메서드
+     * TODO : 2명을 제외한 사람들이 투표. 동점이면 첫 번째 거 채택
+     * @param roomId : path로 받는 roomId (PK)
+     * @param setNameReq : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
+     * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
+     */
+    @MessageMapping("/call/set-name/{roomId}")
+    @SendTo("/from/call/set-name/{roomId}")
+    public SetNameRes setName(@DestinationVariable long roomId, SetNameReq setNameReq){
+        return ManagerHolder.gameManagerMap.get(roomId).setName(setNameReq);
+    }
+
 //    /**
 //     * 다음 질문 순서 userId를 반환하는 메서드
 //     * TODO : 2명이서 하도록 변경. 순서대로 되는 로직인지 확인하기
