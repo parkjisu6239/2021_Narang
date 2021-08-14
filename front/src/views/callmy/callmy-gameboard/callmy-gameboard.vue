@@ -5,6 +5,7 @@
     </div>
     <div class="callmy-board-vote-container">
       <div class="callmy-board-vote">
+        {{nicknameList}}
         <div
           v-for="nickname in nicknameList" :key="nickname"
           :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === nickname}"
@@ -65,7 +66,7 @@ export default {
 
         const message = {
           userId: state.userId,
-          targetId: 46, // 테스트 용
+          targetId: 45, // 테스트 용
           content: state.inputNickname,
           vote: 0,
           isFinished: false,
@@ -73,9 +74,9 @@ export default {
 
         emit('sendVote', message)
 
-        console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
+        // console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
-        state.nicknameSendchance = false
+        // state.nicknameSendchance = false
       }
     }
 
@@ -84,7 +85,7 @@ export default {
         console.log(`${nickname} 처음 투표 함`)
         const message = {
           userId: state.userId,
-          targetId: 46, // 테스트 용
+          targetId: 45, // 테스트 용
           content: nickname,
           vote: 1,
           isFinished: false,
@@ -95,7 +96,7 @@ export default {
 
         const messageRemoveVote = {
           userId: state.userId,
-          targetId: 46, // 테스트 용
+          targetId: 45, // 테스트 용
           content: state.selectedNickname, // 기존에 선택했던 것
           vote: -1, // 취소
           isFinished: false,
@@ -104,7 +105,7 @@ export default {
 
         const messageAddVote = {
           userId: state.userId,
-          targetId: 46, // 테스트 용
+          targetId: 45, // 테스트 용
           content: nickname, // 새로 선택한 것
           vote: 1, // 추가
           isFinished: false,

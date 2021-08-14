@@ -100,7 +100,7 @@ export default {
     const subscribeSetName = () => {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
-        state.nicknameList = setNamRes
+        state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
         console.log(setNamRes)
       })
