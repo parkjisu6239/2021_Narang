@@ -1,15 +1,37 @@
 .callmy-container {
   display: grid;
-  grid-template-columns: 5fr 1fr;
-  grid-template-rows: 1fr;
+  grid-template-columns: 4fr 1fr;
   margin: 40px;
   height: 90vh;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  min-width: 1070px;
 }
 
+.callmy-left-side {
+  min-width: 400px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 15px 0px 0px 15px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr 3fr;
+  gap: 20px;
+  place-items: center;
+}
+
+
 .callmy-right-side {
-  height: 100%;
+  display: grid;
+  grid-template-rows: 3fr 4fr;
+  gap: 10px;
+  min-width: 220px;
+  padding: 20px;
+  background: rgba(255, 255, 255);
+  border-radius: 0px 15px 15px 0px;
+}
+
+.callmy-right-side > * {
+  border-radius: 10px;
+  background-color: rgba(102, 102, 102, 0.13);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
 }

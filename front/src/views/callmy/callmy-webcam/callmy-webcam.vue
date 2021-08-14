@@ -1,20 +1,30 @@
 <template>
-  <div
-    :class="{
-      'webcam-nonstart': !gameStart,
-      'webcam-container': true,
-      'under-two': state.subscribers.length >= 1,
-      'under-four': state.subscribers.length >= 2,
-      'under-nine': state.subscribers.length >= 4,
-    }">
-    <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-    <UserVideo
-      v-for="sub in state.subscribers"
-      :key="sub.stream.connection.connectionId"
-      :stream-manager="sub"
-      @click="updateMainVideoStreamManager(sub)"/>
+  <div class="callmy-left-top-container">
+    <div
+      :class="{
+        'webcam-nonstart': !gameStart,
+        'callmy-all-video-list': true}">
+      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <UserVideo
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
+    </div>
   </div>
-  <div v-if="gameStart" class="game-not-start"></div>
+  <div class="callmy-left-bottom-container">
+    <div class="callmy-now-play-video-list">
+      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+
+      <!-- palyer리스트가 있을 경우 아래처럼 하면 밑에 대결할 사람만 나옴, 지금은 없어서 주석 -->
+      <!-- <UserVideo v-if="player.includes(state.publisher.stream.connection.clientData)" :stream-manager="state.publisher"/>
+      <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
+        <UserVideo v-if="player.includes(sub.stream.connection.clientData)" :stream-manager="sub"/>
+      </div> -->
+      <div v-if="gameStart" class="game-not-start"></div>
+    </div>
+  </div>
 </template>
 <style>
   @import url('./callmy-webcam.css');
@@ -97,7 +107,7 @@ export default {
                 videoSource: undefined, // The source of video. If undefined default webcam
                 publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
                 publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-                resolution: '700x320',  // The resolution of your video
+                resolution: '600x320',  // The resolution of your video
                 frameRate: 30,			// The frame rate of your video
                 insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
                 mirror: true       	// Whether to mirror your local video or not

@@ -1,44 +1,60 @@
-.webcam-wrap {
-  display: grid;
-  place-items: center;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px);
+.callmy-left-top-container {
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+  border-radius: 20px;
+  width: 100%;
   padding: 10px;
-  overflow: auto;
-  min-width: 250px;
+  box-sizing: border-box;
+  overflow-x: scroll;
 }
 
-.webcam-container {
-  display: grid;
+.callmy-left-top-container::-webkit-scrollbar {
+  height: 15px;
+}
+
+.callmy-left-top-container::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: rgb(180, 180, 180);
+}
+
+.callmy-all-video-list {
+  min-width: 100%;
+  display: flex;
   gap: 5px;
 }
 
-.under-two {
+
+.callmy-all-video-list  video {
+  height: 120px;
+}
+
+.callmy-left-bottom-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.callmy-now-play-video-list {
+  display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 20px;
 }
 
-.under-four {
-  grid-template-columns: 1fr 1fr;
+.callmy-now-play-video-list video {
+  width: 100%;
 }
 
-.under-nine {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-@media (max-width: 900px) {
-  .under-two {
+@media (max-width: 780px) {
+  .callmy-now-play-video-list {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
-  }
-  .under-four {
-    grid-template-columns: 1fr;
-  }
-  .under-nine {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 901px) and (max-width: 1115px) {
-  .under-nine {
-    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 }

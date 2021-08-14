@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <canvas class="canvas" width="700" height="320" ref="myCanvas" @click="startFaceDetection"></canvas>
+    <canvas class="canvas" width="190" height="100" ref="myCanvas" @click="startFaceDetection"></canvas>
     <video ref="myWebCam" class="webcam" @click="startFaceDetection" autoplay/>
   </div>
 </template>
