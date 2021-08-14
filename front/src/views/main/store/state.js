@@ -27,6 +27,7 @@ const mafiaManager = {
   lierItem: true,
 }
 const callmyManager = {
+  draw: [], // 대진표
 
 }
 /**
@@ -69,4 +70,5 @@ export default {
   onAudio,
   mafiaManager,
   callmyManager,
+  userId,
 }

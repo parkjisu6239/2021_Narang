@@ -14,9 +14,7 @@ public class GameManager {
     private SetNameRes setNameRes;
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
-    private final Deque<Long> userIdDeque;
-    // 승리한 플레이어의 userId 리스트
-//    private final List<Long> winList;
+    private final Queue<Long> userIdQueue;
     private final int playerCnt;
     private int voteCompleteCnt;
     private boolean isGameStarted;
@@ -25,9 +23,9 @@ public class GameManager {
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
-        userIdDeque = new ArrayDeque<>();
         setNameRes = new SetNameRes();
 //        winList = new ArrayList<>();
+        userIdQueue = new ArrayDeque<>();
     }
 
     /**
@@ -45,7 +43,7 @@ public class GameManager {
             if (isGameStarted) return null;
             // 게임이 시작되지 않았으면 게임 시작 표시
             isGameStarted = true;
-            return new CheckConnectRes(userIdDeque.pollFirst(), userIdDeque.pollFirst());
+            return new CheckConnectRes(userIdQueue.poll(), userIdQueue.poll());
         }
         return null;
     }
@@ -62,7 +60,7 @@ public class GameManager {
             int ri = r.nextInt(playerCnt);
             if(!selected[ri]){
                 selected[ri] = true;
-                userIdDeque.offer(userIdArr[ri]);
+                userIdQueue.offer(userIdArr[ri]);
                 sCnt++;
             }
         }
@@ -97,14 +95,11 @@ public class GameManager {
             // Map에서 삭제
             nameMap.remove(req.getUserId());
             // 정답자 처리
-            // TODO :
-            //  대결을 위해 이긴 사람은 userDeque 에 넣기
-            //  홀수일 때 n / 2 번째 게임이면 offerFirst
-            //  나머지 경우는 offerLast
-//            winList.add(req.getUserId());
-            userIdSet.remove(req.getUserId());
+            userIdQueue.offer(req.getUserId());
+            // 우승 ~
+            if(userIdQueue.size() == 1) return new GuessNameRes(req.getUserId(), true, true);
         }
-        return new GuessNameRes(isCorrect, nameMap.isEmpty());
+        return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty());
     }
 
 //    public List<Long> getRank(){

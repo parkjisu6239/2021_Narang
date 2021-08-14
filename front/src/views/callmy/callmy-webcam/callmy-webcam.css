@@ -1,6 +1,16 @@
+.webcam-wrap {
+  display: grid;
+  place-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px);
+  padding: 10px;
+  overflow: auto;
+  min-width: 250px;
+}
+
 .webcam-container {
   display: grid;
-  gap: 10px;
+  gap: 5px;
 }
 
 .under-two {

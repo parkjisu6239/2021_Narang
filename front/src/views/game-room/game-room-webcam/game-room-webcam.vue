@@ -14,6 +14,9 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
+    <button @click="test1">실행</button>
+    <button @click="test2">제거</button>
+    <button @click="test3">이미지</button>
   </div>
 
 </template>
@@ -24,7 +27,7 @@
 <script>
 import $axios from 'axios'
 import { computed, reactive, onBeforeUnmount } from 'vue'
-import { OpenVidu } from 'openvidu-browser'
+import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
@@ -168,7 +171,18 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {},
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+            "type": "WEBRTC",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+
+          },
           {
 						auth: {
 							username: 'OPENVIDUAPP',
@@ -176,7 +190,6 @@ export default {
 						},
 					})
 					.then(response => {
-            console.log("tqtqtqtqtq")
             console.log(response.data)
             return response.data}
             )
@@ -193,9 +206,52 @@ export default {
     onBeforeUnmount(() => {
       leaveSession()
     })
+    const test1 = () => {
+      store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videoflip method=vertical-flip" })
+    .then(() => {
+        console.log("Video rotated!");
+    })
+    .catch(error => {
+        console.error(error);
+    });
 
-    return { state, store, updateMainVideoStreamManager}
+    }
 
-  },
+    const test2 = () => {
+      store.state.root.publisher.stream.removeFilter()
+    .then(() => {
+        console.log("Filter removed");
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    }
+
+    const test3 = () => {
+// store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
+//     .then(() => {
+//         console.log("Video rotated!");
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
+
+    store.state.root.publisher.stream.applyFilter('FaceOverlayFilter', {})
+		.then(f => {
+			if (f.type === 'FaceOverlayFilter') {
+				f.execMethod(
+					"setOverlayedImage",
+					{
+						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
+						"offsetXPercent": "1.5F", // -0.1
+						"offsetYPercent": "-1.5F", //-0.8 --> 1.5 아래로 내려감
+						"widthPercent": "2.0F",
+						"heightPercent": "1.5F"
+					});
+			}
+		});
+    }
+    return { state, store, updateMainVideoStreamManager, test1, test2, test3}
+  }
 }
 </script>

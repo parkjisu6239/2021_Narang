@@ -175,6 +175,7 @@ export default {
       })
     }
 
+
     // [Func|socket] 마피에 게임 시작 소켓 연결
     const connectMafiaStartSocket = () => {
       state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`, res => {
@@ -182,13 +183,19 @@ export default {
       })
     }
 
+
+    const startCallmy = () => {
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify(state.userList.length), {})
+    }
+
+
     // [Func|socket] 채팅 send
     const sendChatMessage = (msg) => {
       if (state.stompClient && state.stompClient.connected && msg) {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
+            profileImageURL = 'https://localhost:8080/' + thumbnailURL
           }
         })
 
@@ -205,12 +212,14 @@ export default {
       }
     }
 
+
     // [Func|socket] 게임 시작 send
     const sendGameStart = () => {
       if (state.room.game === 'mafia') {
         state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
         console.log('마피아 게임 시작 send')
       } else if (state.room.game === 'callmy') {
+        startCallmy()
         console.log('콜마이 게임 시작')
       } else {
         console.log('게임 미선택')
