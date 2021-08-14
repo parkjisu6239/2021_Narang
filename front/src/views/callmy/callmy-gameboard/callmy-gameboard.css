@@ -66,11 +66,14 @@
   gap: 5px;
   justify-content: space-between;
   padding: 5px;
-  max-height: 80px;
   border-top: 0.5px solid rgb(180, 180, 180);
 }
 
 .callmy-board-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   background-color: white;
   padding-left: 5px;
   border-radius: 5px;
