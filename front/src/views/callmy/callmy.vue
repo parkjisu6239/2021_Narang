@@ -1,10 +1,12 @@
 <template>
   <div class="callmy-container">
-    <CallMyWebCam
-      @joinCallMyRoom="joinCallMyRoom"
-      :socketConnected="state.socketConnected"
-      :roomId="route.params.roomId"
-      :gameStart="state.isAllConnected"/>
+    <div class="callmy-left-side">
+      <CallMyWebCam
+        @joinCallMyRoom="joinCallMyRoom"
+        :socketConnected="state.socketConnected"
+        :roomId="route.params.roomId"
+        :gameStart="state.isAllConnected"/>
+    </div>
     <div class="callmy-right-side">
       <CallMyGameBoard/>
       <CallMyChat
@@ -15,7 +17,7 @@
   </div>
   <CallmyBackground/>
 </template>
-<style>
+<style scoped>
   @import url('./callmy.css');
 </style>
 <script>

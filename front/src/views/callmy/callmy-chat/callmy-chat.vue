@@ -1,41 +1,32 @@
 <template>
-  <div class="chat-container" style="border-radius: 0px 0px 0px 0px">
-
-    <span class="chat-header" style="border-radius: 20px">Live Chat</span>
-    <span class="close-chat"><i class="el-icon-close"></i></span>
-
-    <div class="chat-area" ref="chatArea" style="border-radius: 0px">
+  <div class="callmy-chat-container">
+    <div class="callmy-chat-header" style="border-radius: 20px">
+      <span class="callmy-chat-live">Live Chat</span>
+    </div>
+    <div class="callmy-chat-area" ref="chatArea" style="border-radius: 0px">
       <div v-for="(chat, idx) in state.chatList" :key="idx">
-
         <div v-if="chat.userName === state.myUserName">
-          <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="chat-profile-username-me">
-            <img v-if="chat.profileImageURL" class="chat-profile" :src="chat.profileImageURL">
-            <img v-else class="chat-profile" :src="require('@/assets/images/Neurang.png')">
-            <span class="chat-username">{{ chat.userName }}</span>
-          </div>
-          <div class="chat-me"><div class="chat-content-me">{{ chat.content }}</div></div>
+          <div class="callmy-chat-me"><div class="callmy-chat-content-me">{{ chat.content }}</div></div>
         </div>
-
         <div v-else>
-          <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="chat-profile-username-you">
-            <img v-if="chat.profileImageURL" class="chat-profile" :src="chat.profileImageURL">
-            <img v-else class="chat-profile" :src="require('@/assets/images/Neurang.png')">
-            <span class="chat-username">{{ chat.userName }}</span>
+          <div v-if="idx === 0 || state.chatList[idx].userName !== state.chatList[idx - 1].userName" class="callmy-chat-profile-username-you">
+            <img v-if="chat.profileImageURL" class="callmy-chat-profile" :src="chat.profileImageURL">
+            <img v-else class="callmy-chat-profile" :src="require('@/assets/images/Neurang.png')">
+            <span class="callmy-chat-username">{{ chat.userName }}</span>
           </div>
-          <div><div class="chat-content-you">{{ chat.content }}</div></div>
+          <div><div class="callmy-chat-content-you">{{ chat.content }}</div></div>
         </div>
-
       </div>
     </div>
-
-    <div class="chat-input-button" style="border-radius: 0px">
-      <input @keyup.enter="sendChat" class="chat-input" style="border-radius: 30px 0px 0px 30px;" placeholder="내용을 입력해주세요." v-model="state.myChat">
-      <div @click="sendChat" class="chat-send-button" style="border-radius: 0px 30px 30px 0px;"><i class="el-icon-edit send-icon"></i></div>
+    <div class="callmy-chat-input-button">
+      <div class="callmy-chat-input-container">
+        <input @keyup.enter="sendChat" class="callmy-chat-input" placeholder="내용을 입력해주세요." v-model="state.myChat">
+      </div>
+      <div @click="sendChat" class="callmy-chat-send-button"><div class="callmy-chat-send-text">전송</div></div>
     </div>
-
   </div>
 </template>
-<style>
+<style scoped>
   @import url('./callmy-chat.css');
 </style>
 <script>
