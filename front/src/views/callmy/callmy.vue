@@ -2,6 +2,7 @@
   <div class="callmy-container">
     <div class="callmy-left-side">
       <CallMyWebCam
+        @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
@@ -83,8 +84,9 @@ export default {
 
     const subscribeCheckConnect = () => {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
-        state.draw =  JSON.parse(res.body)
+        state.draw = JSON.parse(res.body)
         state.isAllConnected = true
+        console.log('다 들어왔니?')
       })
     }
 
@@ -122,6 +124,7 @@ export default {
     }
 
     const joinCallMyRoom = () => {
+      console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
     }
 

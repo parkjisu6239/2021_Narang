@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <canvas class="canvas" width="190" height="100" ref="myCanvas" @click="startFaceDetection"></canvas>
-    <video ref="myWebCam" class="webcam" @click="startFaceDetection" autoplay/>
+    <canvas class="canvas" width="720" height="400" ref="myCanvas" @click="startFaceDetection"></canvas>
+    <video ref="myWebCam" class="webcam" autoplay/>
   </div>
 </template>
 <style>
@@ -15,6 +15,8 @@ export default {
   name: 'OvVideo',
   props: {
     streamManager: Object,
+    startRecognition: Boolean,
+    username: String,
   },
   setup(props, {emit}) {
     const myWebCam = ref(null)
@@ -23,22 +25,32 @@ export default {
 
     const state = reactive({
       detections: '',
-      height: 0,
-      width: 0,
+      height: '',
+      width: '',
     })
 
     const startFaceDetection = async () => {
       setInterval(async () => {
-        ctx.clearRect(0, 0, 720, 320)
+        ctx.clearRect(0, 0, 720, 400)
         state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
-        console.log(state.detections.box.topLeft)
-        const box = { x: 720 - state.detections.box.topRight.x, y: state.detections.box.topRight.y, width: 100, height: 100 }
-        const drawOptions = {
-          label: 'Dongyun',
-          lineWidth: 2
+        const text = [
+          props.username
+        ]
+
+        const anchor = {
+          x: 650 - state.detections.box.topLeft.x,
+          y: state.detections.box.topLeft.y,
         }
-        const drawBox = new faceapi.draw.DrawBox(box, drawOptions)
-        drawBox.draw(myCanvas.value)
+
+        const drawOptions = {
+          anchorPosition: 'TOP_RIGHT',
+          backgroundColor: 'rgba(255, 255, 255, 0.5)',
+          fontSize: 30,
+          fontColor: 'black',
+        }
+
+        const drawText = new faceapi.draw.DrawTextField(text, anchor, drawOptions)
+        drawText.draw(myCanvas.value)
       }, 1000)
     }
 
@@ -46,13 +58,10 @@ export default {
       ctx = myCanvas.value.getContext('2d');
       faceapi.nets.tinyFaceDetector.load('/static/models')
       props.streamManager.addVideoElement(myWebCam.value)
-      console.log(myWebCam.value.videoWidth)
-
     })
 
-    watch(myWebCam, () => {
-      state.width = String(myWebCam.value.videoWidth)
-      state.height = String(myWebCam.value.videoHeight)
+    watch(() => props.startRecognition, () => {
+      if(startRecognition) startFaceDetection()
     })
 
     return { state, myWebCam, startFaceDetection, myCanvas }
