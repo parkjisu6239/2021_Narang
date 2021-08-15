@@ -7,8 +7,8 @@ const profileImageURL = ''
 const userId = ''
 const myRoom = {}
 const publisher = {}
-const onVideo = true;
-const onAudio = true;
+const onVideo = true
+const onAudio = true
 const mafiaManager = {
   username : '', // 자기 이름
   theVoted : null, // 마피아가 죽이는애, 시민이 1차 투표 선정 유저
@@ -29,9 +29,9 @@ const mafiaManager = {
 const callmyManager = {
   round: 0,
   status: 0,
-  user1: {},
-  user2: {},
   isFinished: false,
+  nowPlayUsers: [],
+  draw: [],
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
