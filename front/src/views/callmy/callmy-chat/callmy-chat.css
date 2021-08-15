@@ -7,10 +7,16 @@
 .callmy-chat-area {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 10px;
-  max-height: 29vh;
+  max-height: 25vh;
   overflow: auto;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+@media (min-height: 722px) {
+  .callmy-chat-area {
+    max-height: 27vh;
+  }
 }
 
 .callmy-chat-area::-webkit-scrollbar {
@@ -85,7 +91,7 @@
   padding: 5px 10px;
   margin-top: 5px;
   display: inline-block;
-  text-align: end;
+  text-align: start;
   max-width: 70%;
   word-break:break-all;
 }
@@ -109,7 +115,7 @@
 }
 
 .callmy-chat-content-you {
-  background-color: slategray;
+  background-color: white;
   border-radius: 15px;
   padding: 5px 10px;
   margin-top: 5px;

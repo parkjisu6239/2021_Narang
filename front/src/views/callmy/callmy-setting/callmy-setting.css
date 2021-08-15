@@ -1,0 +1,21 @@
+.callmy-setting-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.callmy-setting-btn {
+  display: inline-block;
+  border-radius: 50%;
+  padding: 5px 10px;
+  margin: 0px 6px;
+  font-size: 20px;
+  background: rgb(255, 255, 255);
+  cursor: pointer;
+}
+
+.callmy-setting-btn:hover {
+  color: rgb(47, 100, 161);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
