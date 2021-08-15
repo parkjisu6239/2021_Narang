@@ -21,7 +21,7 @@
       <div v-if="gameStart" class="game-not-start"></div>
     </div>
     <div v-else class="callmy-left-bottom-container">
-      <h1>아직 게임 시작 전입니다.</h1>
+      <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }}명</h1>
     </div>
   </div>
 </template>
@@ -66,6 +66,7 @@ export default {
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
       startRecognition: false,
+      joinedPlayerNumbers: 1,
     })
 
     const joinSession = () => {
@@ -79,11 +80,13 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
 				state.subscribers.push(subscriber)
+        state.joinedPlayerNumbers++
 			})
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
+        state.joinedPlayerNumbers--
         if (index >= 0) {
 					state.subscribers.splice(index, 1)
 				}

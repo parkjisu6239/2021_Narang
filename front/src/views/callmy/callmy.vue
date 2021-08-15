@@ -2,6 +2,7 @@
   <div class="callmy-container">
     <div class="callmy-left-side">
       <CallMyWebCam
+        @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
