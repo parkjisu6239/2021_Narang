@@ -66,6 +66,7 @@ export default {
       stompClient: null,
       gameStart: false,
       count: 5,
+      gameSelected: null,
     })
 
     // [Func|dialog] 방 정보 수정 open
@@ -185,7 +186,7 @@ export default {
 
 
     const startCallmy = () => {
-      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify(state.userList.length), {})
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify('callmy start'), {})
     }
 
 
@@ -231,7 +232,13 @@ export default {
     const requestRoomInfo = () => {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
-          console.log(res, '방 정보')
+          if (res.data.room.game !== state.gameSelected) {
+            state.gameSelected = res.data.room.game
+            ElMessage({
+              type: 'success',
+              message: `${res.data.room.game}으로 게임이 변경되었습니다.`
+            })
+          }
           store.commit('root/setRoomInfo', res.data.room)
         })
         .catch(err => {

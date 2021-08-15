@@ -17,6 +17,7 @@
         :chatList="state.chatList"
         :roomId="route.params.roomId"
         @sendChat="sendChat"/>
+      <CallmySetting/>
     </div>
   </div>
   <CallmyBackground/>
@@ -27,10 +28,12 @@
 <script>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+
 import CallMyWebCam from './callmy-webcam/callmy-webcam.vue'
 import CallMyChat from './callmy-chat/callmy-chat.vue'
 import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
+import CallmySetting from './callmy-setting/callmy-setting.vue'
 
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -42,8 +45,10 @@ export default {
     CallMyWebCam,
     CallMyChat,
     CallMyGameBoard,
-    CallmyBackground
+    CallmyBackground,
+    CallmySetting,
   },
+
   setup(props, { emit }) {
     const route = useRoute()
     const router = useRouter()
@@ -101,6 +106,7 @@ export default {
       })
     }
 
+
     const subscribeSetName = () => {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
@@ -113,17 +119,20 @@ export default {
       })
     }
 
+
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
+
     const sendVote = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/set-name/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
+
 
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
