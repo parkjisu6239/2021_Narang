@@ -95,6 +95,9 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/play/{roomId}")
     public void getGameStatus(@DestinationVariable long roomId, String type){
+//        log.debug("이것이 type이다. " + type);
+        type = type.substring(1, type.length() - 1);
+        log.debug("이것이 type이다. " + type);
         GameStatusRes res = ManagerHolder.gameManagerMap.get(roomId).getGameStatus(type);
         if(res != null) broadcastGameStatus(roomId, res);
     }
@@ -106,6 +109,7 @@ public class CallMyNameController {
      */
     public void broadcastGameStatus(long roomId, GameStatusRes res){
         log.debug("게임 정보 반환~~");
+        log.debug(res.toString());
         template.convertAndSend("/from/call/play/" + roomId, res);
     }
 
