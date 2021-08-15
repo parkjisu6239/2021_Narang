@@ -36,6 +36,7 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
+import { ElMessage } from 'element-plus'
 
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -63,10 +64,11 @@ export default {
       chatList: [],
       isAllConnected: false,
       userList: {},
+      callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
-      draw: computed(() => store.state.root.draw),
       socketConnected: false,
       nicknameList: {},
+      userIdToUserName: {},
     })
 
 
@@ -83,11 +85,7 @@ export default {
       )
     }
 
-    /**
-     *
-     * subscribe (back -> front)
-     *
-     */
+
     const subscribeChat = () => {
       state.stompClient.subscribe(`/from/call/chat/${route.params.roomId}`, res => {
         const chat = JSON.parse(res.body)
@@ -98,9 +96,9 @@ export default {
 
     const subscribeCheckConnect = () => {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
-        state.draw = JSON.parse(res.body)
         state.isAllConnected = true
-        console.log('다 들어왔다')
+        state.draw = JSON.parse(res.body)
+        sendPlay('next')
       })
     }
 
@@ -110,6 +108,25 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+      })
+    }
+
+
+    const subscribePlay = () => { // 게임 진행 중인 유저들의 정보, 현재 라운드, status => 0: 제시어 정함, 1: 하는 중,
+      state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
+        const result = JSON.parse(res.body)
+        store.state.root.callmyManager.nowPlayUsers = [
+          {
+            userId1: result.user1.userId,
+            username1: state.userIdToUserName[result.user1.userId],
+            nickname1: '',
+          },
+          {
+            userId2: result.user2.userId,
+            username2: state.userIdToUserName[result.user2.userId],
+            nickname2: '',
+          }
+        ]
       })
     }
 
@@ -126,16 +143,6 @@ export default {
       })
     }
 
-    const subscribePlay = () => {
-      state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
-        const users = JSON.parse(res.body)
-      })
-    }
-    /**
-     *
-     *send (front -> back)
-     *
-     */
 
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
@@ -143,22 +150,21 @@ export default {
       }
     }
 
+
     const sendVote = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/set-name/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
-    const sendPlay = (message) => {
-      state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(message), {})
+
+    const sendPlay = (stage) => {
+      if (state.stompClient && state.stompClient.connected) {
+        state.stompClient.send(`/from/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
+      }
     }
 
 
-    /**
-     *
-     * logic
-     *
-     */
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
@@ -181,7 +187,9 @@ export default {
       store.dispatch('root/requestReadUserList', route.params.roomId)
         .then(res => {
           state.userList = res.data.userList
-          console.log('유저리스트', res.data.userList)
+          for (let i = 0; i < state.userList.length; i++) {
+            state.userIdToUserName[state.userList[i].userId] = state.userList[i].username
+          }
         })
         .catch(err => {
           ElMessage(err)
@@ -193,7 +201,7 @@ export default {
     requestUserList()
     connectSocket()
 
-    return { state, route, sendChat, joinCallMyRoom, sendVote }
+    return { state, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
   }
 }
 </script>
