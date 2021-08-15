@@ -4,7 +4,6 @@ import com.exp.narang.websocket.callmyname.model.CallMyNameChatModel;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,8 +45,8 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, long userId){
-        CheckConnectRes res = ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId);
-        if(res != null) broadcastAllConnected(roomId, res);
+        if(ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId))
+            broadcastAllConnected(roomId);
         log.debug(userId + " 들어옴");
     }
 
@@ -54,9 +54,11 @@ public class CallMyNameController {
      * 모든 사용자가 들어왔는지 메세지를 전달하는 메서드
      * @param roomId
      */
-    public void broadcastAllConnected(long roomId, CheckConnectRes res){
+    public void broadcastAllConnected(long roomId){
         ManagerHolder.gameManagerMap.get(roomId);
-        // 디폴트 이름과 이번에 게임할 userId 보내기
+        // 연결 확인 메세지 보내기
+        Map<String, Boolean> res = new HashMap<>();
+        res.put("isConnected", true);
         template.convertAndSend("/from/call/checkConnect/" + roomId, res);
         log.debug("다 들어옴");
     }
@@ -86,8 +88,7 @@ public class CallMyNameController {
     }
 
 //    /**
-//     * 다음 질문 순서 userId를 반환하는 메서드
-//     * TODO : 2명이서 하도록 변경. 순서대로 되는 로직인지 확인하기
+//     * 다음 게임할 userId를 반환하는 메서드
 //     * @param roomId : path로 받는 roomId (PK)
 //     * @return 다음에 질문할 사용자의 userId
 //     */
