@@ -160,8 +160,6 @@ public class GameManager {
             log.debug("다음 게임ㄱㄱ");
             playingUserId1 = userIdQueue.poll();
             playingUserId2 = userIdQueue.poll();
-            userNick1 = "";
-            userNick2 = "";
             status = SETTING;
             round++;
         }else{

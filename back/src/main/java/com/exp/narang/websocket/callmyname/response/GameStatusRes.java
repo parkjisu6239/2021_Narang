@@ -1,10 +1,11 @@
 package com.exp.narang.websocket.callmyname.response;
 
+import lombok.Data;
 import lombok.Setter;
 
 import java.util.Map;
 
-@Setter
+@Data
 public class GameStatusRes {
     private static class ResHolder{
         private static final GameStatusRes res = new GameStatusRes();
