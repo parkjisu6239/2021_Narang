@@ -6,7 +6,7 @@
 }
 
 .home-right-side-container {
-  margin-top: 34px;
+  margin-top: 40px;
 }
 
 .form {
@@ -71,12 +71,15 @@
 }
 
 .img-neorang {
-  position: relative;
-  bottom: -5px;
-  height: 100px;
+  display: flex;
+  justify-content: flex-start;
   transition: all 0.3s ease-in-out;
 }
 
+.img-neorang img {
+  height: 100px;
+}
+
 .right {
-  transform: translate(320%, 0) scaleX(-1);
+  transform: scaleX(-1);
 }

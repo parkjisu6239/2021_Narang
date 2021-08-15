@@ -1,11 +1,12 @@
 package com.exp.narang.websocket.callmyname.controller;
 
+import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.websocket.callmyname.model.CallMyNameChatModel;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
+import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +29,7 @@ public class CallMyNameController {
     }
 
     private final SimpMessagingTemplate template;
+    private final RoomService roomService;
 
     /**
      * 게임을 시작하는 메서드
@@ -34,8 +37,10 @@ public class CallMyNameController {
      * @param roomId : path로 받는 roomId
      */
     @MessageMapping("/call/start/{roomId}")
-    public void startGame(@DestinationVariable long roomId, int playerCnt){
-        ManagerHolder.gameManagerMap.put(roomId, new GameManager(playerCnt));
+    public void startGame(@DestinationVariable long roomId){
+        log.debug(" | roomId 번방 시작 ~~");
+        ManagerHolder.gameManagerMap.put(roomId, new GameManager(roomId, roomService));
+        log.debug(ManagerHolder.gameManagerMap.toString());
     }
 
     /**
@@ -45,8 +50,8 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, long userId){
-        CheckConnectRes res = ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId);
-        if(res != null) broadcastAllConnected(roomId, res);
+        if(ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId))
+            broadcastAllConnected(roomId);
         log.debug(userId + " 들어옴");
     }
 
@@ -54,10 +59,8 @@ public class CallMyNameController {
      * 모든 사용자가 들어왔는지 메세지를 전달하는 메서드
      * @param roomId
      */
-    public void broadcastAllConnected(long roomId, CheckConnectRes res){
-        ManagerHolder.gameManagerMap.get(roomId);
-        // 디폴트 이름과 이번에 게임할 userId 보내기
-        template.convertAndSend("/from/call/checkConnect/" + roomId, res);
+    public void broadcastAllConnected(long roomId){
+        template.convertAndSend("/from/call/checkConnect/" + roomId, ManagerHolder.gameManagerMap.get(roomId).getUserIdQueue());
         log.debug("다 들어옴");
     }
 
@@ -85,17 +88,16 @@ public class CallMyNameController {
         return ManagerHolder.gameManagerMap.get(roomId).setName(setNameReq);
     }
 
-//    /**
-//     * 다음 질문 순서 userId를 반환하는 메서드
-//     * TODO : 2명이서 하도록 변경. 순서대로 되는 로직인지 확인하기
-//     * @param roomId : path로 받는 roomId (PK)
-//     * @return 다음에 질문할 사용자의 userId
-//     */
-//    @MessageMapping("/call/set-qtime/{roomId}")
-//    @SendTo("/from/call/set-qtime/{roomId}")
-//    public long setQuestionTime(@DestinationVariable long roomId){
-//        return ManagerHolder.gameManagerMap.get(roomId).getNextUserId();
-//    }
+    /**
+     * 게임 정보와 다음 게임할 userId를 반환하는 메서드
+     * @param roomId : path로 받는 roomId (PK)
+     * @return GameStatusRes
+     */
+    @MessageMapping("/call/play/{roomId}")
+    @SendTo("/from/call/play/{roomId}")
+    public GameStatusRes getNextUsers(@DestinationVariable long roomId){
+        return ManagerHolder.gameManagerMap.get(roomId).getNextUsers();
+    }
 
     /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드

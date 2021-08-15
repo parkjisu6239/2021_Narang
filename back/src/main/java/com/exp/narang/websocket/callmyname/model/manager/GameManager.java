@@ -1,14 +1,19 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
+import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.api.model.service.RoomServiceImpl;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
+import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class GameManager {
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
@@ -19,22 +24,31 @@ public class GameManager {
     private final int playerCnt;
     private int voteCompleteCnt;
     private boolean isGameStarted;
+    private static final int SETTING = 0, PLAYING = 1;
+    private static final String USER_ID = "userId", NICKNAME = "nickname";
+    private int round, status;
+    private long playingUserId1, playingUserId2;
 
-    public GameManager(int playerCnt){
+    public GameManager(Long roomId, RoomService roomService){
+        log.debug("GameManager 객체 생성 ~~");
+        this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         this.setNameRes = new SetNameRes();
-        this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         voteStatus = new HashMap<>();
         userIdSet = new HashSet<>();
         setNameRes = new SetNameRes();
         userIdQueue = new ArrayDeque<>();
+        round = 0;
+        status = SETTING;
     }
 
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
      * @param userId : 사용자의 userId
+     * @return 게임을 시작할지 여부
      */
-    public CheckConnectRes addPlayer(long userId) {
+    public boolean addPlayer(long userId) {
+        log.debug("addPlayer 실행 ~~");
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
@@ -42,12 +56,12 @@ public class GameManager {
             // 첫 대진표 만들기
             makeRandomDraw();
             // 이미 게임이 시작되었으면 null 반환
-            if (isGameStarted) return null;
+            if (isGameStarted) return false;
             // 게임이 시작되지 않았으면 게임 시작 표시
             isGameStarted = true;
-            return new CheckConnectRes(userIdQueue.poll(), userIdQueue.poll());
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -55,14 +69,14 @@ public class GameManager {
      */
     private void makeRandomDraw(){
         boolean[] selected = new boolean[playerCnt];
-        Long[] userIdArr = (Long[]) userIdSet.toArray();
+        Object[] userIdArr = userIdSet.toArray();
         int sCnt = 0;
         Random r = new Random();
         while(sCnt < playerCnt){
             int ri = r.nextInt(playerCnt);
             if(!selected[ri]){
                 selected[ri] = true;
-                userIdQueue.offer(userIdArr[ri]);
+                userIdQueue.offer((long)userIdArr[ri]);
                 sCnt++;
             }
         }
@@ -75,11 +89,14 @@ public class GameManager {
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
+        System.out.println("플레이어 수 :"+playerCnt);
         // 투표 현황 관리
         if(!req.isFinished()) {
             if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
             else {
+                log.debug("첫 제시어 추가입니다:"+req.getContent());
+                log.debug("첫 제시어 추가, voteStatus 사이즈:"+voteStatus.size());
                 // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
                 if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
                 voteStatus.put(req.getContent(), 0);
@@ -93,7 +110,6 @@ public class GameManager {
                 String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
-                voteStatus = new HashMap<>();
                 for(String content : voteStatus.keySet()){
                     if(voteStatus.get(content) > max){
                         result = content;
@@ -126,5 +142,48 @@ public class GameManager {
             if(userIdQueue.size() == 1) return new GuessNameRes(req.getUserId(), true, true);
         }
         return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty());
+    }
+
+    /**
+     * 현재 게임 라운드, 상태, 이름 정할 userId, 빈 문자열 반환
+     * @return GameStatusRes
+     */
+    public GameStatusRes getNextUsers() {
+        Map<String, Object> user1 = new HashMap<>();
+        Map<String, Object> user2 = new HashMap<>();
+
+        playingUserId1 = userIdQueue.poll();
+        user1.put(USER_ID, playingUserId1);
+        user1.put(NICKNAME, "");
+
+        playingUserId2 = userIdQueue.poll();
+        user2.put(USER_ID, playingUserId2);
+        user2.put(NICKNAME, "");
+
+        return GameStatusRes.of(++round, SETTING, user1, user2);
+    }
+
+    /**
+     * 현재 게임 라운드, 상태, userId, 정한 이름 반환
+     * @return GameStatusRes
+     */
+    public GameStatusRes getGameStatus() {
+        Map<String, Object> user1 = new HashMap<>();
+        Map<String, Object> user2 = new HashMap<>();
+
+        user1.put(USER_ID, playingUserId1);
+        user1.put(NICKNAME, nameMap.get(playingUserId1));
+
+        user2.put(USER_ID, playingUserId2);
+        user2.put(NICKNAME, nameMap.get(playingUserId2));
+
+        return GameStatusRes.of(round, PLAYING, user1, user2);
+    }
+
+    /**
+     * @return userIdQueue
+     */
+    public Queue<Long> getUserIdQueue(){
+        return userIdQueue;
     }
 }

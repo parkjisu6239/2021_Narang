@@ -2,10 +2,12 @@
   <div class="callmy-container">
     <div class="callmy-left-side">
       <CallMyWebCam
+        @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
-        :gameStart="state.isAllConnected"/>
+        :gameStart="state.isAllConnected"
+        :playerNumbers="state.userList.length"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
@@ -15,8 +17,10 @@
         :chatList="state.chatList"
         :roomId="route.params.roomId"
         @sendChat="sendChat"/>
+      <CallmySetting/>
     </div>
   </div>
+  <CallmyStt/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -25,10 +29,13 @@
 <script>
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
+
 import CallMyWebCam from './callmy-webcam/callmy-webcam.vue'
 import CallMyChat from './callmy-chat/callmy-chat.vue'
 import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
+import CallmySetting from './callmy-setting/callmy-setting.vue'
+import CallmyStt from './callmy-stt/callmy-stt.vue'
 
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -40,8 +47,11 @@ export default {
     CallMyWebCam,
     CallMyChat,
     CallMyGameBoard,
-    CallmyBackground
+    CallmyBackground,
+    CallmySetting,
+    CallmyStt,
   },
+
   setup(props, { emit }) {
     const route = useRoute()
     const router = useRouter()
@@ -52,6 +62,7 @@ export default {
       stompClient: null,
       chatList: [],
       isAllConnected: false,
+      userList: {},
       userId: computed(() => store.state.root.userId),
       draw: computed(() => store.state.root.draw),
       socketConnected: false,
@@ -83,8 +94,9 @@ export default {
 
     const subscribeCheckConnect = () => {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
-        state.draw =  JSON.parse(res.body)
+        state.draw = JSON.parse(res.body)
         state.isAllConnected = true
+        console.log('다 들어왔다')
       })
     }
 
@@ -96,6 +108,7 @@ export default {
         console.log(guessNameRes)
       })
     }
+
 
     const subscribeSetName = () => {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
@@ -109,11 +122,13 @@ export default {
       })
     }
 
+
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
+
 
     const sendVote = (message) => {
       if (state.stompClient && state.stompClient.connected) {
@@ -121,7 +136,9 @@ export default {
       }
     }
 
+
     const joinCallMyRoom = () => {
+      console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
     }
 
@@ -137,7 +154,21 @@ export default {
         })
     }
 
+
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', route.params.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+          console.log('유저리스트', res.data.userList)
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+
     requestMyInfo()
+    requestUserList()
     connectSocket()
 
     return { state, route, sendChat, joinCallMyRoom, sendVote }
