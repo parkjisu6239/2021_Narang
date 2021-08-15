@@ -118,8 +118,11 @@ export default {
           return;
         }
         if(guessNameRes.isCorrect) {
+          const winner = state.userIdToUserName[result.userId];
+          console.log("내가 바로 개다")
+          console.log(winner)
           sendPlay("next")
-          store.state.root.callmyManager.nowPlayUsers = [];
+          init();
           return;
         }
         console.log("틀렸습니다.")
@@ -221,13 +224,17 @@ export default {
         })
     }
 
-
-    const gameOver = () => {
-      // 상태 초기화
+    const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
       store.state.root.callmyManager.nowPlayUsers = [];
       store.state.root.callmyManager.draw =  [];
+    }
+
+
+    const gameOver = () => {
+      // 상태 초기화
+      init();
       setTimeout(() => {
         // 게임 정보 변경
         const roomInfo = {

@@ -45,7 +45,7 @@ export default {
 
         if (state.ans) { // 정답 타임인 경우
           state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
-          callMyName();
+          sendGuessName();
         }
 
         if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
