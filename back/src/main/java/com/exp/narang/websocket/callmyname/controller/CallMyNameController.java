@@ -47,6 +47,7 @@ public class CallMyNameController {
     public void addPlayer(@DestinationVariable long roomId, long userId){
         CheckConnectRes res = ManagerHolder.gameManagerMap.get(roomId).addPlayer(userId);
         if(res != null) broadcastAllConnected(roomId, res);
+        log.debug(userId + " 들어옴");
     }
 
     /**
@@ -57,6 +58,7 @@ public class CallMyNameController {
         ManagerHolder.gameManagerMap.get(roomId);
         // 디폴트 이름과 이번에 게임할 userId 보내기
         template.convertAndSend("/from/call/checkConnect/" + roomId, res);
+        log.debug("다 들어옴");
     }
 
     /**
