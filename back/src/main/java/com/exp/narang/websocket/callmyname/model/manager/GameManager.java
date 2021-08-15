@@ -113,7 +113,7 @@ public class GameManager {
                         max = voteStatus.get(content);
                     }
                 }
-                nameMap.put(req.getTargetId(), setNameRes.getResult());
+                nameMap.put(req.getTargetId(), result);
                 voteCompleteCnt = 0;
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
