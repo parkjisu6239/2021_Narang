@@ -2,10 +2,8 @@ package com.exp.narang.websocket.callmyname.model.manager;
 
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
-import com.exp.narang.websocket.callmyname.response.SetNameRes2;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,15 +25,16 @@ public class GameManager {
         nameMap = new ConcurrentHashMap<>();
         voteStatus = new HashMap<>();
         userIdSet = new HashSet<>();
-//        winList = new ArrayList<>();
+        setNameRes = new SetNameRes();
         userIdQueue = new ArrayDeque<>();
     }
 
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
      * @param userId : 사용자의 userId
+     * @return 게임을 시작할지 여부
      */
-    public CheckConnectRes addPlayer(long userId) {
+    public boolean addPlayer(long userId) {
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
@@ -43,12 +42,12 @@ public class GameManager {
             // 첫 대진표 만들기
             makeRandomDraw();
             // 이미 게임이 시작되었으면 null 반환
-            if (isGameStarted) return null;
+            if (isGameStarted) return false;
             // 게임이 시작되지 않았으면 게임 시작 표시
             isGameStarted = true;
-            return new CheckConnectRes(userIdQueue.poll(), userIdQueue.poll());
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -128,8 +127,4 @@ public class GameManager {
         }
         return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty());
     }
-
-//    public List<Long> getRank(){
-//        return winList;
-//    }
 }
