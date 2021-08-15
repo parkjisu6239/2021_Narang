@@ -81,6 +81,7 @@ export default {
           subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
           subscribeSetName() // 플레이어의 제시어를 결정할 때 호출되는 메서드
+          subscribePlay()
         }
       )
     }
@@ -115,6 +116,7 @@ export default {
     const subscribePlay = () => { // 게임 진행 중인 유저들의 정보, 현재 라운드, status => 0: 제시어 정함, 1: 하는 중,
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
+        console.log(result, '다음 대결자들')
         store.state.root.callmyManager.nowPlayUsers = [
           {
             userId1: result.user1.userId,
@@ -160,7 +162,7 @@ export default {
 
     const sendPlay = (stage) => {
       if (state.stompClient && state.stompClient.connected) {
-        state.stompClient.send(`/from/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
+        state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
       }
     }
 
