@@ -1,8 +1,9 @@
 <template>
   <div class="main-navbar">
-    <span @click="goHome"><i class="el-icon-s-home"></i></span>
-    <span @click="goMyPage"><i class="el-icon-s-custom"></i></span>
-    <span @click="goBack"><i class="el-icon-back"></i></span>
+    <div class="menu-thumb"><i class="el-icon-menu"></i></div>
+    <div class="menu-item" @click="goHome"><i class="el-icon-s-home"></i></div>
+    <div class="menu-item" @click="goMyPage"><i class="el-icon-s-custom"></i></div>
+    <div class="menu-item" @click="goBack"><i class="el-icon-back"></i></div>
   </div>
 </template>
 <style>
@@ -13,22 +14,22 @@ import { useRouter } from 'vue-router'
 export default {
   name: 'navbar',
   setup(props, { emit }) {
-    const route = useRouter()
+    const router = useRouter()
 
     const goHome = () => {
-      route.push({
+      router.push({
         name: 'home',
       })
     }
 
     const goMyPage = () => {
-      route.push({
+      router.push({
         name: 'mypage',
       })
     }
 
     const goBack = () => {
-      route.go(-1)
+      router.go(-1)
     }
 
     return { goHome, goMyPage, goBack }

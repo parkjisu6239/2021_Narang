@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
   width: 80%;
   height: 20%;
   background-color: orange;
@@ -11,8 +12,13 @@
   margin-right: auto;
   margin-top: 40px;
   border-radius: 10px;
+  color: white;
 }
 
+.neurang-sad {
+  height: 88px;
+  transform: scaleX(-100%);
+}
 
 .user-delete-container {
   height: 100%;
