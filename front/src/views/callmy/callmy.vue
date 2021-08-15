@@ -20,7 +20,7 @@
       <CallmySetting/>
     </div>
   </div>
-  <CallmyStt/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="state.userId == store.state.root.callmyManager.nowPlayUsers.userId1 || state.userId == store.state.root.callmyManager.nowPlayUsers.userId2"/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -36,8 +36,8 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-import { ElMessage } from 'element-plus'
 
+import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -69,6 +69,11 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
+      recognition: null,
+      isRecognizing: false,
+      ignoreEndProcess: false,
+      finalTranscript: '',
+      ans: false,
     })
 
 
@@ -117,7 +122,6 @@ export default {
           store.state.root.callmyManager.nowPlayUsers = [];
           return;
         }
-
         console.log("틀렸습니다.")
       })
     }
@@ -140,6 +144,7 @@ export default {
               nickname2: '',
             }
           ]
+          // STT 동작!
           console.log("게임 스타트!")
         }
       })
@@ -180,6 +185,11 @@ export default {
     }
 
 
+    const sendGuessName = (answer) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({stage}), {})
+    }
+
+
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
@@ -214,14 +224,11 @@ export default {
 
     const gameOver = () => {
       // 상태 초기화
-      store.state.root.mafiaManager.theVoted = null
-      store.state.root.mafiaManager.stage = 'default'
-      store.state.root.mafiaManager.players = []
-      store.state.root.mafiaManager.secondVoteUsername = ''
-      store.state.root.mafiaManager.myRole = ''
-      store.state.root.mafiaManager.isAlive = true
+      store.state.root.callmyManager.status = 0;
+      store.state.root.callmyManager.isFinished = false;
+      store.state.root.callmyManager.nowPlayUsers = [];
+      store.state.root.callmyManager.draw =  [];
       setTimeout(() => {
-
         // 게임 정보 변경
         const roomInfo = {
           ...state.room,
@@ -244,11 +251,14 @@ export default {
         })
       }, 5000);
     }
+
+
     requestMyInfo()
     requestUserList()
     connectSocket()
 
-    return { state, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
+
+    return { state, store, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
   }
 }
 </script>
