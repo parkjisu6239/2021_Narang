@@ -82,25 +82,23 @@ public class GameManager {
     }
 
     /**
-     * TODO : 테스트용으로 모든 플레이어가 투표 했을 경우 완료되게 해놓음. 찐은 playerCnt - 2
+     * TODO : 테스트용으로 모든 플레이어가 투표 했을 경우 완료되게 해놓음. 찐은 playerCnt - 1
      * 정한 이름을 저장하는 메서드
      * @param req : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
-        System.out.println("플레이어 수 :"+playerCnt);
+        System.out.println("플레이어 수 :" + playerCnt);
         // 투표 현황 관리
         if(!req.isFinished()) {
             if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
             else {
-                log.debug("첫 제시어 추가입니다:"+req.getContent());
-                log.debug("첫 제시어 추가, voteStatus 사이즈:"+voteStatus.size());
                 // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
                 if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
                 voteStatus.put(req.getContent(), 0);
             }
-            return SetNameRes.returnResult("", false, voteStatus);
+            return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
         }
         // 개표 현황 관리
         else {
@@ -117,10 +115,10 @@ public class GameManager {
                 }
                 nameMap.put(req.getTargetId(), setNameRes.getResult());
                 voteCompleteCnt = 0;
-                return SetNameRes.returnResult(result, true, voteStatus);
+                return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
             // 아직 모든 사람의 투표가 완료되지 않은 경우
-            return SetNameRes.returnResult("", false, voteStatus);
+            return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
         }
     }
 
