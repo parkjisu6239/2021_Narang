@@ -108,6 +108,17 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+        if(guessNameRes.isGameEnd) {
+          gameOver();
+          return;
+        }
+        if(guessNameRes.isCorrect) {
+          sendPlay("next")
+          store.state.root.callmyManager.nowPlayUsers = [];
+          return;
+        }
+
+        console.log("틀렸습니다.")
       })
     }
 
@@ -115,18 +126,22 @@ export default {
     const subscribePlay = () => { // 게임 진행 중인 유저들의 정보, 현재 라운드, status => 0: 제시어 정함, 1: 하는 중,
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
-        store.state.root.callmyManager.nowPlayUsers = [
-          {
-            userId1: result.user1.userId,
-            username1: state.userIdToUserName[result.user1.userId],
-            nickname1: '',
-          },
-          {
-            userId2: result.user2.userId,
-            username2: state.userIdToUserName[result.user2.userId],
-            nickname2: '',
-          }
-        ]
+          if(result.status == 1) {
+          store.state.root.callmyManager.round = result.round;
+          store.state.root.callmyManager.nowPlayUsers = [
+            {
+              userId1: result.user1.userId,
+              username1: state.userIdToUserName[result.user1.userId],
+              nickname1: '',
+            },
+            {
+              userId2: result.user2.userId,
+              username2: state.userIdToUserName[result.user2.userId],
+              nickname2: '',
+            }
+          ]
+          console.log("게임 스타트!")
+        }
       })
     }
 
@@ -197,6 +212,38 @@ export default {
     }
 
 
+    const gameOver = () => {
+      // 상태 초기화
+      store.state.root.mafiaManager.theVoted = null
+      store.state.root.mafiaManager.stage = 'default'
+      store.state.root.mafiaManager.players = []
+      store.state.root.mafiaManager.secondVoteUsername = ''
+      store.state.root.mafiaManager.myRole = ''
+      store.state.root.mafiaManager.isAlive = true
+      setTimeout(() => {
+
+        // 게임 정보 변경
+        const roomInfo = {
+          ...state.room,
+          isActivate: true
+        }
+
+        store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
+        })
+      }, 5000);
+    }
     requestMyInfo()
     requestUserList()
     connectSocket()
