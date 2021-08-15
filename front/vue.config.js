@@ -6,13 +6,13 @@ module.exports = {
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'https://0.0.0.0:8080/'
+        target: 'https://localhost:8080/'
       },
       '/narang':{
-        target: 'https://0.0.0.0:8080/'
+        target: 'https://localhost:8080/'
       },
       '/static/models': {
-        target: 'https://0.0.0.0:8080/'
+        target: 'https://localhost:8080/'
       }
     },
     historyApiFallback: true,

@@ -6,7 +6,8 @@
         @joinCallMyRoom="joinCallMyRoom"
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
-        :gameStart="state.isAllConnected"/>
+        :gameStart="state.isAllConnected"
+        :playerNumbers="state.userList.length"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
@@ -53,6 +54,7 @@ export default {
       stompClient: null,
       chatList: [],
       isAllConnected: false,
+      userList: {},
       userId: computed(() => store.state.root.userId),
       draw: computed(() => store.state.root.draw),
       socketConnected: false,
@@ -140,7 +142,21 @@ export default {
         })
     }
 
+
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', route.params.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+          console.log('유저리스트', res.data.userList)
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+
     requestMyInfo()
+    requestUserList()
     connectSocket()
 
     return { state, route, sendChat, joinCallMyRoom, sendVote }
