@@ -157,11 +157,11 @@ public class GameManager {
         if(type.equals(NEXT)) {
             nextCnt++;
             if(nextCnt < playerCnt) return null;
+            round++;
             log.debug("다음 게임ㄱㄱ");
             playingUserId1 = userIdQueue.poll();
             playingUserId2 = userIdQueue.poll();
             status = SETTING;
-            round++;
         }else{
             nowCnt++;
             if(nowCnt < playerCnt) return null;
