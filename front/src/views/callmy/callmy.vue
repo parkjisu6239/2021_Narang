@@ -101,6 +101,7 @@ export default {
       })
     }
 
+
     const subscribeSetName = () => {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
@@ -113,17 +114,20 @@ export default {
       })
     }
 
+
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
+
     const sendVote = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/set-name/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
+
 
     const joinCallMyRoom = () => {
       console.log('조인하는 중')

@@ -27,8 +27,11 @@ const mafiaManager = {
   lierItem: true,
 }
 const callmyManager = {
-  draw: [], // 대진표
-
+  round: 0,
+  status: 0,
+  user1: {},
+  user2: {},
+  isFinished: false,
 }
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비

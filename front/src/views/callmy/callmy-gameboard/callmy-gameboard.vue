@@ -31,9 +31,6 @@
   @import url('./callmy-gameboard.css');
 </style>
 <script>
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
-
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -51,7 +48,6 @@ export default {
     const store = useStore()
 
     const state = reactive({
-      stompClient: null,
       isVoteTime: true,
       nicknameSendchance: true,
       inputNickname: '',
