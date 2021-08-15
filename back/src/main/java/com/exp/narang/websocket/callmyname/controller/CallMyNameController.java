@@ -105,6 +105,7 @@ public class CallMyNameController {
      * @param res : 게임 진행 정보
      */
     public void broadcastGameStatus(long roomId, GameStatusRes res){
+        log.debug("게임 정보 반환~~");
         template.convertAndSend("/from/call/play/" + roomId, res);
     }
 
