@@ -1,7 +1,7 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div class="callmy-board-title" @click="sendVoteFinish">pick my name!</div>
+      <div class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
     </div>
     <div class="callmy-board-vote-container">
       <div class="callmy-board-vote">
@@ -47,43 +47,47 @@ export default {
     const router = useRouter()
     const store = useStore()
 
+
     const state = reactive({
       isVoteTime: true,
       nicknameSendchance: true,
       inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
+      nowPlayUsers: computed(() => store.state.root.callmyManager.nowPlayUsers),
+      targetId: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].userId2 : state.nowPlayUsers[0].userId1) : 0),
+      targetName: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].username1 : state.nowPlayUsers[0].username2) : ''),
+      targetId: 0,
+      targetName: '',
     })
+
 
     const clickNicknameBtn = () => {
       if (state.inputNickname) {
-
         const message = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: state.inputNickname,
           vote: 0,
           isFinished: false,
         }
-
         emit('sendVote', message)
-
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
         state.nicknameSendchance = false
       }
     }
 
+
     const clickNicknameSelect = (nickname) => {
       if (state.selectedNickname === nickname) {
         return
       }
-
       if (!state.selectedNickname) {
         console.log(`${nickname} 처음 투표 함`)
         const message = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: nickname,
           vote: 1,
           isFinished: false,
@@ -91,19 +95,17 @@ export default {
         emit('sendVote', message)
       } else {
         console.log(`${state.selectedNickname} 에서 ${nickname}로 투표 바꿈`)
-
         const messageRemoveVote = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: state.selectedNickname, // 기존에 선택했던 것
           vote: -1, // 취소
           isFinished: false,
         }
         emit('sendVote', messageRemoveVote)
-
         const messageAddVote = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: nickname, // 새로 선택한 것
           vote: 1, // 추가
           isFinished: false,
@@ -113,6 +115,7 @@ export default {
       state.selectedNickname = nickname
     }
 
+
     const sendVoteFinish = () => {
       const message = {
           userId: state.userId,
@@ -121,7 +124,6 @@ export default {
           vote: 0,
           isFinished: true,
         }
-
         emit('sendVote', message)
     }
 

@@ -81,6 +81,7 @@ export default {
           subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
           subscribeSetName() // 플레이어의 제시어를 결정할 때 호출되는 메서드
+          subscribePlay()
         }
       )
     }
@@ -135,7 +136,13 @@ export default {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
         if (setNamRes.isFinished) {
-          console.log(`제시어는 ${setNamRes.result}입니다.`)
+          if (state.callmyManager.nowPlayUsers[0].nickname1){ // user1의 닉네임이 있으면 user2 닉네임 저장
+            state.callmyManager.nowPlayUsers[1].nickname2 = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[1].username2}의 제시어는 ${setNamRes.result}입니다`)
+          } else { // user1의 닉네임이 없으면 user1 닉네임 저장
+            state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[0].username1}의 제시어는 ${setNamRes.result}입니다`)
+          }
         }
         state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
