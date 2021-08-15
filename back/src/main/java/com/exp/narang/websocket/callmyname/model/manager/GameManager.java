@@ -8,15 +8,13 @@ import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.kurento.jsonrpc.client.JsonRpcClient.log;
-
 @Slf4j
 public class GameManager {
-    private RoomService roomService;
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
     private final Map<Long, String> nameMap;
@@ -31,8 +29,8 @@ public class GameManager {
     private int round, status;
     private long playingUserId1, playingUserId2;
 
-    public GameManager(Long roomId){
-        roomService = new RoomServiceImpl();
+    public GameManager(Long roomId, RoomService roomService){
+        log.debug("GameManager 객체 생성 ~~");
         this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         this.setNameRes = new SetNameRes();
         nameMap = new ConcurrentHashMap<>();
@@ -50,6 +48,7 @@ public class GameManager {
      * @return 게임을 시작할지 여부
      */
     public boolean addPlayer(long userId) {
+        log.debug("addPlayer 실행 ~~");
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때

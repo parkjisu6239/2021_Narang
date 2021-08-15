@@ -1,5 +1,6 @@
 package com.exp.narang.websocket.callmyname.controller;
 
+import com.exp.narang.api.model.service.RoomService;
 import com.exp.narang.websocket.callmyname.model.CallMyNameChatModel;
 import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
@@ -28,6 +29,7 @@ public class CallMyNameController {
     }
 
     private final SimpMessagingTemplate template;
+    private final RoomService roomService;
 
     /**
      * 게임을 시작하는 메서드
@@ -36,7 +38,9 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/start/{roomId}")
     public void startGame(@DestinationVariable long roomId){
-        ManagerHolder.gameManagerMap.put(roomId, new GameManager(roomId));
+        log.debug(" | roomId 번방 시작 ~~");
+        ManagerHolder.gameManagerMap.put(roomId, new GameManager(roomId, roomService));
+        log.debug(ManagerHolder.gameManagerMap.toString());
     }
 
     /**

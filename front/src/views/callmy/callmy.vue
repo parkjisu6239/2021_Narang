@@ -20,6 +20,7 @@
       <CallmySetting/>
     </div>
   </div>
+  <CallmyStt/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -34,6 +35,7 @@ import CallMyChat from './callmy-chat/callmy-chat.vue'
 import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
+import CallmyStt from './callmy-stt/callmy-stt.vue'
 
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -47,6 +49,7 @@ export default {
     CallMyGameBoard,
     CallmyBackground,
     CallmySetting,
+    CallmyStt,
   },
 
   setup(props, { emit }) {
