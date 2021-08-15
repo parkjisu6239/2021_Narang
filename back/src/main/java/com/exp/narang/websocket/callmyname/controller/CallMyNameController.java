@@ -60,11 +60,7 @@ public class CallMyNameController {
      * @param roomId
      */
     public void broadcastAllConnected(long roomId){
-        ManagerHolder.gameManagerMap.get(roomId);
-        // 연결 확인 메세지 보내기
-        Map<String, Boolean> res = new HashMap<>();
-        res.put("isConnected", true);
-        template.convertAndSend("/from/call/checkConnect/" + roomId, res);
+        template.convertAndSend("/from/call/checkConnect/" + roomId, ManagerHolder.gameManagerMap.get(roomId).getUserIdQueue());
         log.debug("다 들어옴");
     }
 
@@ -97,8 +93,8 @@ public class CallMyNameController {
      * @param roomId : path로 받는 roomId (PK)
      * @return GameStatusRes
      */
-    @MessageMapping("/call/next-users/{roomId}")
-    @SendTo("/from/call/next-users/{roomId}")
+    @MessageMapping("/call/play/{roomId}")
+    @SendTo("/from/call/play/{roomId}")
     public GameStatusRes getNextUsers(@DestinationVariable long roomId){
         return ManagerHolder.gameManagerMap.get(roomId).getNextUsers();
     }

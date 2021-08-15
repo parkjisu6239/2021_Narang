@@ -179,4 +179,11 @@ public class GameManager {
 
         return GameStatusRes.of(round, PLAYING, user1, user2);
     }
+
+    /**
+     * @return userIdQueue
+     */
+    public Queue<Long> getUserIdQueue(){
+        return userIdQueue;
+    }
 }
