@@ -88,7 +88,7 @@ export default {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
         state.draw = JSON.parse(res.body)
         state.isAllConnected = true
-        console.log('다 들어왔니?')
+        console.log('다 들어왔다')
       })
     }
 
