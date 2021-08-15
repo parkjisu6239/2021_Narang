@@ -158,7 +158,7 @@ public class GameManager {
         user2.put(USER_ID, playingUserId2);
         user2.put(NICKNAME, "");
 
-        return GameStatusRes.of(++round, status, user1, user2);
+        return GameStatusRes.of(++round, SETTING, user1, user2);
     }
 
     /**
@@ -175,6 +175,6 @@ public class GameManager {
         user2.put(USER_ID, playingUserId2);
         user2.put(NICKNAME, nameMap.get(playingUserId2));
 
-        return GameStatusRes.of(++round, status, user1, user2);
+        return GameStatusRes.of(round, PLAYING, user1, user2);
     }
 }
