@@ -4,7 +4,7 @@
       <div class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
     </div>
     <div class="callmy-board-vote-container">
-      <div class="callmy-board-vote">
+      <div class="callmy-board-vote" v-if="state.userId !== state.targetId">
         <div
           v-for="nickname in Object.keys(nicknameList)" :key="nickname"
           :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === nickname}"
@@ -19,11 +19,13 @@
         <input
           type="text"
           placeholder="제시어를 추가하세요"
-          :disabled="!state.isVoteTime || !state.nicknameSendchance"
+          :disabled="!state.isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
           @keyup.enter="clickNicknameBtn"
           v-model="state.inputNickname">
       </div>
-      <button :disabled="!state.isVoteTime || !state.nicknameSendchance" @click="clickNicknameBtn">전송</button>
+      <button
+        :disabled="!state.isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
+        @click="clickNicknameBtn">전송</button>
     </div>
   </div>
 </template>
@@ -54,7 +56,7 @@ export default {
       inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
-      nowPlayUsers: computed(() => store.state.root.callmyManager.nowPlayUsers),
+      nowPlayUsers: computed(() => store.getters['root/callmyManager'].nowPlayUsers),
       targetId: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].userId2 : state.nowPlayUsers[0].userId1) : 0),
       targetName: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].username1 : state.nowPlayUsers[0].username2) : ''),
       targetId: 0,
