@@ -41,6 +41,7 @@ export default {
   components: {
 		UserVideo,
 	},
+
   props: {
     roomId: {
       type: String,
@@ -52,6 +53,7 @@ export default {
       type: Boolean,
     }
   },
+
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
     const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"

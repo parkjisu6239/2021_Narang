@@ -71,4 +71,5 @@ export default {
   mafiaManager,
   callmyManager,
   userId,
+  publisher,
 }

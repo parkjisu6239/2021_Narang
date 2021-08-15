@@ -79,6 +79,10 @@ export default {
     }
 
     const clickNicknameSelect = (nickname) => {
+      if (state.selectedNickname === nickname) {
+        return
+      }
+
       if (!state.selectedNickname) {
         console.log(`${nickname} 처음 투표 함`)
         const message = {
