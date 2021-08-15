@@ -95,7 +95,7 @@ public class GameManager {
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
             else {
                 // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
-                if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
+                if(voteStatus.size() == playerCnt - 1) voteStatus = new HashMap<>();
                 voteStatus.put(req.getContent(), 0);
             }
             return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
@@ -103,7 +103,7 @@ public class GameManager {
         // 개표 현황 관리
         else {
             // 모든 사람 투표 완료한 경우
-            if(++voteCompleteCnt == playerCnt){
+            if(++voteCompleteCnt == playerCnt - 1){
                 String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
