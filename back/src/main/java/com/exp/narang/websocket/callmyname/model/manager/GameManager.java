@@ -2,7 +2,6 @@ package com.exp.narang.websocket.callmyname.model.manager;
 
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 
@@ -30,8 +29,9 @@ public class GameManager {
     /**
      * 게임에 참여한 사용자의 userId를 저장하는 메서드
      * @param userId : 사용자의 userId
+     * @return 게임을 시작할지 여부
      */
-    public CheckConnectRes addPlayer(long userId) {
+    public boolean addPlayer(long userId) {
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
@@ -39,12 +39,12 @@ public class GameManager {
             // 첫 대진표 만들기
             makeRandomDraw();
             // 이미 게임이 시작되었으면 null 반환
-            if (isGameStarted) return null;
+            if (isGameStarted) return false;
             // 게임이 시작되지 않았으면 게임 시작 표시
             isGameStarted = true;
-            return new CheckConnectRes(userIdQueue.poll(), userIdQueue.poll());
+            return true;
         }
-        return null;
+        return false;
     }
 
     /**
@@ -73,16 +73,14 @@ public class GameManager {
     public SetNameRes setName(SetNameReq req){
         if(!req.isFinished()) {
             setNameRes.handleVote(req, playerCnt);
-            return setNameRes;
-        }
-        else {
+        } else {
             setNameRes.determineResult(req, ++voteCompleteCnt, playerCnt);
             if(req.isFinished()) {
                 nameMap.put(req.getTargetId(), setNameRes.getResult());
                 voteCompleteCnt = 0;
             }
-            return setNameRes;
         }
+        return setNameRes;
     }
 
     /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
