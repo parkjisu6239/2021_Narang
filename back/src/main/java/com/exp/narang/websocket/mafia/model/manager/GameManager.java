@@ -11,6 +11,7 @@ import com.exp.narang.websocket.mafia.request.VoteMessage;
 import com.exp.narang.websocket.mafia.response.RoleResult;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +19,11 @@ import java.util.List;
 
 @Getter
 @Setter
+@Slf4j
+
 // 게임에 필요한 로직을 관리한다.
 public class GameManager {
-    private static final Logger log = LoggerFactory.getLogger(GameManager.class);
+//    private static final Logger log = LoggerFactory.getLogger(GameManager.class);
 
     private RoomService roomService;
 
