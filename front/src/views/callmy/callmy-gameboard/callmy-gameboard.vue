@@ -1,7 +1,8 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
+      <div v-if="isVoteTime" class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
+      <div v-else class="callmy-board-title" @click="sendVoteFinish">Now playing!</div>
     </div>
     <div class="callmy-board-vote-container">
       <div class="callmy-board-vote" v-if="state.userId !== state.targetId">
@@ -19,12 +20,12 @@
         <input
           type="text"
           placeholder="제시어를 추가하세요"
-          :disabled="!state.isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
+          :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
           @keyup.enter="clickNicknameBtn"
           v-model="state.inputNickname">
       </div>
       <button
-        :disabled="!state.isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
+        :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
         @click="clickNicknameBtn">전송</button>
     </div>
   </div>
@@ -35,13 +36,15 @@
 <script>
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 
 export default {
   name: 'CallMyGameBoard',
 
   props: {
     nicknameList: Object,
+    order: Number,
+    isVoteTime: Boolean,
   },
 
   setup(props, { emit }) {
@@ -51,16 +54,13 @@ export default {
 
 
     const state = reactive({
-      isVoteTime: true,
       nicknameSendchance: true,
       inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
       nowPlayUsers: computed(() => store.getters['root/callmyManager'].nowPlayUsers),
-      targetId: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].userId2 : state.nowPlayUsers[0].userId1) : 0),
-      targetName: computed(() => state.nowPlayUsers.length ? (state.nowPlayUsers[0].nickname1 ? state.nowPlayUsers[1].username1 : state.nowPlayUsers[0].username2) : ''),
-      targetId: 0,
-      targetName: '',
+      targetId: computed(() => store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0),
+      targetName: computed(() => store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''),
     })
 
 
@@ -128,6 +128,12 @@ export default {
         }
         emit('sendVote', message)
     }
+
+    watch(() => props.order, () => {
+      state.nicknameSendchance = true
+      state.inputNickname = ''
+      state.selectedNickname = ''
+    })
 
     return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
