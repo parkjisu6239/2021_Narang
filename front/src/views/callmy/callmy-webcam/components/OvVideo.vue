@@ -48,17 +48,17 @@ export default {
 
         if (state.detections.box) {
           const text = [
-            '아이유',
+            '아이이잉이',
           ]
 
           console.log(state.myUserName, props.username)
           const anchor = {
-            x: state.myUserName === props.username ? 660 - state.detections.box.topLeft.x : state.detections.box.topLeft.x,
+            x: state.myUserName === props.username ? 600 + text[0].length * 20 - state.detections.box.topLeft.x : state.detections.box.topRight.x - text[0].length * 20,
             y: state.detections.box.topLeft.y - 30,
           }
 
           const drawOptions = {
-            anchorPosition: 'TOP_RIGHT',
+            anchorPosition: state.myUserName === props.username ? 'TOP_RIGHT' : 'TOP_LEFT',
             backgroundColor: 'rgba(255, 255, 255, 1)',
             fontSize: 40,
             fontColor: 'black',

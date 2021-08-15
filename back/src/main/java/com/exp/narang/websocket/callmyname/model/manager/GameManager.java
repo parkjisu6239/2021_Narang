@@ -89,7 +89,7 @@ public class GameManager {
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
-        log.debug("플레이어 수 :"+playerCnt);
+        System.out.println("플레이어 수 :"+playerCnt);
         // 투표 현황 관리
         if(!req.isFinished()) {
             if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
