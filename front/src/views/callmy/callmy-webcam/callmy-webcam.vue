@@ -1,9 +1,7 @@
 <template>
   <div class="callmy-left-top-container">
     <div
-      :class="{
-        'webcam-nonstart': !gameStart,
-        'callmy-all-video-list': true}">
+      class="callmy-all-video-list">
       <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
       <UserVideo
         v-for="sub in state.subscribers"
@@ -13,16 +11,17 @@
     </div>
   </div>
   <div class="callmy-left-bottom-container">
-    <div class="callmy-now-play-video-list">
-      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-
-      <!-- palyer리스트가 있을 경우 아래처럼 하면 밑에 대결할 사람만 나옴, 지금은 없어서 주석 -->
-      <!-- <UserVideo v-if="player.includes(state.publisher.stream.connection.clientData)" :stream-manager="state.publisher"/>
+    <div v-if="gameStart" class="callmy-now-play-video-list">
+      <!-- <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/> -->
+      <UserVideo :stream-manager="state.publisher"/>
       <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
-        <UserVideo v-if="player.includes(sub.stream.connection.clientData)" :stream-manager="sub"/>
-      </div> -->
+        <UserVideo :startRegcognition="state.startRecognition" :stream-manager="sub"/>
+      </div>
       <div v-if="gameStart" class="game-not-start"></div>
+    </div>
+    <div v-else class="callmy-left-bottom-container">
+      <h1>아직 게임 시작 전입니다.</h1>
     </div>
   </div>
 </template>
@@ -54,8 +53,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore()
 
     const state = reactive({
@@ -66,8 +65,8 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
+      startRecognition: false,
     })
-
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
@@ -115,7 +114,6 @@ export default {
               state.mainStreamManager = publisher
               state.publisher = publisher
               store.state.root.publisher = publisher
-              console.log('나 들어왔어')
               state.session.publish(publisher)
               if (publisher) emit('joinCallMyRoom')
             })
