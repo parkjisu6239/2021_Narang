@@ -144,6 +144,13 @@ export default {
     }
 
 
+    const subscribePlay = () => {
+      state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
+        const users = JSON.parse(res.body)
+      })
+    }
+
+
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/chat/${route.params.roomId}`, JSON.stringify(message), {})
