@@ -6,7 +6,9 @@
     </div>
     <div class="home-right-side">
       <div class="home-right-side-container">
-        <img :class="{'img-neorang': true, 'right': state.value }" :src="require('@/assets/images/Neurang.png')" alt="">
+        <div :class="{'img-neorang': true, 'right': state.value }">
+          <img :src="require('@/assets/images/Neurang.png')" alt="">
+        </div>
         <div class="form">
           <div class="form-login-signup" v-if="!state.isLoggedIn">
             <div class="form-toggle">
