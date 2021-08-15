@@ -66,6 +66,7 @@ export default {
       stompClient: null,
       gameStart: false,
       count: 5,
+      gameSelected: null,
     })
 
     // [Func|dialog] 방 정보 수정 open
@@ -185,7 +186,7 @@ export default {
 
 
     const startCallmy = () => {
-      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify(state.userList.length), {})
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify('callmy start'), {})
     }
 
 
@@ -226,11 +227,18 @@ export default {
       }
     }
 
+
     // [Func|req] 방 정보 가져오기
     const requestRoomInfo = () => {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
-          console.log(res, '방 정보')
+          if (res.data.room.game !== state.gameSelected) {
+            state.gameSelected = res.data.room.game
+            ElMessage({
+              type: 'success',
+              message: `${res.data.room.game}으로 게임이 변경되었습니다.`
+            })
+          }
           store.commit('root/setRoomInfo', res.data.room)
         })
         .catch(err => {
@@ -240,6 +248,7 @@ export default {
           })
         })
     }
+
 
     // [Func|req] 내 정보 가져오기
     const requestMyInfo = () => {
@@ -258,6 +267,7 @@ export default {
         })
     }
 
+
     // [Func|req] 유저 리스트 가져오기
     const requestUserList = () => {
       store.dispatch('root/requestReadUserList', route.params.roomId)
@@ -268,6 +278,7 @@ export default {
           ElMessage(err)
         })
     }
+
 
     // [Func|req] 방 나가기 가져오기
     const leaveRoom = () => {
@@ -284,6 +295,7 @@ export default {
         })
     }
 
+
     // [Func|sys] 게임 시작 카운트 다운
     const countDown = () => {
       setTimeout(() => { state.count = 4 }, 1000)
@@ -292,12 +304,14 @@ export default {
       setTimeout(() => { state.count = 1 }, 4000)
     }
 
+
     //* Life Cycle *//
     onBeforeUnmount(() => { // vue 컴포넌트가 파괴되기 전에 시행 = 페이지 이동 감지
       if (!state.gameStart) {
         leaveRoom()
       }
     })
+
 
     //* created *//
     requestRoomInfo()

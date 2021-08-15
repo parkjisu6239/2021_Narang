@@ -31,9 +31,6 @@
   @import url('./callmy-gameboard.css');
 </style>
 <script>
-import Stomp from 'webstomp-client'
-import SockJS from 'sockjs-client'
-
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -51,7 +48,6 @@ export default {
     const store = useStore()
 
     const state = reactive({
-      stompClient: null,
       isVoteTime: true,
       nicknameSendchance: true,
       inputNickname: '',
@@ -79,6 +75,10 @@ export default {
     }
 
     const clickNicknameSelect = (nickname) => {
+      if (state.selectedNickname === nickname) {
+        return
+      }
+
       if (!state.selectedNickname) {
         console.log(`${nickname} 처음 투표 함`)
         const message = {
