@@ -148,8 +148,8 @@ public class GameManager {
     public GameStatusRes getGameStatus(String type) {
         Map<String, Object> user1 = new HashMap<>();
         Map<String, Object> user2 = new HashMap<>();
-        String userNick1 = nameMap.get(playingUserId1);
-        String userNick2 = nameMap.get(playingUserId2);
+        String userNick1 = "";
+        String userNick2 = "";
         int status = PLAYING;
 
         log.debug("게임 정보 리턴~");
@@ -168,6 +168,8 @@ public class GameManager {
             nowCnt++;
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
+            userNick1 = nameMap.get(playingUserId1);
+            userNick2 = nameMap.get(playingUserId2);
         }
 
         user1.put(USER_ID, playingUserId1);
