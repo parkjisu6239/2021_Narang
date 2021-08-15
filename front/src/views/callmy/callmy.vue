@@ -12,6 +12,8 @@
     <div class="callmy-right-side">
       <CallMyGameBoard
         :nicknameList="state.nicknameList"
+        :order="state.order"
+        :isVoteTime="state.isVoteTime"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
@@ -69,6 +71,8 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
+      order: 0,
+      isVoteTime: false,
     })
 
 
@@ -100,6 +104,7 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         sendPlay('next')
+        state.isVoteTime = true
       })
     }
 
@@ -119,14 +124,14 @@ export default {
         console.log(result, '다음 대결자들')
         store.state.root.callmyManager.nowPlayUsers = [
           {
-            userId1: result.user1.userId,
-            username1: state.userIdToUserName[result.user1.userId],
-            nickname1: '',
+            userId: result.user1.userId,
+            username: state.userIdToUserName[result.user1.userId],
+            nickname: '',
           },
           {
-            userId2: result.user2.userId,
-            username2: state.userIdToUserName[result.user2.userId],
-            nickname2: '',
+            userId: result.user2.userId,
+            username: state.userIdToUserName[result.user2.userId],
+            nickname: '',
           }
         ]
       })
@@ -137,9 +142,22 @@ export default {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
         if (setNamRes.isFinished) {
-          console.log(`제시어는 ${setNamRes.result}입니다.`)
+          if (state.callmyManager.nowPlayUsers[0].nickname){ // user1의 닉네임이 있으면 user2 닉네임 저장
+            state.callmyManager.nowPlayUsers[1].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 0
+            sendPlay('now')
+            state.isVoteTime = false
+          } else { // user1의 닉네임이 없으면 user1 닉네임 저장
+            state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[0].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 1
+          }
+        } else {
+          state.nicknameList = setNamRes.voteStatus
         }
-        state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
         console.log(setNamRes)
       })
