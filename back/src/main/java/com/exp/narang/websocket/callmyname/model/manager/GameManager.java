@@ -11,9 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameManager {
     private SetNameRes setNameRes;
+    private Map<String, Integer> voteStatus;
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
+    private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴"};
     private final int playerCnt;
     private int voteCompleteCnt;
     private boolean isGameStarted;
@@ -26,6 +28,7 @@ public class GameManager {
         this.setNameRes = new SetNameRes();
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
+        voteStatus = new HashMap<>();
         userIdSet = new HashSet<>();
         setNameRes = new SetNameRes();
         userIdQueue = new ArrayDeque<>();
@@ -73,21 +76,44 @@ public class GameManager {
     }
 
     /**
+     * TODO : 테스트용으로 모든 플레이어가 투표 했을 경우 완료되게 해놓음. 찐은 playerCnt - 2
      * 정한 이름을 저장하는 메서드
      * @param req : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
+        // 투표 현황 관리
         if(!req.isFinished()) {
-            setNameRes.handleVote(req, playerCnt);
-        } else {
-            setNameRes.determineResult(req, ++voteCompleteCnt, playerCnt);
-            if(req.isFinished()) {
+            if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
+            else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
+            else {
+                // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
+                if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
+                voteStatus.put(req.getContent(), 0);
+            }
+            return SetNameRes.returnResult("", false, voteStatus);
+        }
+        // 개표 현황 관리
+        else {
+            // 모든 사람 투표 완료한 경우
+            if(++voteCompleteCnt == playerCnt){
+                String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
+                int max = -1;
+                // 최다 득표 이름 찾음
+                voteStatus = new HashMap<>();
+                for(String content : voteStatus.keySet()){
+                    if(voteStatus.get(content) > max){
+                        result = content;
+                        max = voteStatus.get(content);
+                    }
+                }
                 nameMap.put(req.getTargetId(), setNameRes.getResult());
                 voteCompleteCnt = 0;
+                return SetNameRes.returnResult(result, true, voteStatus);
             }
+            // 아직 모든 사람의 투표가 완료되지 않은 경우
+            return SetNameRes.returnResult("", false, voteStatus);
         }
-        return setNameRes;
     }
 
     /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
