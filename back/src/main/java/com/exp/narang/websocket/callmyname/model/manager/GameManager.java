@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.kurento.jsonrpc.client.JsonRpcClient.log;
-
 @Slf4j
 public class GameManager {
     private RoomService roomService;
@@ -32,6 +30,7 @@ public class GameManager {
     private long playingUserId1, playingUserId2;
 
     public GameManager(Long roomId){
+        log.debug("GameManager 객체 생성 ~~");
         roomService = new RoomServiceImpl();
         this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         this.setNameRes = new SetNameRes();
@@ -50,6 +49,7 @@ public class GameManager {
      * @return 게임을 시작할지 여부
      */
     public boolean addPlayer(long userId) {
+        log.debug("addPlayer 실행 ~~");
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
