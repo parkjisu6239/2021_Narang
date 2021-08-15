@@ -21,7 +21,7 @@
       <div v-if="gameStart" class="game-not-start"></div>
     </div>
     <div v-else class="callmy-left-bottom-container">
-      <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }}명</h1>
+      <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }} / {{ playerNumbers }}</h1>
     </div>
   </div>
 </template>
@@ -50,6 +50,9 @@ export default {
     },
     gameStart: {
       type: Boolean,
+    },
+    playerNumbers: {
+      type: Number,
     }
   },
   setup(props, { emit }) {
@@ -66,7 +69,7 @@ export default {
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
       startRecognition: false,
-      joinedPlayerNumbers: 1,
+      joinedPlayerNumbers: 0,
     })
 
     const joinSession = () => {
@@ -117,8 +120,8 @@ export default {
               state.mainStreamManager = publisher
               state.publisher = publisher
               store.state.root.publisher = publisher
+              state.joinedPlayerNumbers++
               state.session.publish(publisher)
-              if (publisher) emit('joinCallMyRoom')
             })
             .catch(error => {
               console.log('There was an error connecting to the session:', error.code, error.message)
@@ -196,6 +199,9 @@ export default {
 			})
 		}
 
+    watch(() => state.joinedPlayerNumbers, () => {
+      if(state.joinedPlayerNumbers === props.playerNumbers) emit('joinCallMyRoom')
+    })
 
     watch(() => props.socketConnected, () => {
       joinSession()
