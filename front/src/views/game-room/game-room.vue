@@ -186,7 +186,7 @@ export default {
 
 
     const startCallmy = () => {
-      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify('callmy start'), {})
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`)
     }
 
 
@@ -196,7 +196,7 @@ export default {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
+            profileImageURL = 'https://localhost:8080/' + thumbnailURL
           }
         })
 

@@ -58,7 +58,7 @@ export default {
           }
 
           const drawOptions = {
-            anchorPosition: 'TOP_RIGHT',
+            anchorPosition: state.myUserName === props.username ? 'TOP_RIGHT' : 'TOP_LEFT',
             backgroundColor: 'rgba(255, 255, 255, 1)',
             fontSize: 40,
             fontColor: 'black',
