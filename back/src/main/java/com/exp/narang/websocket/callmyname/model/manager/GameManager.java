@@ -5,7 +5,6 @@ import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.CheckConnectRes;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
-import com.exp.narang.websocket.callmyname.response.SetNameRes2;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +23,6 @@ public class GameManager {
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
         setNameRes = new SetNameRes();
-//        winList = new ArrayList<>();
         userIdQueue = new ArrayDeque<>();
     }
 
@@ -101,8 +99,4 @@ public class GameManager {
         }
         return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty());
     }
-
-//    public List<Long> getRank(){
-//        return winList;
-//    }
 }
