@@ -15,8 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class GameManager {
-    @Autowired
-    private RoomService roomService;
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
     private final Map<Long, String> nameMap;
@@ -31,9 +29,8 @@ public class GameManager {
     private int round, status;
     private long playingUserId1, playingUserId2;
 
-    public GameManager(Long roomId){
+    public GameManager(Long roomId, RoomService roomService){
         log.debug("GameManager 객체 생성 ~~");
-        roomService = new RoomServiceImpl();
         this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         this.setNameRes = new SetNameRes();
         nameMap = new ConcurrentHashMap<>();
