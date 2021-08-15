@@ -186,7 +186,7 @@ export default {
 
 
     const startCallmy = () => {
-      state.stompClient.send(`/to/call/start/${route.params.roomId}`, JSON.stringify('callmy start'), {})
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`)
     }
 
 
