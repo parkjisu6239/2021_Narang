@@ -1,16 +1,9 @@
 package com.exp.narang.websocket.callmyname.response;
-
-import com.exp.narang.websocket.callmyname.request.SetNameReq;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import io.swagger.models.auth.In;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @Setter
@@ -30,8 +23,11 @@ public class SetNameRes {
         this.targetId = targetId;
         this.result = result;
         this.isFinished = isFinished;
-        this.voteStatus = new HashMap<>();
-        for(Map.Entry<String, Integer> entry : voteStatus.entrySet()) this.voteStatus.put(entry.getKey(), entry.getValue());
+        if(!isFinished){
+            this.voteStatus = new HashMap<>();
+            for(Map.Entry<String, Integer> entry : voteStatus.entrySet()) this.voteStatus.put(entry.getKey(), entry.getValue());
+        }
+        else this.voteStatus = null;
     }
 
     public static SetNameRes returnResult(Long targetId, String result, Boolean isFinished, Map<String, Integer> voteStatus){
