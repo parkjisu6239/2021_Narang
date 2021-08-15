@@ -1,5 +1,7 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
+import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.api.model.service.RoomServiceImpl;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
@@ -14,6 +16,7 @@ import static org.kurento.jsonrpc.client.JsonRpcClient.log;
 
 @Slf4j
 public class GameManager {
+    private RoomService roomService;
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
     private final Map<Long, String> nameMap;
@@ -28,9 +31,10 @@ public class GameManager {
     private int round, status;
     private long playingUserId1, playingUserId2;
 
-    public GameManager(int playerCnt){
+    public GameManager(Long roomId){
+        roomService = new RoomServiceImpl();
+        this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         this.setNameRes = new SetNameRes();
-        this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         voteStatus = new HashMap<>();
         userIdSet = new HashSet<>();
@@ -107,7 +111,6 @@ public class GameManager {
                 String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
-                voteStatus = new HashMap<>();
                 for(String content : voteStatus.keySet()){
                     if(voteStatus.get(content) > max){
                         result = content;
@@ -158,7 +161,7 @@ public class GameManager {
         user2.put(USER_ID, playingUserId2);
         user2.put(NICKNAME, "");
 
-        return GameStatusRes.of(++round, status, user1, user2);
+        return GameStatusRes.of(++round, SETTING, user1, user2);
     }
 
     /**
@@ -175,6 +178,6 @@ public class GameManager {
         user2.put(USER_ID, playingUserId2);
         user2.put(NICKNAME, nameMap.get(playingUserId2));
 
-        return GameStatusRes.of(++round, status, user1, user2);
+        return GameStatusRes.of(round, PLAYING, user1, user2);
     }
 }
