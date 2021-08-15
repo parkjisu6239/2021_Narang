@@ -89,14 +89,24 @@ public class CallMyNameController {
     }
 
     /**
-     * 게임 정보와 다음 게임할 userId를 반환하는 메서드
+     * 다음 게임으로 넘어가거나 이름을 모두 정하면 호출되는 메서드
      * @param roomId : path로 받는 roomId (PK)
-     * @return GameStatusRes
+     * @param type : 반환 값이 다음 게임의 정보인지 현재 게임 정보인지 구분하기 위한 변수
      */
     @MessageMapping("/call/play/{roomId}")
     @SendTo("/from/call/play/{roomId}")
-    public GameStatusRes getNextUsers(@DestinationVariable long roomId){
-        return ManagerHolder.gameManagerMap.get(roomId).getNextUsers();
+    public void getGameStatus(@DestinationVariable long roomId, String type){
+        GameStatusRes res = ManagerHolder.gameManagerMap.get(roomId).getGameStatus(type);
+        if(res != null) broadcastGameStatus(roomId, res);
+    }
+
+    /**
+     * 게임 정보와 게임 중인 userId를 반환하는 메서드
+     * @param roomId : 게임중인 방의 roomId
+     * @param res : 게임 진행 정보
+     */
+    public void broadcastGameStatus(long roomId, GameStatusRes res){
+        template.convertAndSend("/from/call/play/" + roomId, res);
     }
 
     /**
