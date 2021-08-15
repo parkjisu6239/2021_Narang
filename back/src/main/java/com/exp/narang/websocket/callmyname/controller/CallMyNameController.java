@@ -5,6 +5,7 @@ import com.exp.narang.websocket.callmyname.model.manager.GameManager;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
+import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,16 +88,16 @@ public class CallMyNameController {
         return ManagerHolder.gameManagerMap.get(roomId).setName(setNameReq);
     }
 
-//    /**
-//     * 다음 게임할 userId를 반환하는 메서드
-//     * @param roomId : path로 받는 roomId (PK)
-//     * @return 다음에 질문할 사용자의 userId
-//     */
-//    @MessageMapping("/call/set-qtime/{roomId}")
-//    @SendTo("/from/call/set-qtime/{roomId}")
-//    public long setQuestionTime(@DestinationVariable long roomId){
-//        return ManagerHolder.gameManagerMap.get(roomId).getNextUserId();
-//    }
+    /**
+     * 게임 정보와 다음 게임할 userId를 반환하는 메서드
+     * @param roomId : path로 받는 roomId (PK)
+     * @return GameStatusRes
+     */
+    @MessageMapping("/call/next-users/{roomId}")
+    @SendTo("/from/call/next-users/{roomId}")
+    public GameStatusRes getNextUsers(@DestinationVariable long roomId){
+        return ManagerHolder.gameManagerMap.get(roomId).getNextUsers();
+    }
 
     /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
