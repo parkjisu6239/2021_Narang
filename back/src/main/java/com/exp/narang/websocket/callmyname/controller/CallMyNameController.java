@@ -36,6 +36,7 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/start/{roomId}")
     public void startGame(@DestinationVariable long roomId, String input){
+        log.debug(input + " | 시작 ~~");
         ManagerHolder.gameManagerMap.put(roomId, new GameManager(roomId));
     }
 
