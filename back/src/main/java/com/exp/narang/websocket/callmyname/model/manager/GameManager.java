@@ -5,12 +5,14 @@ import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.kurento.jsonrpc.client.JsonRpcClient.log;
 
+@Slf4j
 public class GameManager {
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
