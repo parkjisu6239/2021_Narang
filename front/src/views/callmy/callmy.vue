@@ -83,7 +83,11 @@ export default {
       )
     }
 
-
+    /**
+     *
+     * subscribe (back -> front)
+     *
+     */
     const subscribeChat = () => {
       state.stompClient.subscribe(`/from/call/chat/${route.params.roomId}`, res => {
         const chat = JSON.parse(res.body)
@@ -122,6 +126,16 @@ export default {
       })
     }
 
+    const subscribePlay = () => {
+      state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
+        const users = JSON.parse(res.body)
+      })
+    }
+    /**
+     *
+     *send (front -> back)
+     *
+     */
 
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
@@ -129,14 +143,22 @@ export default {
       }
     }
 
-
     const sendVote = (message) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/set-name/${route.params.roomId}`, JSON.stringify(message), {})
       }
     }
 
+    const sendPlay = (message) => {
+      state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(message), {})
+    }
 
+
+    /**
+     *
+     * logic
+     *
+     */
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
