@@ -94,7 +94,6 @@ public class CallMyNameController {
      * @param type : 반환 값이 다음 게임의 정보인지 현재 게임 정보인지 구분하기 위한 변수
      */
     @MessageMapping("/call/play/{roomId}")
-    @SendTo("/from/call/play/{roomId}")
     public void getGameStatus(@DestinationVariable long roomId, String type){
         GameStatusRes res = ManagerHolder.gameManagerMap.get(roomId).getGameStatus(type);
         if(res != null) broadcastGameStatus(roomId, res);
