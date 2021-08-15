@@ -1,16 +1,16 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div class="callmy-board-title">pick my name!</div>
+      <div class="callmy-board-title" @click="sendVoteFinish">pick my name!</div>
     </div>
     <div class="callmy-board-vote-container">
       <div class="callmy-board-vote">
         <div
-          v-for="i in 10" :key="i"
-          :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === i}"
-          @click="clickNicknameSelect(i)">
-          <div class="callmy-nickname">제시어asdasdasdasadas</div>
-          <div class="callmy-nickname-vote-count"><span>5</span></div>
+          v-for="nickname in Object.keys(nicknameList)" :key="nickname"
+          :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === nickname}"
+          @click="clickNicknameSelect(nickname)">
+          <div class="callmy-nickname">{{ nickname }}</div>
+          <div class="callmy-nickname-vote-count"><span>{{nicknameList[nickname]}}</span></div>
         </div>
       </div>
     </div>
@@ -41,6 +41,10 @@ import { reactive, computed } from 'vue'
 export default {
   name: 'CallMyGameBoard',
 
+  props: {
+    nicknameList: Object,
+  },
+
   setup(props, { emit }) {
     const route = useRoute()
     const router = useRouter()
@@ -52,29 +56,76 @@ export default {
       nicknameSendchance: true,
       inputNickname: '',
       selectedNickname: '',
+      userId: computed(() => store.state.root.userId),
     })
 
     const clickNicknameBtn = () => {
       if (state.inputNickname) {
+
+        const message = {
+          userId: state.userId,
+          targetId: 45, // 테스트 용
+          content: state.inputNickname,
+          vote: 0,
+          isFinished: false,
+        }
+
+        emit('sendVote', message)
+
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
         state.nicknameSendchance = false
       }
     }
 
-    const clickNicknameSelect = (i) => {
+    const clickNicknameSelect = (nickname) => {
       if (!state.selectedNickname) {
-        console.log(`${i} 처음 투표 함`)
+        console.log(`${nickname} 처음 투표 함`)
+        const message = {
+          userId: state.userId,
+          targetId: 45, // 테스트 용
+          content: nickname,
+          vote: 1,
+          isFinished: false,
+        }
+        emit('sendVote', message)
       } else {
-        console.log(`${state.selectedNickname} 에서 ${i}로 투표 바꿈`)
-        // 소켓 보낼 때 state.selectedNickname 는 -1로 보내고
-        // i 는 1로 보내고
-        // 두번 보내야함(지금은 i인데 실제로는 닉네임일 예정)
+        console.log(`${state.selectedNickname} 에서 ${nickname}로 투표 바꿈`)
+
+        const messageRemoveVote = {
+          userId: state.userId,
+          targetId: 45, // 테스트 용
+          content: state.selectedNickname, // 기존에 선택했던 것
+          vote: -1, // 취소
+          isFinished: false,
+        }
+        emit('sendVote', messageRemoveVote)
+
+        const messageAddVote = {
+          userId: state.userId,
+          targetId: 45, // 테스트 용
+          content: nickname, // 새로 선택한 것
+          vote: 1, // 추가
+          isFinished: false,
+        }
+        emit('sendVote', messageAddVote)
       }
-      state.selectedNickname = i
+      state.selectedNickname = nickname
     }
 
-    return { state, clickNicknameBtn, clickNicknameSelect }
+    const sendVoteFinish = () => {
+      const message = {
+          userId: state.userId,
+          targetId: state.userId,
+          content: '',
+          vote: 0,
+          isFinished: true,
+        }
+
+        emit('sendVote', message)
+    }
+
+    return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
 }
 </script>

@@ -8,7 +8,9 @@
         :gameStart="state.isAllConnected"/>
     </div>
     <div class="callmy-right-side">
-      <CallMyGameBoard/>
+      <CallMyGameBoard
+        :nicknameList="state.nicknameList"
+        @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
         :roomId="route.params.roomId"
@@ -53,6 +55,7 @@ export default {
       userId: computed(() => store.state.root.userId),
       draw: computed(() => store.state.root.draw),
       socketConnected: false,
+      nicknameList: {},
     })
 
 
@@ -64,6 +67,7 @@ export default {
           subscribeChat() // 채팅 소켓
           subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
+          subscribeSetName() // 플레이어의 제시어를 결정할 때 호출되는 메서드
         }
       )
     }
@@ -93,6 +97,17 @@ export default {
       })
     }
 
+    const subscribeSetName = () => {
+      state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
+        const setNamRes = JSON.parse(res.body)
+        if (setNamRes.isFinished) {
+          console.log(`제시어는 ${setNamRes.result}입니다.`)
+        }
+        state.nicknameList = setNamRes.voteStatus
+        console.log("setNamRes")
+        console.log(setNamRes)
+      })
+    }
 
     const sendChat = (message) => {
       if (state.stompClient && state.stompClient.connected) {
@@ -100,6 +115,11 @@ export default {
       }
     }
 
+    const sendVote = (message) => {
+      if (state.stompClient && state.stompClient.connected) {
+        state.stompClient.send(`/to/call/set-name/${route.params.roomId}`, JSON.stringify(message), {})
+      }
+    }
 
     const joinCallMyRoom = () => {
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
@@ -120,7 +140,7 @@ export default {
     requestMyInfo()
     connectSocket()
 
-    return { state, route, sendChat, joinCallMyRoom }
+    return { state, route, sendChat, joinCallMyRoom, sendVote }
   }
 }
 </script>

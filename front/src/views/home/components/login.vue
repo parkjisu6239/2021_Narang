@@ -7,7 +7,7 @@
       <el-input v-model="state.form.password" autocomplete="off" show-password></el-input>
     </el-form-item>
   </el-form>
-  <el-button type="primary" @click="clickLogin">로그인</el-button>
+  <div class="login-btn" @click="clickLogin">로그인</div>
 </template>
 
 <script>
@@ -78,6 +78,21 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.login-btn {
+  background: linear-gradient(90deg, #00D1FF 0%, #007BFF 100%);
+  text-align: center;
+  border-radius: 40px;
+  width: 90%;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
+.login-btn:hover {
+  background: linear-gradient(90deg, #00b2da 0%, #006cdf 100%);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
 </style>

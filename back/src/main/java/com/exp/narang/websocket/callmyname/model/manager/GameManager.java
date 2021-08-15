@@ -19,6 +19,7 @@ public class GameManager {
     private boolean isGameStarted;
 
     public GameManager(int playerCnt){
+        this.setNameRes = new SetNameRes();
         this.playerCnt = playerCnt;
         nameMap = new ConcurrentHashMap<>();
         userIdSet = new HashSet<>();
@@ -70,7 +71,10 @@ public class GameManager {
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
-        if(!req.isFinished()) return setNameRes.handleVote(req, playerCnt);
+        if(!req.isFinished()) {
+            setNameRes.handleVote(req, playerCnt);
+            return setNameRes;
+        }
         else {
             setNameRes.determineResult(req, ++voteCompleteCnt, playerCnt);
             if(req.isFinished()) {

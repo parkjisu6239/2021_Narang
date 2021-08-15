@@ -1,6 +1,6 @@
 <template>
     <div class="user-delete-header">
-      <img src="" alt="">
+      <img class="neurang-sad" :src="require('@/assets/images/Neurang-sad.png')" alt="탈퇴를 슬퍼하는 너랑이">
       <span>정말 탈퇴하시겠어요?</span>
     </div>
 
