@@ -1,14 +1,12 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
 import com.exp.narang.api.model.service.RoomService;
-import com.exp.narang.api.model.service.RoomServiceImpl;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,8 +23,8 @@ public class GameManager {
     private int voteCompleteCnt;
     private boolean isGameStarted;
     private static final int SETTING = 0, PLAYING = 1;
-    private static final String USER_ID = "userId", NICKNAME = "nickname";
-    private int round, status;
+    private static final String USER_ID = "userId", NICKNAME = "nickname", NEXT = "next";
+    private int round, nowCnt, nextCnt;
     private long playingUserId1, playingUserId2;
 
     public GameManager(Long roomId, RoomService roomService){
@@ -39,7 +37,8 @@ public class GameManager {
         setNameRes = new SetNameRes();
         userIdQueue = new ArrayDeque<>();
         round = 0;
-        status = SETTING;
+        nowCnt = 0;
+        nextCnt = 0;
     }
 
     /**
@@ -145,39 +144,43 @@ public class GameManager {
     }
 
     /**
-     * 현재 게임 라운드, 상태, 이름 정할 userId, 빈 문자열 반환
+     * 현재 게임 라운드, 상태, userId, 이름 반환
      * @return GameStatusRes
      */
-    public GameStatusRes getNextUsers() {
+    public GameStatusRes getGameStatus(String type) {
         Map<String, Object> user1 = new HashMap<>();
         Map<String, Object> user2 = new HashMap<>();
+        String userNick1 = nameMap.get(playingUserId1);
+        String userNick2 = nameMap.get(playingUserId2);
+        int status = PLAYING;
 
-        playingUserId1 = userIdQueue.poll();
+        log.debug("게임 정보 리턴~");
+        // 다음 게임
+        if(type.equals(NEXT)) {
+            nextCnt++;
+            if(nextCnt < playerCnt) return null;
+            log.debug("다음 게임ㄱㄱ");
+            playingUserId1 = userIdQueue.poll();
+            playingUserId2 = userIdQueue.poll();
+            userNick1 = "";
+            userNick2 = "";
+            status = SETTING;
+            round++;
+        }else{
+            nowCnt++;
+            if(nowCnt < playerCnt) return null;
+            log.debug("이름 정했으니 게임ㄱㄱ");
+        }
+
         user1.put(USER_ID, playingUserId1);
-        user1.put(NICKNAME, "");
-
-        playingUserId2 = userIdQueue.poll();
-        user2.put(USER_ID, playingUserId2);
-        user2.put(NICKNAME, "");
-
-        return GameStatusRes.of(++round, SETTING, user1, user2);
-    }
-
-    /**
-     * 현재 게임 라운드, 상태, userId, 정한 이름 반환
-     * @return GameStatusRes
-     */
-    public GameStatusRes getGameStatus() {
-        Map<String, Object> user1 = new HashMap<>();
-        Map<String, Object> user2 = new HashMap<>();
-
-        user1.put(USER_ID, playingUserId1);
-        user1.put(NICKNAME, nameMap.get(playingUserId1));
+        user1.put(NICKNAME, userNick1);
 
         user2.put(USER_ID, playingUserId2);
-        user2.put(NICKNAME, nameMap.get(playingUserId2));
+        user2.put(NICKNAME, userNick2);
 
-        return GameStatusRes.of(round, PLAYING, user1, user2);
+        nextCnt = 0;
+        nowCnt = 0;
+        return GameStatusRes.of(round, status, user1, user2);
     }
 
     /**
