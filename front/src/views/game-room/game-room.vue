@@ -195,7 +195,7 @@ export default {
         let profileImageURL = ''
         state.userList.forEach(user => {
           if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://localhost:8080/' + thumbnailURL
+            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
           }
         })
 
