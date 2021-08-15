@@ -95,6 +95,7 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/play/{roomId}")
     public void getGameStatus(@DestinationVariable long roomId, String type){
+        log.debug("이것이 type이다. " + type);
         GameStatusRes res = ManagerHolder.gameManagerMap.get(roomId).getGameStatus(type);
         if(res != null) broadcastGameStatus(roomId, res);
     }
