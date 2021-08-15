@@ -9,6 +9,8 @@ import com.exp.narang.websocket.callmyname.response.SetNameRes;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.kurento.jsonrpc.client.JsonRpcClient.log;
+
 public class GameManager {
     private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
@@ -82,11 +84,14 @@ public class GameManager {
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
+        log.debug("플레이어 수 :"+playerCnt);
         // 투표 현황 관리
         if(!req.isFinished()) {
             if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
             else {
+                log.debug("첫 제시어 추가입니다:"+req.getContent());
+                log.debug("첫 제시어 추가, voteStatus 사이즈:"+voteStatus.size());
                 // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
                 if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
                 voteStatus.put(req.getContent(), 0);
