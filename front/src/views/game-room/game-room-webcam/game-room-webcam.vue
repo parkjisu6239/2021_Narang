@@ -14,9 +14,6 @@
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
-    <button @click="test1">실행</button>
-    <button @click="test2">제거</button>
-    <button @click="test3">이미지</button>
   </div>
 
 </template>
@@ -202,56 +199,14 @@ export default {
     // created
     joinSession()
 
+
     // beforeunmount
     onBeforeUnmount(() => {
       leaveSession()
     })
-    const test1 = () => {
-      store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "videoflip method=vertical-flip" })
-    .then(() => {
-        console.log("Video rotated!");
-    })
-    .catch(error => {
-        console.error(error);
-    });
 
-    }
 
-    const test2 = () => {
-      store.state.root.publisher.stream.removeFilter()
-    .then(() => {
-        console.log("Filter removed");
-    })
-    .catch(error => {
-        console.error(error);
-    });
-    }
-
-    const test3 = () => {
-// store.state.root.publisher.stream.applyFilter("GStreamerFilter", { command: "gdkpixbufoverlay location=/images/img.png offset-x=10 offset-y=10 overlay-height=200 overlay-width=200" })
-//     .then(() => {
-//         console.log("Video rotated!");
-//     })
-//     .catch(error => {
-//         console.error(error);
-//     });
-
-    store.state.root.publisher.stream.applyFilter('FaceOverlayFilter', {})
-		.then(f => {
-			if (f.type === 'FaceOverlayFilter') {
-				f.execMethod(
-					"setOverlayedImage",
-					{
-						"uri": "https://shared-comic.pstatic.net/thumb/webtoon/650305/thumbnail/title_thumbnail_20161209212128_t125x101.jpg",
-						"offsetXPercent": "1.5F", // -0.1
-						"offsetYPercent": "-1.5F", //-0.8 --> 1.5 아래로 내려감
-						"widthPercent": "2.0F",
-						"heightPercent": "1.5F"
-					});
-			}
-		});
-    }
-    return { state, store, updateMainVideoStreamManager, test1, test2, test3}
+    return { state, store, updateMainVideoStreamManager }
   }
 }
 </script>
