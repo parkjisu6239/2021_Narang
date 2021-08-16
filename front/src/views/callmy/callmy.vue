@@ -198,7 +198,11 @@ export default {
         console.log(res)
         console.log(res.body)
         const DefaultNickname = res.body
-        store.state.root.callmyManager.defaultNickname = DefaultNickname
+        if (state.userId !== state.callmyManager.nowPlayUsers[state.order].userId) {
+          store.state.root.callmyManager.defaultNickname = DefaultNickname
+        } else {
+          store.state.root.callmyManager.defaultNickname = ''
+        }
       })
     }
 
