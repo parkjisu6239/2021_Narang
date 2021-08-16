@@ -252,7 +252,7 @@ export default {
 
 
     const joinCallMyRoom = () => {
-      console.log('조인하는 중')
+
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
     }
 
@@ -288,6 +288,8 @@ export default {
       store.state.root.callmyManager.isFinished = false;
       store.state.root.callmyManager.nowPlayUsers = [];
       store.state.root.callmyManager.draw =  [];
+      state.roundStart = false
+      state.startDetection = false
     }
 
 
