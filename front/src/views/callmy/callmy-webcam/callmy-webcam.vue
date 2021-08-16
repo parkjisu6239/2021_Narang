@@ -12,8 +12,6 @@
   </div>
   <div class="callmy-left-bottom-container">
     <div v-if="gameStart" class="callmy-now-play-video-list">
-      <!-- <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/> -->
       <UserVideo :stream-manager="state.publisher"/>
       <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
         <UserVideo :startRegcognition="state.startRecognition" :stream-manager="sub"/>

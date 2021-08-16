@@ -22,6 +22,9 @@
       <CallmySetting/>
     </div>
   </div>
+  <CallmyShowDraw
+    v-show="state.showDraw"
+    :players="state.callmyManager.nowPlayUsers"/>
   <CallmyStt @sendGuessName="sendGuessName" v-if="state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <CallmyBackground/>
 </template>
@@ -38,7 +41,7 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-
+import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -53,6 +56,7 @@ export default {
     CallmyBackground,
     CallmySetting,
     CallmyStt,
+    CallmyShowDraw,
   },
 
   setup(props, { emit }) {
@@ -71,6 +75,7 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
+      showDraw: false,
       order: 0,
       isVoteTime: false,
     })
@@ -156,6 +161,8 @@ export default {
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
         }
       })
+      showDraw()
+      console.log(state.callmyManager)
     }
 
 
@@ -293,6 +300,13 @@ export default {
       }, 5000);
     }
 
+
+    const showDraw = () => {
+      state.showDraw = true
+      setTimeout(() => {
+        state.showDraw = false
+      }, 5000)
+    }
 
     requestMyInfo()
     requestUserList()
