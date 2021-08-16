@@ -163,9 +163,9 @@ export default {
         } else { // 플레이 하는 시간
           store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
+          state.startDetection = true
         }
       })
-      showDraw()
       console.log(state.callmyManager)
     }
 
@@ -180,7 +180,6 @@ export default {
             state.nicknameList = {}
             state.order = 0
             sendPlay('now')
-            state.
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
@@ -191,7 +190,6 @@ export default {
           }
         } else {
           state.nicknameList = setNamRes.voteStatus
-          state.startDetection = true
         }
         console.log("setNamRes")
         console.log(setNamRes)
