@@ -20,7 +20,6 @@ export default {
       ignoreEndProcess: false,
       finalTranscript: '',
       ans: false,
-      isEnd: computed( () => props.roomId)
     })
 
     const startRecognition = () => {
