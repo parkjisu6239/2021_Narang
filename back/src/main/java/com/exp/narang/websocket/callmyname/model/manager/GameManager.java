@@ -180,6 +180,7 @@ public class GameManager {
         // 다음 게임
         if(type.equals(NEXT)) {
             nextCnt++;
+            log.debug("next 요청 횟수 " + nextCnt);
             if(nextCnt < playerCnt) return null;
             round++;
             log.debug("다음 게임ㄱㄱ");
@@ -188,6 +189,7 @@ public class GameManager {
             status = SETTING;
         }else{
             nowCnt++;
+            log.debug("now 요청 횟수 " + nowCnt);
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
             userNick1 = nameMap.get(playingUserId1);
