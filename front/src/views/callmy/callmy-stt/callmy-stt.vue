@@ -37,7 +37,7 @@ export default {
       state.recognition.onresult = function(event){
         console.log(event, '이거는 event')
         console.log(event.results, '이거는 event results')
-        let texts = Array.from(e.results).map(results => results[0].transcript).join("")
+        let texts = Array.from(event.results).map(results => results[0].transcript).join("")
         console.log(texts, '이거는 texts - 레퍼런스 문서에서 가져온 거')
 
         state.finalTranscript = '' // 기존에 작성된 내용 초기화
@@ -72,7 +72,7 @@ export default {
 
       state.recognition.onend = function(event) {
         console.log(event, 'STT 끝났어요')
-        recognition.start()
+        state.recognition.start()
       }
 
 
