@@ -8,11 +8,13 @@
 </template>
 
 <script>
+import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
 
 export default {
   name: 'callmyStt',
   setup(props, { emit }) {
+    const route = useRoute()
 
     const state = reactive({
       recognition: null,
