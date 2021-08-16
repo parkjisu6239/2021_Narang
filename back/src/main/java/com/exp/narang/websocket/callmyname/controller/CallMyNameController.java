@@ -133,8 +133,6 @@ public class CallMyNameController {
     @MessageMapping("/call/guess-name/{roomId}")
     @SendTo("/from/call/guess-name/{roomId}")
     public GuessNameRes guessName(@DestinationVariable long roomId, NameReq req){
-        log.debug("요청 들어옴 " + req.getUserId());
-        log.debug("요청 들어옴 " + req.getName());
         GuessNameRes res = ManagerHolder.gameManagerMap.get(roomId).guessName(req);
         // 게임 끝나면 Map에서 Manager 삭제
         if(res.isGameEnd()) ManagerHolder.gameManagerMap.remove(roomId);

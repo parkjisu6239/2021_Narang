@@ -155,7 +155,8 @@ public class GameManager {
             nameMap.remove(req.getUserId());
             // 정답자 처리
             userIdQueue.offer(req.getUserId());
-            log.debug("넣음 " + req.getUserId());
+            log.debug("큐에 넣음 " + req.getUserId());
+            log.debug(Arrays.toString(userIdQueue.toArray()));
             // 우승 ~
             if(userIdQueue.size() == 1) return new GuessNameRes(req.getUserId(), true, true);
         }
@@ -186,6 +187,7 @@ public class GameManager {
             status = SETTING;
             log.debug("뺌 " + playingUserId1);
             log.debug("뺌 " + playingUserId2);
+            log.debug(Arrays.toString(userIdQueue.toArray()));
         }else{
             nowCnt++;
             log.debug("now 요청 횟수 " + nowCnt);
