@@ -19,7 +19,7 @@
   <div class="callmy-left-bottom-container">
     <div v-if="gameStart && roundStart" class="callmy-round-info-container">
       <div class="callmy-round-info">
-        <span class="callmy-title-round">{{ state.callmyManager.round }} Round!</span> {{ state.callmyManager.nowPlayUsers[0].username }}<span class="callmy-title-vs">VS</span>{{ state.callmyManager.nowPlayUsers[1].username }}
+        <span class="callmy-title-round">{{ state.callmyManager.round }} Round!</span> {{ state.callmyManager.nowPlayUsers.length ? state.callmyManager.nowPlayUsers[0].username : '' }}<span class="callmy-title-vs">VS</span>{{ state.callmyManager.nowPlayUsers.length ? state.callmyManager.nowPlayUsers[1].username : ''}}
       </div>
     </div>
     <div class="callmy-now-play-video-container">
