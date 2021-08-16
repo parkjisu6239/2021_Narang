@@ -180,7 +180,6 @@ export default {
             state.nicknameList = {}
             state.order = 0
             sendPlay('now')
-            state.
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result

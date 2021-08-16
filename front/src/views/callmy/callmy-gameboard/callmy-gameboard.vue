@@ -55,7 +55,7 @@ export default {
 
     const state = reactive({
       nicknameSendchance: true,
-      inputNickname: computed(() => store.state.root.callmyManager.defaultNickname),
+      inputNickname: store.state.root.callmyManager.defaultNickname,
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
       callmyManager: computed(() => store.getters['root/callmyManager']),
