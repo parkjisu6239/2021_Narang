@@ -6,6 +6,7 @@ import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -18,14 +19,14 @@ public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
-    private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴"};
+    private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴", "드라큘라", "김연경", "지석진"};
+    private Boolean isGotDefault[];
     private final int playerCnt;
-    private int voteCompleteCnt;
-    private boolean isGameStarted;
+    private int round, nowCnt, nextCnt, voteCompleteCnt, defaultCnt;
     private static final int SETTING = 0, PLAYING = 1;
     private static final String USER_ID = "userId", NICKNAME = "nickname", NEXT = "next";
-    private int round, nowCnt, nextCnt;
     private long playingUserId1, playingUserId2;
+    private boolean isGameStarted;
 
     public GameManager(Long roomId, RoomService roomService){
         log.debug("GameManager 객체 생성 ~~");
@@ -39,6 +40,7 @@ public class GameManager {
         round = 0;
         nowCnt = 0;
         nextCnt = 0;
+        defaultCnt = 0;
     }
 
     /**
@@ -79,6 +81,15 @@ public class GameManager {
                 sCnt++;
             }
         }
+    }
+
+    public String defaultName(){
+        if(defaultCnt++ == 0) isGotDefault = new Boolean[playerCnt];
+        int idx = (int)(Math.random() * 100) % 13;
+        while(isGotDefault[idx]){ idx = (int)(Math.random() * 100) % 13; }
+        isGotDefault[idx] = true;
+        if(defaultCnt == playerCnt) defaultCnt = 0;
+        return defaultName[idx];
     }
 
     /**
