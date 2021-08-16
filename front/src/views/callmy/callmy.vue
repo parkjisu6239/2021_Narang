@@ -22,7 +22,7 @@
       <CallmySetting/>
     </div>
   </div>
-  <CallmyStt/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="state.userId == store.state.root.callmyManager.nowPlayUsers.userId1 || state.userId == store.state.root.callmyManager.nowPlayUsers.userId2"/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -38,8 +38,8 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-import { ElMessage } from 'element-plus'
 
+import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -114,6 +114,19 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+        if(guessNameRes.isGameEnd) {
+          gameOver();
+          return;
+        }
+        if(guessNameRes.isCorrect) {
+          const winner = state.userIdToUserName[result.userId];
+          console.log("내가 바로 개다")
+          console.log(winner)
+          sendPlay("next")
+          init();
+          return;
+        }
+        console.log("틀렸습니다.")
       })
     }
 
@@ -122,6 +135,7 @@ export default {
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
+        //ss
         store.state.root.callmyManager.nowPlayUsers = [
           {
             userId: result.user1.userId,
@@ -185,6 +199,11 @@ export default {
     }
 
 
+    const sendGuessName = (answer) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({stage}), {})
+    }
+
+
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
       state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
@@ -216,12 +235,48 @@ export default {
         })
     }
 
+    const init = () => {
+      store.state.root.callmyManager.status = 0;
+      store.state.root.callmyManager.isFinished = false;
+      store.state.root.callmyManager.nowPlayUsers = [];
+      store.state.root.callmyManager.draw =  [];
+    }
+
+
+    const gameOver = () => {
+      // 상태 초기화
+      init();
+      setTimeout(() => {
+        // 게임 정보 변경
+        const roomInfo = {
+          ...state.room,
+          isActivate: true
+        }
+
+        store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
+        })
+      }, 5000);
+    }
+
 
     requestMyInfo()
     requestUserList()
     connectSocket()
 
-    return { state, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
+
+    return { state, store, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
   }
 }
 </script>
