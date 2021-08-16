@@ -34,7 +34,7 @@ export default {
       nickName: computed(() => {
         let target
         store.state.root.callmyManager.nowPlayUsers.forEach(user => {
-          if (user.username === username) target = username
+          if (user.username === props.username) target = user.nickname
         })
         return target
       }),
@@ -90,7 +90,7 @@ export default {
 
 
     watch(() => props.startDetection, () => {
-      if (props.startDetection && props.username !== state.myUserName) startFaceDetection()
+      if (props.startDetection) startFaceDetection()
     })
 
 
