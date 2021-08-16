@@ -64,7 +64,7 @@ export default {
               state.ans = false // 5초 후 정답 타임 취소
             }, 5000)
         }
-      };
+      }
 
       state.recognition.onerror = function(event){
         console.log(event)
@@ -74,8 +74,6 @@ export default {
         console.log(event, 'STT 끝났어요')
         state.recognition.start()
       }
-
-
     }
 
 
@@ -90,6 +88,7 @@ export default {
 
 
     onBeforeUnmount(() => {
+      state.recognition.onend = null
       state.recognition.stop()
     })
 
