@@ -290,6 +290,20 @@ export default {
     }
 
 
+    const requestRoomInfo = () => {
+      store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
+        .then(res => {
+          store.commit('root/setRoomInfo', res.data.room)
+        })
+        .catch(err => {
+          ElMessage({
+            type: 'error',
+            message: '문제가 발생했습니다.'
+          })
+        })
+    }
+
+
     const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
@@ -304,7 +318,7 @@ export default {
       setTimeout(() => {
         // 게임 정보 변경
         const roomInfo = {
-          ...state.room,
+          ...store.state.root.room,
           isActivate: true
         }
 
@@ -348,6 +362,7 @@ export default {
     })
 
 
+    requestRoomInfo()
     requestMyInfo()
     requestUserList()
     connectSocket()
