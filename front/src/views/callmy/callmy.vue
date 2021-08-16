@@ -83,6 +83,7 @@ export default {
       startDetection: false,
       isAllConnected: false,
       roundStart: false,
+      round: 1,
     })
 
 
