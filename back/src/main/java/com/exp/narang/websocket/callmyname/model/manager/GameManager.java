@@ -125,6 +125,7 @@ public class GameManager {
                         result = content;
                         max = voteStatus.get(content);
                     }
+                    log.debug("포문 도는 중 content:"+voteStatus.get(content));
                 }
                 log.debug("nameMap에 넣을 거다:"+result+"를!");
                 log.debug("넣기 전 네임맵 사이즈:"+nameMap.size());
