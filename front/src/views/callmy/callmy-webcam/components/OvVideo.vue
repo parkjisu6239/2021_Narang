@@ -60,6 +60,8 @@ export default {
             nickname,
           ]
 
+          console.log(text, 'ovVideo text')
+
           const anchor = {
             x: state.myUserName === props.username ? 600 + text[0].length * 20 - state.detections.box.topLeft.x : state.detections.box.topRight.x - text[0].length * 20,
             y: state.detections.box.topLeft.y - 30,
