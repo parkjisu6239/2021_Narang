@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class GameManager {
-    private SetNameRes setNameRes;
     private Map<String, Integer> voteStatus;
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
@@ -31,11 +30,9 @@ public class GameManager {
     public GameManager(Long roomId, RoomService roomService){
         log.debug("GameManager 객체 생성 ~~");
         this.playerCnt = roomService.findUserListByRoomId(roomId).size();
-        this.setNameRes = new SetNameRes();
         nameMap = new ConcurrentHashMap<>();
         voteStatus = new HashMap<>();
         userIdSet = new HashSet<>();
-        setNameRes = new SetNameRes();
         userIdQueue = new ArrayDeque<>();
         round = 0;
         nowCnt = 0;

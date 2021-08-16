@@ -16,7 +16,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -107,7 +106,6 @@ public class CallMyNameController {
      */
     @MessageMapping("/call/play/{roomId}")
     public void getGameStatus(@DestinationVariable long roomId, String type){
-//        log.debug("이것이 type이다. " + type);
         type = type.substring(1, type.length() - 1);
         log.debug("이것이 type이다. " + type);
         GameStatusRes res = ManagerHolder.gameManagerMap.get(roomId).getGameStatus(type);
