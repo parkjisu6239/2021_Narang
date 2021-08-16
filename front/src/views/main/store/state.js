@@ -28,7 +28,6 @@ const mafiaManager = {
 }
 const callmyManager = {
   round: 0,
-  status: 0,
   isFinished: false,
   nowPlayUsers: [],
   draw: [],

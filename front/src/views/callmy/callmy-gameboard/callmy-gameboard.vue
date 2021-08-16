@@ -1,7 +1,7 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div v-if="isVoteTime" class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
+      <div v-if="isVoteTime" class="callmy-board-title">{{ state.targetName }}'s name!</div>
       <div v-else class="callmy-board-title" @click="sendVoteFinish">Now playing!</div>
     </div>
     <div class="callmy-board-vote-container">
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="callmy-board-input">
-      <div class="callmy-board-input-container">
+      <div class="callmy-board-input-container" v-if="state.nicknameSendchance">
         <input
           type="text"
           :placeholder="defaultNickname"
@@ -25,8 +25,15 @@
           v-model="state.inputNickname">
       </div>
       <button
+        v-if="state.nicknameSendchance"
         :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
         @click="clickNicknameBtn">전송</button>
+      <div
+        :class="{'callmy-nickname-ok': true, 'callmy-nickname-ok-clicked': state.isclickNicknameOk}"
+        v-if="!state.nicknameSendchance"
+        @click="sendVoteFinish">
+        <div>Vote Complete</div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +63,7 @@ export default {
 
     const state = reactive({
       nicknameSendchance: true,
+      isclickNicknameOk: false,
       inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
@@ -131,6 +139,10 @@ export default {
 
 
     const sendVoteFinish = () => {
+      if (state.isclickNicknameOk) {
+        return
+      }
+
       const message = {
           userId: state.userId,
           targetId: state.targetId,
@@ -138,7 +150,8 @@ export default {
           vote: 0,
           isFinished: true,
         }
-        emit('sendVote', message)
+      emit('sendVote', message)
+      state.isclickNicknameOk = true
     }
 
 
@@ -146,6 +159,7 @@ export default {
       state.nicknameSendchance = true
       state.selectedNickname = ''
       state.inputNickname = ''
+      state.isclickNicknameOk = false
     })
 
 
