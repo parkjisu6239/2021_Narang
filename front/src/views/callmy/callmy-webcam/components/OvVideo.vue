@@ -31,6 +31,13 @@ export default {
       height: '',
       width: '',
       myUserName: computed(() => store.state.root.username),
+      nickName: computed(() => {
+        let target
+        store.state.root.callmyManager.nowPlayUsers.forEach(user => {
+          if (user.username === username) target = username
+        })
+        return target
+      }),
       timeId: '',
     })
 
@@ -48,8 +55,9 @@ export default {
         state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
 
         if (state.detections) {
+          const nickname = props.username === state.myUserName ? '???' : state.nickName
           const text = [
-            '아이이잉이',
+            nickname,
           ]
 
           console.log(state.myUserName, props.username)

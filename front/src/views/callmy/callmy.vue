@@ -160,6 +160,7 @@ export default {
             }
           ];
           sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
+          showDraw()
         } else { // 플레이 하는 시간
           store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
@@ -327,13 +328,10 @@ export default {
 
 
     const showDraw = () => {
-      setTimeout(() => {
-        state.showDraw = true
-      }, 3000)
-
+      state.showDraw = true
       setTimeout(() => {
         state.showDraw = false
-      }, 7000)
+      }, 3000)
     }
 
 
