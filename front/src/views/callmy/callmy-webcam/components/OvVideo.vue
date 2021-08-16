@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <canvas class="canvas" width="720" height="400" ref="myCanvas" @click="startFaceDetection"></canvas>
+    <canvas class="canvas" width="720" height="400" ref="myCanvas"></canvas>
     <video ref="myWebCam" class="webcam" autoplay/>
   </div>
 </template>
@@ -16,15 +16,15 @@ export default {
   name: 'OvVideo',
   props: {
     streamManager: Object,
-    startRecognition: Boolean,
+    startDetection: Boolean,
     username: String,
   },
   setup(props, {emit}) {
     const myWebCam = ref(null)
     const myCanvas = ref(null)
     const store = useStore()
-
     let ctx = ''
+
 
     const state = reactive({
       detections: '',
@@ -33,6 +33,7 @@ export default {
       myUserName: computed(() => store.state.root.username),
       timeId: '',
     })
+
 
     const startFaceDetection = async () => {
       if (state.timeId) {
@@ -46,7 +47,7 @@ export default {
         ctx.clearRect(0, 0, 720, 400)
         state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
 
-        if (state.detections.box) {
+        if (state.detections) {
           const text = [
             '아이이잉이',
           ]
@@ -72,15 +73,19 @@ export default {
       }, 800)
     }
 
+
     onMounted(() => {
-      ctx = myCanvas.value.getContext('2d');
+      ctx = myCanvas.value.getContext('2d')
+      ctx.clearRect(0, 0, 720, 400)
       faceapi.nets.tinyFaceDetector.load('/static/models')
       props.streamManager.addVideoElement(myWebCam.value)
     })
 
-    watch(() => props.startRecognition, () => {
-      if(startRecognition && props.username !== myUserName) startFaceDetection()
+
+    watch(() => props.startDetection, () => {
+      if (props.startDetection && props.username !== state.myUserName) startFaceDetection()
     })
+
 
     return { state, myWebCam, startFaceDetection, myCanvas }
   }

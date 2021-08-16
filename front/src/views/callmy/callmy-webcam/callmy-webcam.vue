@@ -2,25 +2,43 @@
   <div class="callmy-left-top-container">
     <div
       class="callmy-all-video-list">
-      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <UserVideo
+        :isPlayer="false"
+        :stream-manager="state.publisher"
+        :startDetection="false"
+        @click="updateMainVideoStreamManager(state.publisher) "/>
       <UserVideo
         v-for="sub in state.subscribers"
+        :isPlayer="false"
         :key="sub.stream.connection.connectionId"
+        :startDetection="false"
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
   </div>
   <div class="callmy-left-bottom-container">
-    <div v-if="gameStart" class="callmy-now-play-video-list">
-      <UserVideo :stream-manager="state.publisher"/>
-      <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
-        <UserVideo :startRegcognition="state.startRecognition" :stream-manager="sub"/>
-      </div>
-      <div v-if="gameStart" class="game-not-start"></div>
+
+    <div v-if="gameStart && roundStart" class="callmy-now-play-video-list">
+      <UserVideo
+        :isPlayer="true"
+        :startDetection="startDetection"
+        :stream-manager="state.publisher"/>
+      <UserVideo
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :isPlayer="true"
+        :startDetection="startDetection"
+        :stream-manager="sub"/>
     </div>
-    <div v-else class="callmy-left-bottom-container">
+
+    <div v-else-if="!gameStart" class="callmy-left-bottom-container">
       <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }} / {{ playerNumbers }}</h1>
     </div>
+
+    <div v-else class="callmy-left-bottom-container">
+      <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
+    </div>
+
   </div>
 </template>
 <style>
@@ -50,9 +68,15 @@ export default {
     gameStart: {
       type: Boolean,
     },
+    roundStart: {
+      type: Boolean,
+    },
     playerNumbers: {
       type: Number,
-    }
+    },
+    startDetection: {
+      type: Boolean,
+    },
   },
 
   setup(props, { emit }) {
@@ -68,7 +92,6 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
-      startRecognition: false,
       joinedPlayerNumbers: 0,
     })
 

@@ -7,13 +7,16 @@
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
         :gameStart="state.isAllConnected"
-        :playerNumbers="state.userList.length"/>
+        :roundStart="state.roundStart"
+        :playerNumbers="state.userList.length"
+        :startDetection="state.startDetection"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
         :nicknameList="state.nicknameList"
         :order="state.order"
         :isVoteTime="state.isVoteTime"
+        :inputNickname="store.state.root.callmyManager.defaultNickname"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
@@ -45,7 +48,7 @@ import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { reactive, computed } from 'vue'
+import { reactive, computed, onBeforeUnmount } from 'vue'
 
 export default {
   name: 'callMy',
@@ -68,7 +71,6 @@ export default {
     const state = reactive({
       stompClient: null,
       chatList: [],
-      isAllConnected: false,
       userList: {},
       callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
@@ -78,6 +80,9 @@ export default {
       showDraw: false,
       order: 0,
       isVoteTime: false,
+      startDetection: false,
+      isAllConnected: false,
+      roundStart: false,
     })
 
 
@@ -109,9 +114,8 @@ export default {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
-        sendPlay('next')
         state.isVoteTime = true
-        sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
+        sendPlay('next')
       })
     }
 
@@ -156,6 +160,7 @@ export default {
               nickname: '',
             }
           ];
+          sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
         } else { // 플레이 하는 시간
           store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
@@ -186,6 +191,7 @@ export default {
           }
         } else {
           state.nicknameList = setNamRes.voteStatus
+          state.startDetection = true
         }
         console.log("setNamRes")
         console.log(setNamRes)
@@ -195,8 +201,14 @@ export default {
 
     const subscribeDefaultNickname = () => {
       state.stompClient.subscribe(`/from/call/default-name/${route.params.roomId}/${state.userId}`, res => {
-        const DefaultNickname = JSON.parse(res.body)
-        store.state.root.callmyManager.defaultNickname = DefaultNickname
+        console.log(res)
+        console.log(res.body)
+        const DefaultNickname = res.body
+        if (state.userId !== state.callmyManager.nowPlayUsers[state.order].userId) {
+          store.state.root.callmyManager.defaultNickname = DefaultNickname
+        } else {
+          store.state.root.callmyManager.defaultNickname = ''
+        }
       })
     }
 
@@ -216,14 +228,21 @@ export default {
 
 
     const sendPlay = (stage) => {
+
+      if (stage === 'next') {
+        console.log('여기에요')
+        state.roundStart = true
+        state.startDetection = false
+      }
+
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
       }
     }
 
 
-    const sendGuessName = (answer) => {
-      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({answer}), {})
+    const sendGuessName = (message) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
     }
 
 
@@ -265,6 +284,7 @@ export default {
         })
     }
 
+
     const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
@@ -301,12 +321,28 @@ export default {
     }
 
 
+    const socketDisconnect = () => {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+    }
+
+
     const showDraw = () => {
-      state.showDraw = true
+      setTimeout(() => {
+        state.showDraw = true
+      }, 3000)
+
       setTimeout(() => {
         state.showDraw = false
-      }, 5000)
+      }, 7000)
     }
+
+
+    onBeforeUnmount(() => {
+      socketDisconnect()
+    })
+
 
     requestMyInfo()
     requestUserList()
