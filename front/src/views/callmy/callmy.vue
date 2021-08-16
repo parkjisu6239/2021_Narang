@@ -7,7 +7,9 @@
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
         :gameStart="state.isAllConnected"
-        :playerNumbers="state.userList.length"/>
+        :roundStart="state.roundStart"
+        :playerNumbers="state.userList.length"
+        :startDetection="state.startDetection"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
@@ -45,7 +47,7 @@ import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { reactive, computed } from 'vue'
+import { reactive, computed, onBeforeUnmount } from 'vue'
 
 export default {
   name: 'callMy',
@@ -68,7 +70,6 @@ export default {
     const state = reactive({
       stompClient: null,
       chatList: [],
-      isAllConnected: false,
       userList: {},
       callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
@@ -78,6 +79,9 @@ export default {
       showDraw: false,
       order: 0,
       isVoteTime: false,
+      startDetection: false,
+      isAllConnected: false,
+      roundStart: false,
     })
 
 
@@ -109,8 +113,8 @@ export default {
       state.stompClient.subscribe(`/from/call/checkConnect/${route.params.roomId}`, res => {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
-        sendPlay('next')
         state.isVoteTime = true
+        sendPlay('next')
         sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
       })
     }
@@ -176,6 +180,7 @@ export default {
             state.nicknameList = {}
             state.order = 0
             sendPlay('now')
+            state.
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
@@ -186,6 +191,7 @@ export default {
           }
         } else {
           state.nicknameList = setNamRes.voteStatus
+          state.startDetection = true
         }
         console.log("setNamRes")
         console.log(setNamRes)
@@ -222,6 +228,13 @@ export default {
 
 
     const sendPlay = (stage) => {
+
+      if (stage === 'next') {
+        console.log('여기에요')
+        state.roundStart = true
+        state.startDetection = false
+      }
+
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
       }
@@ -271,6 +284,7 @@ export default {
         })
     }
 
+
     const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
@@ -307,12 +321,28 @@ export default {
     }
 
 
+    const socketDisconnect = () => {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+    }
+
+
     const showDraw = () => {
-      state.showDraw = true
+      setTimeout(() => {
+        state.showDraw = true
+      }, 2000)
+
       setTimeout(() => {
         state.showDraw = false
-      }, 5000)
+      }, 6000)
     }
+
+
+    onBeforeUnmount(() => {
+      socketDisconnect()
+    })
+
 
     requestMyInfo()
     requestUserList()
