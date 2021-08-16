@@ -90,6 +90,7 @@ export default {
 
 
     onBeforeUnmount(() => {
+      console.log('플레이어 캠 꺼저유~', props.username)
       if (state.timeId) {
         clearInterval(state.timeId)
       }
@@ -97,6 +98,12 @@ export default {
 
 
     watch(() => props.startDetection, () => {
+      console.log(props.startDetection, '여기서 여전히 캠이 켜져있는 사람 꺼주기')
+      if (!props.startDetection) {
+        ctx.clearRect(0, 0, 720, 400)
+        clearInterval(state.timeId)
+      }
+
       if (props.startDetection) startFaceDetection()
     })
 

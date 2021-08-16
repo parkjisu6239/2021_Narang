@@ -65,8 +65,10 @@ export default {
         console.log(event)
         console.log('stt 끈다')
         state.recognition.stop()
-        console.log('stt 켠다')
-        state.recognition.start();
+        console.log('재시작하기 전', state.recognition)
+        state.recognition = null
+        startRecognition()
+        console.log('재시작 후', state.recognition)
       };
     }
 
