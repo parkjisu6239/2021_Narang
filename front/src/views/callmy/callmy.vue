@@ -16,6 +16,7 @@
         :nicknameList="state.nicknameList"
         :order="state.order"
         :isVoteTime="state.isVoteTime"
+        :inputNickname="store.state.root.callmyManager.defaultNickname"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
