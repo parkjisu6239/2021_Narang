@@ -45,6 +45,7 @@ export default {
     nicknameList: Object,
     order: Number,
     isVoteTime: Boolean,
+    inputNickname: String,
   },
 
   setup(props, { emit }) {
@@ -55,7 +56,7 @@ export default {
 
     const state = reactive({
       nicknameSendchance: true,
-      inputNickname: store.state.root.callmyManager.defaultNickname,
+      inputNickname: props.inputNickname,
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
       callmyManager: computed(() => store.getters['root/callmyManager']),
@@ -76,6 +77,7 @@ export default {
         emit('sendVote', message)
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
+        store.state.root.callmyManager.defaultNickname = ''
         state.nicknameSendchance = false
       }
     }
@@ -132,7 +134,6 @@ export default {
 
     watch(() => props.order, () => {
       state.nicknameSendchance = true
-      state.inputNickname = ''
       state.selectedNickname = ''
     })
 
@@ -140,6 +141,11 @@ export default {
     watch(() => store.state.root.callmyManager, () => {
       state.targetId = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0
       state.targetName = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''
+    })
+
+
+    watch(() => props.inputNickname, () => {
+      state.nicknameSendchance = props.inputNickname
     })
 
 
