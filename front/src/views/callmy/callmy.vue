@@ -135,6 +135,7 @@ export default {
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
+        //ss
         store.state.root.callmyManager.nowPlayUsers = [
           {
             userId: result.user1.userId,
