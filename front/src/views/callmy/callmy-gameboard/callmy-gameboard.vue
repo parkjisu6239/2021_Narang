@@ -135,6 +135,11 @@ export default {
       state.selectedNickname = ''
     })
 
+    watch(() => store.state.root.callmyManager, () => {
+      state.targetId = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0
+      state.targetName = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''
+    })
+
     return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
 }

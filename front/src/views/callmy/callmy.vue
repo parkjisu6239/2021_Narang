@@ -22,7 +22,7 @@
       <CallmySetting/>
     </div>
   </div>
-  <CallmyStt @sendGuessName="sendGuessName" v-if="state.userId == store.state.root.callmyManager.nowPlayUsers.userId1 || state.userId == store.state.root.callmyManager.nowPlayUsers.userId2"/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -135,8 +135,9 @@ export default {
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
-        if(result.status == 1){
-          store.state.root.callmyManager.round = result.round;
+        store.state.root.callmyManager.round = result.round;
+
+        if(result.status === 0){ // 제시어 정하는 시간
           store.state.root.callmyManager.nowPlayUsers = [
             {
               userId: result.user1.userId,
@@ -149,6 +150,9 @@ export default {
               nickname: '',
             }
           ];
+        } else { // 플레이 하는 시간
+          store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
+          store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
         }
       })
     }
