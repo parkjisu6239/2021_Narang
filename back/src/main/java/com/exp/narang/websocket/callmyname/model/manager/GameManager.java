@@ -19,7 +19,7 @@ public class GameManager {
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
     private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴", "드라큘라", "김연경", "지석진"};
-    private Boolean isGotDefault[];
+    private boolean isGotDefault[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultCnt;
     private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 13;
@@ -90,7 +90,7 @@ public class GameManager {
         log.debug(userId + "의 디폴트카운트1:"+defaultCnt);
         if(defaultCnt++ == 0) {
             log.debug(userId + "의 디폴트 하러 왔다");
-            isGotDefault = new Boolean[DEFAULT_NAME_SIZE];
+            isGotDefault = new boolean[DEFAULT_NAME_SIZE];
         }
         log.debug(userId + "의 불리언 배열" + isGotDefault);
         log.debug(userId + "의 디폴트카운트2:"+defaultCnt);
