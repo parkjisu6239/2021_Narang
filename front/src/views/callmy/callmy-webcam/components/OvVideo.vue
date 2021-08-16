@@ -90,7 +90,7 @@ export default {
 
 
     onBeforeUnmount(() => {
-      if (timeId) {
+      if (state.timeId) {
         clearInterval(state.timeId)
       }
     })
