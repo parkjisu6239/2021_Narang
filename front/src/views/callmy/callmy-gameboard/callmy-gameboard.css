@@ -125,23 +125,25 @@
   width: 100%;
   height: 100%;
   text-align: center;
-  background-color: #C3E539;
+  background-color: #1AD06A;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .callmy-nickname-ok:hover {
-  background-color: #a5c22f;
+  background-color: #18c261;
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 
 .callmy-nickname-ok-clicked {
-  background-color: #a5c22f;
+  background-color: #18c261;
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 
 .callmy-nickname-ok > div {
   font-size: 15px;
+  font-weight: 600;
   color: white;
 }
