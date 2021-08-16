@@ -18,11 +18,12 @@ public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
-    private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴", "드라큘라", "김연경", "지석진"};
-    private boolean isGotDefault[];
+    private final String defaultName [] = {"너랑이", "강예서", "박지수", "김담영", "신동윤", "김준환", "아이유", "유재석", "김연경", "지석진",
+                                            "해리 포터", "타노스", "드라큘라", "기영이", "세종대왕", "신데렐라", "피카츄", "펭수", "울라프", "조커"};
+    private int defaultNameIdx[], defaultNum[];
     private final int playerCnt;
-    private int round, nowCnt, nextCnt, voteCompleteCnt, defaultCnt;
-    private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 13;
+    private int round, nowCnt, nextCnt, voteCompleteCnt, defaultPlayerCnt;
+    private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 20;
     private static final String USER_ID = "userId", NICKNAME = "nickname", NEXT = "next";
     private long playingUserId1, playingUserId2;
     private boolean isGameStarted;
@@ -39,7 +40,7 @@ public class GameManager {
         round = 0;
         nowCnt = 0;
         nextCnt = 0;
-        defaultCnt = 0;
+        defaultPlayerCnt = 0;
     }
 
     /**
@@ -86,49 +87,33 @@ public class GameManager {
      * Default 이름을 중복 없이 랜덤으로 지정하는 메서드
      * @return 이름
      */
-    public String defaultName(Long userId){
-        log.debug(userId + "의 디폴트카운트1:"+defaultCnt);
-        if(defaultCnt++ == 0) {
-            log.debug(userId + "의 디폴트 하러 왔다");
-            isGotDefault = new boolean[DEFAULT_NAME_SIZE];
-        }
-        log.debug(userId + "의 불리언 배열" + isGotDefault);
-        log.debug(userId + "의 디폴트카운트2:"+defaultCnt);
-        int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-        log.debug(userId + "의 인덱스:"+idx);
-        while(true){
-            if(isGotDefault[idx] == false){
-                isGotDefault[idx] = true;
-                break;
+    public String defaultName(){
+        if(defaultPlayerCnt == 0) { // 첫 요청에만 한 번에 구해놓음
+            defaultNum = new int[DEFAULT_NAME_SIZE];
+            defaultNameIdx = new int[playerCnt];
+            for(int i = 1; i < DEFAULT_NAME_SIZE; i++) defaultNum[i] = i; // 숫자 저장
+            for(int i = 0; i < playerCnt; i++){ // player 별로 랜덤으로 부여된 번호 저장
+                int idx = (int)(Math.random() * 100) % (DEFAULT_NAME_SIZE - i); // 0~(DEFAULT_NAME_SIZE - i - 1) 범위의 랜덤 값
+                defaultNameIdx[i] = defaultNum[idx];
+                defaultNum[idx] = defaultNum[DEFAULT_NAME_SIZE - i - 1];
             }
-            else idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
         }
-//        while(isGotDefault[idx]){
-//            idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-//            log.debug(userId + "의 while문으로 idx 구하는 과정 : "+idx);
-//        }
-//        isGotDefault[idx] = true;
-        if(defaultCnt == playerCnt) defaultCnt = 0;
-        return defaultName[idx];
+        return defaultName[defaultNameIdx[defaultPlayerCnt++]];
     }
 
     /**
-     * TODO : 테스트용으로 모든 플레이어가 투표 했을 경우 완료되게 해놓음. 찐은 playerCnt - 1
      * 정한 이름을 저장하는 메서드
      * @param req : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
      */
     public SetNameRes setName(SetNameReq req){
         System.out.println("플레이어 수 :" + playerCnt);
+        defaultPlayerCnt = 0; // 다음 사람의 defaultName 지정할 때 필요해서 지금 초기화 시킴
         // 투표 현황 관리
         if(!req.isFinished()) {
-            if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1);
-            else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
-            else {
-                // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
-                if(voteStatus.size() == playerCnt - 1) voteStatus = new HashMap<>();
-                voteStatus.put(req.getContent(), 0);
-            }
+            if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1); // 투표
+            else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1); // 투표 철회
+            else voteStatus.put(req.getContent(), 0); // 제시어 추가인 경우
             return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
         }
         // 개표 현황 관리
@@ -144,8 +129,9 @@ public class GameManager {
                         max = voteStatus.get(content);
                     }
                 }
-                nameMap.put(req.getTargetId(), result);
+                nameMap.put(req.getTargetId(), result); // 최종 이름 지정
                 voteCompleteCnt = 0;
+                voteStatus = new HashMap<>(); // voteStatus 초기화
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
             // 아직 모든 사람의 투표가 완료되지 않은 경우
