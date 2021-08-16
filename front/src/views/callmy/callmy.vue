@@ -125,15 +125,15 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+
         if(guessNameRes.gameEnd) {
           gameOver();
           return;
         }
 
         if(guessNameRes.correct) {
-          const winner = state.userIdToUserName[result.userId];
-          console.log("내가 바로 개다")
-          console.log(winner)
+          const winner = state.userIdToUserName[guessNameRes.userId];
+          console.log(`${winner}가 승리했습니다`)
           sendPlay("next")
           init();
           return;
