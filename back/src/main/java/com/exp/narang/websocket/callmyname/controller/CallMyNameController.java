@@ -79,7 +79,7 @@ public class CallMyNameController {
      * Default 이름 지정하는 메서드
      * @param roomId : path로 받는 roomId (PK)
      * @param userId : path로 받는 userId (PK)
-     * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
+     * @return 이름
      */
     @MessageMapping("/call/default-name/{roomId}/{userId}")
     @SendTo("/from/call/default-name/{roomId}/{userId}")
