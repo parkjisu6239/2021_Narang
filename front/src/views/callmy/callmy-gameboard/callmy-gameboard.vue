@@ -32,7 +32,7 @@
         :class="{'callmy-nickname-ok': true, 'callmy-nickname-ok-clicked': state.isclickNicknameOk}"
         v-if="!state.nicknameSendchance"
         @click="sendVoteFinish">
-        <div>제시어 선택 완료!</div>
+        <div>Vote Complete</div>
       </div>
     </div>
   </div>
