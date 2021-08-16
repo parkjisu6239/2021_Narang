@@ -125,11 +125,12 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
-        if(guessNameRes.isGameEnd) {
+        if(guessNameRes.gameEnd) {
           gameOver();
           return;
         }
-        if(guessNameRes.isCorrect) {
+
+        if(guessNameRes.correct) {
           const winner = state.userIdToUserName[result.userId];
           console.log("내가 바로 개다")
           console.log(winner)
@@ -137,6 +138,7 @@ export default {
           init();
           return;
         }
+
         console.log("틀렸습니다.")
       })
     }
