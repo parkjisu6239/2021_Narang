@@ -87,9 +87,14 @@ public class GameManager {
      * @return 이름
      */
     public String defaultName(){
+        log.debug("디폴트카운트1:"+defaultCnt);
         if(defaultCnt++ == 0) isGotDefault = new Boolean[DEFAULT_NAME_SIZE];
+        log.debug("디폴트카운트2:"+defaultCnt);
         int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-        while(isGotDefault[idx]){ idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE; }
+        log.debug("인덱스:"+idx);
+        while(isGotDefault[idx]){
+            idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+        }
         isGotDefault[idx] = true;
         if(defaultCnt == playerCnt) defaultCnt = 0;
         return defaultName[idx];
