@@ -9,7 +9,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { reactive, computed } from 'vue'
+import { reactive, computed, onBeforeUnmount } from 'vue'
 
 export default {
   name: 'callmyStt',
@@ -75,6 +75,11 @@ export default {
 
       emit('sendGuessName', message)
     }
+
+
+    onBeforeUnmount(() => {
+      state.recognition.stop()
+    })
 
 
     startRecognition()
