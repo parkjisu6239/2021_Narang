@@ -62,7 +62,7 @@ export default {
 
 
     const sendGuessName = () => {
-      emit('sendGuessName', state.finalTranscript)
+      emit('sendGuessName', state.finalTranscript.trim())
     }
 
 
