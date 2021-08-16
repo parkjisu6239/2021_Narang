@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <canvas class="canvas" width="720" height="400" ref="myCanvas" @click="startFaceDetection"></canvas>
+    <canvas class="canvas" width="720" height="400" ref="myCanvas"></canvas>
     <video ref="myWebCam" class="webcam" autoplay/>
   </div>
 </template>
@@ -47,7 +47,7 @@ export default {
         ctx.clearRect(0, 0, 720, 400)
         state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
 
-        if (state.detections.box) {
+        if (state.detections) {
           const text = [
             '아이이잉이',
           ]
@@ -83,7 +83,7 @@ export default {
 
 
     watch(() => props.startDetection, () => {
-      if (props.startDetection && props.username !== myUserName) startFaceDetection()
+      if (props.startDetection && props.username !== state.myUserName) startFaceDetection()
     })
 
 

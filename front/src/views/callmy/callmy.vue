@@ -330,11 +330,11 @@ export default {
     const showDraw = () => {
       setTimeout(() => {
         state.showDraw = true
-      }, 2000)
+      }, 3000)
 
       setTimeout(() => {
         state.showDraw = false
-      }, 6000)
+      }, 7000)
     }
 
 
