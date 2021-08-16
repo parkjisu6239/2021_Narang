@@ -134,6 +134,7 @@ export default {
         if(guessNameRes.correct) {
           const winner = state.userIdToUserName[guessNameRes.userId];
           console.log(`${winner}가 승리했습니다`)
+          state.isVoteTime = true
           sendPlay("next")
           init();
           return;
@@ -162,6 +163,7 @@ export default {
               nickname: '',
             }
           ];
+          state.isVoteTime = true
           sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
           showDraw()
         } else { // 플레이 하는 시간
