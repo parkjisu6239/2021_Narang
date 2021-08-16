@@ -1,6 +1,9 @@
 <template>
-  <div v-if="streamManager" style="position:relative">
-    <ov-video :username="state.clientData" :startRecognition="startRecognition" :stream-manager="streamManager"/>
+  <div v-if="streamManager && !isPlayer" style="position:relative">
+    <ov-video :username="state.clientData" :startDetection="startDetection" :stream-manager="streamManager"/>
+  </div>
+  <div v-else-if="isPlayer && (state.nowPlayUserNames.includes(clienData))">
+    <ov-video :username="state.clientData" :startDetection="startDetection" :stream-manager="streamManager"/>
   </div>
 </template>
 <style scoped>
@@ -18,7 +21,8 @@ export default {
 	},
 	props: {
 		streamManager: Object,
-    startRecognition: Boolean,
+    startDetection: Boolean,
+    isPlayer: Boolean,
 	},
   setup(props, { emit }) {
     const store = useStore()
@@ -28,6 +32,14 @@ export default {
         const { clientData } = getConnectionData()
         return clientData
       }),
+      nowPlayUserNames: computed(() => {
+        if (store.state.root.callmyManager.nowPlayUsers) {
+          return store.state.root.callmyManager.nowPlayUsers.map(playUserObj => {
+            return playUserObj.username
+          })
+        }
+        return []
+      })
     })
 
     const getConnectionData = () => {
