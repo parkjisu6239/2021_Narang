@@ -12,8 +12,6 @@
   </div>
   <div class="callmy-left-bottom-container">
     <div v-if="gameStart" class="callmy-now-play-video-list">
-      <!-- <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-      <UserVideo :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/> -->
       <UserVideo :stream-manager="state.publisher"/>
       <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
         <UserVideo :startRegcognition="state.startRecognition" :stream-manager="sub"/>
@@ -58,8 +56,8 @@ export default {
   },
 
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
     const store = useStore()
 
     const state = reactive({

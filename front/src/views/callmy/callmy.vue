@@ -20,6 +20,9 @@
       <CallmySetting/>
     </div>
   </div>
+  <CallmyShowDraw
+    v-show="state.showDraw"
+    :players="state.callmyManager.nowPlayUsers"/>
   <CallmyStt/>
   <CallmyBackground/>
 </template>
@@ -36,6 +39,7 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
+import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
 import { ElMessage } from 'element-plus'
 
 import { useRouter, useRoute } from 'vue-router'
@@ -51,6 +55,7 @@ export default {
     CallmyBackground,
     CallmySetting,
     CallmyStt,
+    CallmyShowDraw,
   },
 
   setup(props, { emit }) {
@@ -69,6 +74,7 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
+      showDraw: false,
     })
 
 
@@ -119,17 +125,19 @@ export default {
         console.log(result, '다음 대결자들')
         store.state.root.callmyManager.nowPlayUsers = [
           {
-            userId1: result.user1.userId,
-            username1: state.userIdToUserName[result.user1.userId],
-            nickname1: '',
+            userId: result.user1.userId,
+            username: state.userIdToUserName[result.user1.userId],
+            nickname: '',
           },
           {
-            userId2: result.user2.userId,
-            username2: state.userIdToUserName[result.user2.userId],
-            nickname2: '',
+            userId: result.user2.userId,
+            username: state.userIdToUserName[result.user2.userId],
+            nickname: '',
           }
         ]
       })
+      showDraw()
+      console.log(state.callmyManager)
     }
 
 
@@ -198,6 +206,13 @@ export default {
         })
     }
 
+
+    const showDraw = () => {
+      state.showDraw = true
+      setTimeout(() => {
+        state.showDraw = false
+      }, 5000)
+    }
 
     requestMyInfo()
     requestUserList()
