@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
 .callmy-left-top-container {
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
@@ -30,6 +32,7 @@
 
 .callmy-left-bottom-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 20px;
@@ -61,15 +64,18 @@
 }
 
 .callmy-round-info-container {
+  font-family: 'Varela Round', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 15px;
-  background-color: #1AD06A;
-  color: white;
 }
 
 
-.callmy-title-round {
-
+.callmy-round-info {
+  font-weight: 700;
+  font-size: 20px;
+  border-radius: 20px;
+  padding: 10px 15px;
+  background-color: #1AD06A;
+  color: white;
 }
