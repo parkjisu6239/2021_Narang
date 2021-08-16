@@ -96,11 +96,18 @@ public class GameManager {
         log.debug(userId + "의 디폴트카운트2:"+defaultCnt);
         int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
         log.debug(userId + "의 인덱스:"+idx);
-        while(isGotDefault[idx]){
-            idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-            log.debug(userId + "의 while문으로 idx 구하는 과정 : "+idx);
+        while(true){
+            if(isGotDefault[idx] == false){
+                isGotDefault[idx] = true;
+                break;
+            }
+            else idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
         }
-        isGotDefault[idx] = true;
+//        while(isGotDefault[idx]){
+//            idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+//            log.debug(userId + "의 while문으로 idx 구하는 과정 : "+idx);
+//        }
+//        isGotDefault[idx] = true;
         if(defaultCnt == playerCnt) defaultCnt = 0;
         return defaultName[idx];
     }
