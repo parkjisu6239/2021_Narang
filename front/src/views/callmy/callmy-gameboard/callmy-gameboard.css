@@ -118,13 +118,15 @@
 }
 
 .callmy-nickname-ok {
+  font-family: 'Varela Round', sans-serif;
   display: flex;
   justify-content: center;
-  align-self: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   text-align: center;
   background-color: #C3E539;
+  border-radius: 10px;
 }
 
 .callmy-nickname-ok:hover {
@@ -140,6 +142,6 @@
 }
 
 .callmy-nickname-ok > div {
-  font-family: 'Varela Round', sans-serif;
   font-size: 15px;
+  color: white;
 }

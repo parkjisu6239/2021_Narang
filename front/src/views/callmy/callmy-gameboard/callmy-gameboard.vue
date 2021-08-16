@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="callmy-board-input">
-      <div class="callmy-board-input-container" v-if="nicknameSendchance">
+      <div class="callmy-board-input-container" v-if="state.nicknameSendchance">
         <input
           type="text"
           :placeholder="defaultNickname"
@@ -25,12 +25,12 @@
           v-model="state.inputNickname">
       </div>
       <button
-        v-if="nicknameSendchance"
+        v-if="state.nicknameSendchance"
         :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
         @click="clickNicknameBtn">전송</button>
       <div
         :class="{'callmy-nickname-ok': true, 'callmy-nickname-ok-clicked': state.isclickNicknameOk}"
-        v-if="!nicknameSendchance"
+        v-if="!state.nicknameSendchance"
         @click="sendVoteFinish">
         <div>제시어 선택 완료!</div>
       </div>
