@@ -5,11 +5,13 @@
       <UserVideo
         :isPlayer="false"
         :stream-manager="state.publisher"
+        :startDetection="false"
         @click="updateMainVideoStreamManager(state.publisher) "/>
       <UserVideo
         v-for="sub in state.subscribers"
         :isPlayer="false"
         :key="sub.stream.connection.connectionId"
+        :startDetection="false"
         :stream-manager="sub"
         @click="updateMainVideoStreamManager(sub)"/>
     </div>
@@ -19,12 +21,12 @@
     <div v-if="gameStart && roundStart" class="callmy-now-play-video-list">
       <UserVideo
         :isPlayer="true"
-        :startDetection="state.startDetection"
+        :startDetection="startDetection"
         :stream-manager="state.publisher"/>
       <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
         <UserVideo
           :isPlayer="true"
-          :startDetection="state.startDetection"
+          :startDetection="startDetection"
           :stream-manager="sub"/>
       </div>
     </div>
@@ -34,7 +36,7 @@
     </div>
 
     <div v-else class="callmy-left-bottom-container">
-      <h1>잠시 후, 다음 라운드가 시작됩니다.{{ state.joinedPlayerNumbers }} / {{ playerNumbers }}</h1>
+      <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
     </div>
 
   </div>
@@ -78,8 +80,8 @@ export default {
   },
 
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({

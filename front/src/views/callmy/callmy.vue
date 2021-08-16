@@ -7,6 +7,7 @@
         :socketConnected="state.socketConnected"
         :roomId="route.params.roomId"
         :gameStart="state.isAllConnected"
+        :roundStart="state.roundStart"
         :playerNumbers="state.userList.length"
         :startDetection="state.startDetection"/>
     </div>
@@ -190,6 +191,7 @@ export default {
           }
         } else {
           state.nicknameList = setNamRes.voteStatus
+          state.startDetection = true
         }
         console.log("setNamRes")
         console.log(setNamRes)
@@ -226,7 +228,12 @@ export default {
 
 
     const sendPlay = (stage) => {
-      if (stage === 'next') state.roundStart = true
+
+      if (stage === 'next') {
+        console.log('여기에요')
+        state.roundStart = true
+        state.startDetection = false
+      }
 
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
