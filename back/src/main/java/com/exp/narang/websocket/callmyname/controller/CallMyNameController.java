@@ -84,7 +84,7 @@ public class CallMyNameController {
     @MessageMapping("/call/default-name/{roomId}/{userId}")
     @SendTo("/from/call/default-name/{roomId}/{userId}")
     public String defaultName(@DestinationVariable long roomId, @DestinationVariable long userId){
-        return ManagerHolder.gameManagerMap.get(roomId).defaultName(userId);
+        return ManagerHolder.gameManagerMap.get(roomId).defaultName();
     }
 
     /**
