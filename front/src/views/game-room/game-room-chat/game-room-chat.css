@@ -24,6 +24,12 @@
   padding: 10px;
   height: calc(100% - 125px);
   overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.chat-area::-webkit-scrollbar {
+display: none; /* Chrome, Safari, Opera*/
 }
 
 .chat-header {
