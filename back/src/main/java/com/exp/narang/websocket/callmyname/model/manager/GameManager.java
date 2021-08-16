@@ -18,7 +18,7 @@ public class GameManager {
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
     private final String defaultName [] = {"너랑이", "강예서", "박지수", "김담영", "신동윤", "김준환", "아이유", "유재석", "김연경", "지석진",
-                                            "해리 포터", "타노스", "드라큘라", "기영이", "세종대왕", "신데렐라", "피카츄", "펭수", "울라프", "조커"};
+                                            "해리포터", "타노스", "드라큘라", "기영이", "세종대왕", "신데렐라", "피카츄", "펭수", "올라프", "조커"};
     private int defaultNameIdx[], defaultNum[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultPlayerCnt;
@@ -116,6 +116,7 @@ public class GameManager {
         else {
             // 모든 사람 투표 완료한 경우
             if(++voteCompleteCnt == playerCnt - 1){
+                log.debug("모든 사람의 투표가 완료됨. 집계 후 result 정할 거다.");
                 String result = defaultName[(int)(Math.random() * 100) % DEFAULT_NAME_SIZE]; // 0~12까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
@@ -125,11 +126,13 @@ public class GameManager {
                         max = voteStatus.get(content);
                     }
                 }
+                log.debug("nameMap에 넣을 거다:"+result+"를!");
                 nameMap.put(req.getTargetId(), result); // 최종 이름 지정
                 voteCompleteCnt = 0;
                 voteStatus = new HashMap<>(); // voteStatus 초기화
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
+            log.debug("아직 모든 사람들의 투표가 ㄴ완료되지 않음.");
         }
         return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
     }
@@ -181,7 +184,9 @@ public class GameManager {
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
             userNick1 = nameMap.get(playingUserId1);
+            log.debug("userNick1 : "+userNick1);
             userNick2 = nameMap.get(playingUserId2);
+            log.debug("userNick2 : "+userNick2);
         }
 
         user1.put(USER_ID, playingUserId1);
