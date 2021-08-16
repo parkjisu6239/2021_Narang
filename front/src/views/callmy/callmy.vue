@@ -28,7 +28,7 @@
   <CallmyShowDraw
     v-show="state.showDraw"
     :players="state.callmyManager.nowPlayUsers"/>
-  <CallmyStt @sendGuessName="sendGuessName" v-if="state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <CallmyBackground/>
 </template>
 <style scoped>
