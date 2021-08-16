@@ -70,7 +70,7 @@ export default {
         const message = {
           userId: state.userId,
           targetId: state.targetId,
-          content: state.inputNickname,
+          content: state.inputNickname.replace(/(\s*)/g, ""),
           vote: 0,
           isFinished: false,
         }
