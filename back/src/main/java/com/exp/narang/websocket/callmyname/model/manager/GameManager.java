@@ -114,7 +114,6 @@ public class GameManager {
             if(req.getVote() == 1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) + 1); // 투표
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1); // 투표 철회
             else voteStatus.put(req.getContent(), 0); // 제시어 추가인 경우
-            return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
         }
         // 개표 현황 관리
         else {
@@ -134,9 +133,8 @@ public class GameManager {
                 voteStatus = new HashMap<>(); // voteStatus 초기화
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
-            // 아직 모든 사람의 투표가 완료되지 않은 경우
-            return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
         }
+        return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
     }
 
     /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
