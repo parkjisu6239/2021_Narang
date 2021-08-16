@@ -34,7 +34,7 @@ export default {
       nickName: computed(() => {
         let target
         store.state.root.callmyManager.nowPlayUsers.forEach(user => {
-          if (user.username === username) target = username
+          if (user.username === props.username) target = user.nickname
         })
         return target
       }),
@@ -59,6 +59,8 @@ export default {
           const text = [
             nickname,
           ]
+
+          console.log(text, 'ovVideo text')
 
           const anchor = {
             x: state.myUserName === props.username ? 600 + text[0].length * 20 - state.detections.box.topLeft.x : state.detections.box.topRight.x - text[0].length * 20,
@@ -90,7 +92,7 @@ export default {
 
 
     watch(() => props.startDetection, () => {
-      if (props.startDetection && props.username !== state.myUserName) startFaceDetection()
+      if (props.startDetection) startFaceDetection()
     })
 
 

@@ -16,7 +16,7 @@
         :nicknameList="state.nicknameList"
         :order="state.order"
         :isVoteTime="state.isVoteTime"
-        :inputNickname="store.state.root.callmyManager.defaultNickname"
+        :defaultNickname="store.state.root.callmyManager.defaultNickname"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
@@ -228,13 +228,11 @@ export default {
 
 
     const sendPlay = (stage) => {
-
       if (stage === 'next') {
         console.log('여기에요')
         state.roundStart = true
         state.startDetection = false
       }
-
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
       }
@@ -329,10 +327,12 @@ export default {
 
 
     const showDraw = () => {
-      state.showDraw = true
+      setTimeout(() => {
+        state.showDraw = true
+      }, 1000)
       setTimeout(() => {
         state.showDraw = false
-      }, 3000)
+      }, 4000)
     }
 
 

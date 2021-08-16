@@ -19,7 +19,7 @@
       <div class="callmy-board-input-container">
         <input
           type="text"
-          placeholder="제시어를 추가하세요"
+          :placeholder="defaultNickname"
           :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
           @keyup.enter="clickNicknameBtn"
           v-model="state.inputNickname">
@@ -45,7 +45,7 @@ export default {
     nicknameList: Object,
     order: Number,
     isVoteTime: Boolean,
-    inputNickname: String,
+    defaultNickname: String,
   },
 
   setup(props, { emit }) {
@@ -56,7 +56,7 @@ export default {
 
     const state = reactive({
       nicknameSendchance: true,
-      inputNickname: props.inputNickname,
+      inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
       callmyManager: computed(() => store.getters['root/callmyManager']),
@@ -74,12 +74,22 @@ export default {
           vote: 0,
           isFinished: false,
         }
-        emit('sendVote', message)
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
-        state.inputNickname = ''
-        store.state.root.callmyManager.defaultNickname = ''
-        state.nicknameSendchance = false
+        emit('sendVote', message) // 전송
+      } else {
+        const message = {
+          userId: state.userId,
+          targetId: state.targetId,
+          content: props.defaultNickname,
+          vote: 0,
+          isFinished: false,
+        }
+        console.log('썻으니까 이제 기회 끝^^', props.defaultNickname)
+        emit('sendVote', message) // 전송
       }
+      state.inputNickname = '' // 비우기
+      store.state.root.callmyManager.defaultNickname = '' // 비우기
+      state.nicknameSendchance = false // 기회 다 씀
     }
 
 
@@ -135,6 +145,7 @@ export default {
     watch(() => props.order, () => {
       state.nicknameSendchance = true
       state.selectedNickname = ''
+      state.inputNickname = ''
     })
 
 
@@ -142,12 +153,6 @@ export default {
       state.targetId = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0
       state.targetName = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''
     })
-
-
-    watch(() => props.inputNickname, () => {
-      state.nicknameSendchance = props.inputNickname
-    })
-
 
     return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
