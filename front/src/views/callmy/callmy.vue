@@ -228,8 +228,8 @@ export default {
     }
 
 
-    const sendGuessName = (answer) => {
-      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({answer}), {})
+    const sendGuessName = (message) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
     }
 
 

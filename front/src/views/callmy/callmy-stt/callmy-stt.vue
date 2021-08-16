@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 
 export default {
   name: 'callmyStt',
@@ -20,6 +20,7 @@ export default {
       ignoreEndProcess: false,
       finalTranscript: '',
       ans: false,
+      userId: computed(() => store.state.root.userId),
     })
 
     const startRecognition = () => {
@@ -62,7 +63,12 @@ export default {
 
 
     const sendGuessName = () => {
-      emit('sendGuessName', state.finalTranscript.trim())
+      const message = {
+        userId: state.userId,
+        name: state.finalTranscript.replace(/(\s*)/g, "")
+      }
+
+      emit('sendGuessName', message)
     }
 
 
