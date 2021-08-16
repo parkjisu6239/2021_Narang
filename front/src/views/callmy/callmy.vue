@@ -135,19 +135,21 @@ export default {
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
-        //ss
-        store.state.root.callmyManager.nowPlayUsers = [
-          {
-            userId: result.user1.userId,
-            username: state.userIdToUserName[result.user1.userId],
-            nickname: '',
-          },
-          {
-            userId: result.user2.userId,
-            username: state.userIdToUserName[result.user2.userId],
-            nickname: '',
-          }
-        ]
+        if(result.status == 1){
+          store.state.root.callmyManager.round = result.round;
+          store.state.root.callmyManager.nowPlayUsers = [
+            {
+              userId: result.user1.userId,
+              username: state.userIdToUserName[result.user1.userId],
+              nickname: '',
+            },
+            {
+              userId: result.user2.userId,
+              username: state.userIdToUserName[result.user2.userId],
+              nickname: '',
+            }
+          ];
+        }
       })
     }
 
