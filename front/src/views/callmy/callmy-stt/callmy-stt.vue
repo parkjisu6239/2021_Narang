@@ -63,6 +63,10 @@ export default {
 
       state.recognition.onerror = function(event){
         console.log(event)
+        console.log('stt 끈다')
+        state.recognition.stop()
+        console.log('stt 켠다')
+        state.recognition.start();
       };
     }
 
