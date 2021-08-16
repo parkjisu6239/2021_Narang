@@ -28,13 +28,18 @@ export default {
 
     const startRecognition = () => {
       state.recognition = new webkitSpeechRecognition()
-      state.recognition.continuous = true;
-      state.recognition.interimResults = true;
-      state.recognition.interimResults = 'ko-KR';
-      state.recognition.start();
+      state.recognition.continuous = false
+      state.recognition.interimResults = true
+      state.recognition.interimResults = 'ko-KR'
+      state.recognition.start()
 
 
-      state.recognition.onresult=function(event){
+      state.recognition.onresult = function(event){
+        console.log(event, '이거는 event')
+        console.log(event.results, '이거는 event results')
+        let texts = Array.from(event.results).map(results => results[0].transcript).join("")
+        console.log(texts, '이거는 texts - 레퍼런스 문서에서 가져온 거')
+
         state.finalTranscript = '' // 기존에 작성된 내용 초기화
         let nowSay = '' // 사용자가 지금하는 말
 
@@ -59,15 +64,16 @@ export default {
               state.ans = false // 5초 후 정답 타임 취소
             }, 5000)
         }
-      };
+      }
 
       state.recognition.onerror = function(event){
         console.log(event)
-        console.log('stt 끈다')
-        state.recognition.stop()
-        console.log('stt 켠다')
-        state.recognition.start();
-      };
+      }
+
+      state.recognition.onend = function(event) {
+        console.log(event, 'STT 끝났어요')
+        state.recognition.start()
+      }
     }
 
 
@@ -82,6 +88,7 @@ export default {
 
 
     onBeforeUnmount(() => {
+      state.recognition.onend = null
       state.recognition.stop()
     })
 

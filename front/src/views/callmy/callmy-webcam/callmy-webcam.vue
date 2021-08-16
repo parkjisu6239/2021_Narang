@@ -17,26 +17,30 @@
     </div>
   </div>
   <div class="callmy-left-bottom-container">
-
-    <div v-if="gameStart && roundStart" class="callmy-now-play-video-list">
-      <UserVideo
-        :isPlayer="true"
-        :startDetection="startDetection"
-        :stream-manager="state.publisher"/>
-      <UserVideo
-        v-for="sub in state.subscribers"
-        :key="sub.stream.connection.connectionId"
-        :isPlayer="true"
-        :startDetection="startDetection"
-        :stream-manager="sub"/>
+    <div v-if="gameStart && roundStart" class="callmy-round-info-container">
+      <div class="callmy-round-info">
+        <span class="callmy-title-round">{{ state.callmyManager.round }} Round!</span> {{ state.callmyManager.nowPlayUsers[0].username }}<span class="callmy-title-vs">VS</span>{{ state.callmyManager.nowPlayUsers[1].username }}
+      </div>
     </div>
-
-    <div v-else-if="!gameStart" class="callmy-left-bottom-container">
-      <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }} / {{ playerNumbers }}</h1>
-    </div>
-
-    <div v-else class="callmy-left-bottom-container">
-      <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
+    <div class="callmy-now-play-video-container">
+      <div v-if="gameStart && roundStart" class="callmy-now-play-video-list">
+        <UserVideo
+          :isPlayer="true"
+          :startDetection="startDetection"
+          :stream-manager="state.publisher"/>
+        <UserVideo
+          v-for="sub in state.subscribers"
+          :key="sub.stream.connection.connectionId"
+          :isPlayer="true"
+          :startDetection="startDetection"
+          :stream-manager="sub"/>
+      </div>
+      <div v-else-if="!gameStart">
+        <h1>아직 게임 시작 전입니다. {{ state.joinedPlayerNumbers }} / {{ playerNumbers }}</h1>
+      </div>
+      <div v-else>
+        <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
+      </div>
     </div>
 
   </div>
@@ -92,6 +96,7 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
+      callmyManager: computed(() => store.state.root.callmyManager),
       joinedPlayerNumbers: 0,
     })
 

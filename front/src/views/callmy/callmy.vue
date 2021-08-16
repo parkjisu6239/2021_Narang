@@ -83,6 +83,7 @@ export default {
       startDetection: false,
       isAllConnected: false,
       roundStart: false,
+      round: 1,
     })
 
 
@@ -234,7 +235,7 @@ export default {
 
     const sendPlay = (stage) => {
       if (stage === 'next') {
-        console.log('여기에요')
+        console.log('여기서 roundStart, startDetection 초기화')
         state.roundStart = true
         state.startDetection = false
       }
