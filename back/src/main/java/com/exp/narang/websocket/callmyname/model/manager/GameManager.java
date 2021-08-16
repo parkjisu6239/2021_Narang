@@ -6,7 +6,6 @@ import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
 import com.exp.narang.websocket.callmyname.response.GameStatusRes;
 import com.exp.narang.websocket.callmyname.response.SetNameRes;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -23,7 +22,7 @@ public class GameManager {
     private Boolean isGotDefault[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultCnt;
-    private static final int SETTING = 0, PLAYING = 1;
+    private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 13;
     private static final String USER_ID = "userId", NICKNAME = "nickname", NEXT = "next";
     private long playingUserId1, playingUserId2;
     private boolean isGameStarted;
@@ -83,10 +82,14 @@ public class GameManager {
         }
     }
 
+    /**
+     * Default 이름을 중복 없이 랜덤으로 지정하는 메서드
+     * @return 이름
+     */
     public String defaultName(){
-        if(defaultCnt++ == 0) isGotDefault = new Boolean[playerCnt];
-        int idx = (int)(Math.random() * 100) % 13;
-        while(isGotDefault[idx]){ idx = (int)(Math.random() * 100) % 13; }
+        if(defaultCnt++ == 0) isGotDefault = new Boolean[DEFAULT_NAME_SIZE];
+        int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+        while(isGotDefault[idx]){ idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE; }
         isGotDefault[idx] = true;
         if(defaultCnt == playerCnt) defaultCnt = 0;
         return defaultName[idx];
@@ -115,7 +118,7 @@ public class GameManager {
         else {
             // 모든 사람 투표 완료한 경우
             if(++voteCompleteCnt == playerCnt - 1){
-                String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
+                String result = defaultName[(int)(Math.random() * 100) % DEFAULT_NAME_SIZE]; // 0~12까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
                 for(String content : voteStatus.keySet()){
