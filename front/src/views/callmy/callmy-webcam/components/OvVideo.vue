@@ -8,7 +8,7 @@
   @import url('./OvVideo.css');
 </style>
 <script>
-import { onMounted, computed, reactive, ref, watch } from 'vue'
+import { onMounted, computed, reactive, ref, watch, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import * as faceapi from 'face-api.js'
 
@@ -27,6 +27,7 @@ export default {
 
 
     const state = reactive({
+      timeId: 0,
       detections: '',
       height: '',
       width: '',
@@ -38,7 +39,6 @@ export default {
         })
         return target
       }),
-      timeId: '',
     })
 
 
@@ -60,8 +60,6 @@ export default {
             nickname,
           ]
 
-          console.log(text, 'ovVideo text')
-
           const anchor = {
             x: state.myUserName === props.username ? 600 + text[0].length * 20 - state.detections.box.topLeft.x : state.detections.box.topRight.x - text[0].length * 20,
             y: state.detections.box.topLeft.y - 30,
@@ -79,7 +77,7 @@ export default {
           drawText.draw(myCanvas.value)
         }
 
-      }, 800)
+      }, 1000)
     }
 
 
@@ -88,6 +86,13 @@ export default {
       ctx.clearRect(0, 0, 720, 400)
       faceapi.nets.tinyFaceDetector.load('/static/models')
       props.streamManager.addVideoElement(myWebCam.value)
+    })
+
+
+    onBeforeUnmount(() => {
+      if (state.timeId) {
+        clearInterval(state.timeId)
+      }
     })
 
 

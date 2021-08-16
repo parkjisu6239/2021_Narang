@@ -28,7 +28,7 @@
   <CallmyShowDraw
     v-show="state.showDraw"
     :players="state.callmyManager.nowPlayUsers"/>
-  <CallmyStt @sendGuessName="sendGuessName" v-if="state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -125,18 +125,21 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
-        if(guessNameRes.isGameEnd) {
+
+        if(guessNameRes.gameEnd) {
           gameOver();
           return;
         }
-        if(guessNameRes.isCorrect) {
-          const winner = state.userIdToUserName[result.userId];
-          console.log("내가 바로 개다")
-          console.log(winner)
+
+        if(guessNameRes.correct) {
+          const winner = state.userIdToUserName[guessNameRes.userId];
+          console.log(`${winner}가 승리했습니다`)
+          state.isVoteTime = true
           sendPlay("next")
           init();
           return;
         }
+
         console.log("틀렸습니다.")
       })
     }
@@ -160,6 +163,7 @@ export default {
               nickname: '',
             }
           ];
+          state.isVoteTime = true
           sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
           showDraw()
         } else { // 플레이 하는 시간
@@ -240,7 +244,7 @@ export default {
 
 
     const sendGuessName = (message) => {
-      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
+      state.stompClient.send(`/to/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
     }
 
 
@@ -253,7 +257,9 @@ export default {
 
     const joinCallMyRoom = () => {
       console.log('조인하는 중')
-      state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
+      setTimeout(() => {
+        state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
+      }, 1000)
     }
 
 
@@ -288,6 +294,8 @@ export default {
       store.state.root.callmyManager.isFinished = false;
       store.state.root.callmyManager.nowPlayUsers = [];
       store.state.root.callmyManager.draw =  [];
+      state.roundStart = false
+      state.startDetection = false
     }
 
 

@@ -125,14 +125,19 @@ public class GameManager {
                         result = content;
                         max = voteStatus.get(content);
                     }
+                    log.debug("포문 도는 중 content:"+voteStatus.get(content));
                 }
                 log.debug("nameMap에 넣을 거다:"+result+"를!");
+                log.debug("넣기 전 네임맵 사이즈:"+nameMap.size());
+                log.debug("타겟아이디:"+req.getTargetId());
                 nameMap.put(req.getTargetId(), result); // 최종 이름 지정
+                log.debug("nameMap에 넣었다.:"+nameMap.get(req.getTargetId())+"를!");
+                log.debug("넣은 후 네임맵 사이즈:"+nameMap.size());
                 voteCompleteCnt = 0;
                 voteStatus = new HashMap<>(); // voteStatus 초기화
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
-            log.debug("아직 모든 사람들의 투표가 ㄴ완료되지 않음.");
+            log.debug("아직 모든 사람들의 투표가 완료되지 않음.");
         }
         return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
     }
@@ -183,9 +188,12 @@ public class GameManager {
             log.debug("now 요청 횟수 " + nowCnt);
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
+            log.debug("네임맵 사이즈:"+nameMap.size());
             userNick1 = nameMap.get(playingUserId1);
+            log.debug("playingUserId1 : "+playingUserId1);
             log.debug("userNick1 : "+userNick1);
             userNick2 = nameMap.get(playingUserId2);
+            log.debug("playingUserId2 : "+playingUserId2);
             log.debug("userNick2 : "+userNick2);
         }
 

@@ -133,7 +133,7 @@ export default {
     const sendVoteFinish = () => {
       const message = {
           userId: state.userId,
-          targetId: state.userId,
+          targetId: state.targetId,
           content: '',
           vote: 0,
           isFinished: true,
