@@ -75,6 +75,7 @@ export default {
           isFinished: false,
         }
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
+        emit('sendVote', message) // 전송
       } else {
         const message = {
           userId: state.userId,
@@ -84,8 +85,8 @@ export default {
           isFinished: false,
         }
         console.log('썻으니까 이제 기회 끝^^', props.defaultNickname)
+        emit('sendVote', message) // 전송
       }
-      emit('sendVote', message) // 전송
       state.inputNickname = '' // 비우기
       store.state.root.callmyManager.defaultNickname = '' // 비우기
       state.nicknameSendchance = false // 기회 다 씀
