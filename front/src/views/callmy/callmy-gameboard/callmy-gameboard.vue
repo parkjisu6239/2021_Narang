@@ -1,10 +1,11 @@
 <template>
   <div class="game-board-container">
     <div class="callmy-board-header">
-      <div class="callmy-board-title" @click="sendVoteFinish">pick my name!</div>
+      <div v-if="isVoteTime" class="callmy-board-title" @click="sendVoteFinish">pick {{ state.targetName }}'s name!</div>
+      <div v-else class="callmy-board-title" @click="sendVoteFinish">Now playing!</div>
     </div>
     <div class="callmy-board-vote-container">
-      <div class="callmy-board-vote">
+      <div class="callmy-board-vote" v-if="state.userId !== state.targetId">
         <div
           v-for="nickname in Object.keys(nicknameList)" :key="nickname"
           :class="{'callmy-vote-item': true, 'callmy-vote-selected': state.selectedNickname === nickname}"
@@ -19,11 +20,13 @@
         <input
           type="text"
           placeholder="제시어를 추가하세요"
-          :disabled="!state.isVoteTime || !state.nicknameSendchance"
+          :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
           @keyup.enter="clickNicknameBtn"
           v-model="state.inputNickname">
       </div>
-      <button :disabled="!state.isVoteTime || !state.nicknameSendchance" @click="clickNicknameBtn">전송</button>
+      <button
+        :disabled="!isVoteTime || !state.nicknameSendchance || state.userId === state.targetId"
+        @click="clickNicknameBtn">전송</button>
     </div>
   </div>
 </template>
@@ -33,13 +36,15 @@
 <script>
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 
 export default {
   name: 'CallMyGameBoard',
 
   props: {
     nicknameList: Object,
+    order: Number,
+    isVoteTime: Boolean,
   },
 
   setup(props, { emit }) {
@@ -47,43 +52,44 @@ export default {
     const router = useRouter()
     const store = useStore()
 
+
     const state = reactive({
-      isVoteTime: true,
       nicknameSendchance: true,
       inputNickname: '',
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
+      nowPlayUsers: computed(() => store.getters['root/callmyManager'].nowPlayUsers),
+      targetId: computed(() => store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0),
+      targetName: computed(() => store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''),
     })
+
 
     const clickNicknameBtn = () => {
       if (state.inputNickname) {
-
         const message = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: state.inputNickname,
           vote: 0,
           isFinished: false,
         }
-
         emit('sendVote', message)
-
         console.log('썻으니까 이제 기회 끝^^', state.inputNickname)
         state.inputNickname = ''
         state.nicknameSendchance = false
       }
     }
 
+
     const clickNicknameSelect = (nickname) => {
       if (state.selectedNickname === nickname) {
         return
       }
-
       if (!state.selectedNickname) {
         console.log(`${nickname} 처음 투표 함`)
         const message = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: nickname,
           vote: 1,
           isFinished: false,
@@ -91,19 +97,17 @@ export default {
         emit('sendVote', message)
       } else {
         console.log(`${state.selectedNickname} 에서 ${nickname}로 투표 바꿈`)
-
         const messageRemoveVote = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: state.selectedNickname, // 기존에 선택했던 것
           vote: -1, // 취소
           isFinished: false,
         }
         emit('sendVote', messageRemoveVote)
-
         const messageAddVote = {
           userId: state.userId,
-          targetId: 45, // 테스트 용
+          targetId: state.targetId,
           content: nickname, // 새로 선택한 것
           vote: 1, // 추가
           isFinished: false,
@@ -113,6 +117,7 @@ export default {
       state.selectedNickname = nickname
     }
 
+
     const sendVoteFinish = () => {
       const message = {
           userId: state.userId,
@@ -121,9 +126,14 @@ export default {
           vote: 0,
           isFinished: true,
         }
-
         emit('sendVote', message)
     }
+
+    watch(() => props.order, () => {
+      state.nicknameSendchance = true
+      state.inputNickname = ''
+      state.selectedNickname = ''
+    })
 
     return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }

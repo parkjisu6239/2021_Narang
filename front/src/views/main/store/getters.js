@@ -36,7 +36,7 @@ export function myRoom (state) {
 
 export function publisher (state) {
   return state.publisher
-}publisher
+}
 
 export function onVideo (state) {
   return state.onVideo
@@ -52,4 +52,8 @@ export function mafiaManager (state) {
 
 export function mafiaStage (state) {
   return state.mafiaStage
+}
+
+export function callmyManager (state) {
+  return state.callmyManager
 }

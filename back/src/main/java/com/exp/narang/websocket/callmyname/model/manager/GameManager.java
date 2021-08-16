@@ -95,7 +95,7 @@ public class GameManager {
             else if(req.getVote() == -1) voteStatus.put(req.getContent(), voteStatus.get(req.getContent()) - 1);
             else {
                 // 첫 제시어 추가인 경우 voteStatus 초기화 (두 번째 사람 이름 정할 때 걸림)
-                if(voteStatus.size() == playerCnt) voteStatus = new HashMap<>();
+                if(voteStatus.size() == playerCnt - 1) voteStatus = new HashMap<>();
                 voteStatus.put(req.getContent(), 0);
             }
             return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
@@ -103,7 +103,7 @@ public class GameManager {
         // 개표 현황 관리
         else {
             // 모든 사람 투표 완료한 경우
-            if(++voteCompleteCnt == playerCnt){
+            if(++voteCompleteCnt == playerCnt - 1){
                 String result = defaultName[(int)(Math.random() * 100) % 10]; // 0~9까지 랜덤 인덱스로 이름 들어감
                 int max = -1;
                 // 최다 득표 이름 찾음
@@ -113,7 +113,7 @@ public class GameManager {
                         max = voteStatus.get(content);
                     }
                 }
-                nameMap.put(req.getTargetId(), setNameRes.getResult());
+                nameMap.put(req.getTargetId(), result);
                 voteCompleteCnt = 0;
                 return SetNameRes.returnResult(req.getTargetId(), result, true, voteStatus);
             }
@@ -148,8 +148,8 @@ public class GameManager {
     public GameStatusRes getGameStatus(String type) {
         Map<String, Object> user1 = new HashMap<>();
         Map<String, Object> user2 = new HashMap<>();
-        String userNick1 = nameMap.get(playingUserId1);
-        String userNick2 = nameMap.get(playingUserId2);
+        String userNick1 = "";
+        String userNick2 = "";
         int status = PLAYING;
 
         log.debug("게임 정보 리턴~");
@@ -157,17 +157,17 @@ public class GameManager {
         if(type.equals(NEXT)) {
             nextCnt++;
             if(nextCnt < playerCnt) return null;
+            round++;
             log.debug("다음 게임ㄱㄱ");
             playingUserId1 = userIdQueue.poll();
             playingUserId2 = userIdQueue.poll();
-            userNick1 = "";
-            userNick2 = "";
             status = SETTING;
-            round++;
         }else{
             nowCnt++;
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
+            userNick1 = nameMap.get(playingUserId1);
+            userNick2 = nameMap.get(playingUserId2);
         }
 
         user1.put(USER_ID, playingUserId1);

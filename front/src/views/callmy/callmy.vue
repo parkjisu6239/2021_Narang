@@ -12,6 +12,8 @@
     <div class="callmy-right-side">
       <CallMyGameBoard
         :nicknameList="state.nicknameList"
+        :order="state.order"
+        :isVoteTime="state.isVoteTime"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
@@ -69,11 +71,8 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
-      recognition: null,
-      isRecognizing: false,
-      ignoreEndProcess: false,
-      finalTranscript: '',
-      ans: false,
+      order: 0,
+      isVoteTime: false,
     })
 
 
@@ -86,6 +85,7 @@ export default {
           subscribeCheckConnect() // 모든 유저가 접속했는지에 따라 true or false 값을 준다
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
           subscribeSetName() // 플레이어의 제시어를 결정할 때 호출되는 메서드
+          subscribePlay()
         }
       )
     }
@@ -104,6 +104,7 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         sendPlay('next')
+        state.isVoteTime = true
       })
     }
 
@@ -133,23 +134,19 @@ export default {
     const subscribePlay = () => { // 게임 진행 중인 유저들의 정보, 현재 라운드, status => 0: 제시어 정함, 1: 하는 중,
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
-          if(result.status == 1) {
-          store.state.root.callmyManager.round = result.round;
-          store.state.root.callmyManager.nowPlayUsers = [
-            {
-              userId1: result.user1.userId,
-              username1: state.userIdToUserName[result.user1.userId],
-              nickname1: '',
-            },
-            {
-              userId2: result.user2.userId,
-              username2: state.userIdToUserName[result.user2.userId],
-              nickname2: '',
-            }
-          ]
-          // STT 동작!
-          console.log("게임 스타트!")
-        }
+        console.log(result, '다음 대결자들')
+        store.state.root.callmyManager.nowPlayUsers = [
+          {
+            userId: result.user1.userId,
+            username: state.userIdToUserName[result.user1.userId],
+            nickname: '',
+          },
+          {
+            userId: result.user2.userId,
+            username: state.userIdToUserName[result.user2.userId],
+            nickname: '',
+          }
+        ]
       })
     }
 
@@ -158,9 +155,22 @@ export default {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
         if (setNamRes.isFinished) {
-          console.log(`제시어는 ${setNamRes.result}입니다.`)
+          if (state.callmyManager.nowPlayUsers[0].nickname){ // user1의 닉네임이 있으면 user2 닉네임 저장
+            state.callmyManager.nowPlayUsers[1].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 0
+            sendPlay('now')
+            state.isVoteTime = false
+          } else { // user1의 닉네임이 없으면 user1 닉네임 저장
+            state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[0].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 1
+          }
+        } else {
+          state.nicknameList = setNamRes.voteStatus
         }
-        state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
         console.log(setNamRes)
       })
@@ -183,7 +193,7 @@ export default {
 
     const sendPlay = (stage) => {
       if (state.stompClient && state.stompClient.connected) {
-        state.stompClient.send(`/from/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
+        state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
       }
     }
 
