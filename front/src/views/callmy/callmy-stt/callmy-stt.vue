@@ -12,7 +12,6 @@ import { reactive } from 'vue'
 
 export default {
   name: 'callmyStt',
-
   setup(props, { emit }) {
 
     const state = reactive({
@@ -45,6 +44,7 @@ export default {
 
         if (state.ans) { // 정답 타임인 경우
           state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
+          sendGuessName();
         }
 
         if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
@@ -60,7 +60,14 @@ export default {
       };
     }
 
+
+    const sendGuessName = () => {
+      emit('sendGuessName', state.finalTranscript)
+    }
+
+
     startRecognition()
+
 
     return { state }
   }

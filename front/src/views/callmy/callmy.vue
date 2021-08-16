@@ -12,6 +12,8 @@
     <div class="callmy-right-side">
       <CallMyGameBoard
         :nicknameList="state.nicknameList"
+        :order="state.order"
+        :isVoteTime="state.isVoteTime"
         @sendVote="sendVote"/>
       <CallMyChat
         :chatList="state.chatList"
@@ -23,7 +25,7 @@
   <CallmyShowDraw
     v-show="state.showDraw"
     :players="state.callmyManager.nowPlayUsers"/>
-  <CallmyStt/>
+  <CallmyStt @sendGuessName="sendGuessName" v-if="state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -41,7 +43,6 @@ import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
 import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
 import { ElMessage } from 'element-plus'
-
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
@@ -75,6 +76,8 @@ export default {
       nicknameList: {},
       userIdToUserName: {},
       showDraw: false,
+      order: 0,
+      isVoteTime: false,
     })
 
 
@@ -88,6 +91,7 @@ export default {
           subscribeGuessName() // 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
           subscribeSetName() // 플레이어의 제시어를 결정할 때 호출되는 메서드
           subscribePlay()
+          subscribeDefaultNickname()
         }
       )
     }
@@ -106,6 +110,8 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         sendPlay('next')
+        state.isVoteTime = true
+        sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
       })
     }
 
@@ -115,6 +121,19 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+        if(guessNameRes.isGameEnd) {
+          gameOver();
+          return;
+        }
+        if(guessNameRes.isCorrect) {
+          const winner = state.userIdToUserName[result.userId];
+          console.log("내가 바로 개다")
+          console.log(winner)
+          sendPlay("next")
+          init();
+          return;
+        }
+        console.log("틀렸습니다.")
       })
     }
 
@@ -123,18 +142,24 @@ export default {
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
-        store.state.root.callmyManager.nowPlayUsers = [
-          {
-            userId: result.user1.userId,
-            username: state.userIdToUserName[result.user1.userId],
-            nickname: '',
-          },
-          {
-            userId: result.user2.userId,
-            username: state.userIdToUserName[result.user2.userId],
-            nickname: '',
-          }
-        ]
+        store.state.root.callmyManager.round = result.round;
+        if(result.status === 0){ // 제시어 정하는 시간
+          store.state.root.callmyManager.nowPlayUsers = [
+            {
+              userId: result.user1.userId,
+              username: state.userIdToUserName[result.user1.userId],
+              nickname: '',
+            },
+            {
+              userId: result.user2.userId,
+              username: state.userIdToUserName[result.user2.userId],
+              nickname: '',
+            }
+          ];
+        } else { // 플레이 하는 시간
+          store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
+          store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
+        }
       })
       showDraw()
       console.log(state.callmyManager)
@@ -145,11 +170,33 @@ export default {
       state.stompClient.subscribe(`/from/call/set-name/${route.params.roomId}`, res => {
         const setNamRes = JSON.parse(res.body)
         if (setNamRes.isFinished) {
-          console.log(`제시어는 ${setNamRes.result}입니다.`)
+          if (state.callmyManager.nowPlayUsers[0].nickname){ // user1의 닉네임이 있으면 user2 닉네임 저장
+            state.callmyManager.nowPlayUsers[1].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 0
+            sendPlay('now')
+            state.isVoteTime = false
+          } else { // user1의 닉네임이 없으면 user1 닉네임 저장
+            state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[0].username}의 제시어는 ${setNamRes.result}입니다`)
+            state.nicknameList = {}
+            state.order = 1
+            sendDefaultNickname() // 두번째 사람 디폴트 이름 받아오기
+          }
+        } else {
+          state.nicknameList = setNamRes.voteStatus
         }
-        state.nicknameList = setNamRes.voteStatus
         console.log("setNamRes")
         console.log(setNamRes)
+      })
+    }
+
+
+    const subscribeDefaultNickname = () => {
+      state.stompClient.subscribe(`/from/call/default-name/${route.params.roomId}/${state.userId}`, res => {
+        const DefaultNickname = JSON.parse(res.body)
+        store.state.root.callmyManager.defaultNickname = DefaultNickname
       })
     }
 
@@ -171,6 +218,18 @@ export default {
     const sendPlay = (stage) => {
       if (state.stompClient && state.stompClient.connected) {
         state.stompClient.send(`/to/call/play/${route.params.roomId}`, JSON.stringify(stage), {})
+      }
+    }
+
+
+    const sendGuessName = (answer) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({answer}), {})
+    }
+
+
+    const sendDefaultNickname = () => {
+      if (state.stompClient && state.stompClient.connected) {
+        state.stompClient.send(`/to/call/default-name/${route.params.roomId}/${state.userId}`)
       }
     }
 
@@ -206,6 +265,41 @@ export default {
         })
     }
 
+    const init = () => {
+      store.state.root.callmyManager.status = 0;
+      store.state.root.callmyManager.isFinished = false;
+      store.state.root.callmyManager.nowPlayUsers = [];
+      store.state.root.callmyManager.draw =  [];
+    }
+
+
+    const gameOver = () => {
+      // 상태 초기화
+      init();
+      setTimeout(() => {
+        // 게임 정보 변경
+        const roomInfo = {
+          ...state.room,
+          isActivate: true
+        }
+
+        store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
+        })
+      }, 5000);
+    }
+
 
     const showDraw = () => {
       state.showDraw = true
@@ -218,7 +312,8 @@ export default {
     requestUserList()
     connectSocket()
 
-    return { state, route, sendChat, joinCallMyRoom, sendVote, sendPlay }
+
+    return { state, store, route, sendChat, joinCallMyRoom, sendVote, sendPlay, sendGuessName }
   }
 }
 </script>
