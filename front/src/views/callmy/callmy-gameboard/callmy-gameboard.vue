@@ -55,7 +55,7 @@ export default {
 
     const state = reactive({
       nicknameSendchance: true,
-      inputNickname: store.state.root.callmyManager.defaultNickname,
+      inputNickname: computed(() => store.state.root.callmyManager.defaultNickname),
       selectedNickname: '',
       userId: computed(() => store.state.root.userId),
       callmyManager: computed(() => store.getters['root/callmyManager']),
@@ -129,17 +129,19 @@ export default {
         emit('sendVote', message)
     }
 
+
     watch(() => props.order, () => {
       state.nicknameSendchance = true
       state.inputNickname = ''
       state.selectedNickname = ''
     })
 
+
     watch(() => store.state.root.callmyManager, () => {
       state.targetId = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].userId : 0
       state.targetName = store.state.root.callmyManager.nowPlayUsers.length ? store.state.root.callmyManager.nowPlayUsers[props.order].username : ''
-      state.inputNickname = state.userId === state.targetId ? '' : store.state.root.callmyManager.defaultNickname
     })
+
 
     return { state, clickNicknameBtn, clickNicknameSelect, sendVoteFinish }
   }
