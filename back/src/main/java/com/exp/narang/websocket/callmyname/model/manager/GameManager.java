@@ -19,7 +19,7 @@ public class GameManager {
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
     private final String defaultName [] = {"너랑이", "아이유", "해리포터", "타노스", "유재석", "모닝수박", "지수박", "담흥민", "동윤신", "준환킴", "드라큘라", "김연경", "지석진"};
-    private Boolean isGotDefault[];
+    private boolean isGotDefault[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultCnt;
     private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 13;
@@ -86,11 +86,28 @@ public class GameManager {
      * Default 이름을 중복 없이 랜덤으로 지정하는 메서드
      * @return 이름
      */
-    public String defaultName(){
-        if(defaultCnt++ == 0) isGotDefault = new Boolean[DEFAULT_NAME_SIZE];
+    public String defaultName(Long userId){
+        log.debug(userId + "의 디폴트카운트1:"+defaultCnt);
+        if(defaultCnt++ == 0) {
+            log.debug(userId + "의 디폴트 하러 왔다");
+            isGotDefault = new boolean[DEFAULT_NAME_SIZE];
+        }
+        log.debug(userId + "의 불리언 배열" + isGotDefault);
+        log.debug(userId + "의 디폴트카운트2:"+defaultCnt);
         int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-        while(isGotDefault[idx]){ idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE; }
-        isGotDefault[idx] = true;
+        log.debug(userId + "의 인덱스:"+idx);
+        while(true){
+            if(isGotDefault[idx] == false){
+                isGotDefault[idx] = true;
+                break;
+            }
+            else idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+        }
+//        while(isGotDefault[idx]){
+//            idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+//            log.debug(userId + "의 while문으로 idx 구하는 과정 : "+idx);
+//        }
+//        isGotDefault[idx] = true;
         if(defaultCnt == playerCnt) defaultCnt = 0;
         return defaultName[idx];
     }
@@ -170,6 +187,7 @@ public class GameManager {
         // 다음 게임
         if(type.equals(NEXT)) {
             nextCnt++;
+            log.debug("next 요청 횟수 " + nextCnt);
             if(nextCnt < playerCnt) return null;
             round++;
             log.debug("다음 게임ㄱㄱ");
@@ -178,6 +196,7 @@ public class GameManager {
             status = SETTING;
         }else{
             nowCnt++;
+            log.debug("now 요청 횟수 " + nowCnt);
             if(nowCnt < playerCnt) return null;
             log.debug("이름 정했으니 게임ㄱㄱ");
             userNick1 = nameMap.get(playingUserId1);

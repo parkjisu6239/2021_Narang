@@ -199,8 +199,14 @@ export default {
 
     const subscribeDefaultNickname = () => {
       state.stompClient.subscribe(`/from/call/default-name/${route.params.roomId}/${state.userId}`, res => {
-        const DefaultNickname = JSON.parse(res.body)
-        store.state.root.callmyManager.defaultNickname = DefaultNickname
+        console.log(res)
+        console.log(res.body)
+        const DefaultNickname = res.body
+        if (state.userId !== state.callmyManager.nowPlayUsers[state.order].userId) {
+          store.state.root.callmyManager.defaultNickname = DefaultNickname
+        } else {
+          store.state.root.callmyManager.defaultNickname = ''
+        }
       })
     }
 

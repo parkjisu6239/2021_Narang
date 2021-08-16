@@ -160,7 +160,11 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
+<<<<<<< HEAD
 								location.assign(`https://0.0.0.0:44443/accept-certificate`);
+=======
+								location.assign(`https://0.0.0.0:443/accept-certificate`);
+>>>>>>> 0a57cca8c34828fd80f67f8fda20ffd7564f8479
 							}
 							reject(error.response);
 						}
