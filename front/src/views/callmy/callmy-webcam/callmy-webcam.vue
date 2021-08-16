@@ -23,12 +23,12 @@
         :isPlayer="true"
         :startDetection="startDetection"
         :stream-manager="state.publisher"/>
-      <div v-for="sub in state.subscribers" :key="sub.stream.connection.connectionId">
-        <UserVideo
-          :isPlayer="true"
-          :startDetection="startDetection"
-          :stream-manager="sub"/>
-      </div>
+      <UserVideo
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :isPlayer="true"
+        :startDetection="startDetection"
+        :stream-manager="sub"/>
     </div>
 
     <div v-else-if="!gameStart" class="callmy-left-bottom-container">
@@ -81,7 +81,7 @@ export default {
 
   setup(props, { emit }) {
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
-    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
+    const OPENVIDU_SERVER_SECRET = "NARARG_VIDU"
     const store = useStore()
 
     const state = reactive({
