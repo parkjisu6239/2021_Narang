@@ -1,7 +1,6 @@
 package com.exp.narang.websocket.callmyname.response;
 
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.Map;
 
