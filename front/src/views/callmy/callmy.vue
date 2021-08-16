@@ -115,7 +115,6 @@ export default {
         state.draw = JSON.parse(res.body)
         state.isVoteTime = true
         sendPlay('next')
-        sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
       })
     }
 
@@ -160,6 +159,7 @@ export default {
               nickname: '',
             }
           ];
+          sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
         } else { // 플레이 하는 시간
           store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
@@ -239,8 +239,8 @@ export default {
     }
 
 
-    const sendGuessName = (answer) => {
-      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify({answer}), {})
+    const sendGuessName = (message) => {
+      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
     }
 
 
