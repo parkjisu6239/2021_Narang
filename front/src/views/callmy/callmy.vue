@@ -125,18 +125,20 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
-        if(guessNameRes.isGameEnd) {
+
+        if(guessNameRes.gameEnd) {
           gameOver();
           return;
         }
-        if(guessNameRes.isCorrect) {
-          const winner = state.userIdToUserName[result.userId];
-          console.log("내가 바로 개다")
-          console.log(winner)
+
+        if(guessNameRes.correct) {
+          const winner = state.userIdToUserName[guessNameRes.userId];
+          console.log(`${winner}가 승리했습니다`)
           sendPlay("next")
           init();
           return;
         }
+
         console.log("틀렸습니다.")
       })
     }
@@ -240,7 +242,7 @@ export default {
 
 
     const sendGuessName = (message) => {
-      state.stompClient.send(`/from/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
+      state.stompClient.send(`/to/call/guess-name/${route.params.roomId}`, JSON.stringify(message), {})
     }
 
 
@@ -252,8 +254,10 @@ export default {
 
 
     const joinCallMyRoom = () => {
-
-      state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
+      console.log('조인하는 중')
+      setTimeout(() => {
+        state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
+      }, 1000)
     }
 
 
