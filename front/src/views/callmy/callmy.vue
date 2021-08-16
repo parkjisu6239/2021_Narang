@@ -135,8 +135,9 @@ export default {
           const winner = state.userIdToUserName[guessNameRes.userId];
           console.log(`${winner}가 승리했습니다`)
           state.isVoteTime = true
+          state.roundStart = false
+          state.startDetection = false
           sendPlay("next")
-          init();
           return;
         }
 
@@ -294,14 +295,12 @@ export default {
       store.state.root.callmyManager.isFinished = false;
       store.state.root.callmyManager.nowPlayUsers = [];
       store.state.root.callmyManager.draw =  [];
-      state.roundStart = false
-      state.startDetection = false
     }
 
 
     const gameOver = () => {
       // 상태 초기화
-      init();
+      init()
       setTimeout(() => {
         // 게임 정보 변경
         const roomInfo = {
