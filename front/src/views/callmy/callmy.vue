@@ -138,7 +138,6 @@ export default {
         const result = JSON.parse(res.body)
         console.log(result, '다음 대결자들')
         store.state.root.callmyManager.round = result.round;
-
         if(result.status === 0){ // 제시어 정하는 시간
           store.state.root.callmyManager.nowPlayUsers = [
             {
