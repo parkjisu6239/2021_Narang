@@ -86,17 +86,19 @@ public class GameManager {
      * Default 이름을 중복 없이 랜덤으로 지정하는 메서드
      * @return 이름
      */
-    public String defaultName(){
-        log.debug("디폴트카운트1:"+defaultCnt);
+    public String defaultName(Long userId){
+        log.debug(userId + "의 디폴트카운트1:"+defaultCnt);
         if(defaultCnt++ == 0) {
-            log.debug("디폴트 하러 왔다");
+            log.debug(userId + "의 디폴트 하러 왔다");
             isGotDefault = new Boolean[DEFAULT_NAME_SIZE];
         }
-        log.debug("디폴트카운트2:"+defaultCnt);
+        log.debug(userId + "의 불리언 배열" + isGotDefault);
+        log.debug(userId + "의 디폴트카운트2:"+defaultCnt);
         int idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
-        log.debug("인덱스:"+idx);
+        log.debug(userId + "의 인덱스:"+idx);
         while(isGotDefault[idx]){
             idx = (int)(Math.random() * 100) % DEFAULT_NAME_SIZE;
+            log.debug(userId + "의 while문으로 idx 구하는 과정 : "+idx);
         }
         isGotDefault[idx] = true;
         if(defaultCnt == playerCnt) defaultCnt = 0;
