@@ -13,7 +13,9 @@ import { reactive, computed } from 'vue'
 
 export default {
   name: 'callmyStt',
+
   setup(props, { emit }) {
+    const store = useStore()
 
     const state = reactive({
       recognition: null,
