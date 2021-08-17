@@ -14,6 +14,16 @@
   justify-content: center;
 }
 
+.btn-group .el-button {
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.336),
+              -1px -1px 3px #FFFFFF;
+}
+
+.btn-group .el-button:hover {
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
 .left-screen img {
   border-radius: 50%;
 }
