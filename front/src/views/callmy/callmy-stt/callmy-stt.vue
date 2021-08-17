@@ -38,22 +38,11 @@ export default {
         console.log(event, '이거는 event')
         console.log(event.results, '이거는 event results')
         let nowSay = Array.from(event.results).map(results => results[0].transcript).join("")
-        // console.log(texts, '이거는 texts - 레퍼런스 문서에서 가져온 거')
-
-        // state.finalTranscript = '' // 기존에 작성된 내용 초기화
-        // let nowSay = '' // 사용자가 지금하는 말
-
-        // for (let i = event.resultIndex; i < event.results.length; ++i) {
-        //   const transcript = event.results[i][0].transcript;
-
-        //   if (event.results[i].isFinal) {
-        //     nowSay += transcript;
-        //   }
-        // }
 
         console.log(nowSay)
 
         if (state.ans) { // 정답 타임인 경우
+          state.finalTranscript = '';
           state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
           sendGuessName();
         }
@@ -78,11 +67,9 @@ export default {
 
 
     const sendGuessName = () => {
-      console.log(state.finalTranscript.replace(" ", ""), " ' ' => ''")
-      state.finalTranscript = state.finalTranscript.replace(/(\s*)/g, "");
       const message = {
         userId: state.userId,
-        name: state.finalTranscript,
+        name: state.finalTranscript.replace(/(\s*)/g, ""),
       }
       emit('sendGuessName', message)
     }
