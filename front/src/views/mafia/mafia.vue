@@ -19,7 +19,7 @@
   </div>
 
   <MafiaRoleCard
-    v-if="state.roleCardVisible"
+    v-if="state.roleCardVisible && state.gameStart"
     :myRole="state.myRole"
     @click="state.roleCardVisible = false"/>
 
@@ -259,11 +259,7 @@ export default {
         connectVoteSocket() // 투표 소켓 연결
         connectGetPlayerList()
         connectCheckConnect()
-
         sendPlayers()
-
-        gameInit()
-
         }
       )
     }
@@ -341,6 +337,7 @@ export default {
         console.log(res.body)
         console.log('커넥트 체크 완료')
         state.gameStart = true
+        gameInit()
         setTimeout(() => {
           goDay();
         }, state.time[4])
@@ -416,14 +413,7 @@ export default {
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. \n잠시후 최후반론과 최종투표가 진행됩니다.`
           state.isVoteTime = false
-          for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
-              console.log(store.state.root.mafiaManager.players)
-              let playerName = store.state.root.mafiaManager.players[i]; // username
-              let votedCount = state.voteStatus[playerName];
-              state.msg += `\n${playerName} : ${votedCount}표`
-          }
-          // 5초 쉬고 낮 2차로 이동
-          state.timer = state.time[4]
+          state.timer = state.time[4] // 5초 쉬고 낮 2차로 이동
           setTimeout(() => {
             state.voteStatus = {} // 다음으로 넘어갈 때 비우기
             goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
@@ -443,20 +433,10 @@ export default {
         }
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
-            console.log('최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
-            for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
-              console.log(store.state.root.mafiaManager.players)
-              let playerName = store.state.root.mafiaManager.players[i];
-              let votedCount = state.voteStatus[playerName];
-              state.msg += `${playerName} : ${votedCount}표`
-            }
-
           } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
-            console.log('휴,, 살리자는 의견이 더 많았습니다 다행이네요. \n잠시후 밤이 됩니다.')
             state.msg = '휴,, 살리자는 의견이 더 많았습니다 다행이네요. \n잠시후 밤이 됩니다.'
           } else if (store.state.root.mafiaManager.stage === 'night') { // 밤 -> 낮
-            console.log('아무도 죽지 않았습니다. \n잠시후 아침이 됩니다.')
             state.msg = '아무도 죽지 않았습니다. \n잠시후 아침이 됩니다.'
           }
         } else { // 죽은 사람이 나오는 경우 2차 -> 밤 or 밤 -> 낮
@@ -465,12 +445,9 @@ export default {
             store.state.root.mafiaManager.onAudio = false
             store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio)
           }
-
           if (store.state.root.mafiaManager.stage === 'day2') {
-            console.log(`${result.msg}님이 투표에 의해 죽었습니다. \n잠시후 밤이 됩니다.`)
             state.msg = `${result.msg}님이 투표에 의해 죽었습니다. \n잠시후 밤이 됩니다.`
           } else if (state.mafiaManager.stage === 'night') {
-            console.log(`지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. \n잠시후 아침이 됩니다.`)
             state.msg = `지난밤에 ${result.msg}님이 마피아에 의해 죽었습니다. \n잠시후 아침이 됩니다.`
           }
         }
@@ -505,7 +482,6 @@ export default {
       store.state.root.mafiaManager.stage = "default";
 
       // 메시지 변경
-      console.log(`낮이되었습니다. \n${state.time[0]/1000}초간 토의 진행해주세요`)
       state.msg = `낮이되었습니다. \n${state.time[0]/1000}초간 토의 진행해주세요`
 
       // 토론 후 이동
@@ -522,7 +498,6 @@ export default {
       state.isVoteTime = true
 
       // 메시지 변경
-      console.log(`낮 1차 투표 시간(${state.time[1]/1000}초)입니다. \n마피아로 의심되는 사람을 투표해주세요.`)
       state.msg = `낮 1차 투표 시간(${state.time[1]/1000}초)입니다. \n마피아로 의심되는 사람을 투표해주세요.`
 
       setTimeout(() => { // 투표하기
@@ -539,7 +514,6 @@ export default {
       store.state.root.mafiaManager.stage = "day2";
 
       // 메시지 변경
-      console.log(`${secondVoteUsername}님이 단두대에 올랐습니다. \n최후 변론(${state.time[2]/1000}초)을 듣고 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`);
       state.msg = `${secondVoteUsername}님이 단두대에 올랐습니다. \n최후 변론(${state.time[2]/1000}초)을 듣고 죽여야 한다면 찬성, 그렇지 않으면 반대를 눌러주세요`
 
       setTimeout(() => { // 투표하기
@@ -556,7 +530,6 @@ export default {
 
 
       // 메시지 변경
-      console.log(`밤(${state.time[3]/1000}초)이 되었습니다. \n마피아는 고개를 들어주세요`)
       if ( store.state.root.mafiaManager.myRole === 'Mafia') {
         state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. \n마피아는 고개를 들어주세요`
       } else {
@@ -580,7 +553,6 @@ export default {
       state.timer = state.time[4]
 
       // 메시지 변경
-      console.log(`잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`)
       state.msg = `잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`
 
     }
