@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-html="state.message"></div>
+    <div>{{voteStatus}}</div>
     <div v-if="voteStatus && voteStatus.length" class="mafia-vote-status-list">
       <div class="mafia-vote-status-item" v-for="player in state.players" :key="player">
         <div class="mafia-vote-status-name">{{ player }}</div>
