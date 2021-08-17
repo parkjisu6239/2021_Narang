@@ -1,5 +1,6 @@
 package com.exp.narang.api.model.network;
 
+import okhttp3.MultipartBody;
 import org.springframework.web.multipart.MultipartFile;
 import retrofit2.Call;
 import retrofit2.http.Multipart;
@@ -11,5 +12,5 @@ public interface RetrofitService {
 
     @Multipart
     @POST(UPLOAD_URL)
-    Call<ImgbbResponse> postUploadImage(@Part("key") String key, @Part("image") MultipartFile image);
+    Call<ImgbbResponse> postUploadImage(@Part("key") String key, @Part("image") MultipartBody.Part image);
 }
