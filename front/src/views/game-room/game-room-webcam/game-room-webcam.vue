@@ -39,8 +39,8 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore();
 
     const state = reactive({
@@ -51,9 +51,6 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
-      mode : computed(() => {
-        return findMode();
-      }),
     })
 
     const joinSession = () => {
@@ -157,7 +154,7 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`https://0.0.0.0:4443/accept-certificate`);
+								location.assign(`https://0.0.0.0:443/accept-certificate`);
 							}
 							reject(error.response);
 						}

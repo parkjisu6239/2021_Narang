@@ -10,9 +10,11 @@
       'under-nine': state.subscribers.length >= 4,
     }">
     <user-video id="myWebcam"
+      :gameStart="gameStart"
       :stream-manager="state.publisher"/>
     <user-video
       v-for="sub in state.subscribers"
+      :gameStart="gameStart"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"/>
   </div>
@@ -44,8 +46,8 @@ export default {
   },
 
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET"
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore()
 
     const state = reactive({

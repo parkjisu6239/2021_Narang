@@ -30,6 +30,7 @@ import WaitingRoomBackground from './waiting-room-background/waiting-room-backgr
 
 
 import { reactive } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   name: 'waitingRoom',
@@ -43,6 +44,7 @@ export default {
   },
 
   setup() {
+    const store = useStore()
 
     const state = reactive({
       createRoomDialogOpen: false,
@@ -66,6 +68,26 @@ export default {
     const onCloseEnterSecretRoomDialog = function() {
       state.enterSecretRoomDialogOpen = false
     }
+
+
+    const requestReadMyInfo = () => {
+      store.dispatch('root/requestReadMyInfo')
+        .then(res => {
+          const userInfo = {
+            email: res.data.user.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+          }
+          console.log(res.data.user.thumbnailUrl)
+          store.commit('root/setUserInfo', userInfo)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+
+    requestReadMyInfo()
 
     return { state, onOpenCreateRoomDialog, onCloseCreateRoomDialog, onOpenEnterSecretRoomDialog, onCloseEnterSecretRoomDialog }
   }

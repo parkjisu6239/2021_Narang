@@ -565,6 +565,10 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
+      state.gameStart = false
+      if (stompClient !== null) {
+          stompClient.disconnect();
+      }
       setTimeout(() => {
 
         // 게임 정보 변경

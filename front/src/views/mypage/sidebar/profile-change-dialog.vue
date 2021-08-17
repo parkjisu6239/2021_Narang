@@ -59,22 +59,19 @@ export default {
       formData.append('file', imageTag.value.files[0])
       store.dispatch('root/requestUpdateMyInfo', formData)
         .then(res => {
-          console.log(res)
-          setTimeout(() => {
             store.dispatch('root/requestReadMyInfo')
               .then(res => {
-                console.log(res.data)
                 const userInfo = {
                   email: res.data.user.email,
                   username: res.data.user.username,
                   profileImageURL: res.data.user.thumbnailUrl, // null
                 }
+                console.log(res.data.user.thumbnailUrl)
                 store.commit('root/setUserInfo', userInfo)
               })
               .catch(err => {
                 console.log(err)
               })
-          }, 5000)
 
           ElMessage({
             message: '프로필 이미지 변경이 완료되었습니다.',
@@ -84,6 +81,7 @@ export default {
           handleClose()
         })
         .catch(err => {
+          console.log(err)
           ElMessage({
             message: '수정에 실패했습니다.',
             type: 'error',
