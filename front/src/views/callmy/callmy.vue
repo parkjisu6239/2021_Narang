@@ -28,13 +28,16 @@
         :chatList="state.chatList"
         :roomId="route.params.roomId"
         @sendChat="sendChat"/>
-      <CallmySetting/>
+      <CallmySetting @clickGuide="state.callmyGuideVisible = true"/>
     </div>
   </div>
   <CallmyShowDraw
     v-show="state.showDraw"
     :players="state.callmyManager.nowPlayUsers"/>
   <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
+    <CallmyGuide/>
+  </Dialog>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -52,6 +55,9 @@ import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
 import CallmyShowResult from './callmy-result/callmy-showresult.vue'
+import Dialog from '@/views/common/dialog/dialog.vue'
+import CallmyGuide from './callmy-guide/callmy-guide.vue'
+
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -67,6 +73,8 @@ export default {
     CallmySetting,
     CallmyStt,
     CallmyShowResult,
+    Dialog,
+    CallmyGuide
   },
 
   setup(props, { emit }) {
@@ -93,6 +101,7 @@ export default {
       round: 1,
       answer: '',
       speaker: '',
+      callmyGuideVisible: false,
     })
 
 
@@ -291,7 +300,7 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-         const userInfo = {
+        const userInfo = {
             email: res.data.user.email,
             username: res.data.user.username,
             profileImageURL: res.data.user.thumbnailUrl,

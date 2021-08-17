@@ -1,11 +1,10 @@
 <template>
   <div class="callmy-setting-container">
+    <div class="callmy-setting-btn" @click="clickGuide"><i class="el-icon-guide"></i></div>
     <div v-if="state.onAudio" class="callmy-setting-btn" @click="muteAudio"><i class="el-icon-microphone"></i></div>
     <div v-if="!state.onAudio" class="callmy-setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
-
     <div v-if="state.onVideo" class="callmy-setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
     <div v-if="!state.onVideo" class="callmy-setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
-
     <div class="callmy-setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
   </div>
 </template>
@@ -46,7 +45,11 @@ export default {
         store.state.root.publisher.publishVideo(state.onVideo);
     }
 
-    return {state, leaveRoom, muteAudio, muteVideo}
+    const clickGuide = () => {
+      emit('clickGuide')
+    }
+
+    return {state, leaveRoom, muteAudio, muteVideo, clickGuide}
   }
 }
 </script>
