@@ -19,8 +19,6 @@ public class GameManager {
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
     private final String defaultName [] = DefaultName.defaultName;
-//    private final String defaultName [] = {"너랑이", "강예서", "박지수", "김담영", "신동윤", "김준환", "아이유", "유재석", "김연경", "지석진",
-//                                            "해리포터", "타노스", "드라큘라", "기영이", "세종대왕", "신데렐라", "피카츄", "펭수", "올라프", "조커"};
     private int defaultNameIdx[], defaultNum[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultPlayerCnt;
@@ -31,9 +29,6 @@ public class GameManager {
 
     public GameManager(Long roomId, RoomService roomService){
         log.debug("GameManager 객체 생성 ~~");
-        System.out.println("겜매니저객체생성ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
-        System.out.println("디폴트네임임임"+defaultName[0]);
-        System.out.println("디폴트네임임임사이즈"+DEFAULT_NAME_SIZE);
         this.playerCnt = roomService.findUserListByRoomId(roomId).size();
         nameMap = new ConcurrentHashMap<>();
         voteStatus = new HashMap<>();
@@ -100,7 +95,7 @@ public class GameManager {
                 defaultNum[idx] = defaultNum[DEFAULT_NAME_SIZE - i - 1];
             }
         }
-        return defaultName[defaultNameIdx[defaultPlayerCnt++]];
+        return defaultName[defaultNameIdx[defaultPlayerCnt++]].trim();
     }
 
     /**
