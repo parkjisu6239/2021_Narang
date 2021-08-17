@@ -10,6 +10,9 @@ import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.db.repository.UserRepository;
 import com.exp.narang.api.model.db.repository.UserRepositorySupport;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	private static final RetrofitService retrofitService;
+	private static final OkHttpClient httpClient;
 	private static final String KEY = "d3e0947404ef9c6533664b5c536be532";
 
 //	public UserServiceImpl(UserRepository userRepository, UserRepositorySupport userRepositorySupport,
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
 //		this.passwordEncoder = passwordEncoder;
 	static{
 		retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitService.class);
+		httpClient = new OkHttpClient();
 	}
 //	}
 
@@ -112,7 +118,11 @@ public class UserServiceImpl implements UserService {
 //			} catch (Exception e) {
 //				e.printStackTrace();
 //			}
-			requestUpload(updateInfo.getFile(), user);
+			try {
+				requestUpload(updateInfo.getFile(), user);
+			}catch (IOException e){
+				e.printStackTrace();
+			}
 		}
 		if(updateInfo.getUsername() != null) {
 			user.setUsername(updateInfo.getUsername());
@@ -123,21 +133,27 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(user);
 	}
 
-	private void requestUpload(MultipartFile file, User user){
-//		RequestBody body = RequestBody.create(MultipartBody.FORM, file);
-//		MultipartBody.Part image = MultipartBody.Part.createFormData("image", fileName, file);
-		retrofitService.postUploadImage(KEY, file)
+	private void requestUpload(MultipartFile mFile, User user) throws IOException {
+//		File file = mFile.getResource().getFile();
+		log.debug("받은 파일명 : " + mFile.getOriginalFilename());
+		File file = new File(mFile.getOriginalFilename());
+		mFile.transferTo(file);
+
+		RequestBody body = RequestBody.create(MultipartBody.FORM, file);
+		MultipartBody.Part image = MultipartBody.Part.createFormData("image", file.getName(), body);
+
+		retrofitService.postUploadImage(KEY, image)
 				.enqueue(new Callback<ImgbbResponse>(){
 					@Override
 					public void onResponse(@NotNull Call<ImgbbResponse> call, @NotNull Response<ImgbbResponse> response) {
-						log.debug("요청 성공");
+						log.debug("업로드 요청 성공");
 
 						ImgbbResponse imgbbResponse = response.body();
 						ImgbbResponseData data = imgbbResponse.getData();
 						if(imgbbResponse.isSuccess()){
 							user.setThumbnailUrl(data.getUrl());
-							log.debug(data.getUrl());
-							log.debug(data.getDeleteUrl());
+							log.debug("업로드한 이미지 url" + data.getUrl());
+							log.debug("deleteUrl" + data.getDeleteUrl());
 							userRepository.save(user);
 						}
 					}
