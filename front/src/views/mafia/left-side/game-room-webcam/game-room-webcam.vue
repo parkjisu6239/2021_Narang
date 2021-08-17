@@ -206,7 +206,7 @@ export default {
 
     watch(() => state.joinedPlayerNumbers, () => {
       console.log(state.joinedPlayerNumbers, props.playerNumber, '하이')
-      if (state.joinedPlayerNumbers == 2) emit('sendAddPlayer')
+      if (state.joinedPlayerNumbers === props.playerNumber) emit('sendAddPlayer')
     })
 
     // beforeunmount
