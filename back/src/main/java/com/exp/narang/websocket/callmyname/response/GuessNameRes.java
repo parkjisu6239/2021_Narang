@@ -9,4 +9,5 @@ public class GuessNameRes {
     private final long userId;
     private final boolean isCorrect;
     private final boolean isGameEnd;
+    private final String answer;
 }

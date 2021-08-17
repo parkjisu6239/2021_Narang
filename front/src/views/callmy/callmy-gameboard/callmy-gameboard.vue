@@ -78,7 +78,7 @@ export default {
         const message = {
           userId: state.userId,
           targetId: state.targetId,
-          content: state.inputNickname.replace(/(\s*)/g, ""),
+          content: state.inputNickname,
           vote: 0,
           isFinished: false,
         }

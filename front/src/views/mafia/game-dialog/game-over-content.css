@@ -10,8 +10,16 @@
 }
 
 .game-over-content img {
-  background-color: rgb(14, 14, 14);
   border-radius: 20px;
   width: 200px;
   height: auto;
 }
+
+.game-over-content .mafia-win {
+  background-color: rgb(14, 14, 14);
+}
+
+.game-over-content .citizen-win {
+  background-color: skyblue;
+}
+

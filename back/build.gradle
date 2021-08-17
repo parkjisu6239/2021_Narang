@@ -137,6 +137,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.7.1")
     implementation("com.squareup.retrofit2:converter-jackson:2.7.1")
     implementation("com.squareup.retrofit2:converter-gson:2.7.1")
+    implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
 
     implementation("com.google.guava:guava:29.0-jre")

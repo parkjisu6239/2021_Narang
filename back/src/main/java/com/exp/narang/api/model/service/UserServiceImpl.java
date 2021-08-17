@@ -2,26 +2,20 @@ package com.exp.narang.api.model.service;
 
 import com.exp.narang.api.model.network.ImgbbResponse;
 import com.exp.narang.api.model.network.ImgbbResponseData;
-import com.exp.narang.api.model.network.RetrofitClient;
-import com.exp.narang.api.model.network.RetrofitService;
 import com.exp.narang.api.model.request.UserInfoUpdateReq;
 import com.exp.narang.api.model.request.UserRegisterPostReq;
 import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.db.repository.UserRepository;
 import com.exp.narang.api.model.db.repository.UserRepositorySupport;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +33,6 @@ public class UserServiceImpl implements UserService {
 	private UserRepositorySupport userRepositorySupport;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	private static final RetrofitService retrofitService;
 	private static final OkHttpClient httpClient;
 	private static final String KEY = "d3e0947404ef9c6533664b5c536be532";
 
@@ -49,7 +42,6 @@ public class UserServiceImpl implements UserService {
 //		this.userRepositorySupport = userRepositorySupport;
 //		this.passwordEncoder = passwordEncoder;
 	static{
-		retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitService.class);
 		httpClient = new OkHttpClient();
 	}
 //	}
@@ -134,35 +126,37 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private void requestUpload(MultipartFile mFile, User user) throws IOException {
-//		File file = mFile.getResource().getFile();
 		log.debug("받은 파일명 : " + mFile.getOriginalFilename());
-		File file = new File(mFile.getOriginalFilename());
-		mFile.transferTo(file);
 
-		RequestBody body = RequestBody.create(MultipartBody.FORM, file);
-		MultipartBody.Part image = MultipartBody.Part.createFormData("image", file.getName(), body);
+		RequestBody requestBody = new MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart("key", KEY)
+				.addFormDataPart("image", mFile.getOriginalFilename(), RequestBody.create(MediaType.parse(""), mFile.getBytes()))
+				.build();
 
-		retrofitService.postUploadImage(KEY, image)
-				.enqueue(new Callback<ImgbbResponse>(){
-					@Override
-					public void onResponse(@NotNull Call<ImgbbResponse> call, @NotNull Response<ImgbbResponse> response) {
-						log.debug("업로드 요청 성공");
+		Request request = new Request.Builder()
+				.url("https://api.imgbb.com/1/upload")
+				.post(requestBody)
+				.build();
 
-						ImgbbResponse imgbbResponse = response.body();
-						ImgbbResponseData data = imgbbResponse.getData();
-						if(imgbbResponse.isSuccess()){
-							user.setThumbnailUrl(data.getUrl());
-							log.debug("업로드한 이미지 url" + data.getUrl());
-							log.debug("deleteUrl" + data.getDeleteUrl());
-							userRepository.save(user);
-						}
-					}
+		httpClient.newCall(request).enqueue(new Callback() {
+			@Override
+			public void onFailure(@NotNull Call call, @NotNull IOException e) {
+				e.printStackTrace();
+				log.debug("실패");
+			}
 
-					@Override
-					public void onFailure(Call<ImgbbResponse> call, Throwable t) {
-						log.error("요청 실패");
-						t.printStackTrace();
-					}
-				});
+			@Override
+			public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+				ImgbbResponse imgbbResponse = new Gson().fromJson(response.body().string(), ImgbbResponse.class);
+				ImgbbResponseData data = imgbbResponse.getData();
+				if(imgbbResponse.isSuccess()){
+					user.setThumbnailUrl(data.getUrl());
+					log.debug("업로드한 이미지 url" + data.getUrl());
+					log.debug("deleteUrl" + data.getDeleteUrl());
+					userRepository.save(user);
+				}
+			}
+		});
 	}
 }
