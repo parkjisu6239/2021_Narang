@@ -44,14 +44,21 @@ export default {
         if (state.ans) { // 정답 타임인 경우
           state.finalTranscript = '';
           state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
-          sendGuessName();
+          sendGuessName(state.finalTranscript);
         }
 
         if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
           state.finalTranscript = '';
+          nowSay = '';
+          if(store.state.root.callmyManager.isAnswer) {
+            return;
+          }
+          sendGuessName('정답');
+          store.state.root.callmyManager.isAnswer = true;
           state.ans = true // 정답 타임!
           setTimeout(() => {
               state.ans = false // 5초 후 정답 타임 취소
+              sendGuessName('정답타임끝');
             }, 5000)
         }
       }
@@ -67,10 +74,10 @@ export default {
     }
 
 
-    const sendGuessName = () => {
+    const sendGuessName = (finalTranscript) => {
       const message = {
         userId: state.userId,
-        name: state.finalTranscript.replace(/(\s*)/g, ""),
+        name: state.finalTranscript,
       }
       emit('sendGuessName', message)
     }

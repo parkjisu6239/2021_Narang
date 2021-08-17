@@ -1,7 +1,13 @@
 <template>
   <div class="callmy-container">
-    <h2>{{ state.answer }}</h2>
     <div class="callmy-left-side">
+const callmyManager = {
+      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="store.state.root.callmyManager.isAnswer && state.speaker !== store.state.root.username">
+        <div class="stt-constent">
+          <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
+          <h1>{{ state.answer }}</h1>
+        </div>
+      </div>
       <CallMyWebCam
         @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
@@ -34,6 +40,7 @@
 </template>
 <style scoped>
   @import url('./callmy.css');
+  @import url('./callmy-stt/callmy-stt.css');
 </style>
 <script>
 import Stomp from 'webstomp-client'
@@ -86,6 +93,7 @@ export default {
       roundStart: false,
       round: 1,
       answer: '',
+      speaker: '',
     })
 
 
@@ -128,23 +136,36 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+        state.speaker = state.userIdToUserName[guessNameRes.userId];
+        state.answer = guessNameRes.answer;
+        if(guessNameRes.answer === '정답'){
+          console.log("현재 정답을 말하고 있습니까~")
+          console.log(store.state.root.callmyManager.isAnswer)
+          if(store.state.root.callmyManager.isAnswer) return;
+          store.state.root.callmyManager.isAnswer = true;
+          console.log("아니요 아무도 말 안하고 있습니다~")
+        }
+        state.speaker = state.userIdToUserName[guessNameRes.userId];
         state.answer = guessNameRes.answer;
         if(guessNameRes.gameEnd) {
-          gameOver();
-          return;
+            gameOver();
+            return;
         }
-
         if(guessNameRes.correct) {
-          const winner = state.userIdToUserName[guessNameRes.userId];
-          console.log(`${winner}가 승리했습니다`)
+          console.log(`${state.speaker}가 승리했습니다`)
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
+          endAnswerTime();
           sendPlay("next")
           return;
         }
-
+        state.answer = '틀렸습니당';
         console.log("틀렸습니다.")
+        if(guessNameRes.answer === '정답타임끝'){
+          endAnswerTime();
+        }
+
       })
     }
 
@@ -314,7 +335,8 @@ export default {
 
     const gameOver = () => {
       // 상태 초기화
-      init()
+      init();
+      endAnswerTime();
       setTimeout(() => {
         // 게임 정보 변경
         const roomInfo = {
@@ -357,6 +379,12 @@ export default {
     }
 
 
+    const endAnswerTime = () => {
+          state.speaker = '';
+          state.answer = '';
+          store.state.root.callmyManager.isAnswer = false;
+    }
+
     onBeforeUnmount(() => {
       socketDisconnect()
     })
@@ -366,7 +394,6 @@ export default {
     requestMyInfo()
     requestUserList()
     connectSocket()
-
 
     return { state, store, route, sendChat, joinCallMyRoom, sendVote, sendPlay, sendGuessName }
   }
