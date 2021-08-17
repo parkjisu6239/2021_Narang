@@ -46,7 +46,7 @@ public class GameManager {
      * @return 게임을 시작할지 여부
      */
     public boolean addPlayer(long userId) {
-        log.debug("addPlayer 실행 ~~");
+        log.debug("callmy addPlayer 실행 ~~");
         userIdSet.add(userId);
         boolean allConnected = userIdSet.size() == playerCnt;
         // 전부 연결 되었을 때
