@@ -84,7 +84,7 @@ public class GameManager {
      * Default 이름을 중복 없이 랜덤으로 지정하는 메서드
      * @return 이름
      */
-    public String defaultName(){
+    public String setDefaultName(){
         if(defaultPlayerCnt == 0) { // 첫 요청에만 한 번에 구해놓음
             defaultNum = new int[DEFAULT_NAME_SIZE];
             defaultNameIdx = new int[playerCnt];
@@ -148,7 +148,7 @@ public class GameManager {
      * @return 답이 맞았는지, nameMap 이 비었는지 여부를 멤버변수로 가진 객체
      */
     public GuessNameRes guessName(NameReq req){
-        boolean isCorrect = nameMap.get(req.getUserId()).equals(req.getName());
+        boolean isCorrect = nameMap.get(req.getUserId()).replace(" ", "").equals(req.getName().replace(" ", ""));
         // 맞으면
         if(isCorrect){
             // Map에서 삭제
