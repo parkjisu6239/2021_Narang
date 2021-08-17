@@ -60,11 +60,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void deleteRoom(Room room, User user) {
-        user.setRoom(null); // 방 나가면 유저 테이블에서도 방 정보 삭제
-        userRepository.save(user);
+        deleteRoomInUser(user); // 방 나가면 유저 테이블에서도 방 정보 삭제
 
+        log.debug("deleteRoom 들어옴");
         List<User> userList = findUserListByRoomId(room.getRoomId());
-        if(!room.getOwnerId().equals(user.getUserId())) {
+        log.debug("유저리스트 사이즈:"+userList.size());
+        if(userList.size() > 0 && room.getOwnerId() != user.getUserId()) {
             log.debug("[" + user.getUsername() + "] is not an owner of the room.");
             log.debug("The owner hasn't changed.");
             return; // 나가려는 사람이 방장이 아니면 그냥 나가짐
@@ -74,7 +75,7 @@ public class RoomServiceImpl implements RoomService {
         // 방에 0명만 남아있으면 방 삭제
         if(userList.size() == 0) {
             log.debug("There's no one in the room.");
-            roomRepository.deleteById(room.getRoomId());
+            deleteById(room.getRoomId());
             log.debug("This room has been deleted.");
             return;
         }
@@ -86,6 +87,23 @@ public class RoomServiceImpl implements RoomService {
         log.debug("The owner of the room has been changed to [" + u.getUserId() + "]");
         log.debug("Users in room now : ");
         for(User users : userList) log.debug(users.getUsername() + ", ");
+    }
+
+    @Override
+    public void deleteById(Long roomId) {
+        roomRepository.deleteById(roomId);
+    }
+
+    /**
+     * 유저 정보에 있는 room 정보를 삭제하는 메서드
+     * (방을 비정상적으로 나갔을 경우 방 목록에선 유저가 지워지지만 유저 안에선 방이 안 지워져서)
+     * @param room : 방 정보
+     * @param user : 유저 정보
+     */
+    @Override
+    public void deleteRoomInUser(User user) {
+        user.setRoom(null);
+        userRepository.save(user);
     }
 
     @Override
