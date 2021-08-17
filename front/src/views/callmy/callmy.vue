@@ -134,8 +134,10 @@ export default {
     const subscribeGuessName = () => {
       state.stompClient.subscribe(`/from/call/guess-name/${route.params.roomId}`, res => {
         const guessNameRes = JSON.parse(res.body)
-        console.log("guessNameRes")
-        console.log(guessNameRes)
+        console.log("guessNameRes : ", guessNameRes)
+        console.log('내 이름 : ', state.username)
+        console.log('현재 정답을 외친 사람 : ' , state.userIdToUserName[guessNameRes.userId])
+        console.log('현재 정답을 외친 사람이 말한 내용 : ' , guessNameRes.answer)
         if(guessNameRes.answer === '정답타임끝'){
           endAnswerTime();
           return;
@@ -146,9 +148,8 @@ export default {
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
           console.log("아니요 아무도 말 안하고 있습니다~")
+          console.log(state.callmyManager.isAnswer)
         }
-        state.speaker = state.userIdToUserName[guessNameRes.userId];
-        state.answer = guessNameRes.answer;
         if(guessNameRes.gameEnd) {
             gameOver();
             return;
@@ -291,7 +292,7 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-         const userInfo = {
+        const userInfo = {
             email: res.data.user.email,
             username: res.data.user.username,
             profileImageURL: res.data.user.thumbnailUrl,
@@ -385,9 +386,9 @@ export default {
 
 
     const endAnswerTime = () => {
-          state.speaker = '';
-          state.answer = '';
-          store.state.root.callmyManager.isAnswer = false;
+      state.speaker = '';
+      state.answer = '';
+      store.state.root.callmyManager.isAnswer = false;
     }
 
     onBeforeUnmount(() => {
