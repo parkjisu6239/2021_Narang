@@ -1,4 +1,7 @@
 <template>
+  <div v-if="!gameStart" class="before-game-start">
+    <h1>아직 게임 시작 전입니다. ({{ state.joinedPlayerNumbers }} / {{ playerNumber }})</h1>
+  </div>
   <div
     :class="{
       'webcam-container': true,
@@ -16,7 +19,7 @@
 </template>
 <script>
 import $axios from 'axios'
-import { computed, reactive, onBeforeUnmount } from 'vue'
+import { computed, reactive, onBeforeUnmount, watch } from 'vue'
 import { OpenVidu } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
@@ -32,6 +35,12 @@ export default {
     roomId: {
       type: Number
     },
+    playerNumber: {
+      type: Number
+    },
+    gameStart: {
+      type: Boolean
+    }
   },
 
   setup(props, { emit }) {
@@ -47,6 +56,7 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
+      joinedPlayerNumbers: 0,
     })
 
     const joinSession = () => {
@@ -60,14 +70,25 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
 				state.subscribers.push(subscriber)
+        console.log(subscriber.videos, '서브스크라이버 생성')
+        console.log(subscriber, '서브스크라이버 생성')
+        if (subscriber.videos !== []) {
+          state.joinedPlayerNumbers++
+          console.log('여기로 들어와서 조인드플레이어를 늘렸다', state.joinedPlayerNumbers)
+        }
 			})
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
-				if (index >= 0) {
-					state.subscribers.splice(index, 1)
-				}
+				const subscriber = state.subscribers[index]
+        console.log(subscriber.videos, '서브스크라이버 파괴')
+        console.log(subscriber, '서브스크라이버 파괴')
+        if (subscriber.videos !== []) {
+          state.joinedPlayerNumbers--
+          console.log('여기로 들어와서 조인드플레이어를 줄였다', state.joinedPlayerNumbers)
+        }
+        if (index >= 0) state.subscribers.splice(index, 1)
 			})
 
 			// On every asynchronous exception...
@@ -96,6 +117,7 @@ export default {
 						state.mainStreamManager = publisher
 						state.publisher = publisher
             store.state.root.publisher = publisher
+            state.joinedPlayerNumbers++
 						state.session.publish(state.publisher)
 					})
 					.catch(error => {
@@ -177,7 +199,15 @@ export default {
 		}
 
     // created
-    joinSession()
+    watch(() => props.playerNumber, () => {
+      if (props.playerNumber >= 1) joinSession()
+    })
+
+
+    watch(() => state.joinedPlayerNumbers, () => {
+      console.log(state.joinedPlayerNumbers, props.playerNumber, '하이')
+      if (state.joinedPlayerNumbers == 2) emit('sendAddPlayer')
+    })
 
     // beforeunmount
     onBeforeUnmount(() => {

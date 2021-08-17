@@ -32,6 +32,7 @@ export default {
       } else {
         clearInterval(interval)
       }
+      window.requestAnimationFrame(Clock)
     }
 
     const interval = setInterval(() => {
