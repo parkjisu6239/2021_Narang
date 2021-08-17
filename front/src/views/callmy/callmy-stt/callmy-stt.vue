@@ -23,6 +23,7 @@ export default {
       ignoreEndProcess: false,
       finalTranscript: '',
       ans: false,
+      callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
     })
 
@@ -35,25 +36,23 @@ export default {
 
 
       state.recognition.onresult = function(event){
-        console.log(event, '이거는 event')
-        console.log(event.results, '이거는 event results')
-        let nowSay = Array.from(event.results).map(results => results[0].transcript).join("")
-
-        console.log(nowSay)
-
+        state.finalTranscript = '';
+        if(state.callmyManager.isAnswer) {
+            return; // 정답을 한 번만 외칠 수 있게함. 또는 누가 정답을 외쳤다.
+        }
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          let transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          }
+        }
         if (state.ans) { // 정답 타임인 경우
-          state.finalTranscript = '';
-          state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
+          state.finalTranscript = finalTranscript // 이번에 말한 내용으로 보드 변경
           sendGuessName(state.finalTranscript);
           return;
         }
-
-        if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
-          state.finalTranscript = '';
-          nowSay = '';
-          if(store.state.root.callmyManager.isAnswer) {
-            return;
-          }
+        if (finalTranscript.trim() === '정답') { // 정답이라고 말한 경우
           sendGuessName('정답');
           state.ans = true // 정답 타임!
           setTimeout(() => {
@@ -68,7 +67,6 @@ export default {
       }
 
       state.recognition.onend = function(event) {
-        console.log(event, 'STT 끝났어요')
         state.recognition.start()
       }
     }
