@@ -31,12 +31,12 @@
       <CallmySetting @clickGuide="state.callmyGuideVisible = true"/>
     </div>
   </div>
-  <CallmyShowDraw
-    v-show="state.showDraw"
-    :players="state.callmyManager.nowPlayUsers"/>
   <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
     <CallmyGuide/>
+  </Dialog>
+  <Dialog v-if="state.isNoticeVisible">
+    <CallmyNotice :msg="state.msg" :msgType="state.msgType"/>
   </Dialog>
   <CallmyBackground/>
 </template>
@@ -54,9 +54,9 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-import CallmyShowResult from './callmy-result/callmy-showresult.vue'
 import Dialog from '@/views/common/dialog/dialog.vue'
 import CallmyGuide from './callmy-guide/callmy-guide.vue'
+import CallmyNotice from './callmy-notice/callmy-notice.vue'
 
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
@@ -72,9 +72,9 @@ export default {
     CallmyBackground,
     CallmySetting,
     CallmyStt,
-    CallmyShowResult,
     Dialog,
-    CallmyGuide
+    CallmyGuide,
+    CallmyNotice,
   },
 
   setup(props, { emit }) {
@@ -103,6 +103,10 @@ export default {
       answer: '',
       speaker: '',
       callmyGuideVisible: false,
+      isNoticeVisible: false,
+      msg: '',
+      timeout: 5000,
+      msgType: 'default'
     })
 
 
@@ -135,7 +139,13 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         state.isVoteTime = true
-        sendPlay('next')
+        state.msg = '잠시 후 게임이 시작됩니다.'
+        state.isNoticeVisible = true
+        setTimeout(() => {
+          state.msg = ''
+          state.isNoticeVisible = false
+          sendPlay('next')
+        }, state.timeout);
       })
     }
 
@@ -159,6 +169,9 @@ export default {
         state.speaker = state.userIdToUserName[guessNameRes.userId];
         state.answer = guessNameRes.answer;
         if(guessNameRes.gameEnd) {
+            state.msg = `최종 우승자는 ${state.speaker}가 입니다! 잠시후 게임이 종료됩니다.`
+            state.isNoticeVisible = true
+            state.msgType = 'win'
             gameOver();
             return;
         }
@@ -168,13 +181,19 @@ export default {
           state.roundStart = false
           state.startDetection = false
           endAnswerTime();
-          sendPlay("next")
+          state.msg = `${state.speaker}가 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
+          state.isNoticeVisible = true
+          state.msgType = 'win'
+          setTimeout(() => {
+            state.msg = ''
+            state.isNoticeVisible = false
+            state.msgType = 'default'
+            sendPlay('next')
+          }, state.timeout);
           return;
         }
         state.answer = '틀렸습니당';
         console.log("틀렸습니다.")
-
-
       })
     }
 
@@ -219,7 +238,13 @@ export default {
             console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
             state.nicknameList = {}
             state.order = 0
-            sendPlay('now')
+            state.msg = `제시어 선택이 완료되었습니다. 잠시후 게임 시작!`
+            state.isNoticeVisible = true
+            setTimeout(() => {
+              state.msg = ''
+              state.isNoticeVisible = false
+              sendPlay('now')
+            }, state.timeout);
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
@@ -350,7 +375,7 @@ export default {
     const gameOver = () => {
       // 상태 초기화
       init();
-      game
+      state.gameStart = false
       endAnswerTime();
       setTimeout(() => {
         // 게임 정보 변경
