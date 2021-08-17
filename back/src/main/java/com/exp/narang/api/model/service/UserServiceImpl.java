@@ -28,20 +28,24 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-
-	private final UserRepository userRepository;
-	private final UserRepositorySupport userRepositorySupport;
-	private final PasswordEncoder passwordEncoder;
-	private final RetrofitService retrofitService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private UserRepositorySupport userRepositorySupport;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	private static final RetrofitService retrofitService;
 	private static final String KEY = "d3e0947404ef9c6533664b5c536be532";
-	
-	public UserServiceImpl(UserRepository userRepository, UserRepositorySupport userRepositorySupport,
-						   PasswordEncoder passwordEncoder){
-		this.userRepository = userRepository;
-		this.userRepositorySupport = userRepositorySupport;
-		this.passwordEncoder = passwordEncoder;
-		this.retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitService.class);
+
+//	public UserServiceImpl(UserRepository userRepository, UserRepositorySupport userRepositorySupport,
+//						   PasswordEncoder passwordEncoder){
+//		this.userRepository = userRepository;
+//		this.userRepositorySupport = userRepositorySupport;
+//		this.passwordEncoder = passwordEncoder;
+	static{
+		retrofitService = RetrofitClient.getRetrofitInstance().create(RetrofitService.class);
 	}
+//	}
 
 	@Override
 	public User createUser(UserRegisterPostReq userRegisterInfo) {
