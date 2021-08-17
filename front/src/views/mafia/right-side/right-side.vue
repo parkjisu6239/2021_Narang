@@ -17,7 +17,7 @@
     </div>
     <Timer class="right-timer" :timer="timer"/>
     <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime" :voteStatus="voteStatus"/>
-    <Setting class="right-setting"/>
+    <Setting class="right-setting" @clickGuide="clickGuide"/>
   </div>
 </template>
 
@@ -75,7 +75,11 @@ export default {
       emit('clickLie')
     }
 
-    return { state, clickGetRole, clickShowMission, clickLie }
+    const clickGuide = () => {
+      emit('clickGuide')
+    }
+
+    return { state, clickGetRole, clickShowMission, clickLie, clickGuide }
   }
 }
 </script>

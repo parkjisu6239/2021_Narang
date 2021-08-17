@@ -11,6 +11,7 @@
       @sendGetRole="sendGetRole"
       @clickShowMission="clickShowMission"
       @clickLie="clickLie"
+      @clickGuide="state.mafiaGuideVisible = true"
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
       :timer="state.timer/1000"
@@ -28,6 +29,10 @@
       :msg="state.msg"
       :result="state.gameOverResult"/>
   </GameDialog>
+
+  <Dialog v-if="state.mafiaGuideVisible" @click="state.mafiaGuideVisible = false">
+    <NafiaGuide/>
+  </Dialog>
 
   <GameDialog
     v-if="state.clickMissionDialog"
@@ -60,6 +65,8 @@ import MafiaRoleCard from './role-card/mafia-role-card.vue'
 import GameDialog from './game-dialog/game-dialog.vue'
 import GameOverContent from './game-dialog/game-over-content.vue'
 import MissionContent from './game-dialog/mission-content.vue'
+import Dialog from '@/views/common/dialog/dialog.vue'
+import NafiaGuide from './nafia-guide/nafia-guide.vue'
 
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
@@ -82,6 +89,8 @@ export default {
     GameDialog,
     GameOverContent,
     MissionContent,
+    Dialog,
+    NafiaGuide,
   },
 
   setup(props, { emit }) {
@@ -120,6 +129,7 @@ export default {
       clickMissionDialog: false,
       voteStatus : {},
       userList: {},
+      mafiaGuideVisible: false,
     })
 
 

@@ -1,11 +1,10 @@
 <template>
   <div class="setting-btns">
-    <div v-if="state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"> <i class="el-icon-microphone"></i></div>
+    <div class="mafia-setting-btn" @click="clickGuide"><i class="el-icon-guide"></i></div>
+    <div v-if="state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"><i class="el-icon-microphone"></i></div>
     <div v-if="!state.mafiaManager.onAudio" class="mafia-setting-btn" @click="muteAudio"><i class="el-icon-turn-off-microphone"></i></div>
-
     <div v-if="state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-camera"></i></div>
     <div v-if="!state.onVideo" class="mafia-setting-btn" @click="muteVideo"><i class="el-icon-video-pause"></i></div>
-
     <div class="mafia-setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
   </div>
 </template>
@@ -17,14 +16,15 @@ import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 export default {
   name: 'setting',
+
   setup(props, { emit }) {
     const store = useStore()
     const router = useRouter()
     const state =  reactive({
       onVideo : true,
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
-
     })
+
     const leaveRoom = () => {
       router.push({
         name: 'waitingRoom'
@@ -39,6 +39,7 @@ export default {
         console.log(store.state.root.mafiaManager.onAudio)
         store.state.root.publisher.publishAudio(store.state.root.mafiaManager.onAudio);
     }
+
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
@@ -46,7 +47,11 @@ export default {
         store.state.root.publisher.publishVideo(state.onVideo);
     }
 
-    return {state, leaveRoom, muteAudio, muteVideo}
+    const clickGuide = () => {
+      emit('clickGuide')
+    }
+
+    return {state, leaveRoom, muteAudio, muteVideo,clickGuide }
   }
 }
 </script>
