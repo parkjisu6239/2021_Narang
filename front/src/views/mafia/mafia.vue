@@ -19,7 +19,7 @@
   </div>
 
   <MafiaRoleCard
-    v-if="state.roleCardVisible"
+    v-if="state.roleCardVisible && state.gameStart"
     :myRole="state.myRole"
     @click="state.roleCardVisible = false"/>
 
@@ -258,11 +258,7 @@ export default {
         connectVoteSocket() // 투표 소켓 연결
         connectGetPlayerList()
         connectCheckConnect()
-
         sendPlayers()
-
-        gameInit()
-
         }
       )
     }
@@ -340,6 +336,7 @@ export default {
         console.log(res.body)
         console.log('커넥트 체크 완료')
         state.gameStart = true
+        gameInit()
         setTimeout(() => {
           goDay();
         }, state.time[4])
