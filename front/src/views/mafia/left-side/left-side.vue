@@ -1,8 +1,13 @@
 <template>
   <div class="mafia-left-container">
-    <GameRoomWebcam :roomId="roomId"/>
+    <GameRoomWebcam
+      :roomId="roomId"
+      :playerNumber="playerNumber"
+      :gameStart="gameStart"
+      @sendAddPlayer="sendAddPlayer"/>
     <div id="mission-container"></div>
   </div>
+
 </template>
 
 <script>
@@ -14,11 +19,27 @@ export default {
   props: {
     roomId: {
       type: String
+    },
+    gameStart: {
+      type: Boolean
+    },
+    playerNumber: {
+      type: Number,
+      default: 0,
     }
   },
 
   components: {
     GameRoomWebcam,
+  },
+
+  setup(props, { emit }) {
+
+    const sendAddPlayer = () => {
+      emit('sendAddPlayer')
+    }
+
+    return { sendAddPlayer }
   }
 }
 </script>
