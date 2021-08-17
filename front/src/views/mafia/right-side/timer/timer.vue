@@ -19,28 +19,33 @@ export default {
   setup(props, { emit }) {
 
     const state = reactive({
-      gameTimer: 0
+      gameTimer: 0,
+      timeId: 0,
     })
-
-    const setTimer = () => {
-      state.gameTimer = props.timer
-    }
 
     const Clock = () => {
       if (state.gameTimer > 0) {
         state.gameTimer -= 1
       } else {
-        clearInterval(interval)
+        clearInterval(state.timeId)
+        state.timeId = 0
       }
     }
 
-    const interval = setInterval(() => {
-      Clock()
-    }, 1000)
+    const startTimer = () => {
+      state.timeId = setInterval(() => {
+        Clock()
+      }, 1000)
+    }
+
 
     watch(() => props.timer, () => {
-      console.log('타이머 초기화')
-      setTimer()
+      if (state.timeId) {
+        clearInterval(state.timeId)
+        state.timeId = 0
+      }
+      state.gameTimer = props.timer
+      startTimer()
     })
 
     return { state }

@@ -79,7 +79,7 @@ export default {
                 })
               })
               .catch(err => {
-                ElMessage.error(err)
+                ElMessage.error('오류가 발생했습니다. 잠시후에 다시 시도해주세요.')
               })
           })
           .catch(err => {
