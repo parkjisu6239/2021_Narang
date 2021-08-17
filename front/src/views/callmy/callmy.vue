@@ -1,8 +1,7 @@
 <template>
   <div class="callmy-container">
     <div class="callmy-left-side">
-const callmyManager = {
-      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="store.state.root.callmyManager.isAnswer && state.speaker !== store.state.root.username">
+      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="state.callmyManager.isAnswer && state.speaker !== store.state.root.username">
         <div class="stt-constent">
           <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
           <h1>{{ state.answer }}</h1>
@@ -140,10 +139,9 @@ export default {
           endAnswerTime();
           return;
         }
-        state.speaker = state.userIdToUserName[guessNameRes.userId];
-        state.answer = guessNameRes.answer;
+
         if(guessNameRes.answer === '정답'){
-          console.log("현재 정답을 말하고 있습니까~")
+          console.log("현재 정답을 말하고 있습니까?")
           console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
