@@ -56,9 +56,6 @@ export default {
       store.state.root.mafiaManager.lierItem = false
       store.state.root.mafiaManager.isLierItemActivate = false
 
-      await faceapi.nets.faceRecognitionNet.load('/static/models')
-      await faceapi.nets.tinyFaceDetector.load('/static/models')
-      await faceapi.nets.faceExpressionNet.load('/static/models')
       ElMessage({
         type: 'success',
         message: '거짓말 탐지기가 작동 중입니다.'
@@ -119,8 +116,10 @@ export default {
       state.hover = 'none'
     }
 
-    onMounted(() => {
+    onMounted(async () => {
       props.streamManager.addVideoElement(myWebCam.value)
+      await faceapi.nets.tinyFaceDetector.load('/static/models')
+      await faceapi.nets.faceExpressionNet.load('/static/models')
     })
 
     return { state, myWebCam, startExpressDetection, showVideoMenu, hideVideoMenu }
