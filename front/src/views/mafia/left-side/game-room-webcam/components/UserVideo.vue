@@ -3,7 +3,7 @@
     <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
     <ov-video v-else
       :stream-manager="streamManager"
-      :isSelected="state.clientData === state.mafiaManager.secondVoteUsername"
+      :isSelected="gameStart && state.clientData === state.mafiaManager.secondVoteUsername"
       :isDead="gameStart && !state.mafiaManager.players.includes(state.clientData)"
       />
   </div>
