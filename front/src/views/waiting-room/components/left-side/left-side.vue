@@ -16,10 +16,10 @@
       </li>
     </ul>
     <div class="btn-group">
-      <el-button type="primary" icon="el-icon-info" circle></el-button>
-      <el-button type="success" icon="el-icon-s-tools" circle></el-button>
-      <el-button type="info" icon="el-icon-message" circle></el-button>
-      <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+      <el-button icon="el-icon-info" circle @click="clickInfoBtn"></el-button>
+      <el-button icon="el-icon-s-tools" circle @click="clickComingSoonBtn"></el-button>
+      <el-button icon="el-icon-message" circle @click="clickComingSoonBtn"></el-button>
+      <el-button icon="el-icon-star-off" circle @click="clickComingSoonBtn"></el-button>
     </div>
   </div>
 </template>
@@ -28,13 +28,16 @@ import Friend from './friend.vue'
 
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
+import { ElMessage } from 'element-plus'
 
 export default {
   name: "leftSide",
 
+
   components: {
     Friend
   },
+
 
   setup (props, { emit }) {
     const store = useStore()
@@ -154,6 +157,16 @@ export default {
       state.profileImageURL = `https://0.0.0.0:8080${localStorage.getItem('profileImageURL')}`
     }
 
+    const clickInfoBtn = () => {
+      // 가이드 다이얼로그 팝업
+    }
+
+    const clickComingSoonBtn = () => {
+      ElMessage({
+        type: 'primary',
+        message: 'Coming Soon'
+      })
+    }
 
     const shuffle = () =>  {
       for (let i = state.freinds.length - 1; i > 0; i--) {
@@ -161,9 +174,11 @@ export default {
         [state.freinds[i], state.freinds[j]] = [state.freinds[j], state.freinds[i]];
       }
     }
+
     setMyInfo()
     shuffle()
-    return { state };
+
+    return { state, load, clickInfoBtn, clickComingSoonBtn }
   }
 }
 </script>
