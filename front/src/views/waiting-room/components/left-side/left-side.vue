@@ -178,7 +178,7 @@ export default {
     setMyInfo()
     shuffle()
 
-    return { state, load, clickInfoBtn, clickComingSoonBtn }
+    return { state, clickInfoBtn, clickComingSoonBtn }
   }
 }
 </script>
