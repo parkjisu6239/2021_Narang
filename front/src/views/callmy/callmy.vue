@@ -136,6 +136,10 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
+        if(guessNameRes.answer === '정답타임끝'){
+          endAnswerTime();
+          return;
+        }
         state.speaker = state.userIdToUserName[guessNameRes.userId];
         state.answer = guessNameRes.answer;
         if(guessNameRes.answer === '정답'){
@@ -162,9 +166,7 @@ export default {
         }
         state.answer = '틀렸습니당';
         console.log("틀렸습니다.")
-        if(guessNameRes.answer === '정답타임끝'){
-          endAnswerTime();
-        }
+
 
       })
     }
