@@ -158,9 +158,9 @@ public class GameManager {
             log.debug("큐에 넣음 " + req.getUserId());
             log.debug(Arrays.toString(userIdQueue.toArray()));
             // 우승 ~
-            if(userIdQueue.size() == 1) return new GuessNameRes(req.getUserId(), true, true);
+            if(userIdQueue.size() == 1) return new GuessNameRes(req.getUserId(), true, true, req.getName());
         }
-        return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty());
+        return new GuessNameRes(req.getUserId(), isCorrect, nameMap.isEmpty(), req.getName());
     }
 
     /**
