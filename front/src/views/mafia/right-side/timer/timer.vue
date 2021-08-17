@@ -32,11 +32,12 @@ export default {
       } else {
         clearInterval(interval)
       }
-      window.requestAnimationFrame(Clock)
+
     }
 
     const interval = setInterval(() => {
       Clock()
+      window.requestAnimationFrame(interval)
     }, 1000)
 
     watch(props, () => {
