@@ -77,7 +77,7 @@ export default {
     const sendGuessName = (finalTranscript) => {
       const message = {
         userId: state.userId,
-        name: state.finalTranscript,
+        name: finalTranscript,
       }
       emit('sendGuessName', message)
     }
