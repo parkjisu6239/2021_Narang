@@ -9,7 +9,7 @@
 .mypage-container {
   display: grid;
   width: 50%;
-  height: 50%;
+  height: 60%;
   grid-template-columns: 1fr 2fr;
   min-width: 700px;
 }
