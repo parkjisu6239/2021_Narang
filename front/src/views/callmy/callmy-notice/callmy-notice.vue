@@ -1,6 +1,6 @@
 <template>
   <div class="callmy-notice-container">
-    <div class="callmy-notice-container-msg"><span v-if="msgType !== 'win'">🎉</span>{{ msg }}<span v-if="msgType !== 'win'">🎉</span></div>
+    <div class="callmy-notice-container-msg"><span v-if="msgType === 'win'">🎉</span>{{ msg }}<span v-if="msgType === 'win'">🎉</span></div>
   </div>
 </template>
 
