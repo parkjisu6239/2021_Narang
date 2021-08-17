@@ -1,7 +1,7 @@
 <template>
   <div class="left-screen">
     <div class="my-info">
-      <img v-if="state.profileImage" :src="state.profileImageURL" alt="">
+      <img v-if="state.profileImageURL" :src="state.profileImageURL" alt="">
       <img v-else class="no-profile" :src="require('@/assets/images/Neurang.png')" alt="">
       <div class="nickname">{{ state.username }}</div>
       <div class="email">{{ state.email }}</div>
@@ -47,7 +47,6 @@ export default {
       email: '',
       username: '',
       profileImageURL: computed(() => store.getters['root/profileImageURL']),
-      profileImage: localStorage.getItem('profileImageURL'),
       freinds: [{
           username: "이오닝",
           email: "lion@ssafy.com",

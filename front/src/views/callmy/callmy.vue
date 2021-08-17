@@ -370,8 +370,8 @@ export default {
 
 
     const socketDisconnect = () => {
-        if (stompClient !== null) {
-            stompClient.disconnect();
+        if (state.stompClient !== null) {
+            state.stompClient.disconnect();
         }
     }
 

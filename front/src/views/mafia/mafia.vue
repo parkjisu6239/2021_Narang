@@ -334,8 +334,8 @@ export default {
 
     const connectCheckConnect = () => {
       state.stompClient.subscribe(`/from/mafia/checkConnect/${route.params.roomId}`, res => {
-        console.log(res.body)
-        console.log('커넥트 체크 완료')
+        sendGetRole()
+        sendPlayers()
         state.gameStart = true
         gameInit()
         setTimeout(() => {
@@ -382,6 +382,7 @@ export default {
       state.stompClient.subscribe(fromPlayersUrl, res => {
         const result = JSON.parse(res.body)
         store.state.root.mafiaManager.players = result;
+        console.log(store.state.root.mafiaManager.players, '나 여기')
       })
     }
 
@@ -566,8 +567,8 @@ export default {
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
       state.gameStart = false
-      if (stompClient !== null) {
-          stompClient.disconnect();
+      if (state.stompClient !== null) {
+          state.stompClient.disconnect();
       }
       setTimeout(() => {
 
@@ -607,13 +608,26 @@ export default {
     }
 
 
-    const setGame = () => {
-      console.log("setGame 소켓 연결 전")
-      requestUserList()
-      console.log("setGame 소켓 연결 후")
+    const requestMyInfo = () => {
+      store.dispatch('root/requestReadMyInfo')
+        .then(res => {
+         const userInfo = {
+            email: res.data.user.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+            userId: res.data.user.userId,
+          }
+          store.commit('root/setUserInfo', userInfo)
+        })
+        .catch(err => {
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
+        })
     }
 
-    setGame()
+
+    requestUserList()
+    requestMyInfo()
+
 
     return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie, sendAddPlayer }
   },
