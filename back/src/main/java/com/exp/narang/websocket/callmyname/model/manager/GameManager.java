@@ -1,6 +1,7 @@
 package com.exp.narang.websocket.callmyname.model.manager;
 
 import com.exp.narang.api.model.service.RoomService;
+import com.exp.narang.websocket.callmyname.model.DefaultName;
 import com.exp.narang.websocket.callmyname.request.NameReq;
 import com.exp.narang.websocket.callmyname.request.SetNameReq;
 import com.exp.narang.websocket.callmyname.response.GuessNameRes;
@@ -17,12 +18,11 @@ public class GameManager {
     private final Map<Long, String> nameMap;
     private final Set<Long> userIdSet;
     private final Queue<Long> userIdQueue;
-    private final String defaultName [] = {"너랑이", "강예서", "박지수", "김담영", "신동윤", "김준환", "아이유", "유재석", "김연경", "지석진",
-                                            "해리포터", "타노스", "드라큘라", "기영이", "세종대왕", "신데렐라", "피카츄", "펭수", "올라프", "조커"};
+    private final String defaultName [] = DefaultName.defaultName;
     private int defaultNameIdx[], defaultNum[];
     private final int playerCnt;
     private int round, nowCnt, nextCnt, voteCompleteCnt, defaultPlayerCnt;
-    private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = 20;
+    private static final int SETTING = 0, PLAYING = 1, DEFAULT_NAME_SIZE = DefaultName.defaultName.length;
     private static final String USER_ID = "userId", NICKNAME = "nickname", NEXT = "next";
     private long playingUserId1, playingUserId2;
     private boolean isGameStarted;
@@ -95,7 +95,7 @@ public class GameManager {
                 defaultNum[idx] = defaultNum[DEFAULT_NAME_SIZE - i - 1];
             }
         }
-        return defaultName[defaultNameIdx[defaultPlayerCnt++]];
+        return defaultName[defaultNameIdx[defaultPlayerCnt++]].trim();
     }
 
     /**
