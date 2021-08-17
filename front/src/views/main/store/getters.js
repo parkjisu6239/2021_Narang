@@ -26,8 +26,7 @@ export function profileImageURL (state) {
   if (state.profileImageURL === undefined || state.profileImageURL === '' || state.profileImageURL === null) {
     return ''
   }
-  console.log('바껴땅')
-  return `https://0.0.0.0:8080/${state.profileImageURL}`
+  return `/image/${state.profileImageURL}`
 }
 
 export function myRoom (state) {
