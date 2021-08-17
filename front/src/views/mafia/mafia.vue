@@ -210,6 +210,7 @@ export default {
 
     // [Func|mafia] 동작 인식 종료
     const stopMission = () => {
+      store.state.root.mafiaManager.missionName = null;
         if(state.loopPredict){
           window.cancelAnimationFrame(state.loopPredict);
           state.loopPredict = undefined;
