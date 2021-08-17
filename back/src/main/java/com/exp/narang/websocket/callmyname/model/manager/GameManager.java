@@ -95,7 +95,7 @@ public class GameManager {
                 defaultNum[idx] = defaultNum[DEFAULT_NAME_SIZE - i - 1];
             }
         }
-        return defaultName[defaultNameIdx[defaultPlayerCnt++]].trim();
+        return defaultName[defaultNameIdx[defaultPlayerCnt++]];
     }
 
     /**

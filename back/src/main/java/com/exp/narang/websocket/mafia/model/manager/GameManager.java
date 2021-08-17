@@ -57,8 +57,6 @@ public class GameManager {
     public boolean addPlayer(String username) {
         log.debug("mafia addPlayer 실행 ~~");
         usernameSet.add(username);
-        log.debug(usernameSet.size() + "요거 유저 셋 사이즈");
-        log.debug(this.gamePlayers.getPlayers().size() + "요거 게임플레이어 셋 사이즈");
         boolean allConnected = usernameSet.size() == this.gamePlayers.getPlayers().size();
         // 전부 연결 되었을 때
         if(allConnected) {
@@ -66,11 +64,10 @@ public class GameManager {
             // 이미 게임이 시작되었으면 null 반환
             if (isGameStarted){
                 log.debug("게임 이미 시작됨");
-
                 return false;
             }
             // 게임이 시작되지 않았으면 게임 시작 표시
-            log.debug("게임 이미 시작됨");
+            log.debug("게임 시작 체크함");
             isGameStarted = true;
             return true;
         }
