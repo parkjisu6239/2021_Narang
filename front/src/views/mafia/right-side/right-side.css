@@ -46,3 +46,13 @@
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
+
+#mission-container {
+  padding: 10px 15px;
+}
+
+#mission-progress {
+  font-weight: 600;
+  font-size: 20;
+  font-family: 'Varela Round', SpoqaHanSansNeo;
+}

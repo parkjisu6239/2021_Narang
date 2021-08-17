@@ -14,6 +14,7 @@
       :msg="state.msg"
       :isVoteTime="state.isVoteTime"
       :timer="state.timer/1000"
+      :voteStatus="state.voteStatus"
       />
   </div>
 
@@ -162,7 +163,7 @@ export default {
         for (let i = 0; i < state.maxPredictions; i++) {
             state.missionProgress.innerHTML = "미션 " + (store.state.root.mafiaManager.missionKeepCnt / 6).toFixed(0) + "% 진행 중...";
             // 미션 동작인 경우 missionKeepCnt 카운트
-            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.87 && !store.state.root.mafiaManager.missionSuccess) {
+            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.77 && !store.state.root.mafiaManager.missionSuccess) {
               if(store.state.root.mafiaManager.missionKeepCnt == 0) state.missionMessage.innerHTML = "동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.";
               store.state.root.mafiaManager.missionKeepCnt++;
             }
@@ -326,7 +327,6 @@ export default {
       const fromVoteUrl = `/from/mafia/vote/${route.params.roomId}`
       state.stompClient.subscribe(fromVoteUrl,  res => {
         const result = JSON.parse(res.body)
-        console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
         console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
           state.voteStatus = result.voteStatus;
@@ -396,7 +396,6 @@ export default {
 
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
-      console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ2");
       console.log(result);
       if (result.finished) { // 2차 or 밤 -> 게임 종료
         stopMission(); // 마피아 동작 인식 중지
@@ -413,8 +412,6 @@ export default {
         gameOver()
       } else if (!result.completeVote && result.msg != ""){ // 1차 -> 2차
         if(result.msg == "투표가 진행 중입니다") {
-          console.log('투표 진행중! 좀만 기달')
-          console.log("투표결과나왔당ㅇㅇㅇㅇㅇㅇㅇ");
           console.log(result);
         } else {
           state.msg = `${result.msg}님이 선택되었습니다. \n잠시후 최후반론과 최종투표가 진행됩니다.`
@@ -423,15 +420,12 @@ export default {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i]; // username
               let votedCount = state.voteStatus[playerName];
-              console.log("저쩌라구~~~")
-              console.log(state.voteStatus)
-              console.log("어쩌라구~~~")
-              console.log(votedCount)
               state.msg += `\n${playerName} : ${votedCount}표`
           }
           // 5초 쉬고 낮 2차로 이동
           state.timer = state.time[4]
           setTimeout(() => {
+            state.voteStatus = {} // 다음으로 넘어갈 때 비우기
             goDay2(result.msg) // msg = secondVoteUsername, completeVote = false
           }, state.time[4]);
         }
@@ -451,17 +445,11 @@ export default {
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             console.log('최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.')
             state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
-            state.msg  += `
-            `;
-            console.log(state.voteStatus);
             for(let i = 0; i < store.state.root.mafiaManager.players.length; i++) {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus[playerName];
-              console.log(state.voteStatus)
-              console.log(votedCount)
-              state.msg += `${playerName} : ${votedCount}표
-              `
+              state.msg += `${playerName} : ${votedCount}표`
             }
 
           } else if (store.state.root.mafiaManager.stage === 'day2'){ // 2차 -> 밤
@@ -496,6 +484,7 @@ export default {
        sendPlayers(); // 죽은 사람이 존재할 수 있으니 players 정보 다시 가져오기
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
         setTimeout(() => {
+          state.voteStatus = {} // 다음으로 넘어갈 때 비우기
           goNight()
         }, state.time[4]);
       } else { // 밤 -> 낮
