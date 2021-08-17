@@ -68,3 +68,9 @@
 .play-or-wait .play {
   color: #727272;
 }
+
+.game-room-count-secret {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

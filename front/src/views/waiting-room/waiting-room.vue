@@ -12,6 +12,7 @@
     :open="state.enterSecretRoomDialogOpen"
     :room="state.room"
     @closeEnterSecretRoomDialog="onCloseEnterSecretRoomDialog"/>
+  <WaitingRoomBackground/>
 </template>
 <style>
 .screen {
@@ -25,6 +26,8 @@ import LeftSide from './components/left-side/left-side'
 import RightSide from './components/right-side/right-side'
 import createRoomDialog from './components/dialog/create-room-dialog'
 import enterSecretRoomDialog from './components/dialog/enter-secret-room-dialog'
+import WaitingRoomBackground from './waiting-room-background/waiting-room-background'
+
 
 import { reactive } from 'vue'
 
@@ -36,6 +39,7 @@ export default {
     RightSide,
     createRoomDialog,
     enterSecretRoomDialog,
+    WaitingRoomBackground,
   },
 
   setup() {
