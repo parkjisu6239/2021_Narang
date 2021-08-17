@@ -15,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,11 +29,13 @@ public class GameManager {
 //    private static final Logger log = LoggerFactory.getLogger(GameManager.class);
 
     private RoomService roomService;
-
-    private Long roomId;
     private GamePlayers gamePlayers;
     private VoteManager voteManager;
+
+    private Set<String> usernameSet;
+    private Long roomId;
     private String roleString;
+    private boolean isGameStarted;
 
     public GameManager () {}
 
@@ -42,6 +47,26 @@ public class GameManager {
         RoleManager.assignRoleToPlayers(this.gamePlayers);
         this.roleString = gamePlayers.getRoleString();
         this.voteManager = new VoteManager(gamePlayers);
+        this.usernameSet = new HashSet<>();
+    }
+
+    /**
+     * 게임에 참여한 사용자의 수를 카운트 하는 메서드
+     * @return 게임을 시작할지 여부
+     */
+    public boolean addPlayer(String username) {
+        log.debug("mafia addPlayer 실행 ~~");
+        usernameSet.add(username);
+        boolean allConnected = usernameSet.size() == this.gamePlayers.getPlayers().size();
+        // 전부 연결 되었을 때
+        if(allConnected) {
+            // 이미 게임이 시작되었으면 null 반환
+            if (isGameStarted) return false;
+            // 게임이 시작되지 않았으면 게임 시작 표시
+            isGameStarted = true;
+            return true;
+        }
+        return false;
     }
 
     public RoleResult findRoleNameByUsername(String username) {

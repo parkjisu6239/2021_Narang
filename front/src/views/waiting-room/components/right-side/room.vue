@@ -2,8 +2,10 @@
   <div :class="{'game-room-item': true, 'game-room-disable': !room.isActivate}">
     <div class="header">
       <div class="game-room-title">{{ room.title }}</div>
-      <i v-if="room.password !== 0" class="el-icon-lock"></i>
-      <div class="game-room-count">{{ user ? user.length : 0 }} / {{ room.maxPlayer }}</div>
+      <div class="game-room-count-secret">
+        <i v-if="room.password !== 0" class="el-icon-lock"></i>
+        <div class="game-room-count">{{ user ? user.length : 0 }} / {{ room.maxPlayer }}</div>
+      </div>
     </div>
     <div class="content">
       <div class="thumbnail">
