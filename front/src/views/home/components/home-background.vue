@@ -4,6 +4,7 @@
     <div class="text2">Hello Narnag</div>
     <div class="text2">Let's play our nicccce game</div>
     <div class="text2">Narang video game</div>
+    <div class="text1">Welcome to Narnag</div>
   </div>
 </template>
 

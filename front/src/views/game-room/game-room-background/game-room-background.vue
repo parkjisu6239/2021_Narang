@@ -5,6 +5,7 @@
     <div class="text2">Let's Play</div>
     <div class="text2">Narang Video Game</div>
     <div class="text2">Would you like to play with me?</div>
+    <div class="text2">Would you like to play with me?</div>
   </div>
 </template>
 

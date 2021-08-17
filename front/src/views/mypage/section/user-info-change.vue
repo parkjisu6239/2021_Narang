@@ -1,5 +1,5 @@
 <template>
-  <div class="user-info-change-container">
+  <div class="user-info-change-form-container">
     <el-form
       :model="state.form"
       :rules="state.rules"
