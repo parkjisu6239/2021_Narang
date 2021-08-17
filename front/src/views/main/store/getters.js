@@ -23,10 +23,10 @@ export function username (state) {
 }
 
 export function profileImageURL (state) {
-  if (state.profileImageURL === undefined || state.profileImageURL === '' || state.profileImageURL === null) {
+  if (!state.profileImageURL) {
     return ''
   }
-  return `/image/${state.profileImageURL}`
+  return state.profileImageURL
 }
 
 export function myRoom (state) {

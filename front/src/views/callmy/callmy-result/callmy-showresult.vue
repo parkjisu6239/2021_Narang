@@ -6,14 +6,14 @@
   </div>
 </template>
 <style>
-  @import url('./callmy-showdraw.css');
+  @import url('./callmy-showresult.css');
 </style>
 <script>
 import CallmyDrawBox from './components/callmy-drawbox.vue'
 import { useStore } from 'vuex'
 import { reactive, computed } from 'vue'
 export default {
-  name: 'CallmyShowDraw',
+  name: 'CallmyShowResult',
   components: {
     // CallmyDrawBox,
   },
@@ -33,5 +33,3 @@ export default {
   }
 }
 </script>
-
-

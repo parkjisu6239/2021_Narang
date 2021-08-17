@@ -55,23 +55,26 @@ export default {
 
     const uploadImage = () => {
       const formData = new FormData()
-      formData.append('file',imageTag.value.files[0])
-
+      console.log(imageTag.value.files[0], '이미지 폼 데이타')
+      formData.append('file', imageTag.value.files[0])
       store.dispatch('root/requestUpdateMyInfo', formData)
         .then(res => {
-
-          store.dispatch('root/requestReadMyInfo')
-            .then(res => {
-              const userInfo = {
-                email: res.data.user.email,
-                username: res.data.user.username,
-                profileImageURL: res.data.user.thumbnailUrl + '?' + new Date().toString(),
-              }
-              store.commit('root/setUserInfo', userInfo)
-            })
-            .catch(err => {
-              console.log(err)
-            })
+          console.log(res)
+          setTimeout(() => {
+            store.dispatch('root/requestReadMyInfo')
+              .then(res => {
+                console.log(res.data)
+                const userInfo = {
+                  email: res.data.user.email,
+                  username: res.data.user.username,
+                  profileImageURL: res.data.user.thumbnailUrl, // null
+                }
+                store.commit('root/setUserInfo', userInfo)
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }, 5000)
 
           ElMessage({
             message: '프로필 이미지 변경이 완료되었습니다.',
