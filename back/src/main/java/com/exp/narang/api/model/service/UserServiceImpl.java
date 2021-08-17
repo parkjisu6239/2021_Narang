@@ -10,11 +10,13 @@ import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.db.repository.UserRepository;
 import com.exp.narang.api.model.db.repository.UserRepositorySupport;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,13 +136,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private void requestUpload(MultipartFile mFile, User user) throws IOException {
-//		File file = mFile.getResource().getFile();
 		log.debug("받은 파일명 : " + mFile.getOriginalFilename());
-		File file = new File(mFile.getOriginalFilename());
-		mFile.transferTo(file);
 
-		RequestBody body = RequestBody.create(MultipartBody.FORM, file);
-		MultipartBody.Part image = MultipartBody.Part.createFormData("image", file.getName(), body);
+		RequestBody body = new MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart("key", KEY)
+				.addFormDataPart("image", mFile.getOriginalFilename(), RequestBody.create(MediaType.parse(""), mFile.getBytes()))
+				.build();
+		MultipartBody.Part image = MultipartBody.Part.createFormData("image", mFile.getOriginalFilename(), body);
 
 		retrofitService.postUploadImage(KEY, image)
 				.enqueue(new Callback<ImgbbResponse>(){
