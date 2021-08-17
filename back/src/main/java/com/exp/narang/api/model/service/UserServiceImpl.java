@@ -34,8 +34,7 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final RetrofitService retrofitService;
 	private static final String KEY = "d3e0947404ef9c6533664b5c536be532";
-
-	@Autowired
+	
 	public UserServiceImpl(UserRepository userRepository, UserRepositorySupport userRepositorySupport,
 						   PasswordEncoder passwordEncoder){
 		this.userRepository = userRepository;
