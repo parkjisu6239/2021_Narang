@@ -168,7 +168,7 @@ export default {
 
 
     setMyInfo()
-
+    shuffle();
     return { state, load }
   }
 }
