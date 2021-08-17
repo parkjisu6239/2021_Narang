@@ -1,6 +1,7 @@
 <template>
   <div class="screen">
-    <LeftSide />
+    <LeftSide
+      @narangGuidePopUp="state.isNarangGuideVisible = true"/>
     <RightSide
       @openCreateRoomDialog="onOpenCreateRoomDialog"
       @openEnterSecretRoomDialog="onOpenEnterSecretRoomDialog"/>
@@ -13,6 +14,10 @@
     :room="state.room"
     @closeEnterSecretRoomDialog="onCloseEnterSecretRoomDialog"/>
   <WaitingRoomBackground/>
+  <Dialog
+    v-if="state.isNarangGuideVisible">
+    <NarangGuide @clickExit="state.isNarangGuideVisible = false"/>
+  </Dialog>
 </template>
 <style>
 .screen {
@@ -27,7 +32,8 @@ import RightSide from './components/right-side/right-side'
 import createRoomDialog from './components/dialog/create-room-dialog'
 import enterSecretRoomDialog from './components/dialog/enter-secret-room-dialog'
 import WaitingRoomBackground from './waiting-room-background/waiting-room-background'
-
+import Dialog from '@/views/common/dialog/dialog.vue'
+import NarangGuide from './narang-guide/narang-guide.vue'
 
 import { reactive } from 'vue'
 import { useStore } from 'vuex'
@@ -41,6 +47,8 @@ export default {
     createRoomDialog,
     enterSecretRoomDialog,
     WaitingRoomBackground,
+    Dialog,
+    NarangGuide,
   },
 
   setup() {
@@ -49,7 +57,8 @@ export default {
     const state = reactive({
       createRoomDialogOpen: false,
       enterSecretRoomDialogOpen: false,
-      room: null
+      room: null,
+      isNarangGuideVisible: false,
     })
 
     const onOpenCreateRoomDialog = function() {

@@ -146,7 +146,7 @@ export default {
     }
 
     const clickInfoBtn = () => {
-      // 가이드 다이얼로그 팝업
+      emit('narangGuidePopUp')
     }
 
     const clickComingSoonBtn = () => {
