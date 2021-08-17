@@ -116,11 +116,11 @@ export default {
               else state.disableGameBtns = false; // 다르면 게임 버튼 안 보이게
           })
           .catch(err => {
-            ElMessage(err)
+            ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
           })
       })
       .catch(err => {
-        ElMessage(err)
+        ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
       })
     }
 
