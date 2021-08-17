@@ -1,34 +1,32 @@
 <template>
-  <el-form
-    :model="state.form"
-    :rules="state.rules"
-    class="user-password-change-form"
-    ref="userPasswordForm"
-    label-width="120px"
-    status-icon
-    label-position="left">
-
-    <el-form-item prop="currentPassword" label="현재 비밀번호">
-      <el-input
-        v-model="state.form.currentPassword"
-        autocomplete="off"
-        type="password">
-      </el-input>
-    </el-form-item>
-
-    <el-form-item prop="newPassword" label="새로운 비밀번호">
-      <el-input
-        v-model="state.form.newPassword"
-        autocomplete="off"
-        type="password">
-      </el-input>
-    </el-form-item>
-
-    <el-form-item>
-      <el-button type="primary" @click="userPasswordChange">비밀번호 변경</el-button>
-    </el-form-item>
-
-  </el-form>
+  <div class="user-password-container">
+    <el-form
+      :model="state.form"
+      :rules="state.rules"
+      class="user-password-change-form"
+      ref="userPasswordForm"
+      label-width="120px"
+      status-icon
+      label-position="left">
+      <el-form-item prop="currentPassword" label="현재 비밀번호">
+        <el-input
+          v-model="state.form.currentPassword"
+          autocomplete="off"
+          type="password">
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="newPassword" label="새로운 비밀번호">
+        <el-input
+          v-model="state.form.newPassword"
+          autocomplete="off"
+          type="password">
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="userPasswordChange">비밀번호 변경</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 <style scoped>
   @import url('./user-password-change.css');

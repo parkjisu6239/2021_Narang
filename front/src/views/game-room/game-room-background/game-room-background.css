@@ -8,6 +8,7 @@
 
 .game-room-background-container div {
   position: relative;
+  top: -300px;
   left: -20px;
   color: rgba(255, 255, 255, 0.11);
   font-weight: 900;

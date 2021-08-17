@@ -7,6 +7,10 @@
   row-gap: 20px;
 }
 
+.game-room-container video {
+  border-radius: 20px;
+}
+
 .game-cam-chat-container {
   display: grid;
   grid-template-columns: 6fr 1fr;
