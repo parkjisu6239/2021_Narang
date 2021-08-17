@@ -1,0 +1,21 @@
+.callmy-guide-container {
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+  overflow-x: scroll;
+}
+
+.callmy-guide-container::-webkit-scrollbar {
+  height: 15px;
+}
+
+.callmy-guide-container::-webkit-scrollbar-thumb{
+  border-radius: 10px;
+  background-color: rgb(180, 180, 180);
+}
+
+.callmy-guide-container img {
+  height: 60vh;
+  width: auto;
+  border-bottom: 1px solid rgb(167, 167, 167);
+}
