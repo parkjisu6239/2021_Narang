@@ -54,7 +54,6 @@ export default {
             return;
           }
           sendGuessName('정답');
-          store.state.root.callmyManager.isAnswer = true;
           state.ans = true // 정답 타임!
           setTimeout(() => {
               state.ans = false // 5초 후 정답 타임 취소
