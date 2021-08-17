@@ -45,6 +45,7 @@ export default {
           state.finalTranscript = '';
           state.finalTranscript = nowSay // 이번에 말한 내용으로 보드 변경
           sendGuessName(state.finalTranscript);
+          return;
         }
 
         if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
