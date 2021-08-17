@@ -61,14 +61,14 @@ public class UserController {
         @ApiResponse(code = 404, message = "사용자 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
     })
-	public ResponseEntity<UserRes> getUserInfo(@ApiIgnore Authentication authentication) throws IOException {
+	public ResponseEntity<? extends BaseResponseBody> getUserInfo(@ApiIgnore Authentication authentication) throws IOException {
 		if(authentication == null) {
-			return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
+			return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패"));
 		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
-		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음", null));
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
 		return ResponseEntity.status(200).body(UserRes.of(200, "성공", user));
 	}
 	@ApiImplicitParams({
@@ -92,7 +92,7 @@ public class UserController {
 		UserDetails userDetails = (UserDetails) authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
-		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음", null));
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
 		if(updateInfo.getNewPassword() != null) {
 			if(!passwordEncoder.matches(updateInfo.getCurrentPassword(), user.getPassword())) {
 				return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
@@ -145,6 +145,10 @@ public class UserController {
 		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		User user = userDetails.getUser();
+
+		User checkUser = userService.getUserByEmail(userDetails.getUsername());
+		if(checkUser == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
+
 		userService.deleteById(user.getUserId());
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
@@ -164,6 +168,8 @@ public class UserController {
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
+
 		userService.deleteProfile(user);
 
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
