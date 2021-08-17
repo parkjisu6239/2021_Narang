@@ -2,7 +2,7 @@
   <div class="board-container">
     <div class="board-title">Notice 📣</div>
     <hr>
-    <Notice :msg="msg"/>
+    <Notice :msg="msg" :voteStatus="voteStatus"/>
     <hr>
     <Vote v-if="state.mafiaManager.isAlive === true && isVoteTime === true"/>
   </div>
@@ -24,6 +24,9 @@ export default {
     },
     isVoteTime: {
       type: Boolean,
+    },
+    voteStatus: {
+      type: Object
     }
   },
 

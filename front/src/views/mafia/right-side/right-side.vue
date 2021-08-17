@@ -11,12 +11,12 @@
         <img @click="clickShowMission" :src="require('@/assets/images/icon/mission.png')" alt="미션 보기">
       </el-tooltip>
     </div>
-    <div id="mission-container">
+    <div v-if="state.myRole === 'Mafia'" id="mission-container">
       <div id="mission-progress"></div>
       <div id="mission-message"></div>
     </div>
     <Timer class="right-timer" :timer="timer"/>
-    <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime"/>
+    <Board class="right-board" :msg="msg" :isVoteTime="isVoteTime" :voteStatus="voteStatus"/>
     <Setting class="right-setting"/>
   </div>
 </template>
@@ -26,7 +26,7 @@ import Board from './board/board.vue'
 import Timer from './timer/timer.vue'
 import Setting from './setting/setting.vue'
 
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -42,6 +42,9 @@ export default {
     },
     timer: {
       tpye: Number,
+    },
+    voteStatus: {
+      type: Object,
     }
   },
 
@@ -57,6 +60,7 @@ export default {
     const router = useRouter()
 
     const state = reactive({
+      myRole: computed(() => store.state.root.mafiaManager.myRole)
     })
 
     const clickGetRole = () => {
