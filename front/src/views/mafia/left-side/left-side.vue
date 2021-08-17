@@ -49,5 +49,6 @@ export default {
   overflow: auto;
   display: grid;
   place-items: center;
+  position: relative;
 }
 </style>
