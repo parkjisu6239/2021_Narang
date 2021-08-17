@@ -341,6 +341,7 @@ export default {
     const gameOver = () => {
       // 상태 초기화
       init();
+      game
       endAnswerTime();
       setTimeout(() => {
         // 게임 정보 변경
@@ -389,6 +390,7 @@ export default {
           state.answer = '';
           store.state.root.callmyManager.isAnswer = false;
     }
+
 
     onBeforeUnmount(() => {
       socketDisconnect()
