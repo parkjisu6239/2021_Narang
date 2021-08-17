@@ -33,6 +33,10 @@
 }
 
 .status {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 15px;
   padding-right: 15px;
   padding-top: 10px;
 }
@@ -58,6 +62,7 @@
 
 .play-or-wait .wait {
   color: #FF9F00;
+  font-size: 45px;
 }
 
 .play-or-wait .play {
