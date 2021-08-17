@@ -74,12 +74,12 @@ export default {
             store.dispatch('root/requestLogout')
             router.push({name: 'home'})
             ElMessage({
-              message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요',
+              message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요.',
               type: 'success',
             })
           })
           .catch(err => {
-            ElMessage.error('서버 에러가 발생하였습니다. 잠시 후, 다시 시도해주세요');
+            ElMessage.error('서버 에러가 발생하였습니다. 잠시 후, 다시 시도해주세요.');
           })
         } else {
           ElMessage.error('새로운 비밀번호의 형식이 잘못되었습니다.');

@@ -61,14 +61,14 @@ export default {
               localStorage.setItem('profileImageURL', res.data.user.thumbnailUrl)
             })
             .catch(err => {
-              console.log(err)
+              ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
             })
           })
           .catch(function (err) {
-            ElMessage.error(err)
+            ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
           })
         } else {
-          ElMessage.error('다시 입력해주세요.')
+          ElMessage.error('다시 입력주세요.')
         }
       });
     }
