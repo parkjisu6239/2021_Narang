@@ -42,6 +42,26 @@ public class MafiaController {
         gameManagerMap.put(roomId, new GameManager(roomId, roomService));
     }
 
+    /**
+     * 마피아 게임방에 참여한 사용자의 username을 추가하는 메서드
+     * @param roomId : 방의 roomId
+     * @param username : 참여한 사용자의 username
+     */
+    @MessageMapping("/mafia/addPlayer/{roomId}")
+    public void addPlayer(@DestinationVariable long roomId, String username){
+        if(gameManagerMap.get(roomId).addPlayer(username)) broadcastAllConnected();
+        log.debug(username + " 들어옴");
+    }
+
+    /**
+     * 모든 사용자가 들어왔다는 메세지를 전달하는 메서드
+     */
+    @SendTo("/from/mafia/checkConnect/{roomId}")
+    public Boolean broadcastAllConnected(){
+        log.debug("다 들어옴");
+        return true;
+    }
+
     // 역할 확인하기 버튼을 누르면 roomId, username 파라미터를 통하여 각자 역할을 확인한다.
     @MessageMapping("/mafia/role/{roomId}/{username}")
     @SendTo("/from/mafia/role/{roomId}/{username}")
@@ -67,6 +87,7 @@ public class MafiaController {
         return gameManagerMap.get(roomId).isEveryMafiaComplete(mafiaMessage);
     }
 
+    // 게임 참여 중인 (살아 있는 사람들 가져옴) 투표에 쓰려고
     @MessageMapping("/mafia/players/{roomId}")
     @SendTo("/from/mafia/players/{roomId}")
     public List<String> getPlayers(@DestinationVariable long roomId) throws Exception {
