@@ -37,19 +37,19 @@ export default {
       state.recognition.onresult = function(event){
         console.log(event, '이거는 event')
         console.log(event.results, '이거는 event results')
-        let texts = Array.from(event.results).map(results => results[0].transcript).join("")
-        console.log(texts, '이거는 texts - 레퍼런스 문서에서 가져온 거')
+        let nowSay = Array.from(event.results).map(results => results[0].transcript).join("")
+        // console.log(texts, '이거는 texts - 레퍼런스 문서에서 가져온 거')
 
-        state.finalTranscript = '' // 기존에 작성된 내용 초기화
-        let nowSay = '' // 사용자가 지금하는 말
+        // state.finalTranscript = '' // 기존에 작성된 내용 초기화
+        // let nowSay = '' // 사용자가 지금하는 말
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          const transcript = event.results[i][0].transcript;
+        // for (let i = event.resultIndex; i < event.results.length; ++i) {
+        //   const transcript = event.results[i][0].transcript;
 
-          if (event.results[i].isFinal) {
-            nowSay += transcript;
-          }
-        }
+        //   if (event.results[i].isFinal) {
+        //     nowSay += transcript;
+        //   }
+        // }
 
         console.log(nowSay)
 
