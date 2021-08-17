@@ -44,16 +44,16 @@ export default {
 .mafia-vote-status-list {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .mafia-vote-status-item {
   display: flex;
   align-items: center;
-  border-radius: 15px;
+  justify-content: space-between;
+  border-radius: 10px;
   padding: 3px 10px;
   width: 80%;
-  gap: 20px;
   background-color: white;
 }
 
