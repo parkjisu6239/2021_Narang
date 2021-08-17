@@ -330,6 +330,7 @@ export default {
         console.log(result);
         if (!state.gameOver) { // 게임이 끝나지 않은 경우에만 수신
           state.voteStatus = result.voteStatus;
+          store.state.root.mafiaManager.voteStatus = result.voteStatus
           getVoteResult(result) // 결과 해석
         }
       })

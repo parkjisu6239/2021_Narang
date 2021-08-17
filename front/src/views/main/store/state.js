@@ -25,6 +25,7 @@ const mafiaManager = {
   canMafiaVote : false,
   isLierItemActivate: false,
   lierItem: true,
+  voteStatus: {}
 }
 const callmyManager = {
   round: 0,

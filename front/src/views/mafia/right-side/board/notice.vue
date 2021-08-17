@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-html="state.message"></div>
-    <div>{{voteStatus}}</div>
+    <div>props: {{voteStatus}}</div>
+    <div>store: {{state.storeVoteStatus}}</div>
     <div v-if="voteStatus && voteStatus.length" class="mafia-vote-status-list">
       <div class="mafia-vote-status-item" v-for="player in state.players" :key="player">
         <div class="mafia-vote-status-name">{{ player }}</div>
@@ -32,7 +33,8 @@ export default {
 
     const state = reactive({
       message: computed(() => props.msg.replace("\n", "<br />")),
-      players: computed(() => store.state.root.mafiaManager.players)
+      players: computed(() => store.state.root.mafiaManager.players),
+      storeVoteStatus: computed(() => store.state.root.mafiaManager.voteStatus)
     })
 
     return { state }
