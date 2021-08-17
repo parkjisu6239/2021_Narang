@@ -48,6 +48,7 @@ export default {
         }
 
         if (nowSay.trim() === '정답') { // 정답이라고 말한 경우
+          state.finalTranscript = '';
           state.ans = true // 정답 타임!
           setTimeout(() => {
               state.ans = false // 5초 후 정답 타임 취소

@@ -1,5 +1,6 @@
 <template>
   <div class="callmy-container">
+    <h2>{{ state.answer }}</h2>
     <div class="callmy-left-side">
       <CallMyWebCam
         @joinSomeOne="joinSomeOne"
@@ -84,6 +85,7 @@ export default {
       isAllConnected: false,
       roundStart: false,
       round: 1,
+      answer: '',
     })
 
 
@@ -116,9 +118,7 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         state.isVoteTime = true
-        setTimeout(() => {
-          sendPlay('next')
-        }, 2000)
+        sendPlay('next')
       })
     }
 
@@ -128,7 +128,7 @@ export default {
         const guessNameRes = JSON.parse(res.body)
         console.log("guessNameRes")
         console.log(guessNameRes)
-
+        state.answer = guessNameRes.answer;
         if(guessNameRes.gameEnd) {
           gameOver();
           return;
@@ -136,17 +136,11 @@ export default {
 
         if(guessNameRes.correct) {
           const winner = state.userIdToUserName[guessNameRes.userId];
-          ElMessage({
-            type: 'success',
-            message: `${winner}가 승리했습니다.`
-          })
+          console.log(`${winner}가 승리했습니다`)
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
-          setTimeout(() => {
-            sendPlay("next")
-          }, 2000)
-
+          sendPlay("next")
           return;
         }
 
