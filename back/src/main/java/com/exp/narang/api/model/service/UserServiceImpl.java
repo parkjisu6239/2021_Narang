@@ -10,6 +10,7 @@ import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.db.repository.UserRepository;
 import com.exp.narang.api.model.db.repository.UserRepositorySupport;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -128,7 +129,7 @@ public class UserServiceImpl implements UserService {
 		retrofitService.postUploadImage(KEY, file)
 				.enqueue(new Callback<ImgbbResponse>(){
 					@Override
-					public void onResponse(Call<ImgbbResponse> call, Response<ImgbbResponse> response) {
+					public void onResponse(@NotNull Call<ImgbbResponse> call, @NotNull Response<ImgbbResponse> response) {
 						log.debug("요청 성공");
 
 						ImgbbResponse imgbbResponse = response.body();
