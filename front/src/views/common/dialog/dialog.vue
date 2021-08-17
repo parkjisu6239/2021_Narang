@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'gameDialog',
+  name: 'dialog',
 
   props: {
 
@@ -17,5 +17,5 @@ export default {
 </script>
 
 <style scoped>
-  @import url('./game-dialog.css');
+  @import url('./dialog.css');
 </style>
