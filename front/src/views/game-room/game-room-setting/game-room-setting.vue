@@ -71,6 +71,11 @@ export default {
         ...props.room,
         game,
       }
+      if(game === 'callmy') {
+
+      } else if(game === 'mafia'){
+
+      }
       console.log(roomInfo)
       store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
@@ -116,11 +121,11 @@ export default {
               else state.disableGameBtns = false; // 다르면 게임 버튼 안 보이게
           })
           .catch(err => {
-            ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
+            ElMessage(err)
           })
       })
       .catch(err => {
-        ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
+        ElMessage(err)
       })
     }
 
