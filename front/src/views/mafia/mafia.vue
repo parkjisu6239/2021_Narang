@@ -255,10 +255,10 @@ export default {
 
       state.stompClient.connect({}, () => {
         connectGetRoleSocket() // 롤 배분 소켓 연결
-        sendGetRole()
         connectVoteSocket() // 투표 소켓 연결
         connectGetPlayerList()
         connectCheckConnect()
+        sendGetRole()
         sendPlayers()
         }
       )
