@@ -1,6 +1,6 @@
 <template>
   <div v-if="!gameStart" class="before-game-start">
-    <h1>아직 게임 시작 전입니다. ({{ state.joinedPlayerNumbers }} / {{ playerNumber }})</h1>
+    <div>플레이어가 입장 중  ( {{ state.joinedPlayerNumbers }} / {{ playerNumber }} )</div>
   </div>
   <div
     :class="{
@@ -70,11 +70,8 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
 				state.subscribers.push(subscriber)
-        console.log(subscriber.videos, '서브스크라이버 생성')
-        console.log(subscriber, '서브스크라이버 생성')
         if (subscriber.videos !== []) {
           state.joinedPlayerNumbers++
-          console.log('여기로 들어와서 조인드플레이어를 늘렸다', state.joinedPlayerNumbers)
         }
 			})
 
@@ -82,11 +79,8 @@ export default {
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
 				const subscriber = state.subscribers[index]
-        console.log(subscriber.videos, '서브스크라이버 파괴')
-        console.log(subscriber, '서브스크라이버 파괴')
         if (subscriber.videos !== []) {
           state.joinedPlayerNumbers--
-          console.log('여기로 들어와서 조인드플레이어를 줄였다', state.joinedPlayerNumbers)
         }
         if (index >= 0) state.subscribers.splice(index, 1)
 			})

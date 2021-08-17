@@ -116,7 +116,9 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         state.isVoteTime = true
-        sendPlay('next')
+        setTimeout(() => {
+          sendPlay('next')
+        }, 2000)
       })
     }
 
@@ -134,11 +136,17 @@ export default {
 
         if(guessNameRes.correct) {
           const winner = state.userIdToUserName[guessNameRes.userId];
-          console.log(`${winner}가 승리했습니다`)
+          ElMessage({
+            type: 'success',
+            message: `${winner}가 승리했습니다.`
+          })
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
-          sendPlay("next")
+          setTimeout(() => {
+            sendPlay("next")
+          }, 2000)
+
           return;
         }
 

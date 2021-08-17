@@ -9,6 +9,7 @@ import com.exp.narang.websocket.mafia.response.RoleResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
+@Slf4j
 public class MafiaController {
-    private static final Logger log = LoggerFactory.getLogger(MafiaController.class);
     private static Map<Long, GameManager> gameManagerMap;
 
     @Autowired
@@ -54,18 +55,18 @@ public class MafiaController {
     @MessageMapping("/mafia/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, String username){
         if(gameManagerMap.get(roomId).addPlayer(username)) {
-            System.out.println("브로드 갈거임");
+            log.debug("브로드 갈거임");
             broadcastAllConnected(roomId);
-            System.out.println("브로드 갔다옴.");
+            log.debug("브로드 갔다옴.");
         }
-        System.out.println(username + " 들어옴");
+        log.debug(username + " 들어옴");
     }
 
     /**
      * 모든 사용자가 들어왔다는 메세지를 전달하는 메서드
      */
-    public void broadcastAllConnected(long roomId){
-        System.out.println("다 들어옴");
+    public void broadcastAllConnected(Long roomId){
+        log.debug("다 들어옴");
         template.convertAndSend("/from/mafia/checkConnect/" + roomId, true);
     }
 

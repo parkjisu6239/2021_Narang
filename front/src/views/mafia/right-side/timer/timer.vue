@@ -32,15 +32,14 @@ export default {
       } else {
         clearInterval(interval)
       }
-
     }
 
     const interval = setInterval(() => {
       Clock()
-      window.requestAnimationFrame(interval)
     }, 1000)
 
-    watch(props, () => {
+    watch(() => props.timer, () => {
+      console.log('타이머 초기화')
       setTimer()
     })
 
