@@ -1,6 +1,7 @@
 .user-info-change-container {
-  grid-column: 2 / 4;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .fade-enter-active,
