@@ -350,7 +350,9 @@ export default {
     const sendAddPlayer = () => {
       console.log('나 들어왔어')
       const username = localStorage.getItem('username')
-      state.stompClient.send(`/to/mafia/addPlayer/${route.params.roomId}`, JSON.stringify(username), {})
+      setTimeout(() => {
+        state.stompClient.send(`/to/mafia/addPlayer/${route.params.roomId}`, JSON.stringify(username), {})
+      }, 2000)
     }
 
 
