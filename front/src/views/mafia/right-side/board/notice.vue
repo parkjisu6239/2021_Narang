@@ -44,7 +44,7 @@ export default {
 .mafia-vote-status-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .mafia-vote-status-item {
@@ -53,16 +53,17 @@ export default {
   border-radius: 15px;
   padding: 3px 10px;
   width: 80%;
-  gap: 20px
+  gap: 20px;
+  background-color: white;
 }
 
 .mafia-vote-status-count {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(202, 46, 77);
+  background-color: rgb(197, 58, 86);
   color: white;
-  border: 50%;
+  border-radius: 50%;
   width: 18px;
   height: 18px;
 }
