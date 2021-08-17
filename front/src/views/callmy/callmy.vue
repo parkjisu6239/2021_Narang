@@ -171,10 +171,9 @@ export default {
           sendPlay("next")
           return;
         }
+
         state.answer = '틀렸습니당';
         console.log("틀렸습니다.")
-
-
       })
     }
 
