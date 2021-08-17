@@ -30,10 +30,10 @@ export default {
       },
       rules: {
         email: [
-          { required: true, message: 'Please input email', trigger: 'blur' }
+          { required: true, message: '이메일을 입력해주세요.', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: 'Please input password', trigger: 'blur' }
+          { required: true, message: '비밀번호를 입력해주세요.', trigger: 'blur' }
         ]
       },
       formLabelWidth: '100px'
@@ -68,7 +68,7 @@ export default {
             ElMessage.error(err)
           })
         } else {
-          ElMessage.error('Validate error!')
+          ElMessage.error('다시 입력해주세요.')
         }
       });
     }

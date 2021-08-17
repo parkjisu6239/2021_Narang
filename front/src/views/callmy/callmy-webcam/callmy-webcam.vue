@@ -111,13 +111,13 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream)
 				state.subscribers.push(subscriber)
-        state.joinedPlayerNumbers++
+        if (subscriber.videos.length >= 1) state.joinedPlayerNumbers++
 			})
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
-        state.joinedPlayerNumbers--
+        if (subscriber.videos.length >= 1) state.joinedPlayerNumbers--
         if (index >= 0) {
 					state.subscribers.splice(index, 1)
 				}

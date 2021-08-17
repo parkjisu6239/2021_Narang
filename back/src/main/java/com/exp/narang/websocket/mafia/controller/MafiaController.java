@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exp.narang.websocket.mafia.model.manager.GameManager;
@@ -27,6 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MafiaController {
     private static final Logger log = LoggerFactory.getLogger(MafiaController.class);
     private static Map<Long, GameManager> gameManagerMap;
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @Autowired
     private RoomService roomService;
@@ -49,17 +53,20 @@ public class MafiaController {
      */
     @MessageMapping("/mafia/addPlayer/{roomId}")
     public void addPlayer(@DestinationVariable long roomId, String username){
-        if(gameManagerMap.get(roomId).addPlayer(username)) broadcastAllConnected();
-        log.debug(username + " 들어옴");
+        if(gameManagerMap.get(roomId).addPlayer(username)) {
+            System.out.println("브로드 갈거임");
+            broadcastAllConnected(roomId);
+            System.out.println("브로드 갔다옴.");
+        }
+        System.out.println(username + " 들어옴");
     }
 
     /**
      * 모든 사용자가 들어왔다는 메세지를 전달하는 메서드
      */
-    @SendTo("/from/mafia/checkConnect/{roomId}")
-    public Boolean broadcastAllConnected(){
-        log.debug("다 들어옴");
-        return true;
+    public void broadcastAllConnected(long roomId){
+        System.out.println("다 들어옴");
+        template.convertAndSend("/from/mafia/checkConnect/" + roomId, true);
     }
 
     // 역할 확인하기 버튼을 누르면 roomId, username 파라미터를 통하여 각자 역할을 확인한다.

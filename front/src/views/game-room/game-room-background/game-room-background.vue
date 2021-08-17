@@ -1,6 +1,6 @@
 <template>
-  <div class="callmy-background-container">
-    <div class="text1">Call My Name</div>
+  <div class="game-room-background-container">
+    <div class="text1">Game Room</div>
     <div class="text2">Hello Narnag</div>
     <div class="text2">Let's Play</div>
     <div class="text2">Narang Video Game</div>
@@ -9,10 +9,10 @@
 
 <script>
 export default {
-  name: 'callmyBackground'
+  name: 'gameRoomBackground'
 }
 </script>
 
 <style scoped>
-  @import url('./callmy-background.css');
+  @import url('./game-room-background.css');
 </style>

@@ -2,7 +2,10 @@
   <div class="mafia-main-container">
     <LeftSide
       class="mafia-left-side"
-      :roomId="state.roomId"/>
+      :roomId="state.roomId"
+      :gameStart="state.gameStart"
+      :playerNumber="state.userList.length"
+      @sendAddPlayer="sendAddPlayer"/>
     <RightSide
       class="mafia-right-side"
       @sendGetRole="sendGetRole"
@@ -60,7 +63,7 @@ import MissionContent from './game-dialog/mission-content.vue'
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -85,6 +88,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
 
+
     const state = reactive({
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
       roomId: route.params.roomId,
@@ -100,6 +104,7 @@ export default {
       surviver: {},
       time: [20000, 10000, 10000, 10000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
+      gameStart: false,
       isVoteTime: false,
       timer: 0,
       isDialogVisible: false,
@@ -113,7 +118,9 @@ export default {
       missionMessageCnt: 0,
       clickMissionDialog: false,
       voteStatus : {},
+      userList: {},
     })
+
 
     const poseEstimationInit = async() => {
         console.log("동작 인식 시작!!!")
@@ -134,11 +141,8 @@ export default {
         console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
         state.missionMessage = document.getElementById("mission-message");
-        // state.labelContainer = document.getElementById("mission-container");
-        // for (let i = 0; i < state.maxPredictions; i++) {
-        //     state.labelContainer.appendChild(document.createElement("div"));
-        // }
     }
+
 
     const loop = async(timestamp) => {
       await predict();
@@ -146,6 +150,7 @@ export default {
         state.loopPredict = window.requestAnimationFrame(loop);
       }
     }
+
 
     const predict = async() => {
         // Prediction #1: run input through posenet
@@ -180,6 +185,7 @@ export default {
         // console.log("여기서 프레딕션은??"+prediction);
     }
 
+
     // [Func|mafia] 마피아 미션 확인
     const clickShowMission = () => {
       console.log("미션 보기 클릭함 : ",store.state.root.mafiaManager.missionName);
@@ -192,6 +198,7 @@ export default {
       }
     }
 
+
     // [Func|mafia] 동작 인식 시작 (마피아일 때만 작동)
     const startMission = () => {
       console.log("미션시작한다이자식아!")
@@ -201,6 +208,7 @@ export default {
       }
     }
 
+
     // [Func|mafia] 동작 인식 종료
     const stopMission = () => {
         if(state.loopPredict){
@@ -209,6 +217,7 @@ export default {
           state.loopPredict = undefined;
         }
     }
+
 
     // [Func|Item] 거짓말 탐지 아이템 활성화
     const clickLie = () => {
@@ -240,24 +249,16 @@ export default {
       state.stompClient = Stomp.over(socket)
 
       state.stompClient.connect({}, () => {
-        console.log("2. 롤 배분 소켓 연결 전")
         connectGetRoleSocket() // 롤 배분 소켓 연결
-        console.log("3-1. 롤 배분 소켓 연결 후")
-        console.log("3-2. 롤 배분 전송 전")
         sendGetRole()
-        console.log("3-3. 롤 배분 전송 후")
-        console.log("4. 투표 소켓 연결 전")
         connectVoteSocket() // 투표 소켓 연결
-        console.log("5. 투표 소켓 연결 후")
-        console.log("6. player 소켓 연결 전")
         connectGetPlayerList()
-        console.log("7. plater 소켓 연결 후")
-        console.log("8. setGane sendPlayers 전")
-        sendPlayers();
-        console.log("9. setGame sendPlayers 후")
-        console.log("setGame gameInit 전")
-        gameInit();
-        console.log("setGame gameInit 후")
+        connectCheckConnect()
+
+        sendPlayers()
+
+        gameInit()
+
         }
       )
     }
@@ -329,6 +330,26 @@ export default {
         }
       })
     }
+
+
+    const connectCheckConnect = () => {
+      state.stompClient.subscribe(`/from/mafia/checkConnect/${route.params.roomId}`, res => {
+        console.log(res.body)
+        console.log('커넥트 체크 완료')
+        state.gameStart = true
+        setTimeout(() => {
+          goDay();
+        }, state.time[4])
+      })
+    }
+
+
+    const sendAddPlayer = () => {
+      console.log('나 들어왔어')
+      const username = localStorage.getItem('username')
+      state.stompClient.send(`/to/mafia/addPlayer/${route.params.roomId}`, JSON.stringify(username), {})
+    }
+
 
     // [Func|socket] 마피아 투표 소켓 send
     const sendVoteSocket = () => {
@@ -431,9 +452,7 @@ export default {
               console.log(store.state.root.mafiaManager.players)
               let playerName = store.state.root.mafiaManager.players[i];
               let votedCount = state.voteStatus[playerName];
-              console.log("저쩌라구~~~")
               console.log(state.voteStatus)
-              console.log("어쩌라구~~~")
               console.log(votedCount)
               state.msg += `${playerName} : ${votedCount}표
               `
@@ -483,7 +502,6 @@ export default {
 
     // [Func|game] 낮 자유 토론
     const goDay = () => {
-      console.log("토론시간이다이자식이ㅏ개 쎄이야~!!!!!!!!")
       startMission(); // 낮이 되면 마피아들 미션 새로 부여 받고 동작 인식 시작.
 
       // 상태 변경
@@ -570,9 +588,6 @@ export default {
       console.log(`잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`)
       state.msg = `잠시후 게임이 시작됩니다. \n롤카드를 확인해주세요.`
 
-      setTimeout(() => {
-        goDay();
-      }, state.time[4])
     }
 
     const gameOver = () => {
@@ -608,16 +623,28 @@ export default {
       }, 5000);
     }
 
-    const setGame =  () => {
+
+    const requestUserList = () => {
+      store.dispatch('root/requestReadUserList', route.params.roomId)
+        .then(res => {
+          state.userList = res.data.userList
+          connectSocket()
+        })
+        .catch(err => {
+          ElMessage(err)
+        })
+    }
+
+
+    const setGame = () => {
       console.log("setGame 소켓 연결 전")
-      connectSocket()
+      requestUserList()
       console.log("setGame 소켓 연결 후")
     }
 
-    //* created *//
-    setGame();
+    setGame()
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie}
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie, sendAddPlayer }
   },
 }
 </script>

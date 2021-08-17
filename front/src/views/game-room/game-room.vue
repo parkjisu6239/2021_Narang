@@ -26,6 +26,7 @@
   <div v-if="state.gameStart" class="countdown">
     <div class="counter">{{ state.count }}</div>
   </div>
+  <GameRoomBackground/>
 </template>
 <style scoped>
   @import url('./game-room.css');
@@ -35,6 +36,8 @@ import GameRoomInfoChangeDialog from './game-room-setting/game-room-info-change-
 import GameRoomChat from './game-room-chat/game-room-chat.vue'
 import GameRoomSetting from './game-room-setting/game-room-setting.vue'
 import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
+import GameRoomBackground from './game-room-background/game-room-background.vue'
+
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
@@ -51,6 +54,7 @@ export default {
     GameRoomSetting,
     GameRoomWebcam,
     GameRoomInfoChangeDialog,
+    GameRoomBackground,
   },
 
   setup(props, { emit }) {

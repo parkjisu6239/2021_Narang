@@ -25,6 +25,7 @@
       </div>
     </div>
   </div>
+  <HomeBackground/>
 </template>
 
 <script>
@@ -33,6 +34,8 @@ import Information from './components/information'
 import LogIn from './components/login'
 import SignUp from './components/signup'
 import GameStart from './components/game-start'
+import HomeBackground from './components/home-background.vue'
+
 
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
@@ -46,6 +49,7 @@ export default {
     LogIn,
     SignUp,
     GameStart,
+    HomeBackground,
   },
 
   setup(props, { emit }) {
