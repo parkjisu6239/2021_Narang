@@ -78,11 +78,12 @@ export default {
 
 
     const sendGuessName = () => {
+      console.log(state.finalTranscript.replace(" ", ""), " ' ' => ''")
+      state.finalTranscript = state.finalTranscript.replace(/(\s*)/g, "");
       const message = {
         userId: state.userId,
-        name: state.finalTranscript.replace(/(\s*)/g, "")
+        name: state.finalTranscript,
       }
-
       emit('sendGuessName', message)
     }
 
