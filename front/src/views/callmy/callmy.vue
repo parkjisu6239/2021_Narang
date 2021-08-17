@@ -52,7 +52,7 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-import CallmyShowDraw from './callmy-showdraw/callmy-showdraw.vue'
+import CallmyShowResult from './callmy-result/callmy-showresult.vue'
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -67,7 +67,7 @@ export default {
     CallmyBackground,
     CallmySetting,
     CallmyStt,
-    CallmyShowDraw,
+    CallmyShowResult,
   },
 
   setup(props, { emit }) {
@@ -85,7 +85,7 @@ export default {
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
-      showDraw: false,
+      showResult: false,
       order: 0,
       isVoteTime: false,
       startDetection: false,
@@ -192,7 +192,7 @@ export default {
           ];
           state.isVoteTime = true
           sendDefaultNickname() // 1번 사람 디폴트 닉네임 받기
-          showDraw()
+          showResult()
         } else { // 플레이 하는 시간
           store.state.root.callmyManager.nowPlayUsers[0].nickname = result.user1.nickname
           store.state.root.callmyManager.nowPlayUsers[1].nickname = result.user2.nickname
@@ -293,8 +293,13 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          console.log(res, '내 정보')
-          store.commit('root/setUserInfo', res.data.user)
+         const userInfo = {
+            email: res.data.user.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+            userId: res.data.user.userId,
+          }
+          store.commit('root/setUserInfo', userInfo)
         })
         .catch(err => {
           ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
@@ -371,12 +376,12 @@ export default {
     }
 
 
-    const showDraw = () => {
+    const showResult = () => {
       setTimeout(() => {
-        state.showDraw = true
+        state.showResult = true
       }, 1000)
       setTimeout(() => {
-        state.showDraw = false
+        state.showResult = false
       }, 4000)
     }
 

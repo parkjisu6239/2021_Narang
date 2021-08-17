@@ -67,6 +67,8 @@ export default {
       userList: [],
       chatList: [],
       room: computed(() => store.getters['root/myRoom']),
+      profileImageURL: computed(() => store.state.root.profileImageURL),
+      myUserName: computed(() => store.state.root.username),
       stompClient: null,
       gameStart: false,
       count: 5,
@@ -90,7 +92,7 @@ export default {
           userName: store.state.root.username,
           content: '',
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           gameStart: true,
           roomInfoChange: false,
         }
@@ -129,7 +131,7 @@ export default {
           userName: store.state.root.username,
           content: '',
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           gameStart: false,
           roomInfoChange: true,
         }
@@ -197,22 +199,14 @@ export default {
     // [Func|socket] 채팅 send
     const sendChatMessage = (msg) => {
       if (state.stompClient && state.stompClient.connected && msg) {
-        let profileImageURL = ''
-        state.userList.forEach(user => {
-          if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://0.0.0.0:8080/' + thumbnailURL
-          }
-        })
-
         const message = {
           userName: store.state.root.username,
           content: msg,
           roomId: route.params.roomId,
-          profileImageURL,
+          profileImageURL: state.profileImageURL,
           roomInfoChange: false,
           gameStart: false,
         }
-        console.log(message, '메시지')
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
       }
     }
@@ -258,8 +252,13 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          console.log(res, '내 정보')
-          store.commit('root/setUserInfo', res.data.user)
+          const userInfo = {
+            email: res.data.user.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+            userId: res.data.user.userId,
+          }
+          store.commit('root/setUserInfo', userInfo)
           if (!res.data.user.room) { // 방에 속해있지 않으면 퇴장
             router.push({
               name: 'waitingRoom'

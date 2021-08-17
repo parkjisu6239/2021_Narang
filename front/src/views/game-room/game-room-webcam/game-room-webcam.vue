@@ -51,9 +51,6 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
-      mode : computed(() => {
-        return findMode();
-      }),
     })
 
     const joinSession = () => {

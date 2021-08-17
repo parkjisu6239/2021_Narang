@@ -10,9 +10,11 @@
       'under-nine': state.subscribers.length >= 4,
     }">
     <user-video id="myWebcam"
+      :gameStart="gameStart"
       :stream-manager="state.publisher"/>
     <user-video
       v-for="sub in state.subscribers"
+      :gameStart="gameStart"
       :key="sub.stream.connection.connectionId"
       :stream-manager="sub"/>
   </div>

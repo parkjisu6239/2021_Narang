@@ -58,6 +58,7 @@ export default {
       myChat: '',
       chatList: computed(() => props.chatList),
       myUserName: computed(() => store.state.root.username),
+      profileImageURL: computed(() => store.state.root.profileImageURL)
     })
 
     const sendChat = () => {
@@ -66,7 +67,7 @@ export default {
           userName: store.state.root.username,
           content: state.myChat,
           roomId: props.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           roomInfoChange: false,
           gameStart: false,
         }

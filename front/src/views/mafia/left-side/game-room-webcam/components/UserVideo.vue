@@ -4,7 +4,7 @@
     <ov-video v-else
       :stream-manager="streamManager"
       :isSelected="state.clientData === state.mafiaManager.secondVoteUsername"
-      :isDead="!state.mafiaManager.players.includes(state.clientData)"
+      :isDead="gameStart && !state.mafiaManager.players.includes(state.clientData)"
       />
   </div>
 </template>
@@ -21,6 +21,7 @@ export default {
 
 	props: {
 		streamManager: Object,
+    gameStart: Boolean,
 	},
 
   setup(props, { emit }) {
