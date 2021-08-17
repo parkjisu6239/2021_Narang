@@ -24,8 +24,8 @@ export default {
 .narang::after {
   font-size: 16px;
   font-weight: 200;
-  content: '';
-  animation: typing 5s 5s infinite;
+  content: '아이스브레이킹 웹 화상 게임 서비스';
+  animation: typing 5s 2s infinite;
 }
 
 @keyframes typing {
