@@ -2,8 +2,8 @@
   <div class="game-over-content">
     <h2>게임 종료!</h2>
     <div>{{ msg }}</div>
-    <img v-if="msg === '마피아가 승리하였습니다.'" :src="require('@/assets/images/mafia/role-mafia.png')" alt="">
-    <img v-else :src="require('@/assets/images/mafia/role-citizen.png')" alt="">
+    <img class="mafia-win" v-if="msg === '마피아가 승리하였습니다.'" :src="require('@/assets/images/mafia/role-mafia.png')" alt="">
+    <img class="citizen-win" v-else :src="require('@/assets/images/mafia/role-citizen.png')" alt="">
     <div>
       <span>마피아는</span>
       <span class="mafia-ele" v-for="mafia in state.mafia" :key="mafia">{{ mafia }}</span>
