@@ -12,5 +12,5 @@ public interface RetrofitService {
 
     @Multipart
     @POST(UPLOAD_URL)
-    Call<ImgbbResponse> postUploadImage(@Part("key") String key, @Part("image") MultipartBody.Part image);
+    Call<ImgbbResponse> postUploadImage(@Part("key") String key, @Part MultipartBody.Part image);
 }
