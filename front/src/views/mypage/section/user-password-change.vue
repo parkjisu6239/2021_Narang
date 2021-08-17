@@ -1,34 +1,32 @@
 <template>
-  <el-form
-    :model="state.form"
-    :rules="state.rules"
-    class="user-password-change-form"
-    ref="userPasswordForm"
-    label-width="120px"
-    status-icon
-    label-position="left">
-
-    <el-form-item prop="currentPassword" label="현재 비밀번호">
-      <el-input
-        v-model="state.form.currentPassword"
-        autocomplete="off"
-        type="password">
-      </el-input>
-    </el-form-item>
-
-    <el-form-item prop="newPassword" label="새로운 비밀번호">
-      <el-input
-        v-model="state.form.newPassword"
-        autocomplete="off"
-        type="password">
-      </el-input>
-    </el-form-item>
-
-    <el-form-item>
-      <el-button type="primary" @click="userPasswordChange">비밀번호 변경</el-button>
-    </el-form-item>
-
-  </el-form>
+  <div class="user-password-container">
+    <el-form
+      :model="state.form"
+      :rules="state.rules"
+      class="user-password-change-form"
+      ref="userPasswordForm"
+      label-width="120px"
+      status-icon
+      label-position="left">
+      <el-form-item prop="currentPassword" label="현재 비밀번호">
+        <el-input
+          v-model="state.form.currentPassword"
+          autocomplete="off"
+          type="password">
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="newPassword" label="새로운 비밀번호">
+        <el-input
+          v-model="state.form.newPassword"
+          autocomplete="off"
+          type="password">
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="userPasswordChange">비밀번호 변경</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 <style scoped>
   @import url('./user-password-change.css');
@@ -76,12 +74,12 @@ export default {
             store.dispatch('root/requestLogout')
             router.push({name: 'home'})
             ElMessage({
-              message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요',
+              message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요.',
               type: 'success',
             })
           })
           .catch(err => {
-            ElMessage.error('서버 에러가 발생하였습니다. 잠시 후, 다시 시도해주세요');
+            ElMessage.error('서버 에러가 발생하였습니다. 잠시 후, 다시 시도해주세요.');
           })
         } else {
           ElMessage.error('새로운 비밀번호의 형식이 잘못되었습니다.');

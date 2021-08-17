@@ -1,11 +1,3 @@
-.user-info-change-form {
-  position: absolute;
-  width: 70%;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .el-form-item__content {
   text-align: end;
 }

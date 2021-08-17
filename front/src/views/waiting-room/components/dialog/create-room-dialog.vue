@@ -76,7 +76,7 @@ export default {
               const roomId = result.data.roomId
               store.commit('root/setRoomInfo', result.data.roomId)
               ElMessage({
-                message: '방생성 완료!',
+                message: '방이 생성되었습니다.',
                 type: 'success',
               })
               handleClose()
@@ -95,10 +95,10 @@ export default {
               })
             })
             .catch(function (err) {
-              ElMessage.error('방생성 실패')
+              ElMessage.error('방생성이 실패했습니다.')
             })
             } else {
-              ElMessage.error('Validate error!');
+              ElMessage.error('다시 입력해주세요.');
             }
         })
       }

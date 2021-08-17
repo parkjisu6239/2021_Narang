@@ -189,9 +189,9 @@ export default {
     // [Func|mafia] 마피아 미션 확인
     const clickShowMission = () => {
       console.log("미션 보기 클릭함 : ",store.state.root.mafiaManager.missionName);
-      if (store.state.root.mafiaManager.missionNumber == null) ElMessage.error('역할 받기 전에는 못 보지롱');
-      else if(store.state.root.mafiaManager.missionNumber == -1) ElMessage.success('시민이라서 미션 없지롱');
-      else if(store.state.root.mafiaManager.missionSuccess == true) ElMessage.success('미션을 이미 완료했습니다!');
+      if (store.state.root.mafiaManager.missionNumber == null) ElMessage.error('역할을 받은 후에 시도해주세요.');
+      else if(store.state.root.mafiaManager.missionNumber == -1) ElMessage.success('시민은 미션이 없습니다.');
+      else if(store.state.root.mafiaManager.missionSuccess == true) ElMessage.success('미션을 이미 완료했습니다.');
       else{
         if(store.state.root.mafiaManager.missionName == null) ElMessage.error('미션을 불러오고 있는 중입니다. 잠시 후 다시 시도하세요.')
         else state.clickMissionDialog = true;
@@ -201,7 +201,6 @@ export default {
 
     // [Func|mafia] 동작 인식 시작 (마피아일 때만 작동)
     const startMission = () => {
-      console.log("미션시작한다이자식아!")
       if(store.state.root.mafiaManager.myRole === 'Mafia') {
         store.state.root.mafiaManager.missionSuccess = false; // 미션 성공 여부 false로 초기화
         poseEstimationInit();
@@ -212,7 +211,6 @@ export default {
     // [Func|mafia] 동작 인식 종료
     const stopMission = () => {
         if(state.loopPredict){
-          console.log("동작 인식 끝!!!")
           window.cancelAnimationFrame(state.loopPredict);
           state.loopPredict = undefined;
         }
@@ -237,6 +235,11 @@ export default {
             })
           }
         }, 10000)
+      } else {
+        ElMessage({
+          type: 'success',
+          message: '거짓말 아이템을 이미 사용하셨습니다. 한번만 사용 가능합니다.'
+        })
       }
     }
 

@@ -272,7 +272,7 @@ export default {
           store.commit('root/setUserInfo', res.data.user)
         })
         .catch(err => {
-          ElMessage(err)
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
 
@@ -286,7 +286,7 @@ export default {
           }
         })
         .catch(err => {
-          ElMessage(err)
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
 
@@ -297,10 +297,7 @@ export default {
           store.commit('root/setRoomInfo', res.data.room)
         })
         .catch(err => {
-          ElMessage({
-            type: 'error',
-            message: '문제가 발생했습니다.'
-          })
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
 
