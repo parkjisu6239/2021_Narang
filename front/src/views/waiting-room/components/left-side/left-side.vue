@@ -6,7 +6,7 @@
       <div class="nickname">{{ state.username }}</div>
       <div class="email">{{ state.email }}</div>
     </div>
-    <ul class="infinite-list friend-list" v-infinite-scroll="load">
+    <ul class="infinite-list friend-list">
       <li v-for="i in state.count" class="infinite-list-item friend-list-item" :key="i" >
         <friend
           :username="state.freinds[i].username"
@@ -23,7 +23,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import Friend from './friend.vue'
 
@@ -151,9 +150,6 @@ export default {
       }]
     })
 
-    const load = function () {
-      state.count += 4
-    }
 
     const setMyInfo = function () {
       state.email = localStorage.getItem('email')
