@@ -10,9 +10,6 @@ import com.exp.narang.api.model.db.entity.User;
 import com.exp.narang.api.model.db.repository.UserRepository;
 import com.exp.narang.api.model.db.repository.UserRepositorySupport;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,7 @@ import java.util.Optional;
  *	유저 관련 비즈니스 로직 처리를 위한 서비스 구현 정의.
  */
 @Slf4j
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
