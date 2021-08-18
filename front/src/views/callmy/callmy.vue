@@ -184,10 +184,10 @@ export default {
           state.yesOrNo = 'O'
           setTimeout(() => {
             state.yesOrNo = ''
+            state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
+            state.isNoticeVisible = true
+            state.msgType = 'win'
             setTimeout(() => {
-              state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
-              state.isNoticeVisible = true
-              state.msgType = 'win'
               gameOver();
             }, state.timeout);
           }, 500)
