@@ -585,8 +585,11 @@ export default {
         // 게임 정보 변경
         const roomInfo = {
           ...state.room,
-          isActivate: true
+          game: null,
+          isActivate: true,
         }
+
+        console.log('게임 끝')
 
         store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
