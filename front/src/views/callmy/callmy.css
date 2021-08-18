@@ -36,3 +36,18 @@
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
+
+.stt-yesOrNo {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 700;
+  font-size: 100px;
+  -webkit-text-stroke: 4px rgb(26, 26, 26);
+}
+
+.stt-yes {
+  color: rgb(5, 110, 237);
+}
+
+.stt-no {
+  color: rgb(252, 79, 49);
+}

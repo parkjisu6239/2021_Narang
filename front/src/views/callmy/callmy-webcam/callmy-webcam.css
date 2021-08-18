@@ -89,3 +89,22 @@
   padding: 3px;
   color: #70c628;
 }
+
+.callmy-sub-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Jua', sans-serif;
+  font-size: 20px;
+}
+
+.callmy-sub {
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.callmy-speaker {
+  color: rgb(233, 193, 86);
+  margin-right: 10px;
+}

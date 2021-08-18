@@ -40,7 +40,7 @@
   </Dialog>
 
   <Dialog v-if="state.yesOrNo">
-    {{ state.yesOrNo }}
+    <div :class="{'stt-yesOrNo':true, 'stt-yes': state.yesOrNo === 'O', 'stt-no': state.yesOrNo === 'X'}">{{ state.yesOrNo }}</div>
   </Dialog>
 
   <CallmyBackground/>
@@ -207,11 +207,14 @@ export default {
           }, state.timeout);
           return;
         }
-        state.yesOrNo = 'X'
-        setTimeout(() => {
-          state.yesOrNo = ''
-        }, 500)
-        console.log("틀렸습니다.")
+
+        if(guessNameRes.answer !== '정답') {
+          state.yesOrNo = 'X'
+          setTimeout(() => {
+            state.yesOrNo = ''
+          }, 500)
+          console.log("틀렸습니다.")
+        }
       })
     }
 
