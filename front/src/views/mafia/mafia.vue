@@ -578,8 +578,12 @@ export default {
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
       store.state.root.mafiaManager.lierItem = true
-      store.state.root.mafiaManager.missionNumber = -1
+      store.state.root.mafiaManager.missionNumber = null
+      store.state.root.mafiaManager.missionName = null
+      store.state.root.mafiaManager.missionSuccess = false
       state.gameStart = false
+      state.missionProgress.innerHTML = "";
+      state.missionMessage.innerHTML = "";
 
       if (state.stompClient !== null) {
           console.log('소켓 디스커넥트')
