@@ -39,11 +39,7 @@ export default {
     }
   },
   setup(props, { emit }) {
-<<<<<<< HEAD
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-=======
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":8443"
->>>>>>> 12c18a0cc9112868e44b719355b0459d0c2a6394
     const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore();
 
