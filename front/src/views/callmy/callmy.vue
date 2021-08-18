@@ -190,7 +190,7 @@ export default {
             setTimeout(() => {
               gameOver();
             }, state.timeout);
-          }, 500)
+          }, 1000)
           return;
         }
 
@@ -214,7 +214,7 @@ export default {
               endAnswerTime();
               sendPlay('next')
             }, state.timeout);
-          }, 500)
+          }, 1000)
           return;
         }
 
@@ -223,7 +223,7 @@ export default {
           console.log('정답 틀렸을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
-          }, 500)
+          }, 1000)
           console.log("틀렸습니다.")
         }
       })
