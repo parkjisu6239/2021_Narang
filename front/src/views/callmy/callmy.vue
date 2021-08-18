@@ -1,7 +1,7 @@
 <template>
   <div class="callmy-container">
     <div class="callmy-left-side">
-      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="state.callmyManager.isAnswer && state.speaker !== state.username">
+      <div class="stt-container ans" v-if="state.callmyManager.isAnswer && state.speaker !== state.username">
         <div class="stt-constent">
           <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
           <h1>{{ state.answer }}</h1>
