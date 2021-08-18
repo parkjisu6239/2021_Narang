@@ -55,7 +55,6 @@ export default {
 
     const uploadImage = () => {
       const formData = new FormData()
-      console.log(imageTag.value.files[0], '이미지 폼 데이타')
       formData.append('file', imageTag.value.files[0])
       store.dispatch('root/requestUpdateMyInfo', formData)
         .then(res => {
@@ -66,7 +65,6 @@ export default {
                   username: res.data.user.username,
                   profileImageURL: res.data.user.thumbnailUrl, // null
                 }
-                console.log(res.data.user.thumbnailUrl)
                 store.commit('root/setUserInfo', userInfo)
               })
               .catch(err => {

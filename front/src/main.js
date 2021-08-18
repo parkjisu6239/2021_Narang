@@ -8,6 +8,12 @@ import axios from './common/lib/axios'
 import i18n from './common/lib/i18n'
 import router from './common/lib/vue-router'
 import 'element-plus/packages/theme-chalk/src/base.scss'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faVolumeMute } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faVolumeMute)
+
 
 // Element UI Components [시작]
 import {
@@ -202,6 +208,8 @@ app.use(router)
 components.forEach(component => {
   app.component(component.name, component)
 })
+
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 plugins.forEach(plugin => {
   app.use(plugin)
