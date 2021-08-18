@@ -1,5 +1,6 @@
 <template>
   <video
+    :id="username"
     ref="myWebCam"
     @mouseover="showVideoMenu"
     :class="{'webcam': true, 'selected-border': isSelected, 'died-user': isDead}"
@@ -27,6 +28,7 @@ export default {
     streamManager: Object,
     isSelected: Boolean,
     isDead: Boolean,
+    username: String,
   },
   setup(props, {emit}) {
     const store = useStore()
