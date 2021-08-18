@@ -162,13 +162,17 @@ export default {
           return;
         }
         if(guessNameRes.answer === '정답'){
-          console.log("현재 정답을 말하고 있습니까?")
+          console.log("현재 정답을 말하고 있습니까??")
           console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
           console.log("아니요 아무도 말 안하고 있습니다~")
           console.log(state.callmyManager.isAnswer)
         }
+
+        state.speaker = state.userIdToUserName[guessNameRes.userId];
+        state.answer = guessNameRes.answer;
+
         if(guessNameRes.gameEnd) {
             state.msg = `최종 우승자는 ${state.speaker}가 입니다! 잠시후 게임이 종료됩니다.`
             state.isNoticeVisible = true
@@ -193,9 +197,10 @@ export default {
           }, state.timeout);
           return;
         }
-
-        state.answer = '틀렸습니당';
-        console.log("틀렸습니다.")
+        setTimeout(() => {
+          state.answer = '틀렸습니당';
+          console.log("틀렸습니다.")
+        }, 1000);
       })
     }
 
