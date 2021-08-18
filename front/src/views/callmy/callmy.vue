@@ -376,9 +376,15 @@ export default {
 
     const gameOver = () => {
       // 상태 초기화
-      init();
+      init()
+
+      if (state.stompClient !== null) {
+          console.log('소켓 디스커넥트')
+          state.stompClient.disconnect()
+      }
+
       state.gameStart = false
-      endAnswerTime();
+      endAnswerTime()
       setTimeout(() => {
         // 게임 정보 변경
         const roomInfo = {
@@ -387,24 +393,21 @@ export default {
           isActivate: true,
         }
 
-        if (state.stompClient !== null) {
-            state.stompClient.disconnect()
-        }
-
         store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
+          router.push({
+            name: 'gameRoom',
+            params: {
+              roomId: route.params.roomId,
+            }
+          })
           console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
         })
         .catch(err => {
           console.log(err)
         })
 
-        router.push({
-          name: 'gameRoom',
-          params: {
-            roomId: route.params.roomId,
-          }
-        })
+
       }, 5000);
     }
 

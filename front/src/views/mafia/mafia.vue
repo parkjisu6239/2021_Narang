@@ -577,9 +577,12 @@ export default {
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
       state.gameStart = false
+
       if (state.stompClient !== null) {
-          state.stompClient.disconnect();
+          console.log('소켓 디스커넥트')
+          state.stompClient.disconnect()
       }
+
       setTimeout(() => {
 
         // 게임 정보 변경
@@ -593,18 +596,19 @@ export default {
 
         store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
+          router.push({
+            name: 'gameRoom',
+            params: {
+              roomId: route.params.roomId,
+            }
+          })
           console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
         })
         .catch(err => {
           console.log(err)
         })
 
-        router.push({
-          name: 'gameRoom',
-          params: {
-            roomId: route.params.roomId,
-          }
-        })
+
       }, 5000);
     }
 
