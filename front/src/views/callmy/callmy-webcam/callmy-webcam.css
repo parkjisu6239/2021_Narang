@@ -98,6 +98,10 @@
   font-size: 27px;
 }
 
+.callmy-sub-container-none {
+  visibility: hidden;
+}
+
 .callmy-sub {
   padding: 10px 20px;
   background-color: white;
