@@ -100,7 +100,9 @@ export default {
 
 
     const state = reactive({
+      room: computed(() => store.state.root.myRoom),
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
+      userId: computed(() => store.state.root.userId),
       roomId: route.params.roomId,
       stompClient: null,
       username: localStorage.getItem('username'),
@@ -576,26 +578,18 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
+      store.state.root.mafiaManager.lierItem = true
       state.gameStart = false
+
       if (state.stompClient !== null) {
-          state.stompClient.disconnect();
+          console.log('소켓 디스커넥트')
+          state.stompClient.disconnect()
       }
+
+      if (state.room.ownerId === state.userId) requestUpdateRoomInfo()
+
+
       setTimeout(() => {
-
-        // 게임 정보 변경
-        const roomInfo = {
-          ...state.room,
-          isActivate: true
-        }
-
-        store.dispatch('root/requestUpdateGameRoom', roomInfo)
-        .then(res => {
-          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
         router.push({
           name: 'gameRoom',
           params: {
@@ -618,6 +612,20 @@ export default {
     }
 
 
+    const requestRoomInfo = () => {
+      store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
+        .then(res => {
+          store.commit('root/setRoomInfo', res.data.room)
+        })
+        .catch(err => {
+          ElMessage({
+            type: 'error',
+            message: '문제가 발생했습니다.'
+          })
+        })
+    }
+
+
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
@@ -635,6 +643,23 @@ export default {
     }
 
 
+    const requestUpdateRoomInfo = () => {
+      const roomInfo = {
+        ...state.room,
+        game: null,
+        isActivate: true,
+      }
+
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    requestRoomInfo()
     requestUserList()
     requestMyInfo()
 

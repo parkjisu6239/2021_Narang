@@ -1,5 +1,6 @@
 /* 공통으로 적용되어야할 css */
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
 @media (max-width: 700px) {
   .main-container {

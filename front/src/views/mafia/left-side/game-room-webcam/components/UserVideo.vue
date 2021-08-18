@@ -3,8 +3,8 @@
     <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
     <ov-video v-else
       :stream-manager="streamManager"
-      :isSelected="gameStart && state.username === state.mafiaManager.secondVoteUsername"
-      :isDead="gameStart && !state.mafiaManager.players.includes(state.username)"
+      :isSelected="gameStart && state.clientData === state.mafiaManager.secondVoteUsername"
+      :isDead="gameStart && !state.mafiaManager.players.includes(state.clientData)"
       />
   </div>
 </template>
@@ -28,22 +28,16 @@ export default {
     const store = useStore()
 
     const state = reactive({
-      username: computed(() => store.state.root.username),
 			clientData: computed(() => {
-        const { clientData } = getConnectionData();
+        const { connection } = props.streamManager.stream
+        const { clientData } = JSON.parse(connection.data)
         return clientData;
       }),
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
-    const getConnectionData = () => {
-			const { connection } = props.streamManager.stream;
-      console.log(connection.data)
-			return JSON.parse(connection.data);
-		}
 
-
-    return { state, getConnectionData }
+    return { state }
   },
 
 };

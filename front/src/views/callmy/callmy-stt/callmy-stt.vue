@@ -1,7 +1,7 @@
 <template>
   <div :class="{'stt-container':true, 'ans': state.ans}">
     <div class="stt-constent">
-      <div>정답을 듣고 있습니다. <span>5초</span> 안에 <span>정확히</span> 말해주세요</div>
+      <div>{{ speaker }} 정답 타임! <span>5초</span> 안에 <span>정확히</span> 말해주세요</div>
       <h1>{{ state.finalTranscript }}</h1>
     </div>
   </div>
@@ -13,6 +13,10 @@ import { reactive, computed, onBeforeUnmount } from 'vue'
 
 export default {
   name: 'callmyStt',
+
+  props: {
+    speaker: String
+  },
 
   setup(props, { emit }) {
     const store = useStore()
@@ -44,7 +48,7 @@ export default {
             finalTranscript += transcript;
           }
         }
-        if (state.ans) { // 정답 타임인 경우
+        if (state.ans && finalTranscript.replace(/(\s*)/g, "")) { // 정답 타임인 경우
           state.finalTranscript = finalTranscript // 이번에 말한 내용으로 보드 변경
           sendGuessName(state.finalTranscript);
           return;

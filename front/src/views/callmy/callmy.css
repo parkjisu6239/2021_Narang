@@ -36,3 +36,26 @@
   box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
+
+.yesOrNo-dialong {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 40%;
+  z-index: 100;
+}
+
+.stt-yesOrNo {
+  font-family: 'Varela Round', sans-serif;
+  font-weight: 900;
+  font-size: 200px;
+}
+
+.stt-yes {
+  color: rgb(5, 110, 237);
+}
+
+.stt-no {
+  color: rgb(252, 79, 49);
+}

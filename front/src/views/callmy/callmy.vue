@@ -1,12 +1,6 @@
 <template>
   <div class="callmy-container">
     <div class="callmy-left-side">
-      <div class="stt-container ans" v-if="state.callmyManager.isAnswer && state.speaker !== state.username">
-        <div class="stt-constent">
-          <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
-          <h1>{{ state.answer }}</h1>
-        </div>
-      </div>
       <CallMyWebCam
         @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
@@ -15,7 +9,9 @@
         :gameStart="state.isAllConnected"
         :roundStart="state.roundStart"
         :playerNumbers="state.userList.length"
-        :startDetection="state.startDetection"/>
+        :startDetection="state.startDetection"
+        :speaker="state.speaker"
+        :answer="state.answer"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
@@ -31,13 +27,22 @@
       <CallmySetting @clickGuide="state.callmyGuideVisible = true"/>
     </div>
   </div>
-  <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <CallmyStt
+    @sendGuessName="sendGuessName"
+    :speaker="state.speaker"
+    v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
     <CallmyGuide/>
   </Dialog>
+
   <Dialog v-if="state.isNoticeVisible">
     <CallmyNotice :msg="state.msg" :msgType="state.msgType"/>
   </Dialog>
+
+  <div class="yesOrNo-dialog" v-if="state.yesOrNo">
+    <div :class="{'stt-yesOrNo':true, 'stt-yes': state.yesOrNo === 'O', 'stt-no': state.yesOrNo === 'X'}">{{ state.yesOrNo }}</div>
+  </div>
+
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -84,6 +89,7 @@ export default {
 
 
     const state = reactive({
+      room: computed(() => store.state.root.myRoom),
       stompClient: null,
       chatList: [],
       userList: {},
@@ -106,7 +112,8 @@ export default {
       isNoticeVisible: false,
       msg: '',
       timeout: 5000,
-      msgType: 'default'
+      msgType: 'default',
+      yesOrNo: '',
     })
 
 
@@ -162,7 +169,7 @@ export default {
           return;
         }
         if(guessNameRes.answer === '정답'){
-          console.log("현재 정답을 말하고 있습니까?")
+          console.log("현재 정답을 말하고 있습니까??")
           console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
@@ -174,7 +181,7 @@ export default {
         state.answer = guessNameRes.answer;
 
         if(guessNameRes.gameEnd) {
-            state.msg = `최종 우승자는 ${state.speaker}가 입니다! 잠시후 게임이 종료됩니다.`
+            state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
             state.isNoticeVisible = true
             state.msgType = 'win'
             gameOver();
@@ -182,25 +189,33 @@ export default {
         }
         if(guessNameRes.correct) {
           console.log(`${state.speaker}가 승리했습니다`)
+          state.yesOrNo = 'O'
+          setTimeout(() => {
+            state.yesOrNo = ''
+          }, 500)
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
-          endAnswerTime();
-          state.msg = `${state.speaker}가 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
+          state.msg = `${state.speaker}님이 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
           state.isNoticeVisible = true
           state.msgType = 'win'
           setTimeout(() => {
             state.msg = ''
             state.isNoticeVisible = false
             state.msgType = 'default'
+            endAnswerTime();
             sendPlay('next')
           }, state.timeout);
           return;
         }
-        setTimeout(() => {
-          state.answer = '틀렸습니당';
+
+        if(guessNameRes.answer !== '정답') {
+          state.yesOrNo = 'X'
+          setTimeout(() => {
+            state.yesOrNo = ''
+          }, 500)
           console.log("틀렸습니다.")
-        }, 1000);
+        }
       })
     }
 
@@ -371,6 +386,24 @@ export default {
     }
 
 
+    const requestUpdateRoomInfo = () => {
+      const roomInfo = {
+        ...state.room,
+        game: null,
+        isActivate: true,
+      }
+
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+
     const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
@@ -381,38 +414,26 @@ export default {
 
     const gameOver = () => {
       // 상태 초기화
-      init();
+      init()
       state.gameStart = false
-      endAnswerTime();
+
+      if (state.stompClient !== null) {
+          console.log('소켓 디스커넥트')
+          state.stompClient.disconnect()
+      }
+
+      if (state.room.ownerId === state.userId) requestUpdateRoomInfo()
+      endAnswerTime()
       setTimeout(() => {
         // 게임 정보 변경
-        const roomInfo = {
-          ...store.state.root.room,
-          isActivate: true
-        }
-
-        store.dispatch('root/requestUpdateGameRoom', roomInfo)
-        .then(res => {
-          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
         router.push({
           name: 'gameRoom',
           params: {
             roomId: route.params.roomId,
           }
         })
+
       }, 5000);
-    }
-
-
-    const socketDisconnect = () => {
-        if (state.stompClient !== null) {
-            state.stompClient.disconnect();
-        }
     }
 
 
@@ -433,9 +454,6 @@ export default {
     }
 
 
-    onBeforeUnmount(() => {
-      socketDisconnect()
-    })
 
 
     requestRoomInfo()

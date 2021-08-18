@@ -171,6 +171,7 @@ export default {
                 name: state.room.game,
                 params: route.params.roomId
               })
+              if (state.stompClient !== null) state.stompClient.disconnect()
             }, 5000)
           } else {
             ElMessage({
@@ -288,6 +289,7 @@ export default {
       informGameRoomInfoChange()
       store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
         .then(res => {
+          if (state.stompClient !== null) state.stompClient.disconnect()
           ElMessage({
             type: 'success',
             message: '방에서 퇴장하셨습니다.'

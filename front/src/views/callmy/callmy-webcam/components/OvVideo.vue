@@ -70,6 +70,7 @@ export default {
             backgroundColor: 'rgba(255, 255, 255, 1)',
             fontSize: 40,
             fontColor: 'black',
+            fontStyle: 'Jua',
             padding: 15,
           }
 
