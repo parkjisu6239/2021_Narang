@@ -100,7 +100,9 @@ export default {
 
 
     const state = reactive({
+      room: computed(() => store.state.root.myRoom),
       mafiaManager: computed(() => store.getters['root/mafiaManager']),
+      userId: computed(() => store.state.root.userId),
       roomId: route.params.roomId,
       stompClient: null,
       username: localStorage.getItem('username'),
@@ -112,7 +114,7 @@ export default {
       msg: '',
       userRole: {},
       surviver: {},
-      time: [20000, 10000, 10000, 10000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
+      time: [500000, 10000, 10000, 10000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
       gameStart: false,
       isVoteTime: false,
@@ -576,6 +578,7 @@ export default {
       store.state.root.mafiaManager.secondVoteUsername = ''
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
+      store.state.root.mafiaManager.lierItem = true
       state.gameStart = false
 
       if (state.stompClient !== null) {
@@ -583,32 +586,16 @@ export default {
           state.stompClient.disconnect()
       }
 
+      if (state.room.ownerId === state.userId) requestUpdateRoomInfo()
+
+
       setTimeout(() => {
-
-        // 게임 정보 변경
-        const roomInfo = {
-          ...state.room,
-          game: null,
-          isActivate: true,
-        }
-
-        console.log('게임 끝')
-
-        store.dispatch('root/requestUpdateGameRoom', roomInfo)
-        .then(res => {
-          router.push({
-            name: 'gameRoom',
-            params: {
-              roomId: route.params.roomId,
-            }
-          })
-          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
         })
-        .catch(err => {
-          console.log(err)
-        })
-
-
       }, 5000);
     }
 
@@ -621,6 +608,20 @@ export default {
         })
         .catch(err => {
           ElMessage(err)
+        })
+    }
+
+
+    const requestRoomInfo = () => {
+      store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
+        .then(res => {
+          store.commit('root/setRoomInfo', res.data.room)
+        })
+        .catch(err => {
+          ElMessage({
+            type: 'error',
+            message: '문제가 발생했습니다.'
+          })
         })
     }
 
@@ -642,6 +643,23 @@ export default {
     }
 
 
+    const requestUpdateRoomInfo = () => {
+      const roomInfo = {
+        ...state.room,
+        game: null,
+        isActivate: true,
+      }
+
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    requestRoomInfo()
     requestUserList()
     requestMyInfo()
 

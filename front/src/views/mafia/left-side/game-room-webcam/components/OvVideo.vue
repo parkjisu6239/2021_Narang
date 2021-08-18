@@ -1,11 +1,4 @@
 <template>
-  <div
-    v-if="state.mafiaManager.isLierItemActivate"
-    @mouseleave="hideVideoMenu"
-    class="video-overlay"
-    :style="{'display': state.hover}">
-    <button @click="startExpressDetection" class="menu-button">거짓말 탐지기</button>
-  </div>
   <video
     ref="myWebCam"
     @mouseover="showVideoMenu"
@@ -13,10 +6,17 @@
     autoplay
     playsinline
     controls="false"/>
+  <div v-if="state.mafiaManager.isLierItemActivate" class="video-overlay">
+    <i @click="startExpressDetection" class="menu-button el-icon-search"></i>
+  </div>
+  <div v-if="state.show" class="lie-detection">
+    <span v-if="state.lie" class="lie">거짓말!</span>
+    <span v-else class="true">진실.</span>
+  </div>
 </template>
 
 <script>
-import { onMounted, computed, reactive, ref } from 'vue'
+import { onMounted, computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import * as faceapi from 'face-api.js'
@@ -35,11 +35,11 @@ export default {
     const state = reactive({
       detections: null,
       myEmotion: '',
-      hover: 'none',
-      overlayWidth: 0,
-      overlayHeight: 0,
       webCamWidth: 0,
       webCamHeight: 0,
+      hide: false,
+      lie: false,
+      timerId: 0,
       emotions: {
         angry: 0,
         disgusted: 0,
@@ -60,32 +60,37 @@ export default {
         type: 'success',
         message: '거짓말 탐지기가 작동 중입니다.'
       })
-      let timerId = setInterval(async () => {
-        state.detections = await faceapi.detectAllFaces(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
+
+      state.timerId = setInterval(async () => {
+        state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
           .withFaceExpressions()
 
-        let maxVal = 0
-        let maxEmotion = ''
-        for (let emotion in state.detections[0].expressions) {
-          if (state.detections[0].expressions[emotion] > maxVal) {
-            maxVal = state.detections[0].expressions[emotion]
-            maxEmotion = emotion
+        console.log(state.detections.expressions)
+        if (state.detections) {
+          let maxVal = 0
+          let maxEmotion = ''
+          for (let emotion in state.detections.expressions) {
+            if (state.detections.expressions[emotion] > maxVal) {
+              maxVal = state.detections.expressions[emotion]
+              maxEmotion = emotion
+            }
           }
+          state.emotions[maxEmotion]++
         }
 
-        state.emotions[maxEmotion]++
+
       }, 500)
 
       setTimeout(() => {
-        let maxVal = 0
-        let maxEmotion = ''
+        let emotionNum = 0
+        state.lie = false
+        console.log(state.emotions)
         for (let emotion in state.emotions) {
-          if (state.emotions[emotion] > maxVal) {
-            maxVal = state.emotions[emotion]
-            maxEmotion = emotion
-          }
+          console.log(emotion)
+          if (state.emotions[emotion]) emotionNum++
         }
 
+        console.log(state.emotions)
         state.emotions = {
           angry: 0,
           disgusted: 0,
@@ -96,24 +101,12 @@ export default {
           surprised: 0,
         }
 
-        ElMessage({
-          type: 'success',
-          message: `${maxEmotion} 현재 감정 상태입니다.`
-        })
+        if (emotionNum >= 3) state.lie = true
 
-        clearTimeout(timerId)
+        state.show = true
+        console.log('끝내자')
+        clearInterval(state.timerId)
       }, 5000)
-    }
-
-    const showVideoMenu = () => {
-      console.log(myWebCam.value.videoWidth, myWebCam.value.videoHeight)
-      state.webCamWidth= myWebCam.value.videoWidth
-      state.webCamHeight = myWebCam.value.videoHeight
-      state.hover = 'block'
-    }
-
-    const hideVideoMenu = () => {
-      state.hover = 'none'
     }
 
     onMounted(async () => {
@@ -122,7 +115,15 @@ export default {
       await faceapi.nets.faceExpressionNet.load('/static/models')
     })
 
-    return { state, myWebCam, startExpressDetection, showVideoMenu, hideVideoMenu }
+    watch(() => state.show, () => {
+      if (state.show) {
+        setTimeout(() => {
+          state.show = false
+        }, 3000)
+      }
+    })
+
+    return { state, myWebCam, startExpressDetection }
   }
 }
 </script>
