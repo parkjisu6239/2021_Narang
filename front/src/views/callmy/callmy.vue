@@ -30,6 +30,7 @@
   <CallmyStt
     @sendGuessName="sendGuessName"
     :speaker="state.speaker"
+    :yesOrNo="state.yesOrNo"
     v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
     <CallmyGuide/>
