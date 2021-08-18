@@ -176,7 +176,7 @@ export default {
         for (let i = 0; i < state.maxPredictions; i++) {
             state.missionProgress.innerHTML = "미션 " + (store.state.root.mafiaManager.missionKeepCnt / 6).toFixed(0) + "% 진행 중...";
             // 미션 동작인 경우 missionKeepCnt 카운트
-            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.77 && !store.state.root.mafiaManager.missionSuccess) {
+            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.83 && !store.state.root.mafiaManager.missionSuccess) {
               if(store.state.root.mafiaManager.missionKeepCnt == 0) state.missionMessage.innerHTML = "동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.";
               store.state.root.mafiaManager.missionKeepCnt++;
             }
@@ -375,7 +375,6 @@ export default {
           theVoted: store.state.root.mafiaManager.theVoted, // 내가 투표한 사람의 유저 네임
           stage: store.state.root.mafiaManager.stage, // day1, day2, night
           secondVoteUsername: store.state.root.mafiaManager.secondVoteUsername, // 2차 투표 진행시 해당 유저의 이름
-          missionNumber: store.state.root.mafiaManager.missionNumber, // 현재 미션 넘버 (시민 : -1, 마피아 : 0 ~ 10)
         }
 
       // store에 내용 바꾸는거나중에 commit으로 바꾸기
@@ -440,11 +439,10 @@ export default {
           state.missionMessage.innerHTML = "";
           console.log("미션 수행 상태 지움");
           sendMafias();
+          if(state.mafiaManager.stage === 'night') // 밤 -> 낮 될 때만 미션 번호 갱신
+            store.state.root.mafiaManager.missionNumber = result.missionNumber;
         }
 
-        if(store.state.root.mafiaManager.myRole === 'Mafia' && state.mafiaManager.stage === 'night'){ // 밤 -> 낮 될 때
-          store.state.root.mafiaManager.missionNumber = result.missionNumber; // 마피아인 경우만 미션 번호 갱신
-        }
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
