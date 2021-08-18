@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'stt-container':true, 'ans': state.ans}">
+  <div :class="{'stt-container':true, 'ans': state.ans}" v-if="!yesOrNo">
     <div class="stt-constent">
       <div>{{ speaker }} 정답 타임! <span>5초</span> 안에 <span>정확히</span> 말해주세요</div>
       <h1>{{ state.finalTranscript }}</h1>
@@ -15,7 +15,8 @@ export default {
   name: 'callmyStt',
 
   props: {
-    speaker: String
+    speaker: String,
+    yesOrNo: String,
   },
 
   setup(props, { emit }) {
@@ -95,7 +96,6 @@ export default {
 
 
     startRecognition()
-
 
     return { state }
   }
