@@ -10,6 +10,7 @@
   @import './main.css';
   @import '../../common/css/common.css';
   @import '../../common/css/element-plus.css';
+  @import './components/sound.css';
 </style>
 <script>
 import Navbar from './components/navbar.vue'

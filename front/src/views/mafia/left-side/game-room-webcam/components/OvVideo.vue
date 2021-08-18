@@ -67,7 +67,6 @@ export default {
         state.detections = await faceapi.detectSingleFace(myWebCam.value, new faceapi.TinyFaceDetectorOptions())
           .withFaceExpressions()
 
-        console.log(state.detections.expressions)
         if (state.detections) {
           let maxVal = 0
           let maxEmotion = ''
@@ -81,18 +80,15 @@ export default {
         }
 
 
-      }, 500)
+      }, 250)
 
       setTimeout(() => {
         let emotionNum = 0
         state.lie = false
-        console.log(state.emotions)
         for (let emotion in state.emotions) {
-          console.log(emotion)
           if (state.emotions[emotion]) emotionNum++
         }
 
-        console.log(state.emotions)
         state.emotions = {
           angry: 0,
           disgusted: 0,
