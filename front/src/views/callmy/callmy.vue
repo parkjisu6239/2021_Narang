@@ -1,12 +1,6 @@
 <template>
   <div class="callmy-container">
     <div class="callmy-left-side">
-      <div class="stt-container ans" v-if="state.callmyManager.isAnswer && state.speaker !== state.username">
-        <div class="stt-constent">
-          <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
-          <h1>{{ state.answer }}</h1>
-        </div>
-      </div>
       <CallMyWebCam
         @joinSomeOne="joinSomeOne"
         @joinCallMyRoom="joinCallMyRoom"
@@ -15,7 +9,9 @@
         :gameStart="state.isAllConnected"
         :roundStart="state.roundStart"
         :playerNumbers="state.userList.length"
-        :startDetection="state.startDetection"/>
+        :startDetection="state.startDetection"
+        :speaker="state.speaker"
+        :answer="state.answer"/>
     </div>
     <div class="callmy-right-side">
       <CallMyGameBoard
@@ -31,13 +27,22 @@
       <CallmySetting @clickGuide="state.callmyGuideVisible = true"/>
     </div>
   </div>
-  <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <CallmyStt
+    @sendGuessName="sendGuessName"
+    :speaker="state.speaker"
+    v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
   <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
     <CallmyGuide/>
   </Dialog>
+
   <Dialog v-if="state.isNoticeVisible">
     <CallmyNotice :msg="state.msg" :msgType="state.msgType"/>
   </Dialog>
+
+  <Dialog v-if="state.yesOrNo">
+    {{ state.yesOrNo }}
+  </Dialog>
+
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -106,7 +111,8 @@ export default {
       isNoticeVisible: false,
       msg: '',
       timeout: 5000,
-      msgType: 'default'
+      msgType: 'default',
+      yesOrNo: '',
     })
 
 
@@ -182,6 +188,10 @@ export default {
         }
         if(guessNameRes.correct) {
           console.log(`${state.speaker}가 승리했습니다`)
+          state.yesOrNo = 'O'
+          setTimeout(() => {
+            state.yesOrNo = ''
+          }, 500)
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
@@ -197,10 +207,11 @@ export default {
           }, state.timeout);
           return;
         }
+        state.yesOrNo = 'X'
         setTimeout(() => {
-          state.answer = '틀렸습니당';
-          console.log("틀렸습니다.")
-        }, 1000);
+          state.yesOrNo = ''
+        }, 500)
+        console.log("틀렸습니다.")
       })
     }
 
