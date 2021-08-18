@@ -35,7 +35,7 @@ public class User{
 
     public User() {}
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonManagedReference
     @JoinColumn(name = "room_id")
     Room room;

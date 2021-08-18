@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class RoomController {
     @Autowired
     UserService userService;
 
+    @Transactional
     @PostMapping()
     @ApiOperation(value = "방 생성", notes = "<strong>RoomTitle, maxPlayer, password</strong>를 통해 방을 생성한다.")
     @ApiResponses({
@@ -61,6 +63,7 @@ public class RoomController {
         return ResponseEntity.status(200).body(RoomRegisterPostRes.of(200, "Success", roomId));
     }
 
+    @Transactional
     @GetMapping()
     @ApiOperation(value = "방 목록 조회", notes = "방 목록을 조회한다. 전체 목록 조회시 파라미터 값 안 보내면 됨." + '\n' +
             "현재 page 번호 page, 개수 size" +'\n' +
@@ -82,17 +85,41 @@ public class RoomController {
                                                                             @SortDefault(sort = "createdTime", direction = Sort.Direction.DESC)
                                                                     }) Pageable pageable) {
         if(authentication == null) return ResponseEntity.status(401).body(RoomListRes.of(401, "인증 실패", null));
+        UserDetails userDetails = (UserDetails)authentication.getDetails();
+        User currentUser = userDetails.getUser(); // 로그인 한 유저 정보 가져옴
+        log.debug("목록 조회 하러 왔음");
+        if(currentUser.getRoom() != null) {
+            log.debug("현재 유저가 방을 가지고 있음. 방 제목:"+currentUser.getRoom().getTitle());
+            roomService.deleteRoom(currentUser.getRoom(), currentUser);
+            log.debug("현재 유저의 방 나가기 처리 하고 왔음");
+        }
         Page<Room> origin = roomService.findBySearch(RoomSearchGetReq.of(title, game, isActivate) ,pageable);
         List<RoomDto> target = new ArrayList<>();
+        log.debug("방 전체 목록 불러오는 중");
         for(Room room : origin) {
             RoomDto roomDto = new RoomDto();
 //            BeanUtils.copyProperties(room, roomListDto);
             roomDto.setRoom(room);
-            roomDto.setJoinUsers(room.getUserList());
-            target.add(roomDto);
+            roomDto.setJoinUsers(roomService.findUserListByRoomId(room.getRoomId()));
+            log.debug("현재 불러온 방 제목 : [" + room.getTitle() + "] 의 유저 수 : " + roomDto.getJoinUsers().size());
+            // 유저가 아무도 없는데 방이 존재하는 경우 연쇄 삭제 처리
+            if(roomDto.getJoinUsers().size() == 0) {
+                log.debug("유저가 아무도 없는데 존재하는 방입니다. 삭제 처리 시작");
+                List<User> userList = userService.findUserList(); // 모든 유저 리스트 가져옴
+                for(User user : userList){
+                    if(user.getRoom() != null && user.getRoom().getRoomId() == room.getRoomId()){ // 아직 방 정보가 남아 있는 유저들만
+                        log.debug("이 방 정보를 가지고 있는 유저의 이름 : " + user.getUsername());
+                        roomService.deleteRoomInUser(user); // 유저 정보에서 방 정보 삭제
+                        log.debug(user.getUsername() + "의 방 정보 삭제 완료");
+                    }
+                }
+                roomService.deleteById(room.getRoomId()); // 마지막으로 방도 삭제
+                log.debug("마지막으로 방 정보도 삭제 완료");
+            }
+            else target.add(roomDto);
         }
         Page<RoomDto> pageList = new PageImpl<>(target, origin.getPageable(), origin.getTotalElements());
-
+        log.debug("방 전체 목록 다 불러옴");
         return ResponseEntity.status(200).body(RoomListRes.of(200, "Success", pageList));
     }
 

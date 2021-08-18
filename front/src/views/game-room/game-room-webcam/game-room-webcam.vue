@@ -39,7 +39,11 @@ export default {
     }
   },
   setup(props, { emit }) {
+<<<<<<< HEAD
     const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
+=======
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":8443"
+>>>>>>> 12c18a0cc9112868e44b719355b0459d0c2a6394
     const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore();
 
@@ -154,7 +158,7 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`https://0.0.0.0:443/accept-certificate`);
+								location.assign(`https://0.0.0.0:8443/accept-certificate`);
 							}
 							reject(error.response);
 						}

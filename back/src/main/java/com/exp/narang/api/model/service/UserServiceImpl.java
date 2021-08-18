@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,15 @@ public class UserServiceImpl implements UserService {
 		httpClient = new OkHttpClient();
 	}
 //	}
+
+	/**
+	 * 모든 유저 목록을 가져오는 메서드
+	 * @return 유저 리스트
+	 */
+	@Override
+	public List<User> findUserList() {
+		return userRepository.findAll();
+	}
 
 	@Override
 	public User createUser(UserRegisterPostReq userRegisterInfo) {

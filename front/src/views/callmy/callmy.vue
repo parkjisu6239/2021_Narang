@@ -1,7 +1,7 @@
 <template>
   <div class="callmy-container">
     <div class="callmy-left-side">
-      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="state.callmyManager.isAnswer && state.speaker !== store.state.root.username">
+      <div :class="{'stt-container':true, 'ans': state.ans}" v-if="state.callmyManager.isAnswer && state.speaker !== state.username">
         <div class="stt-constent">
           <div> {{ state.speaker }}의 이름은?!?!<span></span> 빠크 <span>빠크</span> 빠크</div>
           <h1>{{ state.answer }}</h1>
@@ -28,13 +28,16 @@
         :chatList="state.chatList"
         :roomId="route.params.roomId"
         @sendChat="sendChat"/>
-      <CallmySetting/>
+      <CallmySetting @clickGuide="state.callmyGuideVisible = true"/>
     </div>
   </div>
-  <CallmyShowDraw
-    v-show="state.showDraw"
-    :players="state.callmyManager.nowPlayUsers"/>
   <CallmyStt @sendGuessName="sendGuessName" v-if="!state.isVoteTime && state.callmyManager.nowPlayUsers.length && (state.userId === state.callmyManager.nowPlayUsers[0].userId || state.userId === state.callmyManager.nowPlayUsers[1].userId)"/>
+  <Dialog v-if="state.callmyGuideVisible" @click="state.callmyGuideVisible = false">
+    <CallmyGuide/>
+  </Dialog>
+  <Dialog v-if="state.isNoticeVisible">
+    <CallmyNotice :msg="state.msg" :msgType="state.msgType"/>
+  </Dialog>
   <CallmyBackground/>
 </template>
 <style scoped>
@@ -51,7 +54,10 @@ import CallMyGameBoard from './callmy-gameboard/callmy-gameboard.vue'
 import CallmyBackground from './callmy-background/callmy-background.vue'
 import CallmySetting from './callmy-setting/callmy-setting.vue'
 import CallmyStt from './callmy-stt/callmy-stt.vue'
-import CallmyShowResult from './callmy-result/callmy-showresult.vue'
+import Dialog from '@/views/common/dialog/dialog.vue'
+import CallmyGuide from './callmy-guide/callmy-guide.vue'
+import CallmyNotice from './callmy-notice/callmy-notice.vue'
+
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
@@ -66,7 +72,9 @@ export default {
     CallmyBackground,
     CallmySetting,
     CallmyStt,
-    CallmyShowResult,
+    Dialog,
+    CallmyGuide,
+    CallmyNotice,
   },
 
   setup(props, { emit }) {
@@ -81,6 +89,7 @@ export default {
       userList: {},
       callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
+      username: computed(() => store.state.root.username),
       socketConnected: false,
       nicknameList: {},
       userIdToUserName: {},
@@ -93,6 +102,11 @@ export default {
       round: 1,
       answer: '',
       speaker: '',
+      callmyGuideVisible: false,
+      isNoticeVisible: false,
+      msg: '',
+      timeout: 5000,
+      msgType: 'default'
     })
 
 
@@ -125,7 +139,13 @@ export default {
         state.isAllConnected = true
         state.draw = JSON.parse(res.body)
         state.isVoteTime = true
-        sendPlay('next')
+        state.msg = '잠시 후 게임이 시작됩니다.'
+        state.isNoticeVisible = true
+        setTimeout(() => {
+          state.msg = ''
+          state.isNoticeVisible = false
+          sendPlay('next')
+        }, state.timeout);
       })
     }
 
@@ -133,23 +153,26 @@ export default {
     const subscribeGuessName = () => {
       state.stompClient.subscribe(`/from/call/guess-name/${route.params.roomId}`, res => {
         const guessNameRes = JSON.parse(res.body)
-        console.log("guessNameRes")
-        console.log(guessNameRes)
+        console.log("guessNameRes : ", guessNameRes)
+        console.log('내 이름 : ', state.username)
+        console.log('현재 정답을 외친 사람 : ' , state.userIdToUserName[guessNameRes.userId])
+        console.log('현재 정답을 외친 사람이 말한 내용 : ' , guessNameRes.answer)
         if(guessNameRes.answer === '정답타임끝'){
           endAnswerTime();
           return;
         }
-
         if(guessNameRes.answer === '정답'){
           console.log("현재 정답을 말하고 있습니까?")
           console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
           console.log("아니요 아무도 말 안하고 있습니다~")
+          console.log(state.callmyManager.isAnswer)
         }
-        state.speaker = state.userIdToUserName[guessNameRes.userId];
-        state.answer = guessNameRes.answer;
         if(guessNameRes.gameEnd) {
+            state.msg = `최종 우승자는 ${state.speaker}가 입니다! 잠시후 게임이 종료됩니다.`
+            state.isNoticeVisible = true
+            state.msgType = 'win'
             gameOver();
             return;
         }
@@ -159,7 +182,15 @@ export default {
           state.roundStart = false
           state.startDetection = false
           endAnswerTime();
-          sendPlay("next")
+          state.msg = `${state.speaker}가 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
+          state.isNoticeVisible = true
+          state.msgType = 'win'
+          setTimeout(() => {
+            state.msg = ''
+            state.isNoticeVisible = false
+            state.msgType = 'default'
+            sendPlay('next')
+          }, state.timeout);
           return;
         }
 
@@ -209,7 +240,13 @@ export default {
             console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
             state.nicknameList = {}
             state.order = 0
-            sendPlay('now')
+            state.msg = `제시어 선택이 완료되었습니다. 잠시후 게임 시작!`
+            state.isNoticeVisible = true
+            setTimeout(() => {
+              state.msg = ''
+              state.isNoticeVisible = false
+              sendPlay('now')
+            }, state.timeout);
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
@@ -290,7 +327,7 @@ export default {
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-         const userInfo = {
+        const userInfo = {
             email: res.data.user.email,
             username: res.data.user.username,
             profileImageURL: res.data.user.thumbnailUrl,
@@ -340,7 +377,7 @@ export default {
     const gameOver = () => {
       // 상태 초기화
       init();
-      game
+      state.gameStart = false
       endAnswerTime();
       setTimeout(() => {
         // 게임 정보 변경
@@ -385,9 +422,9 @@ export default {
 
 
     const endAnswerTime = () => {
-          state.speaker = '';
-          state.answer = '';
-          store.state.root.callmyManager.isAnswer = false;
+      state.speaker = '';
+      state.answer = '';
+      store.state.root.callmyManager.isAnswer = false;
     }
 
 
