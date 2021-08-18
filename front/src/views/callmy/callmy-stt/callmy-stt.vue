@@ -98,7 +98,9 @@ export default {
     startRecognition()
     watch(() => props.yesOrNo, () => {
       if(props.yesOrNo) {
-        state.ans = false;
+        setTimeout(() => {
+          state.ans = false;
+        }, 2000);
       }
     })
 
