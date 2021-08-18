@@ -43,7 +43,11 @@
       </div>
     </div>
     <div class="callmy-sub-container">
-      <div class="callmy-sub">{{ speaker }} : {{ answer }}</div>
+      <div class="callmy-sub">
+        <div v-if="speaker && answer">
+          <span class="callmy-speaker">{{ speaker }}</span><span class="callmy-answer">{{ answer }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
