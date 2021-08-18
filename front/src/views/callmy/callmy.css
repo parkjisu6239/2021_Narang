@@ -47,6 +47,12 @@
   z-index: 100;
 }
 
+@media (min-width: 1500px) {
+  .yesOrNo-dialog {
+    left: 35%;
+  }
+}
+
 .stt-yesOrNo {
   font-family: 'Varela Round', sans-serif;
   font-weight: 900;
