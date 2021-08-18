@@ -185,13 +185,13 @@ export default {
           state.yesOrNo = 'O'
           setTimeout(() => {
             state.yesOrNo = ''
+            state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
+            state.isNoticeVisible = true
+            state.msgType = 'win'
             setTimeout(() => {
-              state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
-              state.isNoticeVisible = true
-              state.msgType = 'win'
               gameOver();
             }, state.timeout);
-          }, 500)
+          }, 1000)
           return;
         }
 
@@ -215,7 +215,7 @@ export default {
               endAnswerTime();
               sendPlay('next')
             }, state.timeout);
-          }, 500)
+          }, 1000)
           return;
         }
 
@@ -224,7 +224,7 @@ export default {
           console.log('정답 틀렸을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
-          }, 500)
+          }, 1000)
           console.log("틀렸습니다.")
         }
       })

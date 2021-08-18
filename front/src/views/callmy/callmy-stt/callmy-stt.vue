@@ -29,6 +29,7 @@ export default {
       ans: false,
       callmyManager: computed(() => store.state.root.callmyManager),
       userId: computed(() => store.state.root.userId),
+      chance: true,
     })
 
     const startRecognition = () => {
@@ -48,7 +49,8 @@ export default {
             finalTranscript += transcript;
           }
         }
-        if (state.ans && finalTranscript.replace(/(\s*)/g, "")) { // 정답 타임인 경우
+        if (state.ans && finalTranscript.replace(/(\s*)/g, "") && state.chance) { // 정답 타임인 경우
+          state.chance = false;
           state.finalTranscript = finalTranscript // 이번에 말한 내용으로 보드 변경
           sendGuessName(state.finalTranscript);
           return;
@@ -62,6 +64,7 @@ export default {
           setTimeout(() => {
               state.ans = false // 5초 후 정답 타임 취소
               sendGuessName('정답타임끝');
+              state.chance = true;
             }, 5000)
         }
       }
