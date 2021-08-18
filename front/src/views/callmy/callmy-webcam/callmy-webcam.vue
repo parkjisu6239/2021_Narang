@@ -42,7 +42,7 @@
         <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
       </div>
     </div>
-    <div v-if="speaker && answer" class="callmy-sub-container">
+    <div :class="{'callmy-sub-container': true, 'callmy-sub-container-none': !(speaker && answer)}">
       <div class="callmy-sub">
         <div><span class="callmy-speaker">{{ speaker }}</span><span class="callmy-answer">{{ answer }}</span></div>
       </div>
