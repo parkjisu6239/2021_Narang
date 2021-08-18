@@ -37,9 +37,6 @@ export default {
 
       state.recognition.onresult = function(event){
         state.finalTranscript = '';
-        if(state.callmyManager.isAnswer) {
-            return; // 정답을 한 번만 외칠 수 있게함. 또는 누가 정답을 외쳤다.
-        }
         let finalTranscript = '';
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           let transcript = event.results[i][0].transcript;
@@ -53,6 +50,9 @@ export default {
           return;
         }
         if (finalTranscript.trim() === '정답') { // 정답이라고 말한 경우
+        if(state.callmyManager.isAnswer) {
+            return; // 정답을 한 번만 외칠 수 있게함. 또는 누가 정답을 외쳤다.
+        }
           sendGuessName('정답');
           state.ans = true // 정답 타임!
           setTimeout(() => {
