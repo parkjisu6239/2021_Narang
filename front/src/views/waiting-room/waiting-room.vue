@@ -18,6 +18,7 @@
     v-if="state.isNarangGuideVisible">
     <NarangGuide @clickExit="state.isNarangGuideVisible = false"/>
   </Dialog>
+  <audio src=""></audio>
 </template>
 <style>
 .screen {
