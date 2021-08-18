@@ -189,11 +189,11 @@ export default {
             return;
         }
 
-        console.log('정답 여부 체크 전' ,state.yerOrNo)
+        console.log('정답 여부 체크 전' ,state.yesOrNo)
         if(guessNameRes.correct) {
           console.log(`${state.speaker}가 승리했습니다`)
           state.yesOrNo = 'O'
-          console.log('정답 맞췄을 때' ,state.yerOrNo)
+          console.log('정답 맞췄을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
           }, 500)
@@ -215,7 +215,7 @@ export default {
 
         if(guessNameRes.answer !== '정답') {
           state.yesOrNo = 'X'
-          console.log('정답 틀렸을 때' ,state.yerOrNo)
+          console.log('정답 틀렸을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
           }, 500)
