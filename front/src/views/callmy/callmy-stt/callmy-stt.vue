@@ -9,7 +9,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import { reactive, computed, onBeforeUnmount } from 'vue'
+import { reactive, computed, onBeforeUnmount, watch } from 'vue'
 
 export default {
   name: 'callmyStt',
