@@ -146,8 +146,8 @@ export default {
 
         state.loopPredict = window.requestAnimationFrame(loop); // 동작 인식 반복 시작
 
-        console.log(document.getElementById("myWebcam"), '여기가 마이 웹캠')
-        state.myWebcam = document.getElementById("myWebcam").childNodes[2];
+        console.log(document.getElementById(state.username), '여기가 마이 웹캠')
+        state.myWebcam = document.getElementById(state.username)
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
