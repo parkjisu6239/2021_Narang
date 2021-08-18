@@ -39,9 +39,9 @@
     <CallmyNotice :msg="state.msg" :msgType="state.msgType"/>
   </Dialog>
 
-  <Dialog v-if="state.yesOrNo">
+  <div class="yesOrNo-dialog" v-if="state.yesOrNo">
     <div :class="{'stt-yesOrNo':true, 'stt-yes': state.yesOrNo === 'O', 'stt-no': state.yesOrNo === 'X'}">{{ state.yesOrNo }}</div>
-  </Dialog>
+  </div>
 
   <CallmyBackground/>
 </template>
@@ -180,7 +180,7 @@ export default {
         state.answer = guessNameRes.answer;
 
         if(guessNameRes.gameEnd) {
-            state.msg = `최종 우승자는 ${state.speaker}가 입니다! 잠시후 게임이 종료됩니다.`
+            state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
             state.isNoticeVisible = true
             state.msgType = 'win'
             gameOver();
@@ -195,14 +195,14 @@ export default {
           state.isVoteTime = true
           state.roundStart = false
           state.startDetection = false
-          endAnswerTime();
-          state.msg = `${state.speaker}가 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
+          state.msg = `${state.speaker}님이 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
           state.isNoticeVisible = true
           state.msgType = 'win'
           setTimeout(() => {
             state.msg = ''
             state.isNoticeVisible = false
             state.msgType = 'default'
+            endAnswerTime();
             sendPlay('next')
           }, state.timeout);
           return;

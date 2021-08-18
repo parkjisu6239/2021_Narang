@@ -37,11 +37,19 @@
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 
+.yesOrNo-dialong-body {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 40%;
+  z-index: 100;
+}
+
 .stt-yesOrNo {
   font-family: 'Varela Round', sans-serif;
-  font-weight: 700;
-  font-size: 100px;
-  -webkit-text-stroke: 4px rgb(26, 26, 26);
+  font-weight: 900;
+  font-size: 200px;
 }
 
 .stt-yes {
