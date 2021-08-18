@@ -151,15 +151,15 @@ export default {
         size: 10,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
-      .then(function (result) {
-        console.log(result.data.roomList)
-        state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
-        state.page += 1
-        state.end = result.data.roomList.last
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
+        .then(function (result) {
+          console.log(result.data.roomList)
+          state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
+          state.page += 1
+          state.end = result.data.roomList.last
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
     }
 
     return { state, load, clickConference, clickCreateRoom, readGameRoomList, clickSearch, clickActivateTypeBtn }

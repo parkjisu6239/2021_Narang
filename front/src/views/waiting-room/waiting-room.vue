@@ -78,7 +78,6 @@ export default {
       state.enterSecretRoomDialogOpen = false
     }
 
-
     const requestReadMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
