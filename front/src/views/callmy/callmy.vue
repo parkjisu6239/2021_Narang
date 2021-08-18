@@ -383,7 +383,12 @@ export default {
         // 게임 정보 변경
         const roomInfo = {
           ...store.state.root.room,
-          isActivate: true
+          game: null,
+          isActivate: true,
+        }
+
+        if (state.stompClient !== null) {
+            state.stompClient.disconnect()
         }
 
         store.dispatch('root/requestUpdateGameRoom', roomInfo)
@@ -404,12 +409,6 @@ export default {
     }
 
 
-    const socketDisconnect = () => {
-        if (state.stompClient !== null) {
-            state.stompClient.disconnect();
-        }
-    }
-
 
     const showResult = () => {
       setTimeout(() => {
@@ -426,11 +425,6 @@ export default {
       state.answer = '';
       store.state.root.callmyManager.isAnswer = false;
     }
-
-
-    onBeforeUnmount(() => {
-      socketDisconnect()
-    })
 
 
     requestRoomInfo()
