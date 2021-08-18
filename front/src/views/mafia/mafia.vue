@@ -580,6 +580,7 @@ export default {
       store.state.root.mafiaManager.myRole = ''
       store.state.root.mafiaManager.isAlive = true
       store.state.root.mafiaManager.lierItem = true
+      store.state.root.mafiaManager.missionNumber = -1
       state.gameStart = false
 
       if (state.stompClient !== null) {

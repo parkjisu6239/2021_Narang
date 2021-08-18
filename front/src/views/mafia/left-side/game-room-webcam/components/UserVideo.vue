@@ -7,6 +7,7 @@
       :isSelected="gameStart && state.clientData === state.mafiaManager.secondVoteUsername"
       :isDead="gameStart && !state.mafiaManager.players.includes(state.clientData)"
       />
+    <div class="nameTag"><p>{{ state.clientData }}</p></div>
   </div>
 </template>
 <script>

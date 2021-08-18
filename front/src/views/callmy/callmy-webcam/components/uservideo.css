@@ -4,3 +4,35 @@
   background-color: rgb(59, 59, 59);
   border-radius: 20px;
 }
+
+.nameTag-top {
+  border-radius: 10px;
+  padding: 4px 7px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-family: 'Jua';
+  font-size: 1vh;
+  position: absolute;
+  top: 7%;
+  left: 4%;
+}
+
+.nameTag-top > p {
+  margin: 0px;
+}
+
+.nameTag-bottom {
+  border-radius: 10px;
+  padding: 4px 7px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-family: 'Jua';
+  font-size: 1vw;
+  position: absolute;
+  top: 7%;
+  left: 4%;
+}
+
+.nameTag-bottom > p {
+  margin: 0px;
+}
+
+
