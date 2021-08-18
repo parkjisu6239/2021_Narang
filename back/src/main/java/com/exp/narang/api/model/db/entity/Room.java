@@ -39,7 +39,7 @@ public class Room {
 //    @Column(name="created_time")
 //    private LocalDateTime createdTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     @JsonBackReference
     List<User> userList = new ArrayList<>();
 

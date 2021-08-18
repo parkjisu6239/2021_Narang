@@ -15,6 +15,8 @@ public interface RoomService {
     Long createRoom(RoomRegisterPostReq roomRegisterPostReq, Long userId);
     void enterRoom(Room room, User user);
     void deleteRoom(Room room, User user);
+    void deleteById(Long roomId);
+    void deleteRoomInUser(User user);
     void updateRoom(RoomUpdatePatchReq roomUpdatePatchReq, Room room);
     List<User> findUserListByRoomId(Long roomId);
     Page<Room> findBySearch(RoomSearchGetReq roomSearchGetReq, Pageable pageable);
