@@ -182,11 +182,17 @@ export default {
           state.answer = guessNameRes.answer;
         }
         if(guessNameRes.gameEnd) {
-            state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
-            state.isNoticeVisible = true
-            state.msgType = 'win'
-            gameOver();
-            return;
+          state.yesOrNo = 'O'
+          setTimeout(() => {
+            state.yesOrNo = ''
+            setTimeout(() => {
+              state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
+              state.isNoticeVisible = true
+              state.msgType = 'win'
+              gameOver();
+            }, state.timeout);
+          }, 500)
+          return;
         }
 
         console.log('정답 여부 체크 전' ,state.yesOrNo)
@@ -196,20 +202,20 @@ export default {
           console.log('정답 맞췄을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
+            state.isVoteTime = true
+            state.roundStart = false
+            state.startDetection = false
+            state.msg = `${state.speaker}님이 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
+            state.isNoticeVisible = true
+            state.msgType = 'win'
+            setTimeout(() => {
+              state.msg = ''
+              state.isNoticeVisible = false
+              state.msgType = 'default'
+              endAnswerTime();
+              sendPlay('next')
+            }, state.timeout);
           }, 500)
-          state.isVoteTime = true
-          state.roundStart = false
-          state.startDetection = false
-          state.msg = `${state.speaker}님이 승리했습니다. 잠시후 다음 라운드가 시작됩니다!`
-          state.isNoticeVisible = true
-          state.msgType = 'win'
-          setTimeout(() => {
-            state.msg = ''
-            state.isNoticeVisible = false
-            state.msgType = 'default'
-            endAnswerTime();
-            sendPlay('next')
-          }, state.timeout);
           return;
         }
 
