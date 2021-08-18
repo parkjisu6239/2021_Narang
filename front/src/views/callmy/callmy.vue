@@ -84,6 +84,7 @@ export default {
 
 
     const state = reactive({
+      room: computed(() => store.state.root.myRoom),
       stompClient: null,
       chatList: [],
       userList: {},
@@ -366,6 +367,24 @@ export default {
     }
 
 
+    const requestUpdateRoomInfo = () => {
+      const roomInfo = {
+        ...state.room,
+        game: null,
+        isActivate: true,
+      }
+
+      store.dispatch('root/requestUpdateGameRoom', roomInfo)
+        .then(res => {
+          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+
     const init = () => {
       store.state.root.callmyManager.status = 0;
       store.state.root.callmyManager.isFinished = false;
@@ -377,40 +396,26 @@ export default {
     const gameOver = () => {
       // 상태 초기화
       init()
+      state.gameStart = false
 
       if (state.stompClient !== null) {
           console.log('소켓 디스커넥트')
           state.stompClient.disconnect()
       }
 
-      state.gameStart = false
+      if (state.room.ownerId === state.userId) requestUpdateRoomInfo()
       endAnswerTime()
       setTimeout(() => {
         // 게임 정보 변경
-        const roomInfo = {
-          ...store.state.root.room,
-          game: null,
-          isActivate: true,
-        }
-
-        store.dispatch('root/requestUpdateGameRoom', roomInfo)
-        .then(res => {
-          router.push({
-            name: 'gameRoom',
-            params: {
-              roomId: route.params.roomId,
-            }
-          })
-          console.log('방정보가 정상적으로 변경되었습니다. 입장 가능')
+        router.push({
+          name: 'gameRoom',
+          params: {
+            roomId: route.params.roomId,
+          }
         })
-        .catch(err => {
-          console.log(err)
-        })
-
 
       }, 5000);
     }
-
 
 
     const showResult = () => {
@@ -428,6 +433,8 @@ export default {
       state.answer = '';
       store.state.root.callmyManager.isAnswer = false;
     }
+
+
 
 
     requestRoomInfo()
