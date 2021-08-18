@@ -29,6 +29,8 @@ import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8'
+$axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
+
 export default {
   components: {
 		UserVideo,
