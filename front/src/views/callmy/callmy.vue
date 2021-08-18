@@ -162,7 +162,7 @@ export default {
           return;
         }
         if(guessNameRes.answer === '정답'){
-          console.log("현재 정답을 말하고 있습니까?")
+          console.log("현재 정답을 말하고 있습니까??")
           console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
