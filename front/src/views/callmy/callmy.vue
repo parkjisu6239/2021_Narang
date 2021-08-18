@@ -183,6 +183,8 @@ export default {
           state.answer = guessNameRes.answer;
         }
         if(guessNameRes.gameEnd) {
+          const audio = new Audio(require('@/assets/audio/callmy/correct.MP3'));
+          audio.play();
           state.yesOrNo = 'O'
           setTimeout(() => {
             state.yesOrNo = ''
@@ -198,6 +200,8 @@ export default {
 
         console.log('정답 여부 체크 전' ,state.yesOrNo)
         if(guessNameRes.correct) {
+          const audio = new Audio(require('@/assets/audio/callmy/correct.MP3'));
+          audio.play();
           console.log(`${state.speaker}가 승리했습니다`)
           state.yesOrNo = 'O'
           console.log('정답 맞췄을 때' ,state.yesOrNo)
@@ -221,6 +225,8 @@ export default {
         }
 
         if(guessNameRes.answer !== '정답') {
+          const audio = new Audio(require('@/assets/audio/callmy/ddang.MP3'));
+          audio.play();
           state.yesOrNo = 'X'
           console.log('정답 틀렸을 때' ,state.yesOrNo)
           setTimeout(() => {
