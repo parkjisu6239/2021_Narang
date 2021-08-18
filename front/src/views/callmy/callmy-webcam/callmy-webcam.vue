@@ -42,7 +42,9 @@
         <h1>잠시 후, 다음 라운드가 시작됩니다.</h1>
       </div>
     </div>
-
+    <div class="callmy-sub-container">
+      <div class="callmy-sub">{{ speaker }} : {{ answer }}</div>
+    </div>
   </div>
 </template>
 <style>
@@ -82,6 +84,8 @@ export default {
     startDetection: {
       type: Boolean,
     },
+    speaker: String,
+    answer: String,
   },
 
   setup(props, { emit }) {
