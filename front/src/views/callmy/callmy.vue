@@ -177,8 +177,9 @@ export default {
         }
 
         state.speaker = state.userIdToUserName[guessNameRes.userId];
-        state.answer = guessNameRes.answer;
-
+        if(guessNameRes.answer !== '정답'){
+          state.answer = guessNameRes.answer;
+        }
         if(guessNameRes.gameEnd) {
             state.msg = `최종 우승자는 ${state.speaker}님 입니다! 잠시후 게임이 종료됩니다.`
             state.isNoticeVisible = true
@@ -186,9 +187,12 @@ export default {
             gameOver();
             return;
         }
+
+        console.log('정답 여부 체크 전' ,state.yerOrNo)
         if(guessNameRes.correct) {
           console.log(`${state.speaker}가 승리했습니다`)
           state.yesOrNo = 'O'
+          console.log('정답 맞췄을 때' ,state.yerOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
           }, 500)
@@ -210,6 +214,7 @@ export default {
 
         if(guessNameRes.answer !== '정답') {
           state.yesOrNo = 'X'
+          console.log('정답 틀렸을 때' ,state.yerOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
           }, 500)
