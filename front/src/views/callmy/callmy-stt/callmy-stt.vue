@@ -48,7 +48,7 @@ export default {
             finalTranscript += transcript;
           }
         }
-        if (state.ans) { // 정답 타임인 경우
+        if (state.ans && finalTranscript.replace(/(\s*)/g, "")) { // 정답 타임인 경우
           state.finalTranscript = finalTranscript // 이번에 말한 내용으로 보드 변경
           sendGuessName(state.finalTranscript);
           return;
