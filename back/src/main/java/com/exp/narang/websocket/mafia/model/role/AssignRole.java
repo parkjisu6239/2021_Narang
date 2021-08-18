@@ -15,7 +15,7 @@ public class AssignRole {
     public AssignRole (int memberCount, int mafiaCount, int citizenCount) {
         this.mafiaCount = memberCount;
         this.mafiaCount = mafiaCount;
-            this.citizenCount = citizenCount;
+        this.citizenCount = citizenCount;
         }
 
     public List<Role> makeRole() {
@@ -26,6 +26,6 @@ public class AssignRole {
         for(int i = 0; i < this.citizenCount; i++) {
             list.add(new Citizen());
         }
-        return  list;
+        return list;
     }
 }

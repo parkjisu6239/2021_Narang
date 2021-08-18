@@ -1,17 +1,18 @@
 <template>
   <div class="webcam-wrap" style="border-radius: 10px 0px 0px 10px">
-    <div class="webcam-container">
-      <div
-        :class="{
-          'webcam-container': true,
-          'under-four': state.subscribers.length <= 4}">
-        <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
-        <user-video
-          v-for="sub in state.subscribers"
-          :key="sub.stream.connection.connectionId"
-          :stream-manager="sub"
-          @click="updateMainVideoStreamManager(sub)"/>
-      </div>
+    <div
+      :class="{
+        'webcam-container': true,
+        'under-two': state.subscribers.length >= 1,
+        'under-four': state.subscribers.length >= 2,
+        'under-nine': state.subscribers.length >= 4,
+      }">
+      <user-video :stream-manager="state.publisher" @click="updateMainVideoStreamManager(state.publisher) "/>
+      <user-video
+        v-for="sub in state.subscribers"
+        :key="sub.stream.connection.connectionId"
+        :stream-manager="sub"
+        @click="updateMainVideoStreamManager(sub)"/>
     </div>
   </div>
 
@@ -22,12 +23,14 @@
 
 <script>
 import $axios from 'axios'
-import { computed, reactive } from 'vue'
+import { computed, reactive, onBeforeUnmount } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
 
 $axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8'
+$axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
+
 export default {
   components: {
 		UserVideo,
@@ -38,9 +41,10 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":4443"
-    const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+    const OPENVIDU_SERVER_URL = "https://" + location.hostname + ":8443"
+    const OPENVIDU_SERVER_SECRET = "NARANG_VIDU"
     const store = useStore();
+
     const state = reactive({
 			OV: undefined,
 			session: undefined,
@@ -49,18 +53,7 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
-      mode : computed(() => {
-        return findMode();
-      }),
     })
-    const findMode = () => {
-      let len = state.subscribers.length + 1;
-      console.log("Asdasdasdasdasd")
-      console.log(len)
-      if(len == 1) return 1;
-      else if(len <= 4) return 2;
-      else return 3;
-    }
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
@@ -95,33 +88,36 @@ export default {
         console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
-
 						// --- Get your own camera stream with the desired properties ---
 						let publisher = state.OV.initPublisher(undefined, {
 							audioSource: undefined, // The source of audio. If undefined default microphone
 							videoSource: undefined, // The source of video. If undefined default webcam
 							publishAudio: true,  	// Whether you want to start publishing with your audio unmuted or not
 							publishVideo: true,  	// Whether you want to start publishing with your video enabled or not
-							resolution: '600x300',  // The resolution of your video
+							resolution: '600x320',  // The resolution of your video
 							frameRate: 30,			// The frame rate of your video
 							insertMode: 'APPEND',	// How the video is inserted in the target element 'video-container'
-							mirror: false       	// Whether to mirror your local video or not
+							mirror: false,       	// Whether to mirror your local video or not
 						});
-
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
-            store.publisher = publisher;
-						state.session.publish(state.publisher);
+            store.state.root.publisher = publisher;
+						state.session.publish(store.state.root.publisher);
 					})
 					.catch(error => {
 						console.log('There was an error connecting to the session:', error.code, error.message);
 					});
+
 			});
+
+      window.addEventListener('beforeunload', leaveSession)
 		}
 
     const leaveSession = () => {
 			// --- Leave the session by calling 'disconnect' method over the Session object ---
-			if (state.session) state.session.disconnect();
+			if (state.session) {
+        state.session.disconnect();
+      }
 
 			state.session = undefined;
 			state.mainStreamManager = undefined;
@@ -129,7 +125,7 @@ export default {
 			state.subscribers = [];
 			state.OV = undefined;
 
-			window.removeEventListener('beforeunload', leaveSession);
+      window.removeEventListener('beforeunload', leaveSession)
 		}
 
 		const updateMainVideoStreamManager = (stream) => {
@@ -160,7 +156,7 @@ export default {
 						} else {
 							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
 							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`https://i5b205.p.ssafy.io:4443/accept-certificate`);
+								location.assign(`https://0.0.0.0:8443/accept-certificate`);
 							}
 							reject(error.response);
 						}
@@ -171,24 +167,45 @@ export default {
     const createToken = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {}, {
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions/${sessionId}/connection`, {
+            "type": "WEBRTC",
+              "role": "PUBLISHER",
+              "kurentoOptions": {
+                "videoMaxRecvBandwidth": 1000,
+                "videoMinRecvBandwidth": 300,
+                "videoMaxSendBandwidth": 1000,
+                "videoMinSendBandwidth": 300,
+                "allowedFilters": ["GStreamerFilter", "FaceOverlayFilter"]
+              }
+
+          },
+          {
 						auth: {
 							username: 'OPENVIDUAPP',
 							password: OPENVIDU_SERVER_SECRET,
 						},
 					})
-					.then(response => response.data)
+					.then(response => {
+            console.log(response.data)
+            return response.data}
+            )
 					.then(data => resolve(data.token))
 					.catch(error => reject(error.response))
 			});
 		}
 
+    //* Life Cycle *//
+    // created
     joinSession()
 
-    window.addEventListener('beforeunload', leaveSession)
 
-    return { state, updateMainVideoStreamManager, findMode }
+    // beforeunmount
+    onBeforeUnmount(() => {
+      leaveSession()
+    })
 
-  },
+
+    return { state, store, updateMainVideoStreamManager }
+  }
 }
 </script>

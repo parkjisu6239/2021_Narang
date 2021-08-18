@@ -13,6 +13,12 @@ module.exports = {
           {
             loader: "stylus-loader", // compiles Stylus to CSS
           },
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'), //dart-sass 적용
+          },
+        }
         ],
       },
     ],

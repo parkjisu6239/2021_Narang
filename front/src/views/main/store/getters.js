@@ -23,11 +23,10 @@ export function username (state) {
 }
 
 export function profileImageURL (state) {
-  if (state.profileImageURL === undefined || state.profileImageURL === '' || state.profileImageURL === null) {
+  if (!state.profileImageURL) {
     return ''
   }
-  console.log('바껴땅')
-  return `https://0.0.0.0:8080/${state.profileImageURL}`
+  return state.profileImageURL
 }
 
 export function myRoom (state) {
@@ -44,4 +43,16 @@ export function onVideo (state) {
 
 export function onAudio (state) {
   return state.onAudio
+}
+
+export function mafiaManager (state) {
+  return state.mafiaManager
+}
+
+export function mafiaStage (state) {
+  return state.mafiaStage
+}
+
+export function callmyManager (state) {
+  return state.callmyManager
 }

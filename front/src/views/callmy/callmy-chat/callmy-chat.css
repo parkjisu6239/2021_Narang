@@ -1,0 +1,131 @@
+.callmy-chat-container {
+  min-height: 200px;
+  display: grid;
+  grid-template-rows: 1fr 7fr 1fr;
+}
+
+.callmy-chat-area {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  max-height: 25vh;
+  overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@media (min-height: 722px) {
+  .callmy-chat-area {
+    max-height: 27vh;
+  }
+}
+
+.callmy-chat-area::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.callmy-chat-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1px 5px;
+}
+
+.callmy-chat-live {
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: white;
+  background: linear-gradient(blueviolet, cornflowerblue);
+}
+
+.callmy-chat-input-button {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0px 5px;
+}
+
+.callmy-chat-input-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 5px;
+  height: 70%;
+  padding: 0px 10px;
+}
+
+.callmy-chat-input {
+  width: 100%;
+  outline: none;
+  border: none;
+  border-width: 0;
+  padding: 0px;
+}
+
+.callmy-chat-send-button {
+  height: 80%;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+  background-color: #FFEB33;
+}
+
+.callmy-chat-send-text {
+  font-size: 13px;
+}
+
+.callmy-chat-send-button:active {
+  background-color: #ebd82d;
+}
+
+.callmy-chat-content-me {
+  background-color: #FFEB33;
+  border-radius: 15px;
+  padding: 5px 10px;
+  margin-top: 5px;
+  display: inline-block;
+  text-align: start;
+  max-width: 70%;
+  word-break:break-all;
+}
+
+.callmy-chat-profile-username-you {
+  display: flex;
+  margin-top: 7px;
+}
+
+.callmy-chat-profile {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: solid 1px rgba(0, 0, 0, 0.1);
+}
+
+.callmy-chat-username {
+  font-size: 12px;
+  margin-bottom: 5px;
+  margin: 0px 5px;
+}
+
+.callmy-chat-content-you {
+  background-color: white;
+  border-radius: 15px;
+  padding: 5px 10px;
+  margin-top: 5px;
+  margin-left: 20px;
+  display: inline-block;
+  max-width: 70%;
+  word-break:break-all;
+}
+
+.callmy-chat-me {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,6 +1,6 @@
 <template>
   <div class="setting-container">
-    <div class="game-btns">
+    <div class="game-btns" v-show="state.disableGameBtns">
       <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
         <img
@@ -26,17 +26,16 @@
       <div class="setting-btn" @click="openDialog"><i class="el-icon-setting"></i></div>
       <div class="setting-btn" @click="leaveRoom"><i class="el-icon-close"></i></div>
     </div>
-
   </div>
 </template>
-<style>
+<style scoped>
   @import url('./game-room-setting.css');
 </style>
 <script>
 import { ElMessage } from 'element-plus'
 import { useStore } from 'vuex'
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
   name: 'GameRoomSetting',
@@ -46,26 +45,36 @@ export default {
     },
     room: {
       type: Object
-    }
+    },
   },
 
   setup(props, { emit }) {
     const store = useStore()
     const router = useRouter()
+    const route = useRoute()
     const state =  reactive({
       onVideo : true,
-      onAudio : true
+      onAudio : true,
+      disableGameBtns : undefined,
+      ownerId : undefined,
+      userId : undefined,
+      disableGameBtns: true,
     })
+
     const openDialog = () => {
       emit('openDialog')
     }
 
     const updateGameInfo = (event) => {
-      // if (props.room.ownerId !== store.state.root.userId) return
       const game = event.target.dataset.game
       const roomInfo = {
         ...props.room,
         game,
+      }
+      if(game === 'callmy') {
+
+      } else if(game === 'mafia'){
+
       }
       console.log(roomInfo)
       store.dispatch('root/requestUpdateGameRoom', roomInfo)
@@ -75,7 +84,7 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '에러'
+            message: '방장만 시작할 수 있습니다.'
           })
         })
     }
@@ -93,17 +102,37 @@ export default {
     const muteAudio = () => {
         state.onAudio = !state.onAudio;
         console.log(state.onAudio)
-        store.onAudio = state.onAudio
-        store.publisher.publishAudio(state.onAudio);
+        store.state.root.publisher.publishAudio(state.onAudio);
+
+
     }
     const muteVideo = () => {
         state.onVideo = !state.onVideo;
         console.log(state.onVideo)
-        store.onVideo = state.onVideo
-        store.publisher.publishVideo(state.onVideo);
+        store.state.root.publisher.publishVideo(state.onVideo);
     }
 
-    return {state ,openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
+    const setBtnDisabled = () => {
+      store.dispatch('root/requestReadSingleGameRoom', props.roomId).then(roomRes => {
+          store.dispatch('root/requestReadMyInfo').then(userRes => {
+              state.userId = userRes.data.user.userId; // 현재 유저 ID
+              state.ownerId = roomRes.data.room.ownerId; // 방 주인 ID
+              if(state.ownerId == state.userId) state.disableGameBtns = true; // 같으면 게임 버튼 보이게
+              else state.disableGameBtns = false; // 다르면 게임 버튼 안 보이게
+          })
+          .catch(err => {
+            ElMessage(err)
+          })
+      })
+      .catch(err => {
+        ElMessage(err)
+      })
+    }
+
+    //* created *//
+    setBtnDisabled()
+
+    return {state ,route, openDialog, updateGameInfo, leaveRoom, muteAudio, muteVideo, gameStart}
   }
 }
 </script>

@@ -6,11 +6,14 @@ module.exports = {
     open: true,
     proxy: {
       '/api/v1': {
-        target: 'https://localhost:8080/'
+        target: 'https://0.0.0.0:443/'
       },
       '/narang':{
-        target: 'https://localhost:8080/'
+        target: 'https://0.0.0.0:443/'
       },
+      '/static/models': {
+        target: 'https://0.0.0.0:443/'
+      }
     },
     historyApiFallback: true,
     hot: true
@@ -22,5 +25,5 @@ module.exports = {
     'element-plus'
   ],
   lintOnSave: false,
-  outputDir: '../back/src/main/resources/dist'
+  outputDir: '../back/src/main/resources/dist',
 }

@@ -1,0 +1,10 @@
+.mission-content {
+  text-align: center;
+}
+
+.mission-content img {
+  background-color: rgb(14, 14, 14);
+  border-radius: 20px;
+  width: 200px;
+  height: auto;
+}

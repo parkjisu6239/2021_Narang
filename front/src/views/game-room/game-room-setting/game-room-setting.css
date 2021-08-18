@@ -2,6 +2,7 @@
   display: flex;
   justify-content: flex-end;
   column-gap: 35%;
+  min-width: 550px;
 }
 
 .game-btns {
@@ -14,7 +15,7 @@
 .game-start {
   display: flex;
   align-items: center;
-  padding: 10px 10px 10px 10px;
+  padding: 10px;
   height: 50px;
   font-size: 2vw;
   text-align: center;
@@ -24,6 +25,7 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  border-radius: 15px;
 }
 
 .game-start::before {
@@ -59,6 +61,7 @@
   padding: 10px;
   height: 50px;
   font-size: 30px;
+  border-radius: 15px;
   color: white;
   background: rgba(255, 255, 255, 0.8);
 }
@@ -68,6 +71,7 @@
   height: 50px;
   cursor: pointer;
   margin: 0px 10px;
+  border-radius: 10px;
   transition: transform ease-in-out 0.4s;
 }
 
@@ -82,20 +86,28 @@
   height: 30px;
   width: auto;
   padding: 20px 10px;
+  border-radius: 20px;
 }
 
 .setting-btn {
   display: inline-block;
+  color: rgba(0, 0, 0, 0.651);
   padding: 5px 10px;
   margin: 0px 6px;
   font-size: 26px;
-  background: rgba(255, 255, 255, 0.8);
-  border-image: linear-gradient(#f6b73c, #4d9f0c) 5 / 1px;
+  background: rgba(241, 245, 251);
+  border-radius: 50%;
   cursor: pointer;
+  transition: all ease-in-out 0.1s;
+  box-shadow: 0px -3px 2px rgba(0, 0, 0, 0.025),
+              0px 2px 5px rgba(0,0,0,0.15),
+              inset 0px -3px 2px rgba(255, 255, 255, 0.025),
+              inset 0px 2px 5px rgba(238, 238, 238, 0.15);
 }
 
 .setting-btn:hover {
-  background-color: rgba(0, 0, 0, 0.3);
-  transition: background-color ease-in-out 0.2s;
+  background-color: rgb(225, 229, 235);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 

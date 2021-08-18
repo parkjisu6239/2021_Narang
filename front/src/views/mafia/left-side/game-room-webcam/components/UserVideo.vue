@@ -1,11 +1,17 @@
 <template>
-  <div v-if="streamManager">
-    <ov-video :stream-manager="streamManager"/>
+  <div v-if="streamManager" style="position: relative">
+    <div class="citizen-video-none" v-if="state.mafiaManager.stage === 'night' && state.mafiaManager.myRole === 'Citizen'"></div>
+    <ov-video v-else
+      :stream-manager="streamManager"
+      :isSelected="gameStart && state.username === state.mafiaManager.secondVoteUsername"
+      :isDead="gameStart && !state.mafiaManager.players.includes(state.username)"
+      />
   </div>
 </template>
 <script>
 import OvVideo from './OvVideo';
 import { computed, reactive } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
 	name: 'UserVideo',
@@ -15,14 +21,19 @@ export default {
 
 	props: {
 		streamManager: Object,
+    gameStart: Boolean,
 	},
 
   setup(props, { emit }) {
+    const store = useStore()
+
     const state = reactive({
+      username: computed(() => store.state.root.username),
 			clientData: computed(() => {
         const { clientData } = getConnectionData();
         return clientData;
       }),
+      mafiaManager: computed(() => store.getters['root/mafiaManager']),
     })
 
     const getConnectionData = () => {
@@ -31,8 +42,12 @@ export default {
 			return JSON.parse(connection.data);
 		}
 
+
     return { state, getConnectionData }
   },
 
 };
 </script>
+<style scoped>
+  @import url('./uservideo.css');
+</style>

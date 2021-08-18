@@ -101,7 +101,7 @@ export default {
       .catch(err => {
         ElMessage({
           type: 'error',
-          message: '실패했습니다.'
+          message: '방장만 설정할 수 있습니다.'
         })
       })
     }
