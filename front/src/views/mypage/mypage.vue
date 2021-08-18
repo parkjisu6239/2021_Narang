@@ -21,6 +21,7 @@ import MyPageSection from './section/my-page-section.vue'
 import MypageBackground from './mypage-background/mypage-background.vue'
 
 import { reactive } from '@vue/reactivity'
+import { onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -46,6 +47,10 @@ export default {
     const closeProfileChangeDialog = () => {
       state.open = false
     }
+
+    onBeforeUnmount(() => {
+      store.commit('root/setSeletedMenu', 'userInfoChange')
+    })
 
     return { state, openProfileChangeDialog, closeProfileChangeDialog }
   }
