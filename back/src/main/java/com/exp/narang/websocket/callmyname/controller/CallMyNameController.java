@@ -32,7 +32,6 @@ public class CallMyNameController {
 
     /**
      * 게임을 시작하는 메서드
-     * TODO : 게임 참가 인원 몇명인지 받기!!
      * @param roomId : path로 받는 roomId
      */
     @MessageMapping("/call/start/{roomId}")
@@ -88,7 +87,6 @@ public class CallMyNameController {
 
     /**
      * 이름 투표하는 메서드
-     * TODO : 2명을 제외한 사람들이 투표. 동점이면 첫 번째 거 채택
      * @param roomId : path로 받는 roomId (PK)
      * @param setNameReq : 투표자 ID, 타겟 ID, 이름, 투표 여부, 종료 여부 가진 객체
      * @return 타겟 ID, 투표 결과 담긴 Map, 집계 상태, 최종 제시어 가진 객체
@@ -125,7 +123,6 @@ public class CallMyNameController {
 
     /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
-     * TODO : 반환값 필요한거 추가하기
      * @param roomId : path로 받는 roomId (PK)
      * @param req : userId와 정해진 이름이 있는 객체
      * @return 답이 맞았는지, 게임이 끝났는지 여부를 멤버변수로 가진 객체

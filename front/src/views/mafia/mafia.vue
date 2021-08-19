@@ -192,7 +192,6 @@ export default {
           store.state.root.mafiaManager.missionSuccess = true;
           sendMafias();
           stopMission();
-          // console.log("미션 성공 결과 : ", store.state.root.mafiaManager.missionSuccess);
         }
         // console.log("여기서 프레딕션은??"+prediction);
     }

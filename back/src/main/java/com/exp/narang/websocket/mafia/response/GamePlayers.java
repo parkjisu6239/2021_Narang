@@ -7,15 +7,17 @@ import com.exp.narang.websocket.mafia.model.role.Role;
 import com.exp.narang.websocket.mafia.request.MafiaMessage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 @Getter
 @Setter
+@Slf4j
 // 게임 참가자들과 관련된 로직을 처리한다.
 public class GamePlayers {
-    private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
+//    private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
 
     private int countMafiaMissionResult, countMafiaMissionCompelte;
 
@@ -40,7 +42,7 @@ public class GamePlayers {
 
     // players의 역할을 분배한다.
     public void setRole(List<Role> roles) {
-        for (int i = 0; i < countOfPlayers(); i++) {
+        for (int i = 0; i < countOfPlayers(); i++) { // 찐 role 분배
             this.players.get(i).setRole(roles.get(i));
         }
     }
@@ -53,8 +55,7 @@ public class GamePlayers {
                 roleResult.setRoleName(player.getRole().getRoleName()); // 역할 저장
                 System.out.println("역할역할"+roleResult.getRoleName());
                 if(player.getRole().isMafia()) {
-                    roleResult.setMissionNumber(10); // 마피아 시연 용으로 처음엔 10번, 그 다음엔 11번
-//                    roleResult.setMissionNumber((int)(Math.random() * 100) % 12); // 마피아는 미션 번호 저장(0~11)
+                    roleResult.setMissionNumber((int)(Math.random() * 100) % 12); // 마피아는 미션 번호 저장(0~11)
                 }
                 else roleResult.setMissionNumber(-1); // 시민은 미션 번호에 -1 저장
                 return roleResult;
