@@ -2,7 +2,6 @@ package com.exp.narang.websocket.mafia.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.index.qual.SearchIndexBottom;
 
 @Getter
 @Setter
