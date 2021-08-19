@@ -1,0 +1,38 @@
+.game-room-background-container {
+  position: absolute;
+  z-index: -20;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+.game-room-background-container div {
+  position: relative;
+  top: -300px;
+  left: -20px;
+  color: rgba(255, 255, 255, 0.11);
+  font-weight: 900;
+  font-size: 300px;
+  width: 200vw;
+  margin: 0px;
+  letter-spacing: -10px;
+  word-spacing: -10px;
+  line-height: 240px;
+  transform: translate(0px, 30px) rotate(10deg);
+  animation: move 5s ease-in-out infinite;
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0px, 30px) rotate(10deg);
+    color: rgba(255, 255, 255, 0.11);
+  }
+  50% {
+    transform: translate(0px, 50px) rotate(10deg);
+    color: rgba(255, 255, 255, 0.212);
+  }
+  100% {
+    transform: translate(0px, 30px) rotate(10deg);
+    color: rgba(255, 255, 255, 0.11);
+  }
+}

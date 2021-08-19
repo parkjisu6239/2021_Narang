@@ -1,28 +1,31 @@
 <template>
   <div class="home">
-    <Title class="title"/>
-    <div class="content">
+    <div class="home-left-side">
+      <Title class="title"/>
       <Information class="information"/>
-      <img :class="{'img-neorang': true, 'right': state.value }" :src="require('@/assets/images/Neurang.png')" alt="">
-      <div class="form">
-        <div v-if="!state.isLoggedIn">
-          <el-switch
-            style="display: inline-block"
-            v-model="state.value"
-            active-color="#FF5BF8"
-            inactive-color="#007BFF"
-            active-text="회원가입"
-            inactive-text="로그인"
-          ></el-switch>
-          <LogIn v-if="!state.value"/>
-          <SignUp v-else @signupSuccess="state.value = false"/>
+    </div>
+    <div class="home-right-side">
+      <div class="home-right-side-container">
+        <div :class="{'img-neorang': true, 'right': state.value }">
+          <img :src="require('@/assets/images/Neurang.png')" alt="">
         </div>
-        <div v-else>
-          <GameStart/>
+        <div class="form">
+          <div class="form-login-signup" v-if="!state.isLoggedIn">
+            <div class="form-toggle">
+              <div :class="{'toggle-login': true, 'active': !state.value}" @click="state.value = !state.value">Login</div>
+              <div :class="{'toggle-signup': true, 'active': state.value}" @click="state.value = !state.value">Signup</div>
+            </div>
+            <LogIn v-if="!state.value"/>
+            <SignUp v-else @signupSuccess="state.value = false"/>
+          </div>
+          <div v-else>
+            <GameStart/>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <HomeBackground/>
 </template>
 
 <script>
@@ -31,6 +34,7 @@ import Information from './components/information'
 import LogIn from './components/login'
 import SignUp from './components/signup'
 import GameStart from './components/game-start'
+import HomeBackground from './components/home-background.vue'
 
 import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
@@ -44,6 +48,7 @@ export default {
     LogIn,
     SignUp,
     GameStart,
+    HomeBackground,
   },
 
   setup(props, { emit }) {
@@ -61,53 +66,5 @@ export default {
 </script>
 
 <style scoped>
-.home {
-  margin: 80px 100px;
-}
-
-.content {
-  display: grid;
-  grid-template-columns: 6fr 3fr;
-  column-gap: 70px;
-  margin-top: 20px;
-}
-
-.form {
-  background-color: white;
-  border-radius: 20px;
-  padding: 30px;
-  min-width: 350px;
-}
-
-.title {
-  min-width: 350px;
-}
-
-.information {
-  min-width: 350px;
-}
-
-.img-neorang {
-  position: absolute;
-  height: 100px;
-  top: 150px;
-  right: 420px;
-  transition: all 0.2s ease-in-out;
-}
-
-.right {
-  right: 80px;
-  transform: scaleX(-1);
-}
-
-@media  (max-width: 1110px) {
-  .img-neorang {
-    right: 0;
-    left: 590px;
-  }
-
-  .right {
-    left: 930px;
-  }
-}
+  @import url('./home.css');
 </style>

@@ -27,7 +27,7 @@
       <el-input v-model="state.form.checkPass" autocomplete="off" show-password></el-input>
     </el-form-item>
   </el-form>
-  <el-button type="primary" @click="clickSignup">회원가입</el-button>
+  <div class="signup-btn" @click="clickSignup">회원가입</div>
 </template>
 
 <script>
@@ -46,7 +46,7 @@ export default {
 
     const checkPass = (rule, value, callback) => {
       if (value !== state.form.password) {
-        callback(new Error('Two inputs don\'t match!'));
+        callback(new Error('비밀번호가 일치하지 않습니다.'));
       } else {
         callback();
       }
@@ -65,21 +65,21 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: 'Please Input the nickname', trigger: 'blur' },
-          { message: 'You can enter up to 30 characters', trigger: 'change', max: 30 }
+          { required: true, message: '닉네임을 입력해주세요.', trigger: 'blur' },
+          { message: '닉네임은 최대 30자만 가능합니다.', trigger: 'change', max: 30 }
         ],
         email: [
-          { required: true, message: 'Please input email address', trigger: 'blur' },
-          { type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change'] }
+          { required: true, message: '이메일을 입력해주세요.', trigger: 'blur' },
+          { type: 'email', message: '이메일 형식이 아닙니다.', trigger: ['blur', 'change'] }
         ],
         password: [
-          { required: true, message: 'Please Input the password', trigger: 'blur' },
+          { required: true, message: '비밀번호를 입력해주세요.', trigger: 'blur' },
           { message: '최대 16자까지 입력 가능합니다.', trigger: 'change', max: 16 },
           { message: '최소 9글자를 입력해야 합니다.', trigger: 'change', min: 9 },
           { message: '영문, 숫자, 특수문자가 조합되어야 합니다.', trigger: 'change', pattern: /(?=.*\d{1,14})(?=.*[~`!@#$%\^&*()_]{1,14})(?=.*[a-zA-Z]{1,14}).{9,16}$/ }
         ],
         checkPass: [
-          {required: true, message: 'Please Input the password confirm', trigger: 'blur'},
+          {required: true, message: '비밀번호를 확인해주세요.', trigger: 'blur'},
           {validator: checkPass, trigger: 'change'},
         ],
       },
@@ -89,7 +89,7 @@ export default {
 
     const checkEmail = function() {
       if (state.form.email.replace(/ /g, "") === "") {
-        ElMessage.error('Please input email address');
+        ElMessage.error('이메일을 입력해주세요.');
         return
       }
 
@@ -98,19 +98,19 @@ export default {
       .then(function (result) {
         state.emailCheck = 1 // 성공하면 초록색
         ElMessage({
-          message: '사용 가능한 이메일입니다',
+          message: '사용 가능한 이메일입니다.',
           type: 'success',
         })
       })
       .catch(function (err) {
         state.emailCheck = 2 // 실패하면 빨간색
-        ElMessage.error('This email already exists');
+        ElMessage.error('이미 존재하는 이메일입니다.');
       })
     }
 
     const checkUserName = function() {
       if (state.form.username.replace(/ /g, "") === "") {
-        ElMessage.error('Please input nickname');
+        ElMessage.error('닉네임을 입력해주세요.');
         return
       }
 
@@ -119,24 +119,24 @@ export default {
       .then(function (result) {
         state.userNameCheck = 1 // 성공하면 초록색
         ElMessage({
-          message: '사용 가능한 닉네임입니다',
+          message: '사용 가능한 닉네임입니다.',
           type: 'success',
         })
       })
       .catch(function (err) {
         state.userNameCheck = 2 // 실패하면 빨간색
-        ElMessage.error('This nickname already exists');
+        ElMessage.error('이미 존재하는 닉네임입니다.');
       })
     }
 
     const clickSignup = function() {
       if (state.emailCheck != 1) {
-        ElMessage.error('Please double check email');
+        ElMessage.error('이메일 중복확인을 해주세요.');
         return
       }
 
       if (state.userNameCheck != 1 ) {
-        ElMessage.error('Please double check nickname');
+        ElMessage.error('닉네임 중복확인을 해주세요.');
         return
       }
 
@@ -150,7 +150,7 @@ export default {
           })
           .then(function (result) {
             ElMessage({
-              message: 'Congrats, signup is success',
+              message: '축하합니다! 회원가입에 성공했습니다. 로그인 후 서비스 이용이 가능합니다.',
               type: 'success',
             })
 
@@ -158,10 +158,10 @@ export default {
 
           })
           .catch(function (err) {
-            ElMessage.error('회원가입 실패. 다시 시도해');
+            ElMessage.error('회원가입이 실패했습니다. 잠시후 다시 시도해주세요.');
           })
         } else {
-          ElMessage.error('Validate error!');
+          ElMessage.error('다시 입력해주세요.');
         }
       });
     }
@@ -172,6 +172,21 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
+.signup-btn {
+  background: linear-gradient(90deg, rgba(114, 65, 254, 0.8) 0%, #FF5BF8 100%);
+  text-align: center;
+  border-radius: 40px;
+  width: 90%;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 
+.signup-btn:hover {
+  background: linear-gradient(90deg, rgba(99, 57, 216, 0.8) 0%, #d44bce 100%);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
 </style>

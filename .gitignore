@@ -9,7 +9,7 @@ dist/
 
 # Compiled Java class files
 *.class
-
+vue.config.js
 # Compiled Python bytecode
 *.py[cod]
 
@@ -105,3 +105,4 @@ back/gradlew
 back/gradlew.bat
 back/gradle/wrapper/gradle-wrapper.properties
 front/package-lock.json
+narang.p12

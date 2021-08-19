@@ -1,6 +1,6 @@
 package com.exp.narang.common.auth;
 
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 

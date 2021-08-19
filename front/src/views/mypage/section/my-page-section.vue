@@ -1,18 +1,12 @@
 <template>
   <section class="user-info-change-container">
-    <transition name="fade">
-      <UserDelete v-if="state.selected === 'userDelete'"/>
-    </transition>
-    <transition name="fade">
-      <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
-    </transition>
-    <transition name="fade">
-      <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
-    </transition>
+    <UserDelete v-if="state.selected === 'userDelete'"/>
+    <UserPasswordChange v-if="state.selected === 'userPasswordChange' "/>
+    <UserInfoChange v-if="state.selected === 'userInfoChange'"/>
   </section>
 </template>
 <style scoped>
- @import url('./my-page-section.css');
+  @import url('./my-page-section.css');
 </style>
 <script>
 import UserInfoChange from './user-info-change.vue'

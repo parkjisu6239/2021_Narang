@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+.game-board-container {
+  min-height: 200px;
+  display: grid;
+  grid-template-rows: 1fr 6fr 1fr;
+  gap: 7px;
+}
+
+.callmy-board-vote-container {
+  padding: 10px;
+  overflow: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.callmy-board-vote-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+
+.callmy-board-vote {
+  max-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.callmy-vote-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 2px 7px;
+  transition: all 0.2s ease-in-out;
+}
+
+.callmy-vote-selected {
+  background-color: rgb(173, 173, 173);
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
+.callmy-nickname {
+  max-width: 130px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.callmy-nickname-vote-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: rgb(12, 136, 22);
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+}
+
+.callmy-board-input {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  padding: 5px;
+  border-top: 0.5px solid rgb(180, 180, 180);
+}
+
+.callmy-board-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+  padding-left: 5px;
+  border-radius: 5px;
+}
+
+.callmy-board-input-container input {
+  width: 100%;
+  outline: none;
+  border: none;
+  border-width: 0;
+  padding: 0px;
+}
+
+.callmy-board-input button {
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+  background-color: #FFEB33;
+  border: none;
+}
+
+.callmy-board-header {
+  font-family: 'Varela Round', sans-serif;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0.5px solid rgb(180, 180, 180);
+}
+
+.callmy-board-header .callmy-board-title {
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 20px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.callmy-nickname-ok {
+  font-family: 'Varela Round', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-color: #1AD06A;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.callmy-nickname-ok:hover {
+  background-color: #18c261;
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
+.callmy-nickname-ok-clicked {
+  background-color: #18c261;
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
+.callmy-nickname-ok > div {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}

@@ -1,6 +1,6 @@
 package com.exp.narang.config;
 
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.auth.JwtAuthenticationFilter;
 import com.exp.narang.common.auth.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/me").authenticated()       //인증이 필요한 URL
+                .antMatchers("/api/v1/room").authenticated()       //인증이 필요한 URL
     	        	    .anyRequest().permitAll() // 나머지는 전부 허가
                 .and()
                 .formLogin()

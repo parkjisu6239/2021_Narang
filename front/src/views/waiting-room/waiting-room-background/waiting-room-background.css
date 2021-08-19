@@ -1,0 +1,62 @@
+.waiting-room-background {
+  position: absolute;
+  z-index: -20;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+.waiting-room-background .waiting-room-circle1 {
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.274);
+  border-radius: 50%;
+  animation: move1 5s ease-in-out infinite;
+}
+
+@keyframes move1 {
+  0% {
+    transform: scale(100%);
+    top: 1%;
+  }
+  50% {
+    transform: scale(110%);
+    top: -1%;
+  }
+  10% {
+    transform: scale(100%);
+    top: 1%;
+  }
+}
+
+.waiting-room-background .waiting-room-circle2 {
+  position: absolute;
+  bottom: 2%;
+  right: 1%;
+  width: 200px;
+  height: 200px;
+  background-color: rgba(202, 255, 255, 0.192);
+  border-radius: 50%;
+  animation: move2 5s ease-in-out infinite;
+}
+
+@keyframes move2 {
+  0% {
+    transform: scale(100%);
+    bottom: 2%;
+    background-color: rgba(202, 255, 255, 0.192);
+  }
+  50% {
+    transform: scale(110%);
+    bottom: 0%;
+    background-color: rgba(202, 255, 255, 0.3);
+  }
+  10% {
+    transform: scale(100%);
+    bottom: 2%;
+    background-color: rgba(202, 255, 255, 0.192);
+  }
+}

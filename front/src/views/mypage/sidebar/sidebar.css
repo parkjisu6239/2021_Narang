@@ -1,9 +1,10 @@
 /* top-left | top-right-and-bottom-left | bottom-right */
 .side-bar-container {
   display: grid;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: 4fr 5fr;
   border-radius: 20px 0px 0px 20px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 4px -4px rgba(0, 0, 0, 0.212);
 }
 
 .img-wrapper {
@@ -24,7 +25,7 @@
   margin: 0 auto;
   margin-top: 20px;
   background-color: lightslategray;
-  width: 120px;
-  height: 120px;
-  border-radius: 100px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 }

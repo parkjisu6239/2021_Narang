@@ -1,0 +1,83 @@
+.webcam {
+  border-radius: 20px;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+}
+
+.video-overlay {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.3);
+  width: 100%;
+  height: 98%;
+  top: 0%;
+  border-radius: 18px;
+  display: none;
+}
+
+.webcam:hover + .video-overlay {
+  display: block;
+}
+
+.video-overlay:hover {
+  display: block;
+}
+
+.menu-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  font-size: 50px;
+  border: 0px;
+  box-shadow: 2px;
+  box-shadow: 2px 4px 0 rgb(0,0,0,0.5);
+}
+
+.menu-button:active {
+  background-color: coral;
+  box-shadow: 0px 0px 0 rgb(0,0,0,0.5);
+}
+
+.selected-border {
+  box-sizing: border-box;
+  border: solid 5px rgb(160, 18, 18);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.226);
+}
+
+.died-user {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+.lie-detection {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 20%;
+}
+
+.lie {
+  color: red;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'SpoqaHanSansNeo', sans-serif;
+}
+
+.true {
+  color: Black;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: 'SpoqaHanSansNeo', sans-serif;
+}

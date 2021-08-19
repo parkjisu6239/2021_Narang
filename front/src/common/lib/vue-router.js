@@ -1,10 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { ElMessage } from 'element-plus'
+
 import home from '@/views/home/home'
 import waitingRoom from '@/views/waiting-room/waiting-room'
 import gameRoom from '@/views/game-room/game-room'
 import Mypage from '@/views/mypage/mypage'
-import Mafia from '@/views/mafia/mafia.vue'
-import CallMy from '@/views/callmy/callmy.vue'
+
+
+/* navigation guard beforeEnter func */
+const requireMafia = () => (to, from, next) => {
+  const roomId = to.params.roomId
+  if (from.fullPath !== `/game-room/${roomId}` && history.state.back !== `/game-room/${roomId}`) {
+    ElMessage({
+      type: 'error',
+      message: '접근이 불가능 합니다.'
+    })
+    return next({name: 'waitingRoom'})
+  } else {
+    return next()
+  }
+}
+
+const requireGameRoom = () => (to, from, next) => {
+  if (from.name !== 'waitingRoom' && history.state.back !== '/waiting-room' && from.name !== 'mafia' && from.name !== 'callmy') {
+    ElMessage({
+      type: 'error',
+      message: '접근이 불가능 합니다.'
+    })
+    return next({name: 'waitingRoom'})
+  } else {
+    return next()
+  }
+}
 
 function makeRoutesFromMenu() {
   let routes = []
@@ -18,7 +45,7 @@ function makeRoutesFromMenu() {
   {
     path: '/waiting-room',
     name: 'waitingRoom',
-    component: waitingRoom
+    component: waitingRoom,
   },
   {
     path: '/mypage',
@@ -28,17 +55,19 @@ function makeRoutesFromMenu() {
   {
     path: '/game-room/:roomId',
     name: 'gameRoom',
-    component: gameRoom
+    component: gameRoom,
+    beforeEnter: requireGameRoom()
   },
   {
     path: '/game-room/:roomId/mafia',
     name: 'mafia',
-    component: Mafia,
+    component: () => import('@/views/mafia/mafia.vue'),
+    beforeEnter: requireMafia()
   },
   {
     path: '/game-room/:roomId/callmy',
     name: 'callmy',
-    component: CallMy,
+    component: () => import('@/views/callmy/callmy.vue'),
   }
   )
   return routes
@@ -54,5 +83,25 @@ const router = createRouter({
 router.afterEach((to) => {
   console.log(to)
 })
+
+router.beforeEach((to, from, next) => {
+  console.log('프롬', from, '투', to, history)
+  if (to.name !== 'home') {
+    if (!isLogedin()) {
+      ElMessage({
+        type: 'error',
+        message: '미로그인 사용자는 접근할 수 없습니다.'
+      })
+      return next({name: 'home'})
+    } else {
+      return next()
+    }
+  }
+  return next()
+})
+
+const isLogedin = () => {
+  return localStorage.getItem('username') ? true : false
+}
 
 export default router

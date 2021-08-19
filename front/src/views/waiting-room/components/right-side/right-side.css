@@ -2,25 +2,30 @@
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(10px);
   border-radius: 0px 40px 40px 0px;
   padding: 10px 30px;
   width: 80vw;
+  font-family: 'Varela Round', SpoqaHanSansNeo;
+}
+
+.right-screen .navbar h1 {
+  font-weight: 700;
+  font-size: 35px;
+  color: #6c89ea;
 }
 
 .nav-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .search-group {
   display: flex;
   align-items: center;
-}
-
-.search-group > *{
-  margin-right: 10px;
+  gap: 10px;
 }
 
 .search-group .el-select {
@@ -47,12 +52,16 @@
     min-width: 350px;
   }
 
-  .nav-bottom {
-    flex-direction: column;
-  }
-
   .top-btn-group {
     max-width: 100%;
+  }
+
+  .select-type > * {
+    display: none;
+  }
+
+  .select-game {
+    display: none;
   }
 }
 

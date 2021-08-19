@@ -1,50 +1,49 @@
 <template>
-  <el-form
-    :model="state.form"
-    :rules="state.rules"
-    ref="userInfoForm"
-    class="user-info-change-form"
-    label-width="120px"
-    status-icon
-    label-position="left">
+  <div class="user-info-change-form-container">
+    <el-form
+      :model="state.form"
+      :rules="state.rules"
+      ref="userInfoForm"
+      class="user-info-change-form"
+      label-width="120px"
+      status-icon
+      label-position="left">
 
-    <el-form-item prop="email" label="email">
-      <el-input
-        v-model="state.form.email"
-        autocomplete="off"
-        type="email"
-        :disabled="true">
-      </el-input>
-    </el-form-item>
+      <el-form-item prop="email" label="email">
+        <el-input
+          v-model="state.form.email"
+          autocomplete="off"
+          type="email"
+          :disabled="true">
+        </el-input>
+      </el-form-item>
 
-    <el-form-item prop="username" label="username">
-      <el-input
-        v-model="state.form.username"
-        autocomplete="off"
-        :disabled="!state.editMode">
-      </el-input>
-    </el-form-item>
+      <el-form-item prop="username" label="username">
+        <el-input
+          v-model="state.form.username"
+          autocomplete="off"
+          :disabled="!state.editMode">
+        </el-input>
+      </el-form-item>
 
-    <el-form-item>
-      <el-button v-if="state.editMode" type="danger" @click="initChangeInfo">back</el-button>
-      <el-button v-if="state.editMode" type="primary" @click="changeInfo">submit</el-button>
-      <el-button @click="editModeToggle" v-if="!state.editMode">edit</el-button>
-    </el-form-item>
+      <el-form-item>
+        <el-button v-if="state.editMode" type="danger" @click="initChangeInfo">back</el-button>
+        <el-button v-if="state.editMode" type="primary" @click="changeInfo">submit</el-button>
+        <el-button @click="editModeToggle" v-if="!state.editMode">edit</el-button>
+      </el-form-item>
 
-  </el-form>
+    </el-form>
+  </div>
 </template>
 <style scoped>
   @import url('./user-info-change.css');
 </style>
 <script>
 import { ElMessage } from 'element-plus'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 export default {
   name: 'UserInfoChange',
-  props: {
-
-  },
   setup(props, { emit }) {
     const store = useStore()
     const userInfoForm = ref(null)
@@ -65,6 +64,7 @@ export default {
         ]
       },
       editMode: false,
+      profileImageURL: computed(() => store.state.root.profileImageURL)
     })
 
     const initChangeInfo = () => {
@@ -76,33 +76,40 @@ export default {
     }
 
     const changeInfo = () => {
-      const formData = new FormData()
-      formData.append('username', state.form.username)
+      userInfoForm.value.validate((valid) => {
+        if (!valid) return
+        const formData = new FormData()
+        formData.append('username', state.form.username)
 
-      store.dispatch('root/requestUpdateMyInfo', formData)
-        .then(res => {
-          const userInfo = {
-            username: state.form.username,
-            email: state.form.email,
-            profileImageURL: state.form.thumbnailUrl,
-          }
-          store.commit('root/setUserInfo', userInfo)
-          editModeToggle()
-          ElMessage({
-            message: '수정이 완료되었습니다.',
-            type: 'success',
+        store.dispatch('root/requestUpdateMyInfo', formData)
+          .then(res => {
+            localStorage.setItem('username', state.form.username)
+            const userInfo = {
+              username: state.form.username,
+              email: state.form.email,
+              profileImageURL: state.profileImageURL,
+            }
+            store.commit('root/setUserInfo', userInfo)
+            editModeToggle()
+            ElMessage({
+              message: '수정이 완료되었습니다.',
+              type: 'success',
+            })
           })
-        })
-        .catch(err => {
-          ElMessage({
-            message: '수정에 실패했습니다.',
-            type: 'error',
+          .catch(err => {
+            console.log(err)
+            ElMessage({
+              message: '수정에 실패했습니다.',
+              type: 'error',
+            })
           })
-        })
+
+      })
     }
 
     const editModeToggle = () => {
         state.editMode = !state.editMode
+        if (!state.editMode) state.form.username = store.state.root.username
     }
 
     onMounted(() => {
