@@ -7,8 +7,34 @@ const profileImageURL = ''
 const userId = ''
 const myRoom = {}
 const publisher = {}
-const onVideo = true;
-const onAudio = true;
+const onVideo = true
+const onAudio = true
+const sound = true
+const mafiaManager = {
+  username : '', // 자기 이름
+  theVoted : null, // 마피아가 죽이는애, 시민이 1차 투표 선정 유저
+  stage : 'default', // day1, day2, night
+  players : [], // socket으로 생존 players 가져오는거
+  secondVoteUsername : '', // 단두대 오른사람 이름
+  myRole : '', // 자기 역할 Citizen or Mafia
+  missionNumber : null, // 미션 번호
+  missionName : null, // 미션 이름
+  missionKeepCnt : 0, // 미션 동작 유지 시간 카운트
+  missionSuccess : false, // 미션 성공 여부
+  isAlive: true, // 내가 살았나 죽었나
+  onAudio : true,
+  canMafiaVote : false,
+  isLierItemActivate: false,
+  lierItem: true,
+}
+const callmyManager = {
+  round: 0,
+  isFinished: false,
+  nowPlayUsers: [],
+  draw: [],
+  defaultNickname: '',
+  isAnswer: false,
+}
 /**
  * 플랫폼 관련 정보로 데스크탑인지, 모바일인지 판별 - 하이브리드 앱 대비
  */
@@ -45,7 +71,11 @@ export default {
   username,
   profileImageURL: profileImageURL,
   myRoom,
-  userId,
   onVideo,
-  onAudio
+  onAudio,
+  mafiaManager,
+  callmyManager,
+  userId,
+  publisher,
+  sound,
 }

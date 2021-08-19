@@ -1,0 +1,85 @@
+.home {
+  margin: 80px 100px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 100px;
+}
+
+.home-right-side-container {
+  margin-top: 40px;
+}
+
+.form {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  min-width: 350px;
+}
+
+.form-login-signup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.form-toggle {
+  width: 100%;
+  display: flex;
+}
+
+.form-toggle > div {
+  width: 100%;
+  padding: 10px 20px;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  box-shadow: inset 0px -3px 2px rgba(255, 255, 255, 0.125),
+              inset 0px 2px 5px rgba(255, 255, 255, 0.15);
+}
+
+.form-toggle .active {
+  box-shadow: inset 0px -3px 2px rgba(0, 0, 0, 0.025),
+              inset 0px 2px 5px rgba(0,0,0,0.15);
+}
+
+.toggle-login {
+  background-color: rgb(165, 165, 165);
+  border-radius: 20px 0px 0px 20px;
+}
+
+.toggle-login.active {
+  background: linear-gradient(90deg, #007BFF 0%, #00D1FF 100%);
+}
+
+.toggle-signup {
+  background-color: rgb(165, 165, 165);
+  border-radius: 0px 20px 20px 0px;
+}
+
+.toggle-signup.active {
+  background: linear-gradient(90deg, #FF5BF8 0%, rgba(114, 65, 254, 0.8) 99.76%);
+}
+
+.title {
+  min-width: 350px;
+}
+
+.information {
+  min-width: 350px;
+}
+
+.img-neorang {
+  display: flex;
+  justify-content: flex-start;
+  transition: all 0.3s ease-in-out;
+}
+
+.img-neorang img {
+  height: 100px;
+}
+
+.right {
+  transform: scaleX(-1);
+}

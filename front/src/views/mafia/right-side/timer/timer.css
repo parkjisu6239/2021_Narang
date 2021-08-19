@@ -1,0 +1,15 @@
+.timer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer-content .time {
+  font-weight: 600;
+}
+
+.time-number {
+  color: rgb(56, 56, 185);
+}
+
+

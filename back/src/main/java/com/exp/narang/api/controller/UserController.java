@@ -1,12 +1,12 @@
 package com.exp.narang.api.controller;
 
-import com.exp.narang.api.request.UserInfoUpdateReq;
-import com.exp.narang.api.request.UserRegisterPostReq;
-import com.exp.narang.api.response.UserRes;
-import com.exp.narang.api.service.UserService;
+import com.exp.narang.api.model.request.UserInfoUpdateReq;
+import com.exp.narang.api.model.request.UserRegisterPostReq;
+import com.exp.narang.api.model.response.UserRes;
+import com.exp.narang.api.model.service.UserService;
 import com.exp.narang.common.auth.UserDetails;
 import com.exp.narang.common.model.response.BaseResponseBody;
-import com.exp.narang.db.entity.User;
+import com.exp.narang.api.model.db.entity.User;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +38,12 @@ public class UserController {
 	@ApiOperation(value = "회원 가입", notes = "<strong>아이디와 패스워드</strong>를 통해 회원가입 한다.") 
     @ApiResponses({
         @ApiResponse(code = 200, message = "성공"),
-        @ApiResponse(code = 401, message = "인증 실패"),
         @ApiResponse(code = 404, message = "사용자 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
     })
 	public ResponseEntity<? extends BaseResponseBody> register(
-			@RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq registerInfo, HttpServletRequest req) {
+			@RequestBody @ApiParam(value="회원가입 정보", required = true) UserRegisterPostReq registerInfo) {
 
-		String path = req.getContextPath();
 		log.debug(registerInfo.getEmail());
 		log.debug(registerInfo.getUsername());
 		log.debug(registerInfo.getPassword());
@@ -63,17 +61,14 @@ public class UserController {
         @ApiResponse(code = 404, message = "사용자 없음"),
         @ApiResponse(code = 500, message = "서버 오류")
     })
-	public ResponseEntity<UserRes> getUserInfo(@ApiIgnore Authentication authentication) throws IOException {
-		/**
-		 * 요청 헤더 액세스 토큰이 포함된 경우에만 실행되는 인증 처리이후, 리턴되는 인증 정보 객체(authentication) 통해서 요청한 유저 식별.
-		 * 액세스 토큰이 없이 요청하는 경우, 403 에러({"error": "Forbidden", "message": "Access Denied"}) 발생.
-		 */
+	public ResponseEntity<? extends BaseResponseBody> getUserInfo(@ApiIgnore Authentication authentication) throws IOException {
 		if(authentication == null) {
-			return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패", null));
+			return ResponseEntity.status(401).body(UserRes.of(401, "인증 실패"));
 		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
 		return ResponseEntity.status(200).body(UserRes.of(200, "성공", user));
 	}
 	@ApiImplicitParams({
@@ -97,6 +92,7 @@ public class UserController {
 		UserDetails userDetails = (UserDetails) authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
 		if(updateInfo.getNewPassword() != null) {
 			if(!passwordEncoder.matches(updateInfo.getCurrentPassword(), user.getPassword())) {
 				return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
@@ -111,7 +107,6 @@ public class UserController {
 	@ApiOperation(value = "아이디 중복 확인", notes = "입력한 회원 아이디 중복을 체크한다.")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "성공"),
-			@ApiResponse(code = 401, message = "인증 실패"),
 			@ApiResponse(code = 404, message = "사용자 있음"),
 			@ApiResponse(code = 500, message = "서버 오류")
 	})
@@ -126,7 +121,6 @@ public class UserController {
 	@ApiOperation(value = "이름 중복 확인", notes = "입력한 회원 이름 중복을 체크한다.")
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "성공"),
-			@ApiResponse(code = 401, message = "인증 실패"),
 			@ApiResponse(code = 404, message = "사용자 있음"),
 			@ApiResponse(code = 500, message = "서버 오류")
 	})
@@ -145,16 +139,19 @@ public class UserController {
 			@ApiResponse(code = 404, message = "사용자 없음"),
 			@ApiResponse(code = 500, message = "서버 오류")
 	})
-	public ResponseEntity<? extends BaseResponseBody> userSecession(@ApiIgnore Authentication authentication){
+	public ResponseEntity<? extends BaseResponseBody> deleteUser(@ApiIgnore Authentication authentication){
 		if(authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "인증 실패"));
 		}
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
-		String email = userDetails.getUsername();
-		User user = userService.getUserByEmail(email);
+		User user = userDetails.getUser();
+
+		User checkUser = userService.getUserByEmail(userDetails.getUsername());
+		if(checkUser == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
+
+		userService.deleteById(user.getUserId());
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));
 	}
-
 
 	@DeleteMapping("/profile")
 	@ApiOperation(value = "프로필 삭제", notes = "프로필을 삭제한다")
@@ -171,6 +168,8 @@ public class UserController {
 		UserDetails userDetails = (UserDetails)authentication.getDetails();
 		String email = userDetails.getUsername();
 		User user = userService.getUserByEmail(email);
+		if(user == null) ResponseEntity.status(404).body(UserRes.of(404, "사용자 없음"));
+
 		userService.deleteProfile(user);
 
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공"));

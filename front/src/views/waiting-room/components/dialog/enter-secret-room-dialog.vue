@@ -69,7 +69,7 @@ export default {
             })
 
           } else {
-            ElMessage.error('Validate error!');
+            ElMessage.error('다시 입력해주세요.');
           }
         })
       }

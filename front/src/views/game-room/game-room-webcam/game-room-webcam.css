@@ -1,13 +1,46 @@
-.webcam-container-one {
+.webcam-wrap {
   display: grid;
+  place-items: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px);
+  padding: 10px;
+  overflow: auto;
+  min-width: 250px;
 }
 
-.webcam-container-two {
+.webcam-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 50%);
+  gap: 5px;
 }
 
-.webcam-container-three{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 33%);
+.under-two {
+  grid-template-columns: 1fr 1fr;
 }
+
+.under-four {
+  grid-template-columns: 1fr 1fr;
+}
+
+.under-nine {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .under-two {
+    grid-template-columns: 1fr;
+  }
+  .under-four {
+    grid-template-columns: 1fr;
+  }
+  .under-nine {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1115px) {
+  .under-nine {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+

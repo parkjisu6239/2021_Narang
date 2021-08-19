@@ -1,5 +1,5 @@
 <template>
-  <article :class="{'game-room-container': true}">
+  <article class="game-room-container">
     <section class="game-cam-chat-container">
       <GameRoomWebcam :roomId="route.params.roomId"/>
       <GameRoomChat
@@ -23,10 +23,10 @@
     :open="state.open"
     :roomId="route.params.roomId"
     :room="state.room"/>
-
   <div v-if="state.gameStart" class="countdown">
     <div class="counter">{{ state.count }}</div>
   </div>
+  <GameRoomBackground/>
 </template>
 <style scoped>
   @import url('./game-room.css');
@@ -36,6 +36,8 @@ import GameRoomInfoChangeDialog from './game-room-setting/game-room-info-change-
 import GameRoomChat from './game-room-chat/game-room-chat.vue'
 import GameRoomSetting from './game-room-setting/game-room-setting.vue'
 import GameRoomWebcam from './game-room-webcam/game-room-webcam.vue'
+import GameRoomBackground from './game-room-background/game-room-background.vue'
+
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
@@ -52,6 +54,7 @@ export default {
     GameRoomSetting,
     GameRoomWebcam,
     GameRoomInfoChangeDialog,
+    GameRoomBackground,
   },
 
   setup(props, { emit }) {
@@ -64,9 +67,12 @@ export default {
       userList: [],
       chatList: [],
       room: computed(() => store.getters['root/myRoom']),
+      profileImageURL: computed(() => store.state.root.profileImageURL),
+      myUserName: computed(() => store.state.root.username),
       stompClient: null,
       gameStart: false,
       count: 5,
+      gameSelected: null,
     })
 
     // [Func|dialog] 방 정보 수정 open
@@ -86,7 +92,7 @@ export default {
           userName: store.state.root.username,
           content: '',
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           gameStart: true,
           roomInfoChange: false,
         }
@@ -95,8 +101,25 @@ export default {
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
 
         // 게임 시작 소켓에 메시지 전송 -> 백엔드에서 게임 매니저 생성
+        sendGameStart()
+
         if (state.room.game) {
-          sendGameStart()
+          const roomInfo = {
+              ...state.room,
+              isActivate: false
+            }
+          store.dispatch('root/requestUpdateGameRoom', roomInfo)
+          .then(res => {
+            console.log(res)
+            console.log('방정보가 정상적으로 변경되었습니다. 게임중: 입장 불가')
+
+          })
+          .catch(err => {
+            ElMessage({
+              type: 'error',
+              message: '게임 시작에 문제가 발생했습니다.'
+            })
+          })
         }
       }
     }
@@ -108,7 +131,7 @@ export default {
           userName: store.state.root.username,
           content: '',
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           gameStart: false,
           roomInfoChange: true,
         }
@@ -119,10 +142,11 @@ export default {
     }
 
     // [Func|socket] 전체 소켓 연결 컨트롤
-    const connectSocket = () => {
-      let socket = new SockJS("https://localhost:8080/narang")
+    const connectSocket = async () => {
+      let socket = await new SockJS("/narang")
       state.stompClient = Stomp.over(socket)
-      state.stompClient.connect({}, () => {
+      console.log('채팅 소켓')
+      await state.stompClient.connect({}, () => {
           connectChatSocket() // 채팅 소켓
           connectMafiaStartSocket() // 게임 시작 소켓
         }
@@ -147,6 +171,7 @@ export default {
                 name: state.room.game,
                 params: route.params.roomId
               })
+              if (state.stompClient !== null) state.stompClient.disconnect()
             }, 5000)
           } else {
             ElMessage({
@@ -158,6 +183,7 @@ export default {
       })
     }
 
+
     // [Func|socket] 마피에 게임 시작 소켓 연결
     const connectMafiaStartSocket = () => {
       state.stompClient.subscribe(`/from/mafia/start/${route.params.roomId}`, res => {
@@ -165,21 +191,20 @@ export default {
       })
     }
 
+
+    const startCallmy = () => {
+      state.stompClient.send(`/to/call/start/${route.params.roomId}`)
+    }
+
+
     // [Func|socket] 채팅 send
     const sendChatMessage = (msg) => {
       if (state.stompClient && state.stompClient.connected && msg) {
-        let profileImageURL = ''
-        state.userList.forEach(user => {
-          if (user.thumbnailURL && user.username === state.myUserName) {
-            profileImageURL = 'https://localhost:8080/' + thumbnailURL
-          }
-        })
-
         const message = {
           userName: store.state.root.username,
           content: msg,
           roomId: route.params.roomId,
-          profileImageURL: '',
+          profileImageURL: state.profileImageURL,
           roomInfoChange: false,
           gameStart: false,
         }
@@ -187,17 +212,32 @@ export default {
       }
     }
 
+
     // [Func|socket] 게임 시작 send
     const sendGameStart = () => {
-      state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
-      console.log('마피아 게임 시작 send')
+      if (state.room.game === 'mafia') {
+        state.stompClient.send(`/to/mafia/start/${route.params.roomId}`)
+        console.log('마피아 게임 시작 send')
+      } else if (state.room.game === 'callmy') {
+        startCallmy()
+        console.log('콜마이 게임 시작')
+      } else {
+        console.log('게임 미선택')
+      }
     }
+
 
     // [Func|req] 방 정보 가져오기
     const requestRoomInfo = () => {
       store.dispatch('root/requestReadSingleGameRoom', route.params.roomId)
         .then(res => {
-          console.log(res, '방 정보')
+          if (res.data.room.game !== state.gameSelected) {
+            state.gameSelected = res.data.room.game
+            ElMessage({
+              type: 'success',
+              message: `${res.data.room.game}으로 게임이 변경되었습니다.`
+            })
+          }
           store.commit('root/setRoomInfo', res.data.room)
         })
         .catch(err => {
@@ -208,12 +248,18 @@ export default {
         })
     }
 
+
     // [Func|req] 내 정보 가져오기
     const requestMyInfo = () => {
       store.dispatch('root/requestReadMyInfo')
         .then(res => {
-          console.log(res, '내 정보')
-          store.commit('root/setUserInfo', res.data.user)
+          const userInfo = {
+            email: res.data.user.email,
+            username: res.data.user.username,
+            profileImageURL: res.data.user.thumbnailUrl,
+            userId: res.data.user.userId,
+          }
+          store.commit('root/setUserInfo', userInfo)
           if (!res.data.user.room) { // 방에 속해있지 않으면 퇴장
             router.push({
               name: 'waitingRoom'
@@ -221,9 +267,10 @@ export default {
           }
         })
         .catch(err => {
-          ElMessage(err)
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
+
 
     // [Func|req] 유저 리스트 가져오기
     const requestUserList = () => {
@@ -232,24 +279,27 @@ export default {
           state.userList = res.data.userList
         })
         .catch(err => {
-          ElMessage(err)
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
 
+
     // [Func|req] 방 나가기 가져오기
     const leaveRoom = () => {
+      informGameRoomInfoChange()
       store.dispatch('root/requestLeaveGameRoom', { roomId: state.room.roomId })
         .then(res => {
-          informGameRoomInfoChange()
+          if (state.stompClient !== null) state.stompClient.disconnect()
           ElMessage({
             type: 'success',
             message: '방에서 퇴장하셨습니다.'
           })
         })
         .catch(err => {
-          console.log(err)
+          ElMessage.err('오류가 발생했습니다. 잠시후 다시 시도해주세요.')
         })
     }
+
 
     // [Func|sys] 게임 시작 카운트 다운
     const countDown = () => {
@@ -259,6 +309,7 @@ export default {
       setTimeout(() => { state.count = 1 }, 4000)
     }
 
+
     //* Life Cycle *//
     onBeforeUnmount(() => { // vue 컴포넌트가 파괴되기 전에 시행 = 페이지 이동 감지
       if (!state.gameStart) {
@@ -266,13 +317,6 @@ export default {
       }
     })
 
-    //* 브라우저 언로드 감지 *//
-    window.addEventListener('beforeunload', function(e){ // 윈도우창 닫기 or 새로고침 전에 시행
-      e.preventDefault()
-      e.returnValue = ''
-      window.alert('test')
-      leaveRoom()
-    })
 
     //* created *//
     requestRoomInfo()

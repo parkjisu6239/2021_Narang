@@ -1,0 +1,97 @@
+.narang-guide-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  padding-top: 0px;
+  min-width: 600px;
+}
+
+.narang-guide-container .bold {
+  font-weight: 700;
+}
+
+.narang-guide-container .waiting {
+  font-weight: 600;
+  color: rgb(84, 56, 209);
+}
+
+.narang-guide-container .narang {
+  font-weight: 700;
+  background-color: rgb(56, 209, 209);
+  color: white;
+  border-radius: 10px;
+  padding: 2px 5px;
+  margin: 0px 2px;
+}
+
+.narang-guide-header {
+  font-family: 'Varela Round', SpoqaHanSansNeo;
+  padding: 5px 10px;
+}
+
+.narang-guide-header-title-exit {
+  display: flex;
+  justify-content: space-between;
+}
+
+.narang-guide-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.narang-guide-exit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: crimson;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.narang-guide-exit:hover {
+  background-color: rgb(196, 19, 54);
+}
+
+.narang-guide-exit span {
+  color: white;
+  text-align: center;
+}
+
+.narang-guide-neurang {
+  display: inline-block;
+  height: 200px;
+  background-color: rgb(26, 204, 64);
+  border-radius: 20px;
+}
+
+.narang-guide-neurang img {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  transform: scaleX(-100%);
+}
+
+.narang-guide-container section {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.narang-guide-neurang-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.narang-guide-neurang-text button {
+  border-radius: 20px;
+  padding: 5px 10px;
+  background-color: #409eff;
+  border: none;
+  color: white;
+  margin: 0px 3px;
+}

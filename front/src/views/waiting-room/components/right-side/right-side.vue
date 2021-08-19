@@ -9,7 +9,7 @@
             <div :class="{'select-wait': true, 'selected-btn': state.isActivate === 'Waiting'}" @click="clickActivateTypeBtn('Waiting')">Waiting</div>
             <div :class="{'select-play': true, 'selected-btn': state.isActivate === 'Playing'}" @click="clickActivateTypeBtn('Playing')">Playing</div>
           </div>
-          <el-select v-model="state.value" placeholder="Select" size="small">
+          <el-select class="select-game" v-model="state.value" placeholder="Select" size="small" style="min-width: 150px;">
             <el-option
               v-for="item in state.options"
               :key="item.value"
@@ -23,6 +23,7 @@
             prefix-icon="el-icon-search"
             clearable
             size="small"
+            style="min-width: 150px;"
             @keyup.enter="clickSearch">
           </el-input>
           <el-button
@@ -111,6 +112,13 @@ export default {
         return
       }
 
+      if (!room.isActivate) {
+        ElMessage({
+          message: '게임을 진행중인 방에는 입장할 수 없습니다.',
+        })
+        return
+      }
+
       if (room.password == 0) {
         store.dispatch('root/requestEnterGameRoom', {roomId: room.roomId, password: 0})
         .then(res => {
@@ -143,15 +151,15 @@ export default {
         size: 10,
       }
       store.dispatch('root/requestReadGameRoomList', payload)
-      .then(function (result) {
-        console.log(result.data.roomList)
-        state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
-        state.page += 1
-        state.end = result.data.roomList.last
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
+        .then(function (result) {
+          console.log(result.data.roomList)
+          state.gameRoomList = state.gameRoomList.concat(result.data.roomList.content)
+          state.page += 1
+          state.end = result.data.roomList.last
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
     }
 
     return { state, load, clickConference, clickCreateRoom, readGameRoomList, clickSearch, clickActivateTypeBtn }

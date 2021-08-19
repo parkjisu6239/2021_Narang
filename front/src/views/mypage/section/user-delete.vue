@@ -1,9 +1,9 @@
 <template>
+  <div class="user-delete-container">
     <div class="user-delete-header">
-      <img src="" alt="">
+      <img class="neurang-sad" :src="require('@/assets/images/Neurang-sad.png')" alt="탈퇴를 슬퍼하는 너랑이">
       <span>정말 탈퇴하시겠어요?</span>
     </div>
-
     <el-form
       :model="state.form"
       :rules="state.rules"
@@ -12,20 +12,17 @@
       label-position="left"
       class="user-delete-form"
       status-icon>
-
       <el-form-item prop="email" label="이메일" :label-width="state.formLabelWidth" >
         <el-input v-model="state.form.email" autocomplete="off"></el-input>
       </el-form-item>
-
       <el-form-item prop="password" label="비밀번호" :label-width="state.formLabelWidth">
         <el-input v-model="state.form.password" autocomplete="off" show-password></el-input>
       </el-form-item>
-
       <el-form-item>
         <el-button @click="deleteUser" type="danger">회원탈퇴</el-button>
       </el-form-item>
-
     </el-form>
+  </div>
 </template>
 <style scoped>
   @import url('./user-delete.css');
@@ -82,7 +79,7 @@ export default {
                 })
               })
               .catch(err => {
-                ElMessage.error(err)
+                ElMessage.error('오류가 발생했습니다. 잠시후에 다시 시도해주세요.')
               })
           })
           .catch(err => {

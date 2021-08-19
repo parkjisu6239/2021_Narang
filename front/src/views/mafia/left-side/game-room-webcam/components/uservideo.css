@@ -1,0 +1,21 @@
+.citizen-video-none {
+  width: 300px;
+  height: 160px;
+  background-color: rgb(59, 59, 59);
+  border-radius: 20px;
+}
+
+.nameTag {
+  border-radius: 10px;
+  padding: 6px 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-family: 'Jua';
+  font-size: 1vw;
+  position: absolute;
+  top: 7%;
+  left: 4%;
+}
+
+.nameTag > p {
+  margin: 0px;
+}
