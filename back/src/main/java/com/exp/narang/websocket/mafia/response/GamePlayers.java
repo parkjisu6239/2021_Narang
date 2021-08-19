@@ -44,7 +44,7 @@ public class GamePlayers {
     public void setRole(List<Role> roles) {
         //////////////////////// 시연 용 role 분배 시작
         log.debug("setRole 역할 분배 시작");
-        int mafiaIdx = 0, userIdx = 0, idx = 0;
+        int mafiaIdx = 0, userIdx = -1, idx = 0;
         for(int i = 0; i < countOfPlayers(); i++){
             log.debug(i + "번째 역할 : " + roles.get(i).getRoleName());
             if(roles.get(i).getRoleName() == "Mafia"){
@@ -55,23 +55,27 @@ public class GamePlayers {
             }
         }
         for(int i = 0; i < countOfPlayers(); i++){
-            if("B205_강예서".equals(this.players.get(i).getUser().getUsername())){
+            if("yeeybook@naver.com".equals(this.players.get(i).getUser().getEmail())){
                 userIdx = i;
                 log.debug("마피아 인덱스 : " + userIdx);
                 log.debug("갖고 온 유저 네임 : " + this.players.get(i).getUser().getUsername());
                 break;
             }
         }
-        this.players.get(userIdx).setRole(roles.get(mafiaIdx));
-        for (int i = 0; i < countOfPlayers(); i++) {
-            if(i == userIdx) continue;
-            if(idx == mafiaIdx) idx++;
-            this.players.get(i).setRole(roles.get(idx++));
+        if(userIdx != -1){
+            this.players.get(userIdx).setRole(roles.get(mafiaIdx));
+            for (int i = 0; i < countOfPlayers(); i++) {
+                if(i == userIdx) continue;
+                if(idx == mafiaIdx) idx++;
+                this.players.get(i).setRole(roles.get(idx++));
+            }
+        }
+        else{
+            for (int i = 0; i < countOfPlayers(); i++) { // 찐 role 분배
+                this.players.get(i).setRole(roles.get(i));
+            }
         }
         //////////////////////// 시연 용 role 분배 끝
-//        for (int i = 0; i < countOfPlayers(); i++) { 찐 role 분배
-//            this.players.get(i).setRole(roles.get(i));
-//        }
     }
 
     // 각 player의 역할과 미션 번호를 리턴한다.
