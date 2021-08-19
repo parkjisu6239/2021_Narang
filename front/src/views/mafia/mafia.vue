@@ -227,6 +227,7 @@ export default {
     }
 
     const initMissionProgress = () => {
+      console.log("innerHTML 비우러 왔음");
       state.missionProgress.innerHTML = "";
       state.missionMessage.innerHTML = "";
     }
@@ -446,6 +447,7 @@ export default {
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
         setTimeout(() => {
           state.voteStatus = {} // 다음으로 넘어갈 때 비우기
+          console.log("내 직업 : ", store.state.root.mafiaManager.myRole)
           if(store.state.root.mafiaManager.myRole === 'Mafia'){
           stopMission(); // 마피아 동작 인식 중지
           sendMafias(); // 마피아 미션 성공 여부 소켓 전송
