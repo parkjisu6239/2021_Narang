@@ -1,7 +1,7 @@
 <template>
   <div class="setting-container">
     <div class="game-btns" v-show="state.disableGameBtns">
-      <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game Start!</div>
+      <div class="game-start" @click="gameStart" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">Game start!</div>
       <div class="game-select" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
         <img
           :src="require('@/assets/images/game-thumbnail-mafia.png')"
@@ -11,6 +11,18 @@
         <img
           :src="require('@/assets/images/game-thumbnail-callmy.png')"
           @click="updateGameInfo"
+          data-game="callmy"
+          class="game-img">
+        <img
+          :src="require('@/assets/images/comming-soon.png')"
+          data-game="callmy"
+          class="game-img">
+        <img
+          :src="require('@/assets/images/comming-soon.png')"
+          data-game="callmy"
+          class="game-img">
+        <img
+          :src="require('@/assets/images/comming-soon.png')"
           data-game="callmy"
           class="game-img">
       </div>

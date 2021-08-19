@@ -2,7 +2,7 @@
   <div class="chat-container" style="border-radius: 0px 10px 10px 0px">
 
     <span class="chat-header" style="border-radius: 20px">Live Chat</span>
-    <span class="close-chat"><i class="el-icon-close"></i></span>
+    <!-- <span class="close-chat"><i class="el-icon-close"></i></span> -->
 
     <div class="chat-area" ref="chatArea" style="border-radius: 0px">
       <div v-for="(chat, idx) in state.chatList" :key="idx">

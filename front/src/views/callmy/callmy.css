@@ -37,19 +37,26 @@
               inset 0px 2px 5px rgba(0,0,0,0.15);
 }
 
-.yesOrNo-dialong {
+.yesOrNo-dialog {
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 40%;
+  top: 30%;
+  left: 30%;
   z-index: 100;
+}
+
+@media (min-width: 1500px) {
+  .yesOrNo-dialog {
+    left: 35%;
+  }
 }
 
 .stt-yesOrNo {
   font-family: 'Varela Round', sans-serif;
   font-weight: 900;
-  font-size: 200px;
+  font-size: 400px;
 }
 
 .stt-yes {

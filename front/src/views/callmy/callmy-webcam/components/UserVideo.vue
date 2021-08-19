@@ -1,10 +1,12 @@
 <template>
   <div v-if="streamManager && isPlayer && state.nowPlayUserNames.includes(state.clientData)" style="position:relative">
     <ov-video :username="state.clientData" :startDetection="startDetection" :stream-manager="streamManager"/>
+    <div class="nameTag-bottom"><p>{{ state.clientData }}</p></div>
   </div>
 
   <div v-else-if="streamManager && !isPlayer && !state.nowPlayUserNames.includes(state.clientData) " style="position:relative">
     <ov-video :username="state.clientData" :startDetection="startDetection" :stream-manager="streamManager"/>
+    <div class="nameTag-top"><p>{{ state.clientData }}</p></div>
   </div>
 
 </template>

@@ -9,6 +9,7 @@ const myRoom = {}
 const publisher = {}
 const onVideo = true
 const onAudio = true
+const sound = true
 const mafiaManager = {
   username : '', // 자기 이름
   theVoted : null, // 마피아가 죽이는애, 시민이 1차 투표 선정 유저
@@ -76,4 +77,5 @@ export default {
   callmyManager,
   userId,
   publisher,
+  sound,
 }

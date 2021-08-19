@@ -10,9 +10,14 @@ div > p {
 }
 
 .nameTag {
+  border-radius: 10px;
+  padding: 4px 7px;
+  background-color: rgba(255, 255, 255, 0.8);
+  font-family: 'Jua';
+  font-size: 1vw;
   position: absolute;
-  top: 10%;
-  left: 5%;
+  top: 7%;
+  left: 4%;
 }
 </style>
 <script>

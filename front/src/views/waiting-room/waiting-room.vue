@@ -94,7 +94,6 @@ export default {
         })
     }
 
-
     requestReadMyInfo()
 
     return { state, onOpenCreateRoomDialog, onCloseCreateRoomDialog, onOpenEnterSecretRoomDialog, onCloseEnterSecretRoomDialog }
