@@ -149,8 +149,8 @@ export default {
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
-        // console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
-        // console.log("너의 미션은?", store.state.root.mafiaManager.missionName);
+        console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
+        console.log("미션 이름 : ", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
         state.missionMessage = document.getElementById("mission-message");
     }
