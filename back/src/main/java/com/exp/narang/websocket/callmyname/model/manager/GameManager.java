@@ -167,7 +167,7 @@ public class GameManager {
      * 현재 게임 라운드, 상태, userId, 이름 반환
      * @return GameStatusRes
      */
-    public GameStatusRes getGameStatus(String type) {
+    public synchronized GameStatusRes getGameStatus(String type) {
         Map<String, Object> user1 = new HashMap<>();
         Map<String, Object> user2 = new HashMap<>();
         String userNick1 = "";
