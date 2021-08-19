@@ -187,7 +187,7 @@ export default {
             setTimeout(() => {
               gameOver();
             }, state.timeout);
-          }, 1000)
+          }, 3000)
           return;
         }
 
@@ -210,7 +210,7 @@ export default {
               endAnswerTime();
               sendPlay('next')
             }, state.timeout);
-          }, 1000)
+          }, 3000)
           return;
         }
 
@@ -336,7 +336,7 @@ export default {
     const joinCallMyRoom = () => {
       setTimeout(() => {
         state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
-      }, 1000)
+      }, 2000)
     }
 
 
