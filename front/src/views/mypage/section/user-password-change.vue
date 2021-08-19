@@ -72,6 +72,7 @@ export default {
           store.dispatch('root/requestChangeMyPassword', formData)
           .then(res => {
             store.dispatch('root/requestLogout')
+            store.commit('root/deleteToken')
             router.push({name: 'home'})
             ElMessage({
               message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요.',
