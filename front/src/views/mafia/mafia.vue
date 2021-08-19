@@ -283,8 +283,8 @@ export default {
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
         store.state.root.mafiaManager.myRole = result.roleName;
-        store.state.root.mafiaManager.missionNumber = result.missionNumber;
-        if(store.state.root.mafiaManager.myRole === 'Mafia'){
+        if(store.state.root.mafiaManager.myRole === 'Mafia' && store.state.root.mafiaManager.missionNumber == null){
+          store.state.root.mafiaManager.missionNumber = result.missionNumber; // 역할 처음 받을 때만 missionNumber 갱신
           connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
         }
     })
@@ -416,6 +416,7 @@ export default {
           }, state.time[4]);
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
+        if(state.missionProgress !== undefined) initMissionProgress();
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
@@ -453,7 +454,7 @@ export default {
           sendMafias(); // 마피아 미션 성공 여부 소켓 전송
           initMissionProgress(); // 미션 진행 상황 나타내는 HTML 비우기
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // voteResult에 딸려온 미션 번호 갱신
-        }
+          }
           goNight()
         }, state.time[4]);
       } else { // 밤 -> 낮
