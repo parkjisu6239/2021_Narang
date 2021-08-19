@@ -57,6 +57,7 @@ export default {
 
     const joinSession = () => {
 			// --- Get an OpenVidu object ---
+      console.log('뭐지?')
 			state.OV = new OpenVidu();
 
 			// --- Init a session ---
@@ -85,7 +86,6 @@ export default {
 			// 'getToken' method is simulating what your server-side should do.
 			// 'token' parameter should be retrieved and returned by your own backend
 			getToken(state.mySessionId).then(token => {
-        console.log('토큰 받음아아아아',token)
 				state.session.connect(token, { clientData: state.myUserName })
 					.then(() => {
 						// --- Get your own camera stream with the desired properties ---
@@ -140,7 +140,7 @@ export default {
 		const createSession = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
+					.post(`/openvidu/api/sessions`, JSON.stringify({
 						customSessionId: sessionId,
 					}), {
 						auth: {
@@ -154,9 +154,9 @@ export default {
 						if (error.response.status === 409) {
 							resolve(sessionId);
 						} else {
-							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} `);
-							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL} \n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
-								location.assign(`https://0.0.0.0:8443/accept-certificate`);
+							console.warn(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}`);
+							if (window.confirm(`No connection to OpenVidu Server. This may be a certificate error at ${OPENVIDU_SERVER_URL}\n\nClick OK to navigate and accept it. If no certificate warning is shown, then check that your OpenVidu Server is up and running at "${OPENVIDU_SERVER_URL}"`)) {
+								location.assign(`https://i5b205.p.ssafy.io/accept-certificate`);
 							}
 							reject(error.response);
 						}
