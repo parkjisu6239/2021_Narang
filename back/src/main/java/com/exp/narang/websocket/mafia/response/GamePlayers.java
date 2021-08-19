@@ -42,36 +42,9 @@ public class GamePlayers {
 
     // players의 역할을 분배한다.
     public void setRole(List<Role> roles) {
-        //////////////////////// 시연 용 role 분배 시작
-        log.debug("setRole 역할 분배 시작");
-        int mafiaIdx = 0, userIdx = 0, idx = 0;
-        for(int i = 0; i < countOfPlayers(); i++){
-            log.debug(i + "번째 역할 : " + roles.get(i).getRoleName());
-            if(roles.get(i).getRoleName() == "Mafia"){
-                log.debug("마피아 갖고 옴");
-                mafiaIdx = i;
-                log.debug("마피아 인덱스 : " + mafiaIdx);
-                break;
-            }
+        for (int i = 0; i < countOfPlayers(); i++) { // 찐 role 분배
+            this.players.get(i).setRole(roles.get(i));
         }
-        for(int i = 0; i < countOfPlayers(); i++){
-            if("B205_강예서".equals(this.players.get(i).getUser().getUsername())){
-                userIdx = i;
-                log.debug("마피아 인덱스 : " + userIdx);
-                log.debug("갖고 온 유저 네임 : " + this.players.get(i).getUser().getUsername());
-                break;
-            }
-        }
-        this.players.get(userIdx).setRole(roles.get(mafiaIdx));
-        for (int i = 0; i < countOfPlayers(); i++) {
-            if(i == userIdx) continue;
-            if(idx == mafiaIdx) idx++;
-            this.players.get(i).setRole(roles.get(idx++));
-        }
-        //////////////////////// 시연 용 role 분배 끝
-//        for (int i = 0; i < countOfPlayers(); i++) { 찐 role 분배
-//            this.players.get(i).setRole(roles.get(i));
-//        }
     }
 
     // 각 player의 역할과 미션 번호를 리턴한다.
@@ -82,8 +55,7 @@ public class GamePlayers {
                 roleResult.setRoleName(player.getRole().getRoleName()); // 역할 저장
                 System.out.println("역할역할"+roleResult.getRoleName());
                 if(player.getRole().isMafia()) {
-                    roleResult.setMissionNumber(10); // 마피아 시연 용으로 처음엔 10번, 그 다음엔 11번
-//                    roleResult.setMissionNumber((int)(Math.random() * 100) % 12); // 마피아는 미션 번호 저장(0~11)
+                    roleResult.setMissionNumber((int)(Math.random() * 100) % 12); // 마피아는 미션 번호 저장(0~11)
                 }
                 else roleResult.setMissionNumber(-1); // 시민은 미션 번호에 -1 저장
                 return roleResult;
