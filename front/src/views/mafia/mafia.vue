@@ -190,7 +190,6 @@ export default {
           state.missionProgress.innerHTML = "미션 성공!";
           state.missionMessage.innerHTML = "[" + prediction[store.state.root.mafiaManager.missionNumber].className + "] 미션에 성공하였습니다!";
           store.state.root.mafiaManager.missionSuccess = true;
-          sendMafias();
           stopMission();
         }
         // console.log("여기서 프레딕션은??"+prediction);
@@ -227,6 +226,10 @@ export default {
         }
     }
 
+    const initMissionProgress = () => {
+      state.missionProgress.innerHTML = "";
+      state.missionMessage.innerHTML = "";
+    }
 
     // [Func|Item] 거짓말 탐지 아이템 활성화
     const clickLie = () => {
@@ -392,11 +395,9 @@ export default {
     // [Func|game] 투표 결과 해석 ; 1차 투표 이후, 2차 투표 이후, 밤 투표 이후 실행
     const getVoteResult = (result) => {
       if (result.finished) { // 2차 or 밤 -> 게임 종료
-        stopMission(); // 마피아 동작 인식 중지
         if(store.state.root.mafiaManager.myRole === 'Mafia'){
-          sendMafias();
-          state.missionProgress.innerHTML = "";
-          state.missionMessage.innerHTML = "";
+          stopMission(); // 마피아 동작 인식 중지
+          initMissionProgress();
         }
         state.msg = `${result.msg}`
         state.gameOverResult = result.roleString
@@ -414,15 +415,6 @@ export default {
           }, state.time[4]);
         }
       } else if (result.completeVote){ // 1차 -> 밤 or 2차 -> 밤 or 밤 -> 낮
-        stopMission(); // 마피아 동작 인식 중지
-        if(store.state.root.mafiaManager.myRole === 'Mafia'){
-          state.missionProgress.innerHTML = "";
-          state.missionMessage.innerHTML = "";
-          sendMafias();
-          if(state.mafiaManager.stage === 'night') // 밤 -> 낮 될 때만 미션 번호 갱신
-            store.state.root.mafiaManager.missionNumber = result.missionNumber;
-        }
-
         if (result.msg === ""){ // 죽은 사람 안나오는 경우
           if (state.mafiaManager.stage === 'day1') { // 1차 -> 밤
             state.msg = '최다 득표자가 결정되지 않았습니다. \n잠시후 밤이 됩니다.'
@@ -454,6 +446,12 @@ export default {
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
         setTimeout(() => {
           state.voteStatus = {} // 다음으로 넘어갈 때 비우기
+          if(store.state.root.mafiaManager.myRole === 'Mafia'){
+          stopMission(); // 마피아 동작 인식 중지
+          sendMafias(); // 마피아 미션 성공 여부 소켓 전송
+          initMissionProgress(); // 미션 진행 상황 나타내는 HTML 비우기
+          store.state.root.mafiaManager.missionNumber = result.missionNumber; // voteResult에 딸려온 미션 번호 갱신
+        }
           goNight()
         }, state.time[4]);
       } else { // 밤 -> 낮
@@ -520,9 +518,9 @@ export default {
       state.timer = state.time[3]
       store.state.root.mafiaManager.stage = "night";
 
-
       // 메시지 변경
       if ( store.state.root.mafiaManager.myRole === 'Mafia') {
+        initMissionProgress();
         state.msg = `밤(${state.time[3]/1000}초)이 되었습니다. \n마피아는 고개를 들어주세요`
       } else {
         state.msg = `밤이 되었습니다. 안심하지 마십시오. \n마피아는 당신을 지켜보고 있습니다`
@@ -570,8 +568,7 @@ export default {
       store.state.root.mafiaManager.missionSuccess = false
       state.gameStart = false
       if(state.missionProgress !== undefined){
-        state.missionProgress.innerHTML = "";
-        state.missionMessage.innerHTML = "";
+        initMissionProgress();
       }
       if (state.stompClient !== null) {
           state.stompClient.disconnect()
@@ -646,7 +643,7 @@ export default {
     requestMyInfo()
 
 
-    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, sendPlayers, clickLie, sendAddPlayer }
+    return { state, store, connectSocket, connectMafiasSocket, connectGetRoleSocket, sendGetRole, clickShowMission, initMissionProgress, sendPlayers, clickLie, sendAddPlayer }
   },
 }
 </script>
