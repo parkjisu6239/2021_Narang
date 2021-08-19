@@ -7,15 +7,17 @@ import com.exp.narang.websocket.mafia.model.role.Role;
 import com.exp.narang.websocket.mafia.request.MafiaMessage;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 @Getter
 @Setter
+@Slf4j
 // 게임 참가자들과 관련된 로직을 처리한다.
 public class GamePlayers {
-    private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
+//    private static final Logger log = LoggerFactory.getLogger(GamePlayers.class);
 
     private int countMafiaMissionResult, countMafiaMissionCompelte;
 
@@ -40,9 +42,36 @@ public class GamePlayers {
 
     // players의 역할을 분배한다.
     public void setRole(List<Role> roles) {
-        for (int i = 0; i < countOfPlayers(); i++) {
-            this.players.get(i).setRole(roles.get(i));
+        //////////////////////// 시연 용 role 분배 시작
+        log.debug("setRole 역할 분배 시작");
+        int mafiaIdx = 0, userIdx = 0, idx = 0;
+        for(int i = 0; i < countOfPlayers(); i++){
+            log.debug(i + "번째 역할 : " + roles.get(i).getRoleName());
+            if(roles.get(i).getRoleName() == "Mafia"){
+                log.debug("마피아 갖고 옴");
+                mafiaIdx = i;
+                log.debug("마피아 인덱스 : " + mafiaIdx);
+                break;
+            }
         }
+        for(int i = 0; i < countOfPlayers(); i++){
+            if("B205_강예서".equals(this.players.get(i).getUser().getUsername())){
+                userIdx = i;
+                log.debug("마피아 인덱스 : " + userIdx);
+                log.debug("갖고 온 유저 네임 : " + this.players.get(i).getUser().getUsername());
+                break;
+            }
+        }
+        this.players.get(userIdx).setRole(roles.get(mafiaIdx));
+        for (int i = 0; i < countOfPlayers(); i++) {
+            if(i == userIdx) continue;
+            if(idx == mafiaIdx) idx++;
+            this.players.get(i).setRole(roles.get(idx++));
+        }
+        //////////////////////// 시연 용 role 분배 끝
+//        for (int i = 0; i < countOfPlayers(); i++) { 찐 role 분배
+//            this.players.get(i).setRole(roles.get(i));
+//        }
     }
 
     // 각 player의 역할과 미션 번호를 리턴한다.
