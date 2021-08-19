@@ -39,8 +39,7 @@ public class GameResult {
         this.completeVote = completeVote;
         this.msg = killedUser;
         if(completeVote == true) {
-            this.missionNumber = 11; // 시연 용으로 처음엔 10번, 그 다음엔 11번
-//            this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
+            this.missionNumber = (int)(Math.random() * 100) % 12; // 투표가 완전히 끝날 때만 미션 갱신(0~11)
         }
     }
 
