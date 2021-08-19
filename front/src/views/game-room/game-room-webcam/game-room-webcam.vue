@@ -140,7 +140,7 @@ export default {
 		const createSession = (sessionId) => {
 			return new Promise((resolve, reject) => {
 				$axios
-					.post(`/openvidu/api/sessions`, JSON.stringify({
+					.post(`${OPENVIDU_SERVER_URL}/openvidu/api/sessions`, JSON.stringify({
 						customSessionId: sessionId,
 					}), {
 						auth: {
