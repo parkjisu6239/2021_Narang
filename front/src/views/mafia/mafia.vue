@@ -281,9 +281,11 @@ export default {
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
         store.state.root.mafiaManager.myRole = result.roleName;
-        if(store.state.root.mafiaManager.missionNumber == null) store.state.root.mafiaManager.missionNumber = result.missionNumber; // 역할 처음 받을 때만 missionNumber 갱신
-        if(store.state.root.mafiaManager.myRole === 'Mafia'){
-          connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+        if(store.state.root.mafiaManager.missionNumber == null) {
+          store.state.root.mafiaManager.missionNumber = result.missionNumber; // 역할 처음 받을 때만 missionNumber 갱신
+          if(store.state.root.mafiaManager.myRole === 'Mafia'){
+            connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+          }
         }
     })
     }
