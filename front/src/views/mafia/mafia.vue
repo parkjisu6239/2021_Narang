@@ -114,7 +114,7 @@ export default {
       msg: '',
       userRole: {},
       surviver: {},
-      time: [100000, 15000, 15000, 20000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
+      time: [60000, 15000, 15000, 20000, 10000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
       gameStart: false,
       isVoteTime: false,
