@@ -58,6 +58,9 @@ export default {
     room: {
       type: Object
     },
+    joinedPlayerNumbers: {
+      type: Number
+    }
   },
 
   setup(props, { emit }) {
@@ -83,11 +86,6 @@ export default {
         ...props.room,
         game,
       }
-      if(game === 'callmy') {
-
-      } else if(game === 'mafia'){
-
-      }
       console.log(roomInfo)
       store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
@@ -96,12 +94,31 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '방장만 시작할 수 있습니다.'
+            message: '방장만 수정할 수 있습니다.'
           })
         })
     }
 
     const gameStart = () => {
+      const count = props.joinedPlayerNumbers;
+      if(game === 'callmy') {
+        if(count < 2) {
+          ElMessage({
+            type: 'error',
+            message: '최소 2명이 필요합니다!'
+          })
+          return;
+        }
+      } else if(game === 'mafia'){
+        if(count < 4) {
+          ElMessage({
+            type: 'error',
+            message: '최소 2명이 필요합니다!'
+          })
+          return;
+        }
+
+      }
       emit('gameStart')
     }
 
