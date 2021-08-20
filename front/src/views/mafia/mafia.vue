@@ -114,7 +114,7 @@ export default {
       msg: '',
       userRole: {},
       surviver: {},
-      time: [100000, 15000, 10000, 20000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
+      time: [100000, 15000, 15000, 20000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
       gameStart: false,
       isVoteTime: false,
@@ -281,9 +281,11 @@ export default {
         const result = JSON.parse(res.body)
         state.myRole = result.roleName
         store.state.root.mafiaManager.myRole = result.roleName;
-        if(store.state.root.mafiaManager.myRole === 'Mafia' && store.state.root.mafiaManager.missionNumber == null){
+        if(store.state.root.mafiaManager.missionNumber == null) {
           store.state.root.mafiaManager.missionNumber = result.missionNumber; // 역할 처음 받을 때만 missionNumber 갱신
-          connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+          if(store.state.root.mafiaManager.myRole === 'Mafia'){
+            connectMafiasSocket() // 마피아끼리 소켓 연결하러 가기
+          }
         }
     })
     }
