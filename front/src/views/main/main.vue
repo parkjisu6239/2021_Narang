@@ -35,7 +35,7 @@ export default {
       this.loading = true
       setTimeout(() => {
       this.loading = false
-      }, 300);
+      }, 1000);
     },
   },
 
