@@ -53,3 +53,7 @@
 # 3. DB 덤프 파일
 
 narang01dump.sql
+
+# 4. DB 덤프 파일
+
+시연 시나리오.docx
