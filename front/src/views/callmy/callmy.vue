@@ -161,13 +161,21 @@ export default {
     const subscribeGuessName = () => {
       state.stompClient.subscribe(`/from/call/guess-name/${route.params.roomId}`, res => {
         const guessNameRes = JSON.parse(res.body)
+        console.log("guessNameRes : ", guessNameRes)
+        console.log('내 이름 : ', state.username)
+        console.log('현재 정답을 외친 사람 : ' , state.userIdToUserName[guessNameRes.userId])
+        console.log('현재 정답을 외친 사람이 말한 내용 : ' , guessNameRes.answer)
         if(guessNameRes.answer === '정답타임끝'){
           endAnswerTime();
           return;
         }
         if(guessNameRes.answer === '정답'){
+          console.log("현재 정답을 말하고 있습니까??")
+          console.log(store.state.root.callmyManager.isAnswer)
           if(store.state.root.callmyManager.isAnswer) return;
           store.state.root.callmyManager.isAnswer = true;
+          console.log("아니요 아무도 말 안하고 있습니다~")
+          console.log(state.callmyManager.isAnswer)
         }
 
         state.speaker = state.userIdToUserName[guessNameRes.userId];
@@ -187,14 +195,17 @@ export default {
             setTimeout(() => {
               gameOver();
             }, state.timeout);
-          }, 3000)
+          }, 1000)
           return;
         }
 
+        console.log('정답 여부 체크 전' ,state.yesOrNo)
         if(guessNameRes.correct) {
           const audio = new Audio(require('@/assets/audio/callmy/correct.mp3'));
           audio.play();
+          console.log(`${state.speaker}가 승리했습니다`)
           state.yesOrNo = 'O'
+          console.log('정답 맞췄을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
             state.isVoteTime = true
@@ -210,17 +221,17 @@ export default {
               endAnswerTime();
               sendPlay('next')
             }, state.timeout);
-          }, 3000)
+          }, 1000)
           return;
         }
 
         if(guessNameRes.answer !== '정답') {
-          const audio = new Audio(require('@/assets/audio/callmy/ddang.mp3'));
-          audio.play();
           state.yesOrNo = 'X'
+          console.log('정답 틀렸을 때' ,state.yesOrNo)
           setTimeout(() => {
             state.yesOrNo = ''
           }, 1000)
+          console.log("틀렸습니다.")
         }
       })
     }
@@ -229,6 +240,7 @@ export default {
     const subscribePlay = () => { // 게임 진행 중인 유저들의 정보, 현재 라운드, status => 0: 제시어 정함, 1: 하는 중,
       state.stompClient.subscribe(`/from/call/play/${route.params.roomId}`, res => {
         const result = JSON.parse(res.body)
+        console.log(result, '다음 대결자들')
         store.state.root.callmyManager.round = result.round;
         if(result.status === 0){ // 제시어 정하는 시간
           store.state.root.callmyManager.nowPlayUsers = [
@@ -252,6 +264,7 @@ export default {
           state.startDetection = true
         }
       })
+      console.log(state.callmyManager)
     }
 
 
@@ -261,6 +274,7 @@ export default {
         if (setNamRes.isFinished) {
           if (state.callmyManager.nowPlayUsers[0].nickname){ // user1의 닉네임이 있으면 user2 닉네임 저장
             state.callmyManager.nowPlayUsers[1].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[1].username}의 제시어는 ${setNamRes.result}입니다`)
             state.nicknameList = {}
             state.order = 0
             state.msg = `제시어 선택이 완료되었습니다. 잠시후 게임 시작!`
@@ -273,6 +287,7 @@ export default {
             state.isVoteTime = false
           } else { // user1의 닉네임이 없으면 user1 닉네임 저장
             state.callmyManager.nowPlayUsers[0].nickname = setNamRes.result
+            console.log(`${state.callmyManager.nowPlayUsers[0].username}의 제시어는 ${setNamRes.result}입니다`)
             state.nicknameList = {}
             state.order = 1
             sendDefaultNickname() // 두번째 사람 디폴트 이름 받아오기
@@ -280,12 +295,16 @@ export default {
         } else {
           state.nicknameList = setNamRes.voteStatus
         }
+        console.log("setNamRes")
+        console.log(setNamRes)
       })
     }
 
 
     const subscribeDefaultNickname = () => {
       state.stompClient.subscribe(`/from/call/default-name/${route.params.roomId}/${state.userId}`, res => {
+        console.log(res)
+        console.log(res.body)
         const DefaultNickname = res.body
         if (state.userId !== state.callmyManager.nowPlayUsers[state.order].userId) {
           store.state.root.callmyManager.defaultNickname = DefaultNickname
@@ -312,6 +331,7 @@ export default {
 
     const sendPlay = (stage) => {
       if (stage === 'next') {
+        console.log('여기서 roundStart, startDetection 초기화')
         state.roundStart = true
         state.startDetection = false
       }
@@ -334,9 +354,10 @@ export default {
 
 
     const joinCallMyRoom = () => {
+      console.log('조인하는 중')
       setTimeout(() => {
         state.stompClient.send(`/to/call/addPlayer/${route.params.roomId}`, JSON.stringify(state.userId), {})
-      }, 2000)
+      }, 1000)
     }
 
 
@@ -414,6 +435,7 @@ export default {
       state.gameStart = false
 
       if (state.stompClient !== null) {
+          console.log('소켓 디스커넥트')
           state.stompClient.disconnect()
       }
 
