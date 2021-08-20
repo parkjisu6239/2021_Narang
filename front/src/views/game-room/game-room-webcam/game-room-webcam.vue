@@ -23,7 +23,7 @@
 
 <script>
 import $axios from 'axios'
-import { computed, reactive, onBeforeUnmount } from 'vue'
+import { computed, reactive, onBeforeUnmount, watch } from 'vue'
 import { OpenVidu, Subscriber } from 'openvidu-browser'
 import { useStore } from 'vuex'
 import UserVideo from './components/UserVideo'
@@ -53,6 +53,8 @@ export default {
 			subscribers: [],
 			mySessionId: computed(() => props.roomId),
 			myUserName: computed(() => store.getters['root/username']),
+      joinedPlayerNumbers: 0,
+
     })
 
     const joinSession = () => {
@@ -67,11 +69,13 @@ export default {
 			state.session.on('streamCreated', ({ stream }) => {
 				const subscriber = state.session.subscribe(stream);
 				state.subscribers.push(subscriber);
+        if (subscriber.videos !== []) state.joinedPlayerNumbers++
 			});
 
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0);
+        if (subscriber.videos.length !== []) state.joinedPlayerNumbers--
 				if (index >= 0) {
 					state.subscribers.splice(index, 1);
 				}
@@ -102,6 +106,7 @@ export default {
 						state.mainStreamManager = publisher;
 						state.publisher = publisher;
             store.state.root.publisher = publisher;
+            state.joinedPlayerNumbers++
 						state.session.publish(store.state.root.publisher);
 					})
 					.catch(error => {
@@ -194,6 +199,12 @@ export default {
 			});
 		}
 
+
+    watch(() => state.joinedPlayerNumbers, () => {
+      console.log('watch', state.joinedPlayerNumbers)
+      emit('getPlayerNumbers', state.joinedPlayerNumbers)
+    })
+
     //* Life Cycle *//
     // created
     joinSession()
@@ -201,6 +212,7 @@ export default {
 
     // beforeunmount
     onBeforeUnmount(() => {
+      state.joinedPlayerNumbers = 0;
       leaveSession()
     })
 

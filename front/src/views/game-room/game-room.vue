@@ -1,7 +1,7 @@
 <template>
   <article class="game-room-container">
     <section class="game-cam-chat-container">
-      <GameRoomWebcam :roomId="route.params.roomId"/>
+      <GameRoomWebcam :roomId="route.params.roomId" @getPlayerNumbers="getPlayerNumbers"/>
       <GameRoomChat
         @sendMessage="sendChatMessage"
         :roomId="route.params.roomId"
@@ -15,7 +15,9 @@
       @openDialog="openDialog"
       @gameStart="gameStart"
       :roomId="route.params.roomId"
-      :room="state.room"/>
+      :room="state.room"
+      :joinedPlayerNumbers="state.joinedPlayerNumbers"
+      />
   </article>
   <GameRoomInfoChangeDialog
     @closeDialog="closeDialog"
@@ -73,6 +75,7 @@ export default {
       gameStart: false,
       count: 5,
       gameSelected: null,
+      joinedPlayerNumbers: 0,
     })
 
     // [Func|dialog] 방 정보 수정 open
@@ -310,8 +313,12 @@ export default {
     }
 
 
+    const getPlayerNumbers = (count) => {
+      state.joinedPlayerNumbers = count
+    }
     //* Life Cycle *//
     onBeforeUnmount(() => { // vue 컴포넌트가 파괴되기 전에 시행 = 페이지 이동 감지
+      state.joinedPlayerNumbers = 0;
       if (!state.gameStart) {
         leaveRoom()
       }
@@ -324,7 +331,7 @@ export default {
     requestUserList()
     connectSocket()
 
-    return { state, route, openDialog, closeDialog, requestRoomInfo, sendChatMessage, informGameRoomInfoChange, gameStart, leaveRoom }
+    return { state, route, openDialog, closeDialog, requestRoomInfo, sendChatMessage, informGameRoomInfoChange, gameStart, leaveRoom, getPlayerNumbers}
   }
 }
 </script>
