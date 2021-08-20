@@ -114,7 +114,7 @@ export default {
       msg: '',
       userRole: {},
       surviver: {},
-      time: [50000, 10000, 10000, 20000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
+      time: [100000, 15000, 10000, 20000, 5000], // 0: 낮 자유 토론, 1: 낮 1차 투표, 2: 낮 2차 투표, 3: 밤, 4: 중간 결과 확인
       gameOver: false,
       gameStart: false,
       isVoteTime: false,
@@ -149,8 +149,8 @@ export default {
         const { pose, posenetOutput } = await state.model.estimatePose(state.myWebcam);
         const prediction = await state.model.predict(posenetOutput);
         store.state.root.mafiaManager.missionName = prediction[store.state.root.mafiaManager.missionNumber].className
-        console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
-        console.log("미션 이름 : ", store.state.root.mafiaManager.missionName);
+        // console.log("미션 번호 : ", store.state.root.mafiaManager.missionNumber);
+        // console.log("미션 이름 : ", store.state.root.mafiaManager.missionName);
         state.missionProgress = document.getElementById("mission-progress");
         state.missionMessage = document.getElementById("mission-message");
     }
@@ -192,7 +192,6 @@ export default {
           store.state.root.mafiaManager.missionSuccess = true;
           stopMission();
         }
-        // console.log("여기서 프레딕션은??"+prediction);
     }
 
 
@@ -227,7 +226,6 @@ export default {
     }
 
     const initMissionProgress = () => {
-      console.log("innerHTML 비우러 왔음");
       state.missionProgress.innerHTML = "";
       state.missionMessage.innerHTML = "";
     }
@@ -448,7 +446,6 @@ export default {
       if(store.state.root.mafiaManager.stage !== "night") { // 낮 1차 or 낮 2차 -> 밤
         setTimeout(() => {
           state.voteStatus = {} // 다음으로 넘어갈 때 비우기
-          console.log("내 직업 : ", store.state.root.mafiaManager.myRole)
           if(store.state.root.mafiaManager.myRole === 'Mafia'){
           stopMission(); // 마피아 동작 인식 중지
           sendMafias(); // 마피아 미션 성공 여부 소켓 전송
