@@ -81,11 +81,11 @@ export default {
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
-				const subscriber = state.subscribers[index]
-        if (subscriber.videos !== []) {
-          state.joinedPlayerNumbers--
+        if (index >= 0) {
+          const subscriber = state.subscribers[index]
+          if (subscriber.videos !== []) state.joinedPlayerNumbers--
+          state.subscribers.splice(index, 1)
         }
-        if (index >= 0) state.subscribers.splice(index, 1)
 			})
 
 			// On every asynchronous exception...

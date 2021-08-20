@@ -124,8 +124,9 @@ export default {
 			// On every Stream destroyed...
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0)
-        if (subscriber.videos.length !== []) state.joinedPlayerNumbers--
         if (index >= 0) {
+          const subscriber = subscribers[index]
+          if (subscriber.videos.length !== []) state.joinedPlayerNumbers--
 					state.subscribers.splice(index, 1)
 				}
 			})
@@ -239,7 +240,9 @@ export default {
     })
 
     watch(() => props.socketConnected, () => {
-      joinSession()
+      if (props.socketConnected) {
+        joinSession()
+      }
     })
 
 
