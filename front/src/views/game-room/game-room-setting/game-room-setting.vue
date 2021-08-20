@@ -57,7 +57,7 @@ export default {
     },
     room: {
       type: Object
-    },
+    }
   },
 
   setup(props, { emit }) {
@@ -83,11 +83,6 @@ export default {
         ...props.room,
         game,
       }
-      if(game === 'callmy') {
-
-      } else if(game === 'mafia'){
-
-      }
       console.log(roomInfo)
       store.dispatch('root/requestUpdateGameRoom', roomInfo)
         .then(res => {
@@ -96,7 +91,7 @@ export default {
         .catch(err => {
           ElMessage({
             type: 'error',
-            message: '방장만 시작할 수 있습니다.'
+            message: '방장만 수정할 수 있습니다.'
           })
         })
     }
