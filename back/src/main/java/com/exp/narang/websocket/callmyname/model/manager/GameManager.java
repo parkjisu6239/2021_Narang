@@ -142,7 +142,7 @@ public class GameManager {
         return SetNameRes.returnResult(req.getTargetId(), "", false, voteStatus);
     }
 
-    /** TODO : 중간에 누군가 나가면 어떻게 처리할지 정하기
+    /**
      * 사용자가 자신의 이름을 맞힐 때 호출되는 메서드
      * @param req : userId와 정해진 이름이 있는 객체
      * @return 답이 맞았는지, nameMap 이 비었는지 여부를 멤버변수로 가진 객체
@@ -167,7 +167,7 @@ public class GameManager {
      * 현재 게임 라운드, 상태, userId, 이름 반환
      * @return GameStatusRes
      */
-    public GameStatusRes getGameStatus(String type) {
+    public synchronized GameStatusRes getGameStatus(String type) {
         Map<String, Object> user1 = new HashMap<>();
         Map<String, Object> user2 = new HashMap<>();
         String userNick1 = "";

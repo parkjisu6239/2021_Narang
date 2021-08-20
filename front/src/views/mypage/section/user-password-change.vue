@@ -34,13 +34,13 @@
 <script>
 import { reactive, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 export default {
   name: 'UserPasswordChange',
   setup() {
     const store = useStore()
-    const route = useRoute()
+    const router = useRouter()
     const userPasswordForm = ref(null)
 
     const state = reactive({
@@ -72,6 +72,7 @@ export default {
           store.dispatch('root/requestChangeMyPassword', formData)
           .then(res => {
             store.dispatch('root/requestLogout')
+            store.commit('root/deleteToken')
             router.push({name: 'home'})
             ElMessage({
               message: '비밀번호 변경이 완료되었습니다. 다시 로그인 해주세요.',
