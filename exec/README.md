@@ -47,19 +47,16 @@
 # 2. 프로젝트에서 사용하는 외부 서비스 정보 문서
 
 이미지파일 저장을 위해 imgbb 저장소 사용
-
 [https://api.imgbb.com/](https://api.imgbb.com/)
 
 
 
 얼굴 인식을 위한 face-api 사용
-
 [https://github.com/justadudewhohacks/face-api.js/](https://github.com/justadudewhohacks/face-api.js/)
 
 
 
 동작 인식을 위한 teachable-machine api 사용
-
 [https://teachablemachine.withgoogle.com/](https://teachablemachine.withgoogle.com/)
 
 # 3. DB 덤프 파일
