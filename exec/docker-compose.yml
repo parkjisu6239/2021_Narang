@@ -1,0 +1,161 @@
+# Docker compose 버전
+version: "3.8"
+# 가동할 컨테이너 목록
+services:
+  db:
+    #사용할 이미지(Docker Hub 또는 로컬에 저장된 Image)
+    image: mysql:5.7
+    container_name: narang_db
+    restart: always
+    # 외부에서 컨테이너 내부로 연결되는 포트 목록
+    ports:
+      - "32000:3306"
+    # 컨테이너 내에서 사용되는 환경 변수
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: "Asia/Seoul"
+      privileged: "true"
+    # 실제 드라이브와 컨테이너의 드라이브를 연결
+    volumes: 
+      - ./db:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    # 컨테이너 내부에서 사용되는 네트워크
+    networks: 
+      - back
+#  openvidu-server:
+#    image: openvidu/openvidu-server-kms:2.19.0
+#    container_name: narang_openvidu_server
+#    network_mode: host
+#    restart: always
+  openvidu-server:
+    image: openvidu/openvidu-server:2.19.0
+    container_name: narang_openvidu
+    restart: on-failure
+    network_mode: host
+    entrypoint: [ '/usr/local/bin/entrypoint.sh' ]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      #- ${OPENVIDU_RECORDING_PATH}:${OPENVIDU_RECORDING_PATH}
+      #- ${OPENVIDU_RECORDING_CUSTOM_LAYOUT}:${OPENVIDU_RECORDING_CUSTOM_LAYOUT}
+      #- ${OPENVIDU_CDR_PATH}:${OPENVIDU_CDR_PATH}
+    env_file:
+      - .env
+    environment:
+      - SERVER_SSL_ENABLED=false
+      - SERVER_PORT=5443
+      - KMS_URIS=["ws://localhost:8888/kurento"]
+      - COTURN_REDIS_IP=127.0.0.1
+      - COTURN_REDIS_PASSWORD=${OPENVIDU_SECRET}
+      - COTURN_IP=${COTURN_IP:-auto-ipv4}
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+  kms:
+    image: ${KMS_IMAGE:-kurento/kurento-media-server:6.16.0}
+    container_name: narang_kms
+    restart: always
+    network_mode: host
+    ulimits:
+      core: -1
+    #volumes:
+      #- /opt/openvidu/kms-crashes:/opt/openvidu/kms-crashes
+      #- ${OPENVIDU_RECORDING_PATH}:${OPENVIDU_RECORDING_PATH}
+      #- /opt/openvidu/kurento-logs:/opt/openvidu/kurento-logs
+    environment:
+      - KMS_MIN_PORT=40000
+      - KMS_MAX_PORT=57000
+      - GST_DEBUG=${KMS_DOCKER_ENV_GST_DEBUG:-}
+      - KURENTO_LOG_FILE_SIZE=${KMS_DOCKER_ENV_KURENTO_LOG_FILE_SIZE:-100}
+      #- KURENTO_LOGS_PATH=/opt/openvidu/kurento-logs
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+
+  redis:
+    image: openvidu/openvidu-redis:3.0.0
+    container_name: narang_redis
+    restart: always
+    network_mode: host
+    environment:
+      - REDIS_PASSWORD=${OPENVIDU_SECRET}
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+
+  coturn:
+    image: openvidu/openvidu-coturn:5.0.0
+    container_name: narang_coturn
+    restart: on-failure
+    network_mode: host
+    environment:
+      - REDIS_IP=127.0.0.1
+      - DB_NAME=0
+      - DB_PASSWORD=${OPENVIDU_SECRET}
+    command:
+      - --log-file=stdout
+      - --listening-port=3478
+      - --fingerprint
+      - --lt-cred-mech
+      - --min-port=57001
+      - --max-port=65535
+      - --realm=openvidu
+      - --verbose
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+
+  nginx:
+    image: openvidu/openvidu-proxy:7.0.0
+    container_name: narang_nginx
+    restart: on-failure
+    network_mode: host
+    volumes:
+      - ./certificates:/etc/letsencrypt
+      - ./owncert:/owncert
+      - ./custom-nginx-vhosts:/etc/nginx/vhost.d/
+      #- ${OPENVIDU_RECORDING_CUSTOM_LAYOUT}:/opt/openvidu/custom-layout
+    environment:
+      - DOMAIN_OR_PUBLIC_IP=${DOMAIN_OR_PUBLIC_IP}
+      - CERTIFICATE_TYPE=${CERTIFICATE_TYPE}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      - PROXY_HTTP_PORT=${HTTP_PORT:-}
+      - PROXY_HTTPS_PORT=${HTTPS_PORT:-}
+      - ALLOWED_ACCESS_TO_DASHBOARD=${ALLOWED_ACCESS_TO_DASHBOARD:-}
+      - ALLOWED_ACCESS_TO_RESTAPI=${ALLOWED_ACCESS_TO_RESTAPI:-}
+      - PROXY_MODE=CE
+      - WITH_APP=true
+      - SUPPORT_DEPRECATED_API=${SUPPORT_DEPRECATED_API:-true}
+      - REDIRECT_WWW=${REDIRECT_WWW:-false}
+      - WORKER_CONNECTIONS=${WORKER_CONNECTIONS:-10240}
+      - PUBLIC_IP=${PROXY_PUBLIC_IP:-auto-ipv4}
+    logging:
+      options:
+        max-size: "${DOCKER_LOGS_MAX_SIZE:-100M}"
+  app:
+    # 공개된 Image가 아닌 Dockerfile을 통한 빌드 이미지 사용
+    build:
+      context: ./
+    container_name: narang_app
+    restart: always
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      TZ: "Asia/Seoul"
+      # Spring application.properties DB 설정
+      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/narang_web_db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=true"
+      server.address: 0.0.0.0
+      OPENVIDU_URL: https://i5b205.p.ssafy.io:5443
+      OPENVIDU_SECRET: NARANG_VIDU
+    # 실제 드라이브와 컨테이너의 드라이브를 연결
+    volumes:
+      - files:/tmp
+    depends_on:
+      - db
+    networks:
+      - back
+networks:
+  back:
+volumes:
+  mysql-data:
+  files:

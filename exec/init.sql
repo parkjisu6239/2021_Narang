@@ -1,0 +1,1 @@
+create database IF NOT EXISTS narang_web_db collate utf8mb4_general_ci;
