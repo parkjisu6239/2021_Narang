@@ -76,9 +76,9 @@ export default {
 			state.session.on('streamDestroyed', ({ stream }) => {
 				const index = state.subscribers.indexOf(stream.streamManager, 0);
 				if (index >= 0) {
-          const subscriber = subscribers[index]
-          if (subscriber.videos.length !== []) state.joinedPlayerNumbers--
-					state.subscribers.splice(index, 1);
+          const subscriber = state.subscribers[index]
+          if (subscriber.videos !== []) state.joinedPlayerNumbers--
+					state.subscribers.splice(index, 1)
 				}
 			});
 
