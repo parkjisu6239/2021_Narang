@@ -16,7 +16,6 @@
       @gameStart="gameStart"
       :roomId="route.params.roomId"
       :room="state.room"
-      :joinedPlayerNumbers="state.joinedPlayerNumbers"
       />
   </article>
   <GameRoomInfoChangeDialog
@@ -90,7 +89,6 @@ export default {
 
     // [Func|btn] Game Start 버튼 클릭 이벤트
     const gameStart = () => {
-      if(state.stompClient && state.stompClient.connected) {
         const message = {
           userName: store.state.root.username,
           content: '',
@@ -99,7 +97,25 @@ export default {
           gameStart: true,
           roomInfoChange: false,
         }
-
+        if(state.stompClient && state.stompClient.connected) {
+          const count = state.joinedPlayerNumbers;
+          if(state.gameSelected === 'callmy') {
+            if(count < 2) {
+              ElMessage({
+                type: 'error',
+                message: '최소 2명이 필요합니다!'
+              })
+              return;
+            }
+          } else if(state.gameSelected === 'mafia'){
+            if(count < 4) {
+              ElMessage({
+                type: 'error',
+                message: '최소 2명이 필요합니다!'
+              })
+              return;
+            }
+          }
         // 참여자에게 소켓으로 게임 시작 알림
         state.stompClient.send('/to/chat', JSON.stringify(message), {})
 

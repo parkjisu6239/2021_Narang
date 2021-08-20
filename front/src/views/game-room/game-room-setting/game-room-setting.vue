@@ -57,9 +57,6 @@ export default {
     },
     room: {
       type: Object
-    },
-    joinedPlayerNumbers: {
-      type: Number
     }
   },
 
@@ -100,25 +97,6 @@ export default {
     }
 
     const gameStart = () => {
-      const count = props.joinedPlayerNumbers;
-      if(game === 'callmy') {
-        if(count < 2) {
-          ElMessage({
-            type: 'error',
-            message: '최소 2명이 필요합니다!'
-          })
-          return;
-        }
-      } else if(game === 'mafia'){
-        if(count < 4) {
-          ElMessage({
-            type: 'error',
-            message: '최소 2명이 필요합니다!'
-          })
-          return;
-        }
-
-      }
       emit('gameStart')
     }
 
