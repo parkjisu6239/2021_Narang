@@ -103,7 +103,7 @@ export default {
             if(count < 2) {
               ElMessage({
                 type: 'error',
-                message: '최소 2명이 필요합니다!'
+                message: '콜마이네임은 최소 2명이 필요합니다!'
               })
               return;
             }
@@ -111,7 +111,7 @@ export default {
             if(count < 4) {
               ElMessage({
                 type: 'error',
-                message: '최소 2명이 필요합니다!'
+                message: '마피아는 최소 4명이 필요합니다!'
               })
               return;
             }
