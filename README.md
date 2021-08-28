@@ -52,9 +52,9 @@
 
 ![홈](README.assets/홈.png)
 
-![마이페이지](화면/마이페이지.png)
+![마이페이지](README.assets/마이페이지.png)
 
-![대기실1](화면/대기실1.png)
+![대기실1](README.assets/대기실1.png)
 
 ![게임방](README.assets/게임방.jpg)
 
@@ -84,7 +84,10 @@
 
 #### WebRTC란?
 
-<img src="README.assets/image-20210828151835934.png" alt="image-20210828151835934" style="zoom: 80%;" /><img src="README.assets/image-20210828152033949.png" alt="image-20210828152033949" style="zoom: 67%;" />
+<div style="display: flex">
+    <img src="README.assets/image-20210828151835934.png" alt="image-20210828151835934"/>
+    <img src="README.assets/image-20210828152033949.png" alt="image-20210828152033949"/>
+</div>
 
 > WebRTC (Web Real-Time Communication)는 웹 브라우저 간에 플러그인의 도움 없이 서로 통신할 수 있도록 설계된 API이다. 
 >
@@ -241,7 +244,10 @@ Web Speech API는 크롬 브라우저에서 사용 가능한 api로 별도의 im
 
 히든 미션에 대한 동작 인식은 앞서 말했던 `teachable API`를 사용합니다. 아래 이미지를 통해 동작을 학습시키고, 인식하는 과정을 볼 수 있습니다.
 
-<img src="README.assets/ezgif.com-gif-maker (7)-163013551500210.gif" alt="ezgif.com-gif-maker (7)" style="zoom:80%;" /><img src="README.assets/ezgif.com-gif-maker (6)-163013551871411.gif" alt="ezgif.com-gif-maker (6)" style="zoom:80%;" />
+<div style="display: flex">
+    <img src="README.assets/ezgif.com-gif-maker (7)-163013551500210.gif" alt="ezgif.com-gif-maker (7)"/>
+    <img src="README.assets/ezgif.com-gif-maker (6)-163013551871411.gif" alt="ezgif.com-gif-maker (6)"/>
+</div>
 
 
 
@@ -285,11 +291,11 @@ Web Speech API는 크롬 브라우저에서 사용 가능한 api로 별도의 im
 
 실제 게임 진행 방법과 과정에 대한 영상은 [여기](https://www.youtube.com/watch?v=lLfhXWhzst8)서 확인 할 수 있습니다
 
-![슬라이드24](README.assets/슬라이드24-163013654701512.PNG)
+![슬라이드24](README.assets/슬라이드24.PNG)
 
-![슬라이드26](발표/결선발표/공통PJT_우수작발표_2.0/슬라이드26.PNG)
+![슬라이드26](README.assets/슬라이드26.PNG)
 
-![슬라이드25](발표/결선발표/공통PJT_우수작발표_2.0/슬라이드25.PNG)
+![슬라이드25](README.assets/슬라이드25.PNG)
 
 라운드가 시작되면, 플레이어 2인의 제시어를 정해야합니다. 화면 우측 상단의 제시어 투표창을 통해서 본인을 제외한 다른 플레이어의 제시어 투표가 가능합니다. 1️⃣ 입력창에 제시어를 입력하여 제시어를 추가하고, 2️⃣ 등록된 제시어 중에서 마음에 드는 제시어를 투표하고 3️⃣ 투표 완료 버튼을 누릅니다.
 
