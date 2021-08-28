@@ -84,7 +84,7 @@
 
 #### WebRTC란?
 
-![image-20210828151835934](README.assets/image-20210828151835934.png)<img src="README.assets/image-20210828152033949.png" alt="image-20210828152033949" style="zoom: 80%;" />
+<img src="README.assets/image-20210828151835934.png" alt="image-20210828151835934" style="zoom: 80%;" /><img src="README.assets/image-20210828152033949.png" alt="image-20210828152033949" style="zoom: 67%;" />
 
 > WebRTC (Web Real-Time Communication)는 웹 브라우저 간에 플러그인의 도움 없이 서로 통신할 수 있도록 설계된 API이다. 
 >
@@ -333,9 +333,7 @@ Web Speech API는 크롬 브라우저에서 사용 가능한 api로 별도의 im
 
 이 기능을 위해 Web Speech API를 사용하였고, 특정 예약어(`정답`) 를 설정하여 그 이후에 나오는 단어로 정답을 체크하게 했습니다. 아래 영상을 통해 확인 할 수 있습니다. 자세한 내용은 `call mt name`폴더 안의 `callmy-stt.vue`에서 확인할 수 있습니다.
 
-<video src="발표/최종발표/ppt gif/stttest2.mp4"></video>
-
-
+<video src="README.assets/stttest2.mp4"></video>
 
 🎮 이를 통해 TV에서 봤던 게임을 실제로 진행 할 수 있고, 음성인식으로 정답을 체크하여 재미와 편의성을 높입니다. 모두에게 공유되는 자막이 생성되어 관전자들은 마치 TV를 보는 시청자처럼 즐길 수 있습니다.
 
@@ -446,13 +444,17 @@ figma를 사용해 홈페이지의 초안을 작성합니다. 관련 레퍼런�
 
 - `Loading` 화면을 구성하여 컴포넌트에 요소들이 모두 로드 되기 전까지 사용자의 동작을 제한합니다. `너랑이`가 둥실둥실 떠다니는 모습으로 구성했습니다.
 
-  ![ezgif.com-gif-maker (4)](README.assets/ezgif.com-gif-maker (4).gif)
+  ![로딩](README.assets/로딩.gif)
 
 - 클릭 가능한 모든 요소는 `cursor: pointer` 를 추가했습니다.
 
 - 반응형으로 구성하여 화면의 크기를 줄이면 그에 맞게 컴포넌트가 다르게 보여지게 합니다.
 
-  <img src="README.assets/대기실1-163014020612614.png" alt="대기실1" style="zoom:20%;" /><img src="README.assets/대기실2-crop.png" alt="대기실2-crop" style="zoom:20%;" /><img src="README.assets/대기실3-crop.png" alt="대기실3-crop" style="zoom:20%;" />
+  <div style="display: flex">
+      <img src="README.assets/대기실1.png" style="height: 15vw" alt="대기실1"/>
+      <img src="README.assets/대기실2-crop.png" style="height: 15vw" alt="대기실2-crop"/>
+      <img src="README.assets/대기실3-crop.png" style="height: 15vw" alt="대기실3-crop" />
+  </div>
 
 
 
