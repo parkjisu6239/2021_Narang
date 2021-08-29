@@ -417,6 +417,7 @@ git flow 사용을 위해 `우아한 형제들`의 [git flow 사용](https://tec
 - 서비스 포트 번호 : 443
 
 서로 다른 도커 이미지로 저장되어 있어 각각의 이미지를 실행시켜 실행합니다.
+
 docker 내부는 같은 네트워크로 묶어주기 위해 docker-compose로 실행합니다. 
 
 
@@ -426,6 +427,7 @@ docker 내부는 같은 네트워크로 묶어주기 위해 docker-compose로 �
 ## 2. DevOps
 
 `Jenkins`로  CI/CD를 구축하여 develop 브랜치에 `push` 이벤트 발생시 build하도록 구성했습니다.
+
 build 후 docker-compose를 실행하도록 했습니다
 
 <br/>
