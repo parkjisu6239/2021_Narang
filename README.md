@@ -410,6 +410,8 @@ git flow 사용을 위해 `우아한 형제들`의 [git flow 사용](https://tec
 
 # Ⅴ. 배포
 
+서버는 AWS EC2 ubuntu를 사용했습니다
+
 ## 1. Docker
 
 - openvidu 서버 : 8443
@@ -417,6 +419,8 @@ git flow 사용을 위해 `우아한 형제들`의 [git flow 사용](https://tec
 - 서비스 포트 번호 : 443
 
 서로 다른 도커 이미지로 저장되어 있어 각각의 이미지를 실행시킵니다.
+
+필요한 이미지들의 설정은 docker-compose.yml 파일에 작성합니다.
 
 docker 내부는 같은 네트워크로 묶어주기 위해 docker-compose로 실행합니다. 
 
@@ -435,14 +439,22 @@ build 후 docker-compose를 실행하도록 했습니다.
 
 ## 3. How to
 
-서버는 letsencrypt를 사용하여 ssl 설정했습니다. `letsencrypt certonly --standalone -d [도메인명]` 명령어로 얻은 keyfile을 ~/apps/narang/certificates/live/[도메인명] 에 복사합니다. 진행 순서는 다음과 같습니다.
+### Jenkins 설정
 
-1. 로컬 프로젝트의 back 폴더에서 터미널 실행하여 gradle clean build 명령어 실행
-2. aws ubuntu 접속
-3. ~/apps/narang/libs 에 jar 파일 저장
-4. ~/apps/narang에 docker-compose.yml 파일과 .env 파일 작성
-5. ~/apps/narang/db 에 init.sql 파일 작성
-6. `docker-compose up -d` 명령어로 컨테이너 다중 실행
+1. Jenkins 관리 > 시스템 설정
+- Jenkins가 실행중인 서버의 URL 작성
+- Gitlab / Github URL 작성
+- ssh로 서버에 접속하기 위한 설정
+- 프로젝트 빌드 설정(gradle, nodejs)
+
+2. 프로젝트 생성 & 설정
+- freestyle project 생성
+- 소스코드 관리(repository, branch 설정)
+- 빌드유발 설정(Webhook 연결위한 token 발급)
+- 빌드 환경설정(command 작성)
+- 빌드 후 조치
+
+서버는 letsencrypt를 사용하여 ssl 설정했습니다. `letsencrypt certonly --standalone -d [도메인명]` 명령어로 얻은 keyfile을 ~/apps/narang/certificates/live/[도메인명] 에 복사합니다.
 
 <br/>
 <br/>
