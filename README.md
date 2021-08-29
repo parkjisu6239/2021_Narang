@@ -454,6 +454,10 @@ build 후 docker-compose를 실행하도록 했습니다.
 - 빌드 환경설정(command 작성)
 - 빌드 후 조치
 
+### Gitlab Webhook 설정
+
+Jenkins 프로젝트 > 구성 > 빌드유발에서 발급한 토큰을 Webhook 설정 페이지에 작성하고 빌드 트리거를 설정한다.
+
 서버는 letsencrypt를 사용하여 ssl 설정했습니다. `letsencrypt certonly --standalone -d [도메인명]` 명령어로 얻은 keyfile을 ~/apps/narang/certificates/live/[도메인명] 에 복사합니다.
 
 <br/>
