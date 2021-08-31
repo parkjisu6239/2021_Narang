@@ -371,7 +371,7 @@ git flow 사용을 위해 `우아한 형제들`의 [git flow 사용](https://tec
 
 또한 `commit message` 는 `[FE|jisu] mafia | 거짓말 탐지기 5초 제한, 게임당 1회 사용 제한 추가` 와 같이 통일하여 작성했습니다.
 
-![ezgif.com-gif-maker (2)](README.assets/ezgif.com-gif-maker (2).gif)
+![git](README.assets/깃.gif)
 
 <br/>
 <br/>
@@ -400,7 +400,7 @@ git flow 사용을 위해 `우아한 형제들`의 [git flow 사용](https://tec
 
 변수와 메서드의 naming rule, 인덴팅과 줄바꿈 규칙, vue에서의 state와 props 순서도 설정했습니다.
 
-![ezgif.com-gif-maker (3)](README.assets/ezgif.com-gif-maker (3).gif)
+![notion](README.assets/노션.gif)
 
 
 <br/>
