@@ -174,7 +174,7 @@ export default {
         for (let i = 0; i < state.maxPredictions; i++) {
             state.missionProgress.innerHTML = "미션 " + (store.state.root.mafiaManager.missionKeepCnt / 6).toFixed(0) + "% 진행 중...";
             // 미션 동작인 경우 missionKeepCnt 카운트
-            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.83 && !store.state.root.mafiaManager.missionSuccess) {
+            if(prediction[store.state.root.mafiaManager.missionNumber].probability.toFixed(2) >= 0.88 && !store.state.root.mafiaManager.missionSuccess) {
               if(store.state.root.mafiaManager.missionKeepCnt == 0) state.missionMessage.innerHTML = "동작 인식 중입니다. 성공 전까지 해당 자세를 유지하세요.";
               store.state.root.mafiaManager.missionKeepCnt++;
             }

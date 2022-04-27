@@ -42,7 +42,7 @@ public class GamePlayers {
 
     // players의 역할을 분배한다.
     public void setRole(List<Role> roles) {
-        for (int i = 0; i < countOfPlayers(); i++) { // 찐 role 분배
+        for (int i = 0; i < countOfPlayers(); i++) { // role 분배
             this.players.get(i).setRole(roles.get(i));
         }
     }
